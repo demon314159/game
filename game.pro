@@ -6,9 +6,11 @@ QT += multimedia widgets
 ## CONFIG += qt debug
 
 HEADERS       = game.h \
-                table.h
+                table.h \
+                puck.h
 
 SOURCES       = main.cpp \
                 game.cpp \
-                table.cpp
+                table.cpp \
+                puck.cpp
 

@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QMouseEvent>
+#include "puck.h"
 
 class Table: public QWidget
 {
@@ -23,6 +24,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 private:
+    Puck m_puck;
     int m_x_base;
     int m_y_base;
     int m_width;

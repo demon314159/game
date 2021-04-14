@@ -8,6 +8,7 @@
 
 Table::Table(QWidget *parent)
     : QWidget(parent)
+    , m_puck(10.0, 10.0)
     , m_x_base(0)
     , m_y_base(0)
     , m_width(100)

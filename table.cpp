@@ -34,7 +34,7 @@ int Table::text_height(QPainter& painter, const QString &s)
 void Table::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(this);
-    int th = text_height(painter, QString("0"));
+//    int th = text_height(painter, QString("0"));
 
     painter.setPen(Qt::black);
 
@@ -47,7 +47,7 @@ void Table::paintEvent(QPaintEvent* /* event */)
     painter.drawRect(QRect(m_x_base,
                            m_y_base,
                            m_width - 1,
-                           m_height));
+                           m_height - 1));
 }
 
 

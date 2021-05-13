@@ -15,6 +15,8 @@ protected:
 
 private:
     void parse_file(FILE* ffi);
+    void parse_point_line(char* buf);
+    void parse_coord_line(char* buf);
 };
 
 #endif // _CAD_MODEL_H_

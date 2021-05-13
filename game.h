@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include "table.h"
+#include "cad_model.h"
 
 class Game: public QMainWindow
 {
@@ -32,6 +33,7 @@ private slots:
 private:
     // Owned by layout
     Table *m_table = nullptr;
+    CadModel *m_flipper = nullptr;
     QPushButton *m_pb1 = nullptr;
     QPushButton *m_pb2 = nullptr;
     QPushButton *m_pb3 = nullptr;

@@ -7,10 +7,12 @@ QT += multimedia widgets
 
 HEADERS       = game.h \
                 table.h \
-                puck.h
+                puck.h \
+                cad_model.h
 
 SOURCES       = main.cpp \
                 game.cpp \
                 table.cpp \
-                puck.cpp
+                puck.cpp \
+                cad_model.cpp
 

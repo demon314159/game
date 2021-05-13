@@ -47,6 +47,8 @@ void Game::initializeWindow()
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 
+    m_flipper = new CadModel("flipper.wrl");
+
     window->setLayout(layout);
     setCentralWidget(window);
     window->show();

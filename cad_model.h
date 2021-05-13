@@ -9,11 +9,12 @@
 class CadModel
 {
 public:
-    CadModel(const QString &file_name);
+    CadModel(const QString& file_name);
 
 protected:
 
 private:
+    void parse_file(FILE* ffi);
 };
 
 #endif // _CAD_MODEL_H_

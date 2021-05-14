@@ -14,9 +14,14 @@ public:
 protected:
 
 private:
+    int m_points;
+    int m_coords;
+
     void parse_file(FILE* ffi);
     void parse_point_line(char* buf);
     void parse_coord_line(char* buf);
+    void add_point(float x, float y, float z);
+    void add_coord(int a, int b, int c);
 };
 
 #endif // _CAD_MODEL_H_

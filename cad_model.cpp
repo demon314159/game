@@ -3,6 +3,8 @@
 //
 #include "cad_model.h"
 
+#define notPRINTY
+
 CadModel::CadModel(const QString& file_name)
     : m_points(0)
     , m_coords(0)
@@ -21,15 +23,21 @@ CadModel::CadModel(const QString& file_name)
     m_c = new int[MAX_COORDS];
     FILE* ffi = fopen(file_name.toLatin1().data(), "r");
     if (ffi == NULL) {
+#ifdef PRINTY
         printf("<<< Error opening file '%s' >>>\n", file_name.toLatin1().data());
+#endif
     } else {
 
+#ifdef PRINTY
         printf("Open file '%s'\n", file_name.toLatin1().data());
+#endif
         parse_file(ffi);
         fclose(ffi);
+#ifdef PRINTY
         printf("Close file '%s'\n", file_name.toLatin1().data());
         printf("m_points = %d\n", m_points);
         printf("m_coords = %d\n", m_coords);
+#endif
     }
 }
 
@@ -52,7 +60,6 @@ void CadModel::parse_file(FILE* ffi)
 
     ptr = fgets(buf, 512, ffi);
     while (ptr != NULL) {
-//        printf("%s", buf);
         if (point_flag) {
             if (buf[0] == ']') {
                 point_flag = false;
@@ -77,10 +84,14 @@ void CadModel::parse_point_line(char* buf)
 {
     float x, y, z;
     int res, num, len;
+#ifdef PRINTY
     printf("parse_points: %s", buf);
+#endif
     len = strlen(buf);
     res = sscanf(buf, "%f %f %f%n", &x, &y, &z, &num);
+#ifdef PRINTY
     printf("  len = %d, res = %d, x = %f, y = %f, z = %f, num = %d\n", len, res, x, y, z, num);
+#endif
     if (res == 3) {
         add_point(x, y, z);
         if (buf[num] == ',' && (num < (len - 3))) {
@@ -93,10 +104,14 @@ void CadModel::parse_coord_line(char* buf)
 {
     int a, b, c, d;
     int res, num, len;
+#ifdef PRINTY
     printf("coords: %s", buf);
+#endif
     len = strlen(buf);
     res = sscanf(buf, "%d, %d, %d, %d%n", &a, &b, &c, &d, &num);
+#ifdef PRINTY
     printf("  len = %d, res = %d, a = %d, b = %d, c = %d, d = %d, num = %d\n", len, res, a, b, c, d, num);
+#endif
     if ((res == 4) && (d == -1)) {
         add_coord(a, b, c);
         if (buf[num] == ',' && (num < (len - 3))) {
@@ -129,7 +144,6 @@ int CadModel::triangles() const
 {
     return m_coords;
 }
-
 
 void CadModel::get_triangle(int i, float& ax, float& ay, float& az,
                                    float& bx, float& by, float& bz,

@@ -3,7 +3,7 @@
 //
 #include "cad_model.h"
 
-#define notPRINTY
+#define PRINTY
 
 CadModel::CadModel(const QString& file_name)
     : m_points(0)
@@ -15,9 +15,9 @@ CadModel::CadModel(const QString& file_name)
     , m_b(NULL)
     , m_c(NULL)
 {
-    m_x = new float[MAX_POINTS];
-    m_y = new float[MAX_POINTS];
-    m_z = new float[MAX_POINTS];
+    m_x = new double[MAX_POINTS];
+    m_y = new double[MAX_POINTS];
+    m_z = new double[MAX_POINTS];
     m_a = new int[MAX_COORDS];
     m_b = new int[MAX_COORDS];
     m_c = new int[MAX_COORDS];
@@ -82,15 +82,15 @@ void CadModel::parse_file(FILE* ffi)
 
 void CadModel::parse_point_line(char* buf)
 {
-    float x, y, z;
+    double x, y, z;
     int res, num, len;
 #ifdef PRINTY
     printf("parse_points: %s", buf);
 #endif
     len = strlen(buf);
-    res = sscanf(buf, "%f %f %f%n", &x, &y, &z, &num);
+    res = sscanf(buf, "%lf %lf %lf%n", &x, &y, &z, &num);
 #ifdef PRINTY
-    printf("  len = %d, res = %d, x = %f, y = %f, z = %f, num = %d\n", len, res, x, y, z, num);
+    printf("  len = %d, res = %d, x = %lf, y = %lf, z = %lf, num = %d\n", len, res, x, y, z, num);
 #endif
     if (res == 3) {
         add_point(x, y, z);
@@ -120,7 +120,7 @@ void CadModel::parse_coord_line(char* buf)
     }
 }
 
-void CadModel::add_point(float x, float y, float z)
+void CadModel::add_point(double x, double y, double z)
 {
     if (m_points < MAX_POINTS) {
         m_x[m_points] = x;

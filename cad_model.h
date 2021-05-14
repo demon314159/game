@@ -22,9 +22,9 @@ private:
     const int MAX_COORDS = 10000;
     int m_points;
     int m_coords;
-    float* m_x;
-    float* m_y;
-    float* m_z;
+    double* m_x;
+    double* m_y;
+    double* m_z;
     int* m_a;
     int* m_b;
     int* m_c;
@@ -32,7 +32,7 @@ private:
     void parse_file(FILE* ffi);
     void parse_point_line(char* buf);
     void parse_coord_line(char* buf);
-    void add_point(float x, float y, float z);
+    void add_point(double x, double y, double z);
     void add_coord(int a, int b, int c);
 };
 

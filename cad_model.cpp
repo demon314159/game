@@ -145,29 +145,19 @@ int CadModel::triangles() const
     return m_coords;
 }
 
-void CadModel::get_triangle(int i, float& ax, float& ay, float& az,
-                                   float& bx, float& by, float& bz,
-                                   float& cx, float& cy, float& cz) const
+Matrix CadModel::get_triangle(int i) const
 {
+    Matrix m(3, 3);
     if (i < MAX_COORDS) {
-        ax = m_x[m_a[i]];
-        ay = m_y[m_a[i]];
-        az = m_z[m_a[i]];
-        bx = m_x[m_b[i]];
-        by = m_y[m_b[i]];
-        bz = m_z[m_b[i]];
-        cx = m_x[m_c[i]];
-        cy = m_y[m_c[i]];
-        cz = m_z[m_c[i]];
-    } else {
-        ax = 0.0;
-        ay = 0.0;
-        az = 0.0;
-        bx = 0.0;
-        by = 0.0;
-        bz = 0.0;
-        cx = 0.0;
-        cy = 0.0;
-        cz = 0.0;
+        m.set(1, 1, m_x[m_a[i]]);
+        m.set(1, 2, m_y[m_a[i]]);
+        m.set(1, 3, m_z[m_a[i]]);
+        m.set(2, 1, m_x[m_b[i]]);
+        m.set(2, 2, m_y[m_b[i]]);
+        m.set(2, 3, m_z[m_b[i]]);
+        m.set(3, 1, m_x[m_c[i]]);
+        m.set(3, 2, m_y[m_c[i]]);
+        m.set(3, 3, m_z[m_c[i]]);
     }
+    return m;
 }

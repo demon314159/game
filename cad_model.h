@@ -5,6 +5,7 @@
 #define _CAD_MODEL_H_
 
 #include <QString>
+#include "matrix.h"
 
 class CadModel
 {
@@ -12,9 +13,7 @@ public:
     CadModel(const QString& file_name);
     ~CadModel();
     int triangles() const;
-    void get_triangle(int i, float& ax, float& ay, float& az,
-                             float& bx, float& by, float& bz,
-                             float& cx, float& cy, float& cz) const;
+    Matrix get_triangle(int i) const;
 
 protected:
 

@@ -6,11 +6,24 @@
 CadModel::CadModel(const QString& file_name)
     : m_points(0)
     , m_coords(0)
+    , m_x(NULL)
+    , m_y(NULL)
+    , m_z(NULL)
+    , m_a(NULL)
+    , m_b(NULL)
+    , m_c(NULL)
 {
+    m_x = new float[MAX_POINTS];
+    m_y = new float[MAX_POINTS];
+    m_z = new float[MAX_POINTS];
+    m_a = new int[MAX_COORDS];
+    m_b = new int[MAX_COORDS];
+    m_c = new int[MAX_COORDS];
     FILE* ffi = fopen(file_name.toLatin1().data(), "r");
     if (ffi == NULL) {
         printf("<<< Error opening file '%s' >>>\n", file_name.toLatin1().data());
     } else {
+
         printf("Open file '%s'\n", file_name.toLatin1().data());
         parse_file(ffi);
         fclose(ffi);
@@ -18,6 +31,16 @@ CadModel::CadModel(const QString& file_name)
         printf("m_points = %d\n", m_points);
         printf("m_coords = %d\n", m_coords);
     }
+}
+
+CadModel::~CadModel()
+{
+    delete[] m_x;
+    delete[] m_y;
+    delete[] m_z;
+    delete[] m_a;
+    delete[] m_b;
+    delete[] m_c;
 }
 
 void CadModel::parse_file(FILE* ffi)
@@ -84,10 +107,53 @@ void CadModel::parse_coord_line(char* buf)
 
 void CadModel::add_point(float x, float y, float z)
 {
-    ++m_points;
+    if (m_points < MAX_POINTS) {
+        m_x[m_points] = x;
+        m_y[m_points] = y;
+        m_z[m_points] = z;
+        ++m_points;
+    }
 }
 
 void CadModel::add_coord(int a, int b, int c)
 {
-    ++m_coords;
+    if (m_coords < MAX_COORDS) {
+        m_a[m_coords] = a;
+        m_b[m_coords] = b;
+        m_c[m_coords] = c;
+        ++m_coords;
+    }
+}
+
+int CadModel::triangles() const
+{
+    return m_coords;
+}
+
+
+void CadModel::get_triangle(int i, float& ax, float& ay, float& az,
+                                   float& bx, float& by, float& bz,
+                                   float& cx, float& cy, float& cz) const
+{
+    if (i < MAX_COORDS) {
+        ax = m_x[m_a[i]];
+        ay = m_y[m_a[i]];
+        az = m_z[m_a[i]];
+        bx = m_x[m_b[i]];
+        by = m_y[m_b[i]];
+        bz = m_z[m_b[i]];
+        cx = m_x[m_c[i]];
+        cy = m_y[m_c[i]];
+        cz = m_z[m_c[i]];
+    } else {
+        ax = 0.0;
+        ay = 0.0;
+        az = 0.0;
+        bx = 0.0;
+        by = 0.0;
+        bz = 0.0;
+        cx = 0.0;
+        cy = 0.0;
+        cz = 0.0;
+    }
 }

@@ -6,30 +6,21 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QPixmap>
-#include <QPainter>
-#include <QMouseEvent>
-#include "puck.h"
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
-class Table: public QWidget
+class Table: public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
-    explicit Table(QWidget *parent = nullptr);
+    Table(QWidget *parent = nullptr);
+    ~Table();
 
 protected:
-    int text_width(QPainter& painter, const QString &s);
-    int text_height(QPainter& painter, const QString &s);
-    void paintEvent(QPaintEvent* event) override;
-
-private:
-    Puck m_puck;
-    int m_x_base;
-    int m_y_base;
-    int m_width;
-    int m_height;
-    QPixmap m_pixmap;
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
 };
 
 #endif // _TABLE_H_

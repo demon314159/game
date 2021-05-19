@@ -3,7 +3,7 @@
 //
 #include "cad_model.h"
 
-#define PRINTY
+#define notPRINTY
 
 CadModel::CadModel(const QString& file_name)
     : m_points(0)

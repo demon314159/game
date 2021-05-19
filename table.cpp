@@ -2,53 +2,33 @@
 // table.cpp
 //
 #include "table.h"
-#include <QPainter>
-#include <math.h>
-#include <algorithm>
 
 Table::Table(QWidget *parent)
-    : QWidget(parent)
-    , m_puck(10.0, 10.0)
-    , m_x_base(0)
-    , m_y_base(0)
-    , m_width(100)
-    , m_height(100)
+    : QOpenGLWidget(parent)
 {
-    setBackgroundRole(QPalette::Base);
-    setAutoFillBackground(true);
-    setMinimumHeight(162);
-    setMinimumWidth(512);
 }
 
-int Table::text_width(QPainter& painter, const QString &s)
+Table::~Table()
 {
-    QRect rect = painter.boundingRect(0, 0, 0, 0, 0, s);
-    return rect.width();
 }
 
-int Table::text_height(QPainter& painter, const QString &s)
+void Table::initializeGL()
 {
-    QRect rect = painter.boundingRect(0, 0, 0, 0, 0, s);
-    return rect.height();
+    initializeOpenGLFunctions();
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-void Table::paintEvent(QPaintEvent* /* event */)
+void Table::resizeGL(int w, int h)
 {
-    QPainter painter(this);
-//    int th = text_height(painter, QString("0"));
-
-    painter.setPen(Qt::black);
-
-    m_width = painter.viewport().width();
-    m_height = painter.viewport().height();
-    m_x_base = painter.viewport().left();
-    m_y_base = painter.viewport().top();
-
-    painter.setPen(Qt::black);
-    painter.drawRect(QRect(m_x_base,
-                           m_y_base,
-                           m_width - 1,
-                           m_height - 1));
+//    m_projection.setToIdentity();
+//    m_projection.perspective(45.0f, w / float(h), 0.01f, 100.0f);
 }
+
+void Table::paintGL()
+{
+
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 
 

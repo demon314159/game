@@ -5,16 +5,21 @@ QT += multimedia widgets
 
 ## CONFIG += qt debug
 
-HEADERS       = game.h \
+HEADERS      += game.h \
                 table.h \
                 puck.h \
                 cad_model.h \
-                matrix.h
+                matrix.h \
+                thingus.h
 
-SOURCES       = main.cpp \
+SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 puck.cpp \
                 cad_model.cpp \
-                matrix.cpp
+                matrix.cpp \
+                thingus.cpp
+
+RESOURCES    += shaders.qrc \
+                textures.qrc
 

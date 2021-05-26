@@ -10,9 +10,9 @@ int main(int argv, char **args)
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setVersion(3, 2);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+//    format.setStencilBufferSize(8);
+//    format.setVersion(3, 2);
+//    format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
     Game game;

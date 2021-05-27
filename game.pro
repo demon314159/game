@@ -9,7 +9,6 @@ HEADERS      += game.h \
                 table.h \
                 puck.h \
                 cad_model.h \
-                matrix.h \
                 thingus.h
 
 SOURCES      += main.cpp \
@@ -17,7 +16,6 @@ SOURCES      += main.cpp \
                 table.cpp \
                 puck.cpp \
                 cad_model.cpp \
-                matrix.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc \

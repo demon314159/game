@@ -8,6 +8,7 @@
 CadModel::CadModel(const QString& file_name)
     : m_vertices(0)
     , m_facets(0)
+    , m_materials(0)
     , m_x(NULL)
     , m_y(NULL)
     , m_z(NULL)
@@ -37,6 +38,7 @@ CadModel::CadModel(const QString& file_name)
         printf("Close file '%s'\n", file_name.toLatin1().data());
         printf("m_vertices = %d\n", m_vertices);
         printf("m_facets = %d\n", m_facets);
+        printf("m_materials = %d\n", m_materials);
 #endif
     }
 }
@@ -53,12 +55,13 @@ CadModel::~CadModel()
 
 void CadModel::parse_file(FILE* ffi)
 {
-    char buf[512];
+    char buf[16384];
     char* ptr;
     bool vertex_flag = false;
     bool facet_flag = false;
+    bool material_flag = false;
 
-    ptr = fgets(buf, 512, ffi);
+    ptr = fgets(buf, 16384, ffi);
     while (ptr != NULL) {
         if (vertex_flag) {
             if (buf[0] == ']') {
@@ -72,11 +75,19 @@ void CadModel::parse_file(FILE* ffi)
             } else {
                 parse_facet_line(buf);
             }
+        } else  if (material_flag) {
+            if (buf[0] == ']') {
+                material_flag = false;
+            } else {
+                parse_material_line(buf);
+            }
+
         } else {
             vertex_flag = (0 == strncmp(buf, "point [", 7)) ? true : false;
             facet_flag = (0 == strncmp(buf, "coordIndex [", 12)) ? true : false;
+            material_flag = (0 == strncmp(buf, "materialIndex [", 12)) ? true : false;
         }
-        ptr = fgets(buf, 512, ffi);
+        ptr = fgets(buf, 16384, ffi);
     }
 }
 
@@ -120,6 +131,26 @@ void CadModel::parse_facet_line(char* buf)
     }
 }
 
+void CadModel::parse_material_line(char* buf)
+{
+    int a;
+    int res, num, len;
+#ifdef PRINTY
+//    printf("parse_material_line: %s", buf);
+#endif
+    len = strlen(buf);
+    res = sscanf(buf, "%d%n", &a, &num);
+#ifdef PRINTY
+    printf("  len = %d, res = %d, a = %d, num = %d\n", len, res, a, num);
+#endif
+    if ((res == 1)) {
+        add_material(a);
+        if (buf[num] == ',' && (num < (len - 3))) {
+            parse_material_line(buf + num + 1);
+        }
+    }
+}
+
 void CadModel::add_vertex(double x, double y, double z)
 {
     if (m_vertices < MAX_VERTICES) {
@@ -138,6 +169,11 @@ void CadModel::add_facet(int a, int b, int c)
         m_c[m_facets] = c;
         ++m_facets;
     }
+}
+
+void CadModel::add_material(int a)
+{
+    ++m_materials;
 }
 
 int CadModel::vertices() const

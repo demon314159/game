@@ -23,6 +23,7 @@ private:
     const int MAX_FACETS = 10000;
     int m_vertices;
     int m_facets;
+    int m_materials;
     double* m_x;
     double* m_y;
     double* m_z;
@@ -33,8 +34,10 @@ private:
     void parse_file(FILE* ffi);
     void parse_vertex_line(char* buf);
     void parse_facet_line(char* buf);
+    void parse_material_line(char* buf);
     void add_vertex(double x, double y, double z);
     void add_facet(int a, int b, int c);
+    void add_material(int a);
 };
 
 #endif // _CAD_MODEL_H_

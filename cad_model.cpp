@@ -140,14 +140,16 @@ void CadModel::parse_material_line(char* buf)
 #endif
     len = strlen(buf);
     res = sscanf(buf, "%d%n", &a, &num);
-#ifdef PRINTY
-    printf("  len = %d, res = %d, a = %d, num = %d\n", len, res, a, num);
-#endif
-    if ((res == 1)) {
+    if (res == 1) {
         add_material(a);
-        if (buf[num] == ',' && (num < (len - 3))) {
-            parse_material_line(buf + num + 1);
+        while ((res == 1) && (buf[num] == ',') && (num < (len - 3)) ) {
+            buf += (num + 1);
+            res = sscanf(buf, "%d%n", &a, &num);
+            if (res == 1) {
+                add_material(a);
+            }
         }
+
     }
 }
 

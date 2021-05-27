@@ -7,17 +7,21 @@
 struct VertexData
 {
     QVector3D position;
-    QVector2D texCoord;
 };
 
 Thingus::Thingus()
-    : indexBuf(QOpenGLBuffer::IndexBuffer)
+    : m_vertices(0)
+    , m_facets(0)
+    , indexBuf(QOpenGLBuffer::IndexBuffer)
 {
     initializeOpenGLFunctions();
 
     // Generate 2 VBOs
     arrayBuf.create();
     indexBuf.create();
+
+    m_flipper = new CadModel("flipper.wrl");
+//    m_flipper = new CadModel("1x1x1_cube.wrl");
 
     // Initializes cube geometry and transfers it to VBOs
     initCubeGeometry();
@@ -27,42 +31,40 @@ Thingus::~Thingus()
 {
     arrayBuf.destroy();
     indexBuf.destroy();
+    delete m_flipper;
 }
 
 void Thingus::initCubeGeometry()
 {
-    // For cube we would need only 8 vertices but we have to
-    // duplicate vertex for each face because texture coordinate
-    // is different.
-    VertexData vertices[] = {
-        {QVector3D(0.0f, 0.0f,  1.0f), QVector2D(0.0f, 0.0f)},  // v0
-        {QVector3D(-1.0f, 1.0f,  1.0f), QVector2D(0.0f, 0.0f)}, // v1
-        {QVector3D( 1.0f, 1.0f,  1.0f), QVector2D(0.0f, 0.0f)},  // v2
-        {QVector3D(-1.0f,-1.0f,  1.0f), QVector2D(0.0f, 0.0f)}, // v3
-        {QVector3D( 1.0f, -1.0f,  1.0f), QVector2D(0.0f, 0.0f)}, // v4
-    };
-
-    // Indices for drawing cube faces using triangle strips.
-    // Triangle strips can be connected by duplicating indices
-    // between the strips. If connecting strips have opposite
-    // vertex order then last index of the first strip and first
-    // index of the second strip needs to be duplicated. If
-    // connecting strips have same vertex order then only last
-    // index of the first strip needs to be duplicated.
-    GLushort indices[] = {
-         0,  1,  2,
-         0, 3, 4
-    };
+    m_vertices = m_flipper->vertices();
+    m_facets = m_flipper->facets();
+    if (m_vertices == 0 || m_facets == 0) {
+        return;
+    }
+    VertexData* vertices = new VertexData[m_vertices];
+    double x, y, z;
+    for (int i = 0; i < m_vertices; i++) {
+        m_flipper->get_vertex(i, x, y, z);
+        vertices[i].position = QVector3D(x, y, z);
+    }
+    GLushort* indices = new GLushort[m_facets * 3];
+    int a, b, c;
+    for (int i = 0; i < m_facets; i++) {
+        m_flipper->get_facet(i, a, b, c);
+        indices[3 * i] = a;
+        indices[3 * i + 1] = b;
+        indices[3 * i + 2] = c;
+    }
 
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
-//    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
-    arrayBuf.allocate(vertices, 5 * sizeof(VertexData));
+    arrayBuf.allocate(vertices, m_vertices * sizeof(VertexData));
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-//    indexBuf.allocate(indices, 34 * sizeof(GLushort));
-    indexBuf.allocate(indices, 6 * sizeof(GLushort));
+    indexBuf.allocate(indices, m_facets * 3 * sizeof(GLushort));
+    delete [] vertices;
+    delete [] indices;
 }
 
 void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
@@ -88,5 +90,5 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
+    glDrawElements(GL_TRIANGLES, 3 * m_facets, GL_UNSIGNED_SHORT, nullptr);
 }

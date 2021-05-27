@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
+#include "cad_model.h"
 
 class Thingus : protected QOpenGLFunctions
 {
@@ -15,6 +16,9 @@ public:
     void drawCubeGeometry(QOpenGLShaderProgram *program);
 
 private:
+    int m_vertices;
+    int m_facets;
+    CadModel *m_flipper = nullptr;
     void initCubeGeometry();
 
     QOpenGLBuffer arrayBuf;

@@ -20,8 +20,10 @@ Thingus::Thingus()
     arrayBuf.create();
     indexBuf.create();
 
-    m_flipper = new CadModel("flipper.wrl");
-//    m_flipper = new CadModel("1x1x1_cube.wrl");
+//  m_flipper = new CadModel("flipper_fillet.wrl");
+    m_flipper = new CadModel("1x1x1_cube.wrl");
+//    m_flipper = new CadModel("1x1x1_cube_chamfer.wrl");
+//    m_flipper = new CadModel("1x1x1_cube_fillet.wrl");
 
     // Initializes cube geometry and transfers it to VBOs
     initCubeGeometry();
@@ -88,6 +90,8 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     int texcoordLocation = program->attributeLocation("a_texcoord");
     program->enableAttributeArray(texcoordLocation);
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLES, 3 * m_facets, GL_UNSIGNED_SHORT, nullptr);

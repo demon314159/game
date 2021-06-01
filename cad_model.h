@@ -11,10 +11,8 @@ class CadModel
 public:
     CadModel(const QString& file_name);
     ~CadModel();
-    int vertices() const;
-    int facets() const;
-    void get_vertex(int i, double& x, double& y, double &z) const;
-    void get_facet(int i, int& a, int& b, int& c) const;
+    int image_size() const;
+    float* image_data() const;
 
 protected:
 
@@ -24,20 +22,22 @@ private:
     int m_vertices;
     int m_facets;
     int m_materials;
-    double* m_x;
-    double* m_y;
-    double* m_z;
-    int* m_a;
-    int* m_b;
-    int* m_c;
+    float* m_vertex_x;
+    float* m_vertex_y;
+    float* m_vertex_z;
+    unsigned int* m_facet_a;
+    unsigned int* m_facet_b;
+    unsigned int* m_facet_c;
+    float* m_image;
 
     void parse_file(FILE* ffi);
     void parse_vertex_line(char* buf);
     void parse_facet_line(char* buf);
     void parse_material_line(char* buf);
-    void add_vertex(double x, double y, double z);
-    void add_facet(int a, int b, int c);
-    void add_material(int a);
+    void add_vertex(float x, float y, float z);
+    void add_facet(unsigned int a, unsigned int b, unsigned int c);
+    void add_material(unsigned int a);
+    void build_image();
 };
 
 #endif // _CAD_MODEL_H_

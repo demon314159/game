@@ -8,6 +8,7 @@ QT += multimedia widgets
 HEADERS      += game.h \
                 table.h \
                 puck.h \
+                file_interface.h \
                 cad_model.h \
                 thingus.h
 
@@ -15,6 +16,7 @@ SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 puck.cpp \
+                file_interface.cpp \
                 cad_model.cpp \
                 thingus.cpp
 

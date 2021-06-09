@@ -20,8 +20,8 @@ Thingus::Thingus()
     arrayBuf.create();
     indexBuf.create();
 
-//  m_flipper = new CadModel("flipper_fillet.wrl");
-    m_flipper = new CadModel("1x1x1_cube.wrl");
+  m_flipper = new CadModel("flipper_fillet.wrl");
+//    m_flipper = new CadModel("1x1x1_cube.wrl");
 //    m_flipper = new CadModel("1x1x1_cube_chamfer.wrl");
 //    m_flipper = new CadModel("1x1x1_cube_fillet.wrl");
 
@@ -44,7 +44,7 @@ void Thingus::initCubeGeometry()
         return;
     }
     VertexData* vertices = new VertexData[m_vertices];
-    double x, y, z;
+    float x, y, z;
     for (int i = 0; i < m_vertices; i++) {
         m_flipper->get_vertex(i, x, y, z);
         vertices[i].position = QVector3D(x, y, z);

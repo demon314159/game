@@ -27,14 +27,38 @@ CadModel::~CadModel()
 #endif
 }
 
-int CadModel::vertices() const
-{
-    return m_vi.points();
-}
-
 int CadModel::facets() const
 {
     return m_vi.facets();
+}
+
+float3 CadModel::facet_v1(int facet_ix) const
+{
+    int3 v = m_vi.facet_points(facet_ix);
+    return m_vi.point(v.v1);
+}
+
+float3 CadModel::facet_v2(int facet_ix) const
+{
+    int3 v = m_vi.facet_points(facet_ix);
+    return m_vi.point(v.v2);
+}
+
+float3 CadModel::facet_v3(int facet_ix) const
+{
+    int3 v = m_vi.facet_points(facet_ix);
+    return m_vi.point(v.v3);
+}
+
+float3 CadModel::facet_color(int facet_ix) const
+{
+    int v = m_vi.facet_material(facet_ix);
+    return m_vi.ambient_color(v);
+}
+
+int CadModel::vertices() const
+{
+    return m_vi.points();
 }
 
 void CadModel::get_vertex(int ix, float& x, float& y, float& z) const

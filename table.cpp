@@ -31,7 +31,7 @@ void Table::initializeGL()
 {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     initShaders();
     initTextures();
     glEnable(GL_DEPTH_TEST);

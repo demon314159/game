@@ -16,13 +16,10 @@ public:
     void drawCubeGeometry(QOpenGLShaderProgram *program);
 
 private:
-    int m_vertices;
-    int m_facets;
-    CadModel *m_flipper = nullptr;
+    CadModel *m_cad = nullptr;
     void initCubeGeometry();
-
-    QOpenGLBuffer arrayBuf;
-    QOpenGLBuffer indexBuf;
+    int m_vertices;
+    QOpenGLBuffer vertexBuf;
 };
 
 #endif // _THINGUS_H_

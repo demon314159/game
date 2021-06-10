@@ -6,18 +6,16 @@ precision mediump float;
 
 uniform mat4 mvp_matrix;
 
-attribute vec4 a_position;
-attribute vec4 a_color;
+attribute vec3 a_position;
+attribute vec3 a_color;
 
-varying vec4 v_color;
+varying vec3 v_color;
 
-//! [0]
 void main()
 {
     // Calculate vertex position in screen space
-    gl_Position = mvp_matrix * a_position;
+    gl_Position = mvp_matrix * vec4(a_position, 1.0);
 
     // Pass color coordinate to fragment shader
     v_color = a_color;
 }
-//! [0]

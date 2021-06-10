@@ -1,12 +1,12 @@
 
 #include "thingus.h"
 
-#include <QVector4D>
+#include <QVector3D>
 
 struct VertexData
 {
-    QVector4D position;
-    QVector4D color;
+    QVector3D position;
+    QVector3D color;
 };
 
 Thingus::Thingus()
@@ -44,14 +44,14 @@ void Thingus::initCubeGeometry()
     for (int i = 0; i < m_cad->facets(); i++) {
         vc = m_cad->facet_color(i);
         vp = m_cad->facet_v1(i);
-        vertices[vix].position = QVector4D(vp.v1, vp.v2, vp.v3, 1.0);
-        vertices[vix++].color = QVector4D(vc.v1, vc.v2, vc.v3, 1.0);
+        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
         vp = m_cad->facet_v2(i);
-        vertices[vix].position = QVector4D(vp.v1, vp.v2, vp.v3, 1.0);
-        vertices[vix++].color = QVector4D(vc.v1, vc.v2, vc.v3, 1.0);
+        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
         vp = m_cad->facet_v3(i);
-        vertices[vix].position = QVector4D(vp.v1, vp.v2, vp.v3, 1.0);
-        vertices[vix++].color = QVector4D(vc.v1, vc.v2, vc.v3, 1.0);
+        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
     }
     // Transfer vertex data to VBO 0
     vertexBuf.bind();
@@ -71,15 +71,15 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     // Tell OpenGL programmable pipeline how to locate vertex position data
     int vertexLocation = program->attributeLocation("a_position");
     program->enableAttributeArray(vertexLocation);
-    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 4, sizeof(VertexData));
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
     // Offset for color coordinate
-    offset += sizeof(QVector4D);
+    offset += sizeof(QVector3D);
 
     // Tell OpenGL programmable pipeline how to locate color coordinate data
     int colorLocation = program->attributeLocation("a_color");
     program->enableAttributeArray(colorLocation);
-    program->setAttributeBuffer(colorLocation, GL_FLOAT, offset, 4, sizeof(VertexData));
+    program->setAttributeBuffer(colorLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

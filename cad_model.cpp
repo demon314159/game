@@ -2,6 +2,7 @@
 // cad_model.cpp
 //
 #include "cad_model.h"
+#include <math.h>
 
 #define VERBOSE
 
@@ -56,68 +57,23 @@ float3 CadModel::facet_color(int facet_ix) const
     return m_vi.ambient_color(v);
 }
 
-int CadModel::vertices() const
+float3 CadModel::facet_normal(int facet_ix) const
 {
-    return m_vi.points();
+    float3 p1, p2, p3;
+    p1 = facet_v1(facet_ix);
+    p2 = facet_v2(facet_ix);
+    p3 = facet_v3(facet_ix);
+    float3 va, vb;
+    va.v1 = p2.v1 - p1.v1;
+    va.v2 = p2.v2 - p1.v2;
+    va.v3 = p2.v3 - p1.v3;
+    vb.v1 = p3.v1 - p1.v1;
+    vb.v2 = p3.v2 - p1.v2;
+    vb.v3 = p3.v3 - p1.v3;
+    float3 xp;
+    xp.v1 = va.v2 * vb.v3 - vb.v2 * va.v3;
+    xp.v2 = vb.v1 * va.v3 - va.v1 * vb.v3;
+    xp.v3 = va.v1 * vb.v2 - vb.v1 * va.v2;
+    return xp;
 }
-
-void CadModel::get_vertex(int ix, float& x, float& y, float& z) const
-{
-    float3 v = m_vi.point(ix);
-    x = v.v1;
-    y = v.v2;
-    z = v.v3;
-}
-
-void CadModel::get_facet(int ix, int& a, int& b, int& c) const
-{
-    int3 v = m_vi.facet_points(ix);
-    a = v.v1;
-    b = v.v2;
-    c = v.v3;
-}
-
-
-
-
-#ifdef NEVERMORE
-void CadModel::build_image()
-{
-    float r, g, b;
-    r = 0.0;
-    g = 0.0;
-    b = 1.0;
-    if (m_facets > 0) {
-        m_image = new float[8 * 3 * m_facets];
-        float* p = m_image;
-        for (int i = 0; i < m_facets; i++) {
-            p[0] = m_vertex_x[m_facet_a[i]];
-            p[1] = m_vertex_y[m_facet_a[i]];
-            p[2] = m_vertex_z[m_facet_a[i]];
-            p[3] = 1.0;
-            p[4] = r;
-            p[5] = g;
-            p[6] = b;
-            p[7] = 1.0;
-            p[8+0] = m_vertex_x[m_facet_b[i]];
-            p[8+1] = m_vertex_y[m_facet_b[i]];
-            p[8+2] = m_vertex_z[m_facet_b[i]];
-            p[8+3] = 1.0;
-            p[8+4] = r;
-            p[8+5] = g;
-            p[8+6] = b;
-            p[8+7] = 1.0;
-            p[16+0] = m_vertex_x[m_facet_c[i]];
-            p[16+1] = m_vertex_y[m_facet_c[i]];
-            p[16+2] = m_vertex_z[m_facet_c[i]];
-            p[16+3] = 1.0;
-            p[16+4] = r;
-            p[16+5] = g;
-            p[16+6] = b;
-            p[16+7] = 1.0;
-            p += 24;
-        }
-    }
-}
-#endif
 

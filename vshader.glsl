@@ -7,14 +7,19 @@ precision mediump float;
 uniform mat4 mvp_matrix;
 
 attribute vec3 a_position;
+attribute vec3 a_normal;
 attribute vec3 a_color;
 
+varying vec4 v_normal;
 varying vec3 v_color;
 
 void main()
 {
+    vec3 billy;
     // Calculate vertex position in screen space
     gl_Position = mvp_matrix * vec4(a_position, 1.0);
+    billy = normalize(a_normal);
+    v_normal = mvp_matrix * vec4(billy, 0.0); // ?? is 0.0 right?  it is a direction
 
     // Pass color coordinate to fragment shader
     v_color = a_color;

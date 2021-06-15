@@ -19,15 +19,7 @@ public:
     float3 facet_v2(int facet_ix) const;
     float3 facet_v3(int facet_ix) const;
     float3 facet_color(int facet_ix) const;
-
-// temporary approach for continuity
-    int vertices() const;
-    void get_vertex(int ix, float& x, float& y, float& z) const;
-    void get_facet(int ix, int& a, int& b, int& c) const;
-#ifdef NEVERMORE
-    int image_size() const;
-    float* image_data() const;
-#endif
+    float3 facet_normal(int facet_ix) const;
 
 protected:
     VrmlInterface m_vi;

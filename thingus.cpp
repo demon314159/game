@@ -1,5 +1,6 @@
 
 #include "thingus.h"
+#include <ctype.h>
 
 #include <QVector3D>
 
@@ -24,6 +25,34 @@ Thingus::Thingus()
 //    m_cad = new CadModel("1x1x1_cube_fillet.wrl");
 
     // Initializes cube geometry and transfers it to VBOs
+    //
+    m_bin = new BinInterface("flipper.stl");
+    for (int i = 0; i < 80; i++) {
+        printf("%02x ", m_bin->current());
+        m_bin->advance();
+    }
+    printf("\n");
+    int n = m_bin->get_int();
+    printf("number of triangles = %d\n", n);
+    if (n > 0) {
+        for (int i = 0; i < n; i++) {
+            printf("i = %d\n", i);
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_float();
+            m_bin->get_unsigned_short();
+        }
+
+    }
     initCubeGeometry();
 }
 
@@ -31,6 +60,8 @@ Thingus::~Thingus()
 {
     vertexBuf.destroy();
     delete m_cad;
+
+    delete m_bin;
 }
 
 void Thingus::initCubeGeometry()

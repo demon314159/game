@@ -29,6 +29,7 @@ Thingus::Thingus()
     // Initializes cube geometry and transfers it to VBOs
     //
     m_cad = new StlModel("flipper.stl");
+//    m_cad = new StlModel("cube.stl");
     initCubeGeometry();
 }
 

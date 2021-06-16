@@ -1,5 +1,6 @@
 
 #include "thingus.h"
+#include "vrml_model.h"
 #include <ctype.h>
 
 #include <QVector3D>
@@ -19,7 +20,7 @@ Thingus::Thingus()
     // Generate 2 VBOs
     vertexBuf.create();
 
-    m_cad = new CadModel("flipper_fillet.wrl");
+    m_cad = new VrmlModel("flipper_fillet.wrl");
 //    m_cad = new CadModel("1x1x1_cube.wrl");
 //    m_cad = new CadModel("1x1x1_cube_chamfer.wrl");
 //    m_cad = new CadModel("1x1x1_cube_fillet.wrl");

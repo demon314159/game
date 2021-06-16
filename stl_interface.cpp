@@ -1,7 +1,7 @@
 
 #include "stl_interface.h"
 
-#define notVERBOSE
+#define VERBOSE
 
 StlInterface::StlInterface(const QString& file_name)
     : m_file_is_valid(false)
@@ -22,12 +22,15 @@ StlInterface::StlInterface(const QString& file_name)
     printf("StlInterface(%s)\n", file_name.toLatin1().data());
 #endif
     parse();
+#ifdef VERBOSE
+    printf("%d facets\n", m_facet_count);
+#endif
 }
 
 StlInterface::~StlInterface()
 {
 #ifdef VERBOSE
-    printf("~VrmlInterface()\n");
+    printf("~StlInterface()\n");
 #endif
     if (m_v1 != NULL)
         delete [] m_v1;
@@ -102,12 +105,6 @@ float3 StlInterface::facet_v3(int facet_ix) const
     }
 }
 
-bool StlInterface::parse()
-{
-    m_file_is_valid = false;
-    return m_file_is_valid;
-}
-
 bool StlInterface::file_is_valid() const
 {
     return m_file_is_valid;
@@ -116,5 +113,53 @@ bool StlInterface::file_is_valid() const
 QString StlInterface::error_message() const
 {
     return m_error_message;
+}
+
+bool StlInterface::parse()
+{
+    m_file_is_valid = false;
+    int header_count = 80;
+    while (!m_bi.is_eof() && header_count > 0) {
+        m_bi.advance();
+        --header_count;
+    }
+    if (m_bi.is_eof()) {
+        m_error_message = "File is too small";
+        return false;
+    }
+    int n = m_bi.get_int();
+    if (n < 1) {
+        m_error_message = "No faces found";
+        return false;
+    }
+    m_v1 = new float3[n];
+    m_v2 = new float3[n];
+    m_v3 = new float3[n];
+    for (int i = 0; i < n; i++) {
+        if (m_bi.is_eof()) {
+            m_error_message = QString("End Of File at face %1 out of %2").arg(i+1).arg(n);
+            return false;
+        }
+        m_bi.get_float();              // Skip normal vector
+        m_bi.get_float();
+        m_bi.get_float();
+        m_v1[i].v1 = m_bi.get_float(); // Get first vertex
+        m_v1[i].v2 = m_bi.get_float();
+        m_v1[i].v3 = m_bi.get_float();
+        m_v2[i].v1 = m_bi.get_float(); // Get second vertex
+        m_v2[i].v2 = m_bi.get_float();
+        m_v2[i].v3 = m_bi.get_float();
+        m_v3[i].v1 = m_bi.get_float(); // Get third vertex
+        m_v3[i].v2 = m_bi.get_float();
+        m_v3[i].v3 = m_bi.get_float();
+        if (m_bi.is_eof()) {
+            m_error_message = QString("End Of File at face %1 out of %2").arg(i+1).arg(n);
+            return false;
+        }
+        m_bi.get_unsigned_short();     // Skip attribute
+    }
+    m_facet_count = n;
+    m_file_is_valid = true;
+    return m_file_is_valid;
 }
 

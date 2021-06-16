@@ -35,7 +35,7 @@ void Table::initializeGL()
     initShaders();
     initTextures();
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
     timer.start(12, this);
 }

@@ -31,21 +31,26 @@ StlModel::~StlModel()
 
 int StlModel::facets() const
 {
+    return m_si.facets();
 }
 
 float3 StlModel::facet_v1(int facet_ix) const
 {
+    return m_si.facet_v1(facet_ix);
 }
 
 float3 StlModel::facet_v2(int facet_ix) const
 {
+    return m_si.facet_v2(facet_ix);
 }
 
 float3 StlModel::facet_v3(int facet_ix) const
 {
+    return m_si.facet_v3(facet_ix);
 }
 
 float3 StlModel::facet_color(int facet_ix) const
 {
+    return m_si.ambient_color();
 }
 

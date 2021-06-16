@@ -7,8 +7,6 @@
 #include <QOpenGLBuffer>
 #include "cad_model.h"
 
-#include "bin_interface.h"
-
 class Thingus : protected QOpenGLFunctions
 {
 public:
@@ -19,8 +17,6 @@ public:
 
 private:
     CadModel *m_cad = nullptr;
-
-    BinInterface *m_bin = nullptr;
 
     void initCubeGeometry();
     int m_vertices;

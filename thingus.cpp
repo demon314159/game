@@ -1,7 +1,5 @@
 
 #include "thingus.h"
-#include "vrml_model.h"
-#include "stl_model.h"
 #include <ctype.h>
 
 #include <QVector3D>
@@ -30,7 +28,12 @@ Thingus::Thingus()
     // Initializes cube geometry and transfers it to VBOs
     //
     PaintCan red_paint(1.0, 0.0, 0.0);
-    m_cad = new StlModel(red_paint, "bat_boot.stl");
+    m_cad = new CadModel(StlInterface("bat_boot.stl"), red_paint);
+//    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
+
+
+
+
 //    m_cad = new StlModel("bevel_disk.stl");
 //    m_cad = new StlModel("flipper.stl");
 //    m_cad = new StlModel("machine.stl");

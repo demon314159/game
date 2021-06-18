@@ -17,8 +17,6 @@ HEADERS      += game.h \
                 vrml_interface.h \
                 stl_interface.h \
                 cad_model.h \
-                vrml_model.h \
-                stl_model.h \
                 thingus.h
 
 SOURCES      += main.cpp \
@@ -32,8 +30,6 @@ SOURCES      += main.cpp \
                 vrml_interface.cpp \
                 stl_interface.cpp \
                 cad_model.cpp \
-                vrml_model.cpp \
-                stl_model.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc \

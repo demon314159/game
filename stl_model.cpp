@@ -6,8 +6,9 @@
 
 #define VERBOSE
 
-StlModel::StlModel(const QString& file_name)
+StlModel::StlModel(const PaintCan& paint_can, const QString& file_name)
     : CadModel()
+    , m_paint_can(paint_can)
     , m_si(file_name)
 {
 #ifdef VERBOSE
@@ -51,6 +52,6 @@ float3 StlModel::facet_v3(int facet_ix) const
 
 float3 StlModel::facet_color(int facet_ix) const
 {
-    return m_si.ambient_color();
+    return m_paint_can.ambient_color();
 }
 

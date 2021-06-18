@@ -10,6 +10,7 @@ HEADERS      += game.h \
                 float3.h \
                 table.h \
                 puck.h \
+                paint_can.h \
                 bin_interface.h \
                 char_interface.h \
                 token_interface.h \
@@ -24,6 +25,7 @@ SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 puck.cpp \
+                paint_can.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \
                 token_interface.cpp \

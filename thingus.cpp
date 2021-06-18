@@ -5,6 +5,7 @@
 #include <ctype.h>
 
 #include <QVector3D>
+#include "paint_can.h"
 
 struct VertexData
 {
@@ -28,8 +29,13 @@ Thingus::Thingus()
 
     // Initializes cube geometry and transfers it to VBOs
     //
-    m_cad = new StlModel("flipper.stl");
+    PaintCan red_paint(1.0, 0.0, 0.0);
+    m_cad = new StlModel(red_paint, "bat_boot.stl");
+//    m_cad = new StlModel("bevel_disk.stl");
+//    m_cad = new StlModel("flipper.stl");
+//    m_cad = new StlModel("machine.stl");
 //    m_cad = new StlModel("cube.stl");
+//    m_cad = new StlModel("cube_chamfer.stl");
     initCubeGeometry();
 }
 

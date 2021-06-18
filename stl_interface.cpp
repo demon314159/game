@@ -7,12 +7,6 @@ StlInterface::StlInterface(const QString& file_name)
     : m_file_is_valid(false)
     , m_bi(file_name)
     , m_error_message("no errors")
-    , m_ambient_color({0.329412, 0.517647, 1.000000})
-    , m_diffuse_color({0.329412, 0.517647, 1.000000})
-    , m_emissive_color({0.0, 0.0, 0.0})
-    , m_specular_color({0.164706, 0.258824, 0.500000})
-    , m_shininess(0.400000)
-    , m_transparency(0.0)
     , m_facet_count(0)
     , m_v1(NULL)
     , m_v2(NULL)
@@ -38,36 +32,6 @@ StlInterface::~StlInterface()
         delete [] m_v2;
     if (m_v3 != NULL)
         delete [] m_v3;
-}
-
-float3 StlInterface::ambient_color() const
-{
-    return m_ambient_color;
-}
-
-float3 StlInterface::diffuse_color() const
-{
-    return m_diffuse_color;
-}
-
-float3 StlInterface::emissive_color() const
-{
-    return m_emissive_color;
-}
-
-float3 StlInterface::specular_color() const
-{
-    return m_specular_color;
-}
-
-float StlInterface::shininess() const
-{
-    return m_shininess;
-}
-
-float StlInterface::transparency() const
-{
-    return m_transparency;
 }
 
 int StlInterface::facets() const
@@ -135,6 +99,7 @@ bool StlInterface::parse()
     m_v1 = new float3[n];
     m_v2 = new float3[n];
     m_v3 = new float3[n];
+    float mag = 1.0;
     for (int i = 0; i < n; i++) {
         if (m_bi.is_eof()) {
             m_error_message = QString("End Of File at face %1 out of %2").arg(i+1).arg(n);
@@ -143,15 +108,15 @@ bool StlInterface::parse()
         m_bi.get_float();              // Skip normal vector
         m_bi.get_float();
         m_bi.get_float();
-        m_v1[i].v1 = m_bi.get_float(); // Get first vertex
-        m_v1[i].v2 = m_bi.get_float();
-        m_v1[i].v3 = m_bi.get_float();
-        m_v2[i].v1 = m_bi.get_float(); // Get second vertex
-        m_v2[i].v2 = m_bi.get_float();
-        m_v2[i].v3 = m_bi.get_float();
-        m_v3[i].v1 = m_bi.get_float(); // Get third vertex
-        m_v3[i].v2 = m_bi.get_float();
-        m_v3[i].v3 = m_bi.get_float();
+        m_v1[i].v1 = mag * m_bi.get_float(); // Get first vertex
+        m_v1[i].v2 = mag * m_bi.get_float();
+        m_v1[i].v3 = mag * m_bi.get_float();
+        m_v2[i].v1 = mag * m_bi.get_float(); // Get second vertex
+        m_v2[i].v2 = mag * m_bi.get_float();
+        m_v2[i].v3 = mag * m_bi.get_float();
+        m_v3[i].v1 = mag * m_bi.get_float(); // Get third vertex
+        m_v3[i].v2 = mag * m_bi.get_float();
+        m_v3[i].v3 = mag * m_bi.get_float();
         if (m_bi.is_eof()) {
             m_error_message = QString("End Of File at face %1 out of %2").arg(i+1).arg(n);
             return false;

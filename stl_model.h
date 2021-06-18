@@ -9,11 +9,12 @@
 #include "stl_interface.h"
 #include "float3.h"
 #include "int3.h"
+#include "paint_can.h"
 
 class StlModel: public CadModel
 {
 public:
-    StlModel(const QString& file_name);
+    StlModel(const PaintCan& paint_can, const QString& file_name);
     ~StlModel();
     int facets() const override;
     float3 facet_v1(int facet_ix) const override;
@@ -22,6 +23,7 @@ public:
     float3 facet_color(int facet_ix) const override;
 
 protected:
+    PaintCan m_paint_can;
     StlInterface m_si;
 
 private:

@@ -28,8 +28,12 @@ Thingus::Thingus()
     // Initializes cube geometry and transfers it to VBOs
     //
     PaintCan red_paint(1.0, 0.0, 0.0);
-    m_cad = new CadModel(StlInterface("bat_boot.stl"), red_paint);
-//    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
+    PaintCan blue_paint(0.329412, 0.517647, 1.000000);
+//    m_cad = new CadModel(StlInterface("bat_boot.stl"), red_paint);
+//    m_cad->add(VrmlInterface("flipper_fillet.wrl"));
+
+    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
+    m_cad->add(StlInterface("bat_boot.stl"), blue_paint);
 
 
 

@@ -31,6 +31,41 @@ CadModel::CadModel(const VrmlInterface& vrml_interface)
     }
 }
 
+void CadModel::add(const VrmlInterface& vrml_interface)
+{
+    printf("CadModel::add(vrml)\n");
+    int added_facet_count = vrml_interface.facets();
+    if (added_facet_count > 0) {
+        float3* tv1 = m_facet_v1;
+        float3* tv2 = m_facet_v2;
+        float3* tv3 = m_facet_v3;
+        float3* tv4 = m_facet_color;
+        m_facet_v1 = new float3[m_facet_count + added_facet_count];
+        m_facet_v2 = new float3[m_facet_count + added_facet_count];
+        m_facet_v3 = new float3[m_facet_count + added_facet_count];
+        m_facet_color = new float3[m_facet_count + added_facet_count];
+        for (int i = 0; i < m_facet_count; i++) {
+            m_facet_v1[i] = tv1[i];
+            m_facet_v2[i] = tv2[i];
+            m_facet_v3[i] = tv3[i];
+            m_facet_color[i] = tv4[i];
+        }
+        for (int i = 0; i < added_facet_count; i++) {
+            int3 v = vrml_interface.facet_points(i);
+            int m = vrml_interface.facet_material(i);
+            m_facet_v1[m_facet_count + i] = vrml_interface.point(v.v1);
+            m_facet_v2[m_facet_count + i] = vrml_interface.point(v.v2);
+            m_facet_v3[m_facet_count + i] = vrml_interface.point(v.v3);
+            m_facet_color[m_facet_count + i] = vrml_interface.ambient_color(m);
+        }
+        m_facet_count += added_facet_count;
+        delete [] tv1;
+        delete [] tv2;
+        delete [] tv3;
+        delete [] tv4;
+    }
+}
+
 CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can)
 {
     printf("CadModel::CadModel(stl, paint(%8.6f, %8.6f, %8.6f))\n", paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3);
@@ -46,6 +81,39 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can)
             m_facet_v3[i] = stl_interface.facet_v3(i);
             m_facet_color[i] = paint_can.ambient_color();
         }
+    }
+}
+
+void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can)
+{
+    printf("CadModel::add(stl, paint(%8.6f, %8.6f, %8.6f))\n", paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3);
+    int added_facet_count = stl_interface.facets();
+    if (added_facet_count > 0) {
+        float3* tv1 = m_facet_v1;
+        float3* tv2 = m_facet_v2;
+        float3* tv3 = m_facet_v3;
+        float3* tv4 = m_facet_color;
+        m_facet_v1 = new float3[m_facet_count + added_facet_count];
+        m_facet_v2 = new float3[m_facet_count + added_facet_count];
+        m_facet_v3 = new float3[m_facet_count + added_facet_count];
+        m_facet_color = new float3[m_facet_count + added_facet_count];
+        for (int i = 0; i < m_facet_count; i++) {
+            m_facet_v1[i] = tv1[i];
+            m_facet_v2[i] = tv2[i];
+            m_facet_v3[i] = tv3[i];
+            m_facet_color[i] = tv4[i];
+        }
+        for (int i = 0; i < added_facet_count; i++) {
+            m_facet_v1[m_facet_count + i] = stl_interface.facet_v1(i);
+            m_facet_v2[m_facet_count + i] = stl_interface.facet_v2(i);
+            m_facet_v3[m_facet_count + i] = stl_interface.facet_v3(i);
+            m_facet_color[m_facet_count +i] = paint_can.ambient_color();
+        }
+        m_facet_count += added_facet_count;
+        delete [] tv1;
+        delete [] tv2;
+        delete [] tv3;
+        delete [] tv4;
     }
 }
 

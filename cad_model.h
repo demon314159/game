@@ -17,6 +17,8 @@ public:
     CadModel(const VrmlInterface& vrml_interface);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can);
     ~CadModel();
+    void add(const VrmlInterface& vrml_interface);
+    void add(const StlInterface& stl_interface, const PaintCan& paint_can);
     int facets() const;
     float3 facet_v1(int facet_ix) const;
     float3 facet_v2(int facet_ix) const;

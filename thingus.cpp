@@ -29,11 +29,16 @@ Thingus::Thingus()
     //
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
-//    m_cad = new CadModel(StlInterface("bat_boot.stl"), red_paint);
-//    m_cad->add(VrmlInterface("flipper_fillet.wrl"));
+    PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
-    m_cad->add(StlInterface("bat_boot.stl"), blue_paint);
+//    m_cad = new CadModel(StlInterface("target.stl"), blue_paint);
+
+    m_cad = new CadModel(StlInterface("bat_sleeve.stl"), red_paint);
+    m_cad->add(StlInterface("bat_shaft.stl"), blue_paint);
+    m_cad->add(StlInterface("bat_post.stl"), gray_paint);
+
+//    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
+//    m_cad->add(StlInterface("bat_boot.stl"), blue_paint);
 
 
 

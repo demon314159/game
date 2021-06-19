@@ -63,9 +63,7 @@ void Table::paintGL()
 
     // Set modelview-projection matrix
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-
-    // Use texture unit 0 which contains cube.png
-    m_program.setUniformValue("texture", 0);
+    m_program.setUniformValue("rot_matrix", matrix);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);

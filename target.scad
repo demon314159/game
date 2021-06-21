@@ -22,11 +22,10 @@ p5 = [b, vcenter + d];
 p6 = [a, vcenter + d + e];
 p7 = [a, vcenter + d + e + f];
 points = [p0, p1, p2, p3, p4, p5, p6, p7];
-rotate([-20,0,0])
+rotate([-90,0,0])
 linear_extrude(height = thickness) {
   translate([0, -g/2, 0])
     square([a/2, g],center = true);   
   polygon(points);  
 }  
-
 

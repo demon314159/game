@@ -36,6 +36,7 @@ protected:
     void initTextures();
 private:
     int m_ani_angle1;
+    int m_ani_angle2;
     int m_width;
     int m_height;
     unsigned int m_frame_count;

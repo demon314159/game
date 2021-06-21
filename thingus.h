@@ -9,6 +9,7 @@
 
 #define BAT_PIVOT_X -0.88235
 #define BAT_PIVOT_Z 1.0
+#define TARGET_PIVOT_Z -8.0
 
 class Thingus : protected QOpenGLFunctions
 {

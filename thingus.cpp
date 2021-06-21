@@ -47,13 +47,14 @@ Thingus::Thingus()
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
     float w = 0.416;
-    m_cad->add(t1, -6.0 * w, 0.894, -8.0);
-    m_cad->add(t2, -4.0 * w, 0.894, -8.0);
-    m_cad->add(t3, -2.0 * w, 0.894, -8.0);
-    m_cad->add(t4, 0.0 * w, 0.894, -8.0);
-    m_cad->add(t5, 2.0 * w, 0.894, -8.0);
-    m_cad->add(t6, 4.0 * w, 0.894, -8.0);
-    m_cad->add(t7, 6.0 * w, 0.894, -8.0);
+    float h = 0.0; // 0.894
+    m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t2, -4.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t3, -2.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t4, 0.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t5, 2.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t6, 4.0 * w, h, TARGET_PIVOT_Z);
+    m_cad->add(t7, 6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
 
 //    CadModel t2(StlInterface("target.stl"), blue_paint, 2.0);

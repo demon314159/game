@@ -7,6 +7,9 @@
 #include <QOpenGLBuffer>
 #include "cad_model.h"
 
+#define BAT_PIVOT_X -0.88235
+#define BAT_PIVOT_Z 1.0
+
 class Thingus : protected QOpenGLFunctions
 {
 public:

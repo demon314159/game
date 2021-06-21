@@ -35,6 +35,7 @@ protected:
     void initShaders();
     void initTextures();
 private:
+    int m_ani_angle1;
     int m_width;
     int m_height;
     unsigned int m_frame_count;

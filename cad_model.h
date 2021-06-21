@@ -14,20 +14,25 @@
 class CadModel
 {
 public:
-    CadModel(const VrmlInterface& vrml_interface);
-    CadModel(const StlInterface& stl_interface, const PaintCan& paint_can);
+    CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
+    CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
+    CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     ~CadModel();
-    void add(const VrmlInterface& vrml_interface);
-    void add(const StlInterface& stl_interface, const PaintCan& paint_can);
+    void add(const VrmlInterface& vrml_interface, float animation_id = 0.0);
+    void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
+    void add(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     int facets() const;
+    float facet_animation_id(int facet_ix) const;
     float3 facet_v1(int facet_ix) const;
     float3 facet_v2(int facet_ix) const;
     float3 facet_v3(int facet_ix) const;
     float3 facet_color(int facet_ix) const;
     float3 facet_normal(int facet_ix) const;
+    float3 translate(const float3& v, const float3& offset) const;
 
 private:
     int m_facet_count;
+    float* m_animation_id;
     float3* m_facet_v1;
     float3* m_facet_v2;
     float3* m_facet_v3;

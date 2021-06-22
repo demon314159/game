@@ -19,7 +19,7 @@ difference()
  linear_extrude(height = thickness) {
   polygon(points);
 }
-translate([0,-3,thickness/2])
+translate([0,-5,thickness/2])
 cube([0.5,2,thickness], center=true);
 }
 //translate([0,-2+1,thickness/2])

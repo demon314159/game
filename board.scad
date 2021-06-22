@@ -4,7 +4,7 @@ mag = 1;
 thickness = mag * 0.05;
 wback = mag * 6.235;
 wfront = mag * 5.529;
-length = mag * 10;
+length = mag * 9.4;
 
 p0 = [-wback/2,-length];
 p1 = [-wfront/2, 0];

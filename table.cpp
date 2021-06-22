@@ -93,9 +93,9 @@ void Table::paintGL()
     QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_ani_angle2);
     float ani_sel2 = 5.0;
     QMatrix4x4 ani_matrix2;
-    ani_matrix2.translate(0.0, 0.0, TARGET_PIVOT_Z);
+    ani_matrix2.translate(0.0, TARGET_PIVOT_Y, TARGET_PIVOT_Z);
     ani_matrix2.rotate(ani_rot2);
-    ani_matrix2.translate(0.0, 0.0, -TARGET_PIVOT_Z);
+    ani_matrix2.translate(0.0, -TARGET_PIVOT_Y, -TARGET_PIVOT_Z);
     m_program.setUniformValue("ani_sel2", ani_sel2);
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
 
@@ -128,7 +128,7 @@ void Table::mousePressEvent(QMouseEvent *e)
     // Save mouse press position
 //    mousePressPosition = QVector2D(e->localPos());
     m_ani_angle1 = 45.0 + 30.0;
-    m_ani_angle2 = -90.0;
+    m_ani_angle2 = -30.0;
     update();
 }
 

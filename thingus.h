@@ -12,6 +12,8 @@
 #define TARGET_PIVOT_Y -1.0
 #define TARGET_PIVOT_Z -7.8
 
+#define PITCH_PIVOT_Z -4.0
+
 class Thingus : protected QOpenGLFunctions
 {
 public:

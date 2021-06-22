@@ -30,6 +30,7 @@ Thingus::Thingus()
     //
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
+    PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
@@ -61,6 +62,7 @@ Thingus::Thingus()
     CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, 8.0);
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
+    CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, 9.0);
     float w = 0.416;
     float h = 0.0;
     m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
@@ -71,6 +73,7 @@ Thingus::Thingus()
     m_cad->add(t6, 4.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t7, 6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
+    m_cad->add(pitch, 0.0, 0.0, PITCH_PIVOT_Z);
 
 //    CadModel t2(StlInterface("target.stl"), blue_paint, 2.0);
 //    CadModel t3(StlInterface("target.stl"), gray_paint, 3.0);

@@ -11,6 +11,7 @@ Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
+    , m_ani_angle3(0.0)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_frame_count(0)
@@ -99,6 +100,16 @@ void Table::paintGL()
     m_program.setUniformValue("ani_sel2", ani_sel2);
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
 
+    QVector3D ani_axis3 = {1.0, 0.0, 0.0};
+    QQuaternion ani_rot3 = QQuaternion::fromAxisAndAngle(ani_axis3, m_ani_angle3);
+    float ani_sel3 = 9.0;
+    QMatrix4x4 ani_matrix3;
+    ani_matrix3.translate(0.0, 0.0, PITCH_PIVOT_Z);
+    ani_matrix3.rotate(ani_rot3);
+    ani_matrix3.translate(0.0, 0.0, -PITCH_PIVOT_Z);
+    m_program.setUniformValue("ani_sel3", ani_sel3);
+    m_program.setUniformValue("ani_matrix3", ani_matrix3);
+
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
 }
@@ -129,6 +140,7 @@ void Table::mousePressEvent(QMouseEvent *e)
 //    mousePressPosition = QVector2D(e->localPos());
     m_ani_angle1 = 45.0 + 30.0;
     m_ani_angle2 = -30.0;
+    m_ani_angle3 = -15.0;
     update();
 }
 
@@ -136,6 +148,7 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
 {
     m_ani_angle1 = 0.0;
     m_ani_angle2 = 0.0;
+    m_ani_angle3 = 0.0;
     update();
     // Mouse release position - mouse press position
 //    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;

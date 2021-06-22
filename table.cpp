@@ -139,7 +139,7 @@ void Table::mousePressEvent(QMouseEvent *e)
     // Save mouse press position
 //    mousePressPosition = QVector2D(e->localPos());
     m_ani_angle1 = 45.0 + 30.0;
-    m_ani_angle2 = -30.0;
+    m_ani_angle2 = -60.0;
     m_ani_angle3 = -15.0;
     update();
 }

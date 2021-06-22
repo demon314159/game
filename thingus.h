@@ -9,8 +9,8 @@
 
 #define BAT_PIVOT_X -0.88235
 #define BAT_PIVOT_Z 1.0
-#define TARGET_PIVOT_Y -1.0
-#define TARGET_PIVOT_Z -7.8
+#define TARGET_PIVOT_Y 0.0
+#define TARGET_PIVOT_Z (-7.4 - 0.907 - 0.05)
 
 #define PITCH_PIVOT_Z -4.0
 

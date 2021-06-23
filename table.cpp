@@ -12,6 +12,9 @@ Table::Table(QWidget *parent)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
+    , m_ball_y(2.0)
+    , m_ball_target_y(2.0)
+    , m_ball_inc_y(2.0)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_frame_count(0)
@@ -110,6 +113,12 @@ void Table::paintGL()
     m_program.setUniformValue("ani_sel3", ani_sel3);
     m_program.setUniformValue("ani_matrix3", ani_matrix3);
 
+    float ani_sel4 = 10.0;
+    QMatrix4x4 ani_matrix4;
+    ani_matrix4.translate(0.0, 0.00, m_ball_y);
+    m_program.setUniformValue("ani_sel4", ani_sel4);
+    m_program.setUniformValue("ani_matrix4", ani_matrix4);
+
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
 }
@@ -141,6 +150,9 @@ void Table::mousePressEvent(QMouseEvent *e)
     m_ani_angle1 = 45.0 + 30.0;
     m_ani_angle2 = -60.0;
     m_ani_angle3 = -15.0;
+    m_ball_y = -3.5;
+    m_ball_target_y = 2.0;
+    m_ball_inc_y = (m_ball_target_y - m_ball_y)  / 30.0;
     update();
 }
 
@@ -182,5 +194,11 @@ void Table::timerEvent(QTimerEvent *)
         // Request an update
 //        update();
 //    }
+
+    float diff = m_ball_y - m_ball_target_y;
+    if (fabs(diff) > 0.1) {
+        m_ball_y += m_ball_inc_y;
+        update();
+    }
 }
 

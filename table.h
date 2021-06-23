@@ -35,9 +35,13 @@ protected:
     void initShaders();
     void initTextures();
 private:
-    int m_ani_angle1;
-    int m_ani_angle2;
-    int m_ani_angle3;
+    float m_ani_angle1;
+    float m_ani_angle2;
+    float m_ani_angle3;
+    float m_ball_y;
+    float m_ball_target_y;
+    float m_ball_inc_y;
+
     int m_width;
     int m_height;
     unsigned int m_frame_count;

@@ -21,8 +21,8 @@ Table::Table(QWidget *parent)
     , m_thingy(0)
     , m_texture(0)
 {
-    setMinimumHeight(512);
-    setMinimumWidth((512 * 1920) / 1080);
+    setMinimumHeight(980);
+    setMinimumWidth(580);
 }
 
 Table::~Table()
@@ -43,7 +43,7 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
-    timer.start(12, this);
+    timer.start(30, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -152,7 +152,7 @@ void Table::mousePressEvent(QMouseEvent *e)
     m_ani_angle3 = -15.0;
     m_ball_y = -3.5;
     m_ball_target_y = 2.0;
-    m_ball_inc_y = (m_ball_target_y - m_ball_y)  / 30.0;
+    m_ball_inc_y = (m_ball_target_y - m_ball_y)  / 25.0;
     update();
 }
 

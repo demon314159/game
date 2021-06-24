@@ -15,9 +15,11 @@ Table::Table(QWidget *parent)
     , m_ani_angle3(0.0)
     , m_ball_in_play(false)
     , m_ball_hit(false)
+    , m_blocker(false)
     , m_t0(0)
     , m_th(0)
     , m_ball_pos0({0.0, -0.25, 0.0})
+    , m_hit_pos({0.0, 0.0, 0.0})
 
 
     , m_width((512 * 1920) / 1080)
@@ -121,7 +123,7 @@ void Table::paintGL()
     float3 bpn = ball_position_now();
     float ani_sel4 = 10.0;
     QMatrix4x4 ani_matrix4;
-    ani_matrix4.translate(bpn.v1, bpn.v2, bpn.v3);
+    ani_matrix4.translate(bpn.v1, 0.0, bpn.v3);
     m_program.setUniformValue("ani_sel4", ani_sel4);
     m_program.setUniformValue("ani_matrix4", ani_matrix4);
 
@@ -157,17 +159,22 @@ void Table::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton) {
         m_ani_angle1 = 45.0 + 30.0;
+        if (m_ball_in_play && !m_ball_hit) {
+            m_th = QTime::currentTime().msecsSinceStartOfDay();
+            m_ball_hit = true;
+        }
+        update();
     } else if (e->button() == Qt::RightButton) {
-
-        m_t0 = QTime::currentTime().msecsSinceStartOfDay();
-        m_ball_pos0 = {0.0, 0.25, 4.0};
-        m_ball_hit = false;
-        m_ball_in_play = true;
-
-        m_ani_angle3 = -15.0;
+//        if (!m_ball_in_play) {
+            m_t0 = QTime::currentTime().msecsSinceStartOfDay();
+            m_ball_pos0 = {0.0, 0.25, 4.0};
+            m_ball_hit = false;
+            m_blocker = false;
+            m_ball_in_play = true;
+            m_ani_angle3 = -15.0;
+            update();
+//        }
     }
-//    m_ani_angle2 = -60.0;
-    update();
 }
 
 float3 Table::ball_position_now()
@@ -175,13 +182,33 @@ float3 Table::ball_position_now()
     float3 res;
 
     if (m_ball_in_play) {
-        int tnow = QTime::currentTime().msecsSinceStartOfDay();
-        int tdiff = tnow - m_t0;
-        res.v1 = 0.0;
-        res.v2 = 0.25;
-        res.v3 = -3.0 + 6.0 * (float) tdiff / 1000.0;
+        if (m_ball_hit) {
+                int tdiff = m_th - m_t0;
+                m_hit_pos = {0.0, 0.25, -3.0 + 6.0 * (float) tdiff / 1000.0};
+                float dx = BAT_PIVOT_X;
+                float dz = BAT_PIVOT_Z - m_hit_pos.v3;
+                float theta = atanf(dz / dx);
+                float vx = 2.0 * 6.0 * sin(theta);
+                float vz = 2.0 * 6.0 * cos(theta);
+//                printf("hit_pos = %7.3lf, %7.3lf\n", m_hit_pos.v1, m_hit_pos.v3);
+//                printf("bat_pos = %7.3lf, %7.3lf\n", BAT_PIVOT_X, BAT_PIVOT_Z);
+//                printf("dx = %7.3lf, dz = %7.3lf\n", BAT_PIVOT_X - m_hit_pos.v1, BAT_PIVOT_Z - m_hit_pos.v3);
+
+//                printf("theta = %7.3f, vx = %7.3f, vz = %7.3f\n", theta * 180.0 / 3.14159, vx, vz);
+            int tnow = QTime::currentTime().msecsSinceStartOfDay();
+            tdiff = tnow - m_th;
+            res.v1 = vx * (float) tdiff / 1000.0;
+            res.v2 = 0.0;
+            res.v3 = m_hit_pos.v3 - vz * (float) tdiff / 1000.0;
+        } else {
+            int tnow = QTime::currentTime().msecsSinceStartOfDay();
+            int tdiff = tnow - m_t0;
+            res.v1 = 0.0;
+            res.v2 = 0.25;
+            res.v3 = -3.0 + 6.0 * (float) tdiff / 1000.0;
+        }
     } else {
-        res = {0.0, -0.25, 0.0};
+        res = {0.0, -1.00, 0.0};
     }
     return res;
 }

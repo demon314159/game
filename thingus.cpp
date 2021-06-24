@@ -75,7 +75,7 @@ Thingus::Thingus()
     m_cad->add(t7, 6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
     m_cad->add(pitch, 0.0, 0.0, PITCH_PIVOT_Z);
-    m_cad->add(ball, 0.0, 0.25, 1.0);
+    m_cad->add(ball, 0.0, 0.25, 0.0);
 
 //    CadModel t2(StlInterface("target.stl"), blue_paint, 2.0);
 //    CadModel t3(StlInterface("target.stl"), gray_paint, 3.0);

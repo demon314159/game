@@ -41,9 +41,11 @@ private:
     float m_ani_angle3;
     bool m_ball_in_play;
     bool m_ball_hit;
+    bool m_blocker;
     int m_t0;
     int m_th;
     float3 m_ball_pos0;
+    float3 m_hit_pos;
 
     int m_width;
     int m_height;

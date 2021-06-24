@@ -23,6 +23,7 @@ class Table: public QOpenGLWidget, protected QOpenGLFunctions
 public:
     Table(QWidget *parent = nullptr);
     ~Table();
+    QImage the_image();
 
 protected:
     float3 ball_position_now();
@@ -36,6 +37,8 @@ protected:
     void initShaders();
     void initTextures();
 private:
+    int m_timer_step;
+    QImage m_image;
     float m_ani_angle1;
     float m_ani_angle2;
     float m_ani_angle3;

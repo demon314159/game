@@ -32,11 +32,11 @@ void Game::initializeWindow()
     connect(m_pb3, &QPushButton::clicked, this, &Game::pb3);
     connect(m_pb4, &QPushButton::clicked, this, &Game::pb4);
     connect(m_pb5, &QPushButton::clicked, this, &Game::pb5);
-    layout->addWidget(m_pb1, 0, 0, 1, 1);
-    layout->addWidget(m_pb2, 0, 1, 1, 1);
-    layout->addWidget(m_pb3, 0, 2, 1, 1);
-    layout->addWidget(m_pb4, 0, 3, 1, 1);
-    layout->addWidget(m_pb5, 0, 4, 1, 1);
+    layout->addWidget(m_pb1, 0, 0, 1, 2);
+    layout->addWidget(m_pb2, 0, 2, 1, 2);
+    layout->addWidget(m_pb3, 0, 4, 1, 2);
+    layout->addWidget(m_pb4, 0, 6, 1, 2);
+    layout->addWidget(m_pb5, 0, 8, 1, 2);
     m_pb1->setText(tr("Button 1"));
     m_pb2->setText(tr("Button 2"));
     m_pb3->setText(tr("Button 3"));
@@ -45,6 +45,10 @@ void Game::initializeWindow()
 
     m_table = new Table(this);
     layout->addWidget(m_table, 1, 0, 1, 5);
+    layout->setRowStretch(1, 1);
+
+    m_alt_table = new AltTable(m_table, this);
+    layout->addWidget(m_alt_table, 1, 5, 1, 5);
     layout->setRowStretch(1, 1);
 
     window->setLayout(layout);

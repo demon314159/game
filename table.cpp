@@ -10,6 +10,7 @@
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
+    , m_timer_step(0)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
@@ -159,8 +160,8 @@ void Table::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton) {
         m_ani_angle1 = 45.0 + 30.0;
-        QImage fb = grabFramebuffer();
-        printf("grabbed image %d * %d\n", fb.width(), fb.height());
+        m_image = grabFramebuffer();
+        printf("grabbed image %d * %d\n", m_image.width(), m_image.height());
         if (m_ball_in_play && !m_ball_hit) {
             m_th = QTime::currentTime().msecsSinceStartOfDay();
             m_ball_hit = true;
@@ -240,6 +241,25 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
 
 void Table::timerEvent(QTimerEvent *)
 {
+    inr base = 10;
+    if (m_timer_step == base) {
+        update();
+        ++m_timer_step;
+    } else if (m_timer_step = (base + 1)) {
+        m_ani_angle1 = 45.0 + 30.0;
+        update();
+        ++m_timer_step;
+    }
+    } else if (m_timer_step = (base + 2)) {
+        m_ani_angle1 = 0.0;
+
+        update();
+        ++m_timer_step;
+    }
+
+
+
+
     // Decrease angular speed (friction)
 //    angularSpeed *= 0.99;
 
@@ -262,3 +282,7 @@ void Table::timerEvent(QTimerEvent *)
     }
 }
 
+QImage Table::the_image()
+{
+    return m_image;
+}

@@ -5,6 +5,7 @@
 #define _TABLE_H_
 
 #include "thingus.h"
+#include "float3.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -24,7 +25,7 @@ public:
     ~Table();
 
 protected:
-
+    float3 ball_position_now();
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
@@ -38,9 +39,11 @@ private:
     float m_ani_angle1;
     float m_ani_angle2;
     float m_ani_angle3;
-    float m_ball_y;
-    float m_ball_target_y;
-    float m_ball_inc_y;
+    bool m_ball_in_play;
+    bool m_ball_hit;
+    int m_t0;
+    int m_th;
+    float3 m_ball_pos0;
 
     int m_width;
     int m_height;

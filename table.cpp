@@ -123,7 +123,7 @@ void Table::paintGL()
     float3 bpn = ball_position_now();
     float ani_sel4 = 10.0;
     QMatrix4x4 ani_matrix4;
-    ani_matrix4.translate(bpn.v1, 0.0, bpn.v3);
+    ani_matrix4.translate(bpn.v1, bpn.v2, bpn.v3);
     m_program.setUniformValue("ani_sel4", ani_sel4);
     m_program.setUniformValue("ani_matrix4", ani_matrix4);
 
@@ -159,6 +159,8 @@ void Table::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton) {
         m_ani_angle1 = 45.0 + 30.0;
+        QImage fb = grabFramebuffer();
+        printf("grabbed image %d * %d\n", fb.width(), fb.height());
         if (m_ball_in_play && !m_ball_hit) {
             m_th = QTime::currentTime().msecsSinceStartOfDay();
             m_ball_hit = true;
@@ -167,7 +169,7 @@ void Table::mousePressEvent(QMouseEvent *e)
     } else if (e->button() == Qt::RightButton) {
 //        if (!m_ball_in_play) {
             m_t0 = QTime::currentTime().msecsSinceStartOfDay();
-            m_ball_pos0 = {0.0, 0.25, 4.0};
+            m_ball_pos0 = {0.0, 0.25, -2.0};
             m_ball_hit = false;
             m_blocker = false;
             m_ball_in_play = true;
@@ -184,7 +186,7 @@ float3 Table::ball_position_now()
     if (m_ball_in_play) {
         if (m_ball_hit) {
                 int tdiff = m_th - m_t0;
-                m_hit_pos = {0.0, 0.25, -3.0 + 6.0 * (float) tdiff / 1000.0};
+                m_hit_pos = {0.0, 0.25, -2.0 + 6.0 * (float) tdiff / 1000.0};
                 float dx = BAT_PIVOT_X;
                 float dz = BAT_PIVOT_Z - m_hit_pos.v3;
                 float theta = atanf(dz / dx);
@@ -205,7 +207,7 @@ float3 Table::ball_position_now()
             int tdiff = tnow - m_t0;
             res.v1 = 0.0;
             res.v2 = 0.25;
-            res.v3 = -3.0 + 6.0 * (float) tdiff / 1000.0;
+            res.v3 = -2.0 + 6.0 * (float) tdiff / 1000.0;
         }
     } else {
         res = {0.0, -1.00, 0.0};

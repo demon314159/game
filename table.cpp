@@ -29,7 +29,6 @@ Table::Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *paren
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_thingy(0)
-    , m_texture(0)
 {
     setMinimumHeight(980);
     setMinimumWidth(580);
@@ -39,7 +38,6 @@ Table::~Table()
 {
     makeCurrent();
     delete m_thingy;
-    delete m_texture;
     doneCurrent();
 }
 
@@ -49,7 +47,6 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     initShaders();
-    initTextures();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
@@ -76,7 +73,6 @@ void Table::resizeGL(int w, int h)
 void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_texture->bind();
 
     bool regular = false;
     if (regular) {
@@ -151,13 +147,6 @@ void Table::initShaders()
         close();
 }
 
-void Table::initTextures()
-{
-    m_texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
-    m_texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    m_texture->setWrapMode(QOpenGLTexture::Repeat);
-}
 #ifdef NEVERMORE
 void Table::mousePressEvent(QMouseEvent *e)
 {

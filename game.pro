@@ -38,6 +38,5 @@ SOURCES      += main.cpp \
                 cad_model.cpp \
                 thingus.cpp
 
-RESOURCES    += shaders.qrc \
-                textures.qrc
+RESOURCES    += shaders.qrc
 

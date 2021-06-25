@@ -18,47 +18,28 @@ Thingus::Thingus()
 {
     initializeOpenGLFunctions();
 
-    // Generate 2 VBOs
     vertexBuf.create();
-
-//    m_cad = new VrmlModel("flipper_fillet.wrl");
-//    m_cad = new CadModel("1x1x1_cube.wrl");
-//    m_cad = new CadModel("1x1x1_cube_chamfer.wrl");
-//    m_cad = new CadModel("1x1x1_cube_fillet.wrl");
-
-    // Initializes cube geometry and transfers it to VBOs
-    //
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
     PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-//    m_cad = new CadModel(StlInterface("ruler.stl"), blue_paint, 1.0);
     m_cad = new CadModel(StlInterface("board.stl"), green_paint, 0.0);
-//
-
     CadModel t1(StlInterface("hammer_head.stl"), blue_paint, 1.0);
     t1.add(StlInterface("hammer_bumper.stl"), red_paint, 1.0);
-//    t1.add(StlInterface("hammer_shaft.stl"), gray_paint, 1.0);
     CadModel t2(StlInterface("hammer_head.stl"), blue_paint, 2.0);
     t2.add(StlInterface("hammer_bumper.stl"), red_paint, 2.0);
-//    t2.add(StlInterface("hammer_shaft.stl"), gray_paint, 2.0);
     CadModel t3(StlInterface("hammer_head.stl"), blue_paint, 3.0);
     t3.add(StlInterface("hammer_bumper.stl"), red_paint, 3.0);
-//    t3.add(StlInterface("hammer_shaft.stl"), gray_paint, 3.0);
     CadModel t4(StlInterface("hammer_head.stl"), blue_paint, 4.0);
     t4.add(StlInterface("hammer_bumper.stl"), red_paint, 4.0);
-//    t4.add(StlInterface("hammer_shaft.stl"), gray_paint, 4.0);
     CadModel t5(StlInterface("hammer_head.stl"), blue_paint, 5.0);
     t5.add(StlInterface("hammer_bumper.stl"), red_paint, 5.0);
-//    t5.add(StlInterface("hammer_shaft.stl"), gray_paint, 5.0);
     CadModel t6(StlInterface("hammer_head.stl"), blue_paint, 6.0);
     t6.add(StlInterface("hammer_bumper.stl"), red_paint, 6.0);
-//    t6.add(StlInterface("hammer_shaft.stl"), gray_paint, 6.0);
     CadModel t7(StlInterface("hammer_head.stl"), blue_paint, 7.0);
     t7.add(StlInterface("hammer_bumper.stl"), red_paint, 7.0);
-//    t7.add(StlInterface("hammer_shaft.stl"), gray_paint, 7.0);
     CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, 8.0);
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
@@ -76,30 +57,6 @@ Thingus::Thingus()
     m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
     m_cad->add(pitch, 0.0, 0.0, PITCH_PIVOT_Z);
     m_cad->add(ball, 0.0, 0.25, 0.0);
-
-//    CadModel t2(StlInterface("target.stl"), blue_paint, 2.0);
-//    CadModel t3(StlInterface("target.stl"), gray_paint, 3.0);
-//    CadModel t4(StlInterface("target.stl"), {0.0, 1.0, 0.0}, 4.0);
-//    CadModel t5(StlInterface("target.stl"), {1.0, 1.0, 0.0}, 5.0);
-
-//    m_cad = new CadModel(t1);
-//    m_cad->add(t2, -2, 0, 0);
-//    m_cad->add(t3, 2, 0, 0);
-//    m_cad->add(t4, -4, 0, 0);
-//    m_cad->add(t5, 4, 0, 0);
-
-
-//    m_cad = new CadModel(VrmlInterface("flipper_fillet.wrl"));
-//    m_cad->add(StlInterface("bat_boot.stl"), blue_paint);
-
-
-
-
-//    m_cad = new StlModel("bevel_disk.stl");
-//    m_cad = new StlModel("flipper.stl");
-//    m_cad = new StlModel("machine.stl");
-//    m_cad = new StlModel("cube.stl");
-//    m_cad = new StlModel("cube_chamfer.stl");
     initCubeGeometry();
 }
 

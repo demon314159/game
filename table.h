@@ -16,7 +16,6 @@
 #include <QVector2D>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
 
 class Table: public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -41,7 +40,6 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
     void initShaders();
-    void initTextures();
 private:
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
@@ -64,7 +62,6 @@ private:
     QBasicTimer timer;
     QOpenGLShaderProgram m_program;
     Thingus* m_thingy;
-    QOpenGLTexture* m_texture;
     QMatrix4x4 m_projection;
 
     QVector2D mousePressPosition;

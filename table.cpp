@@ -70,6 +70,7 @@ void Table::resizeGL(int w, int h)
     const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
     m_projection.setToIdentity();
     m_projection.perspective(fov, aspect, zNear, zFar);
+    m_timer_step = 0;
 }
 
 void Table::paintGL()
@@ -279,11 +280,9 @@ bool Table::grab_ani_image(int slot, AnimatedImage& ai, const QImage& baseline)
 }
 void Table::timerEvent(QTimerEvent *)
 {
-    if (!isVisible()) {
-        m_timer_step = 0;
-    } else {
+    if (isVisible()) {
         printf("timer step %d\n", m_timer_step);
-        int base = 1;
+        int base = 10;
         if (grab_image(base, m_image_set.m_baseline))
             return;
         m_ani_angle1 = 45.0 + 30.0;

@@ -27,10 +27,11 @@ protected:
     void resizeEvent(QResizeEvent*) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-    void draw_ani_image(QPainter &painter, const AnimatedImage& img);
+    void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
 
 private:
-    int m_image_sel;
+    bool m_bat_on;
+    bool m_pitch_on;
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
     int m_x_base;

@@ -19,4 +19,10 @@ AnimatedImage::~AnimatedImage()
 {
 }
 
+QRect AnimatedImage::rect() const
+{
+    QRect r(m_x, m_y, m_on_image.width(), m_on_image.height());
+    return r;
+}
+
 

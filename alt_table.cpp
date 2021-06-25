@@ -8,7 +8,8 @@
 
 AltTable::AltTable(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_image_sel(0)
+    , m_bat_on(false)
+    , m_pitch_on(false)
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
     , m_x_base(0)
@@ -35,32 +36,42 @@ int AltTable::text_height(QPainter& painter, const QString &s)
 }
 
 
-void AltTable::draw_ani_image(QPainter &painter, const AnimatedImage& img)
+void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
 {
-    painter.drawImage(img.m_x, img.m_y, img.m_on_image);
+    if (rect == img.rect()) {
+        if (on_flag) {
+            painter.drawImage(img.m_x, img.m_y, img.m_on_image);
+            printf("drawing little picture on\n");
+        } else {
+            painter.drawImage(img.m_x, img.m_y, img.m_off_image);
+            printf("drawing little picture off\n");
+        }
+    }
 }
 
-void AltTable::paintEvent(QPaintEvent* /* event */)
+void AltTable::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
 //    int th = text_height(painter, QString("0"));
 
 //    painter.setPen(Qt::black);
+   QRect rect = event->rect();
+   printf("rect = (%d, %d) %d * %d\n", rect.x(), rect.y(), rect.width(), rect.height());
 
     m_width = painter.viewport().width();
     m_height = painter.viewport().height();
     m_x_base = painter.viewport().left();
     m_y_base = painter.viewport().top();
 
-    painter.drawImage(0, 0, m_image_set.m_baseline);
-//    if (m_image_sel == 0)
-//        painter.drawImage(0, 0, m_image_set.m_baseline);
-//    else if (m_image_sel == 1)
-    if (m_image_sel == 1)
-        draw_ani_image(painter, m_image_set.m_bat);
-    else if (m_image_sel == 2)
-        draw_ani_image(painter, m_image_set.m_pitch);
-    else if (m_image_sel == 3)
+
+    if (rect == painter.viewport()) {
+        painter.drawImage(0, 0, m_image_set.m_baseline);
+        printf("drawing big picture\n");
+    }
+    draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
+    draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
+#ifdef NEVERMORE
+
         draw_ani_image(painter, m_image_set.m_target1);
     else if (m_image_sel == 4)
         draw_ani_image(painter, m_image_set.m_target2);
@@ -74,7 +85,7 @@ void AltTable::paintEvent(QPaintEvent* /* event */)
         draw_ani_image(painter, m_image_set.m_target6);
     else if (m_image_sel == 9)
         draw_ani_image(painter, m_image_set.m_target7);
-
+#endif
 
 //    painter.setPen(Qt::black);
 //    painter.drawRect(QRect(m_x_base,
@@ -95,17 +106,22 @@ void AltTable::resizeEvent(QResizeEvent*)
 void AltTable::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
-        m_image_sel = 1;
-        update();
+        m_bat_on = true;
+        update(m_image_set.m_bat.rect());
     } else if (e->button() == Qt::RightButton) {
-        m_image_sel = 2;
-        update();
+        m_pitch_on = true;
+        update(m_image_set.m_pitch.rect());
     }
 }
 
 
 void AltTable::mouseReleaseEvent(QMouseEvent *e)
 {
-    m_image_sel = 0;
-    update();
+    if (e->button() == Qt::LeftButton) {
+        m_bat_on = false;
+        update(m_image_set.m_bat.rect());
+    } else if (e->button() == Qt::RightButton) {
+        m_pitch_on = false;
+        update(m_image_set.m_pitch.rect());
+    }
 }

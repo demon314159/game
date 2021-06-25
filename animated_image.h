@@ -10,6 +10,7 @@ public:
     AnimatedImage();
     AnimatedImage(int x, int y, const QImage& on_image, const QImage& off_image);
     ~AnimatedImage();
+    QRect rect() const;
 
     int m_x;
     int m_y;

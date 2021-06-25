@@ -9,6 +9,7 @@ class ImageSet
 public:
     ImageSet();
     ~ImageSet();
+    void difference(AnimatedImage&, int& x1, int& y1, int& x2, int& y2);
 
     AnimatedImage m_baseline;
     AnimatedImage m_bat;

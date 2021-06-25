@@ -53,8 +53,8 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
-//    timer.start(30, this);
-    timer.start(100, this);
+    timer.start(30, this);
+//    timer.start(100, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -310,6 +310,37 @@ void Table::timerEvent(QTimerEvent *)
         if (m_timer_step == (base + 20)) {
             update();
             ++m_timer_step;
+            int x1, y1, x2, y2;
+            m_image_set.difference(m_image_set.m_baseline, x1, y1, x2, y2);
+            printf("baseline difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_bat, x1, y1, x2, y2);
+            printf("bat difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_pitch, x1, y1, x2, y2);
+            printf("pitch difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target1, x1, y1, x2, y2);
+            printf("target1 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target2, x1, y1, x2, y2);
+            printf("target2 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target3, x1, y1, x2, y2);
+            printf("target3 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target4, x1, y1, x2, y2);
+            printf("target4 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target5, x1, y1, x2, y2);
+            printf("target5 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target6, x1, y1, x2, y2);
+            printf("target6 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target7, x1, y1, x2, y2);
+            printf("target7 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
+            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
             return;
         }
         if (m_timer_step == (base + 21)) {

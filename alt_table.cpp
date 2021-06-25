@@ -45,7 +45,7 @@ void AltTable::paintEvent(QPaintEvent* /* event */)
     m_x_base = painter.viewport().left();
     m_y_base = painter.viewport().top();
 
-    painter.drawImage(0, 0, m_image_set.m_target2.m_image);
+    painter.drawImage(0, 0, m_image_set.m_baseline.m_image);
 
 //    painter.setPen(Qt::black);
 //    painter.drawRect(QRect(m_x_base,

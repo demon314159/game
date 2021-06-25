@@ -81,7 +81,7 @@ void Table::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_texture->bind();
 
-    bool regular = true;
+    bool regular = false;
     if (regular) {
       QVector3D my_axis = {1.0, 0.0, 0.0};
       QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 30.0);
@@ -271,7 +271,7 @@ void Table::timerEvent(QTimerEvent *)
         m_timer_step = 0;
     } else {
         printf("timer step %d\n", m_timer_step);
-        int base = 10;
+        int base = 1;
 
 
         if (grab_image(base, m_image_set.m_baseline))

@@ -27,6 +27,7 @@ protected:
     void resizeEvent(QResizeEvent*) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void draw_ani_image(QPainter &painter, const AnimatedImage& img);
 
 private:
     int m_image_sel;

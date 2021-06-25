@@ -51,5 +51,9 @@ void ImageSet::difference(AnimatedImage& img, int& x1, int& y1, int& x2, int& y2
         x2 = maxx;
         y1 = miny;
         y2 = maxy;
+        img.m_x = x1;
+        img.m_y = y1;
+        img.m_on_image = active.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+        img.m_off_image = base.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     }
 }

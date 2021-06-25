@@ -12,8 +12,8 @@ ImageSet::~ImageSet()
 
 void ImageSet::difference(AnimatedImage& img, int& x1, int& y1, int& x2, int& y2)
 {
-    QImage& base = m_baseline.m_image;
-    QImage& active = img.m_image;
+    QImage& base = m_baseline;
+    QImage& active = img.m_on_image;
     int nx = base.width();
     int ny = base.height();
     x1 = 0;

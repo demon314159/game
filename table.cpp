@@ -245,7 +245,7 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
 }
 #endif
 
-bool Table::grab_image(int slot, AnimatedImage& ai)
+bool Table::grab_image(int slot, QImage& image)
 {
     if (m_timer_step == slot) {
         printf("grabbing slot %d\n", slot);
@@ -253,7 +253,23 @@ bool Table::grab_image(int slot, AnimatedImage& ai)
         ++m_timer_step;
         return true;
     } else if (m_timer_step == (slot + 1)) {
-        ai.m_image = grabFramebuffer();
+        image = grabFramebuffer();
+        ++m_timer_step;
+        return true;
+    }
+    return false;
+}
+
+bool Table::grab_ani_image(int slot, AnimatedImage& ai, const QImage& baseline)
+{
+    if (m_timer_step == slot) {
+        printf("grabbing slot %d\n", slot);
+        update();
+        ++m_timer_step;
+        return true;
+    } else if (m_timer_step == (slot + 1)) {
+        ai.m_on_image = grabFramebuffer();
+        ai.m_off_image = baseline;
         ai.m_x = 0;
         ai.m_y = 0;
         ++m_timer_step;
@@ -261,7 +277,6 @@ bool Table::grab_image(int slot, AnimatedImage& ai)
     }
     return false;
 }
-
 void Table::timerEvent(QTimerEvent *)
 {
     if (!isVisible()) {
@@ -269,39 +284,37 @@ void Table::timerEvent(QTimerEvent *)
     } else {
         printf("timer step %d\n", m_timer_step);
         int base = 1;
-
-
         if (grab_image(base, m_image_set.m_baseline))
             return;
         m_ani_angle1 = 45.0 + 30.0;
-        if (grab_image(base + 2, m_image_set.m_bat))
+        if (grab_ani_image(base + 2, m_image_set.m_bat, m_image_set.m_baseline))
             return;
         m_ani_angle1 = 0.0;
         m_ani_angle3 = -15.0;
-        if (grab_image(base + 4, m_image_set.m_pitch))
+        if (grab_ani_image(base + 4, m_image_set.m_pitch, m_image_set.m_baseline))
             return;
         m_ani_angle3 = 0.0;
         m_ani_angle2 = -60.0;
         m_ani_sel2 = 1.0;
-        if (grab_image(base + 6, m_image_set.m_target1))
+        if (grab_ani_image(base + 6, m_image_set.m_target1, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 2.0;
-        if (grab_image(base + 8, m_image_set.m_target2))
+        if (grab_ani_image(base + 8, m_image_set.m_target2, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 3.0;
-        if (grab_image(base + 10, m_image_set.m_target3))
+        if (grab_ani_image(base + 10, m_image_set.m_target3, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 4.0;
-        if (grab_image(base + 12, m_image_set.m_target4))
+        if (grab_ani_image(base + 12, m_image_set.m_target4, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 5.0;
-        if (grab_image(base + 14, m_image_set.m_target5))
+        if (grab_ani_image(base + 14, m_image_set.m_target5, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 6.0;
-        if (grab_image(base + 16, m_image_set.m_target6))
+        if (grab_ani_image(base + 16, m_image_set.m_target6, m_image_set.m_baseline))
             return;
         m_ani_sel2 = 7.0;
-        if (grab_image(base + 18, m_image_set.m_target7))
+        if (grab_ani_image(base + 18, m_image_set.m_target7, m_image_set.m_baseline))
             return;
         m_ani_angle1 = 0.0;
         m_ani_angle2 = 0.0;
@@ -311,9 +324,6 @@ void Table::timerEvent(QTimerEvent *)
             update();
             ++m_timer_step;
             int x1, y1, x2, y2;
-            m_image_set.difference(m_image_set.m_baseline, x1, y1, x2, y2);
-            printf("baseline difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
             m_image_set.difference(m_image_set.m_bat, x1, y1, x2, y2);
             printf("bat difference %d, %d, %d, %d\n", x1, y1, x2, y2);
             printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);

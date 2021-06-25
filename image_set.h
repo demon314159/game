@@ -11,7 +11,7 @@ public:
     ~ImageSet();
     void difference(AnimatedImage&, int& x1, int& y1, int& x2, int& y2);
 
-    AnimatedImage m_baseline;
+    QImage m_baseline;
     AnimatedImage m_bat;
     AnimatedImage m_pitch;
     AnimatedImage m_target1;

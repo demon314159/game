@@ -47,25 +47,25 @@ void AltTable::paintEvent(QPaintEvent* /* event */)
     m_y_base = painter.viewport().top();
 
     if (m_image_sel == 0)
-        painter.drawImage(0, 0, m_image_set.m_baseline.m_image);
+        painter.drawImage(0, 0, m_image_set.m_baseline);
     else if (m_image_sel == 1)
-        painter.drawImage(0, 0, m_image_set.m_bat.m_image);
+        painter.drawImage(0, 0, m_image_set.m_bat.m_on_image);
     else if (m_image_sel == 2)
-        painter.drawImage(0, 0, m_image_set.m_pitch.m_image);
+        painter.drawImage(0, 0, m_image_set.m_pitch.m_on_image);
     else if (m_image_sel == 3)
-        painter.drawImage(0, 0, m_image_set.m_target1.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target1.m_on_image);
     else if (m_image_sel == 4)
-        painter.drawImage(0, 0, m_image_set.m_target2.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target2.m_on_image);
     else if (m_image_sel == 5)
-        painter.drawImage(0, 0, m_image_set.m_target3.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target3.m_on_image);
     else if (m_image_sel == 6)
-        painter.drawImage(0, 0, m_image_set.m_target4.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target4.m_on_image);
     else if (m_image_sel == 7)
-        painter.drawImage(0, 0, m_image_set.m_target5.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target5.m_on_image);
     else if (m_image_sel == 8)
-        painter.drawImage(0, 0, m_image_set.m_target6.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target6.m_on_image);
     else if (m_image_sel == 9)
-        painter.drawImage(0, 0, m_image_set.m_target7.m_image);
+        painter.drawImage(0, 0, m_image_set.m_target7.m_on_image);
 
 
 //    painter.setPen(Qt::black);

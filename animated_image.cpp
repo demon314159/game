@@ -7,10 +7,11 @@ AnimatedImage::AnimatedImage()
 {
 }
 
-AnimatedImage::AnimatedImage(int x, int y, const QImage& image)
+AnimatedImage::AnimatedImage(int x, int y, const QImage& on_image, const QImage& off_image)
     : m_x(x)
     , m_y(y)
-    , m_image(image)
+    , m_on_image(on_image)
+    , m_off_image(off_image)
 {
 }
 

@@ -8,12 +8,13 @@ class AnimatedImage
 {
 public:
     AnimatedImage();
-    AnimatedImage(int x, int y, const QImage& image);
+    AnimatedImage(int x, int y, const QImage& on_image, const QImage& off_image);
     ~AnimatedImage();
 
     int m_x;
     int m_y;
-    QImage m_image;
+    QImage m_on_image;
+    QImage m_off_image;
 };
 
 #endif // _ANIMATED_IMAGE_H_

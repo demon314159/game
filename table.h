@@ -34,7 +34,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
 #endif
     void timerEvent(QTimerEvent *e) override;
-    bool grab_image(int slot, AnimatedImage& ai);
+    bool grab_image(int slot, QImage& image);
+    bool grab_ani_image(int slot, AnimatedImage& ai, const QImage& baseline);
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;

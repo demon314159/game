@@ -8,9 +8,12 @@
 
 #include <cmath>
 
-Table::Table(QWidget *parent)
+Table::Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QOpenGLWidget(parent)
+    , m_image_set(image_set)
+    , m_stacked_widget(stacked_widget)
     , m_timer_step(0)
+    , m_ani_sel2(0.0)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
@@ -51,11 +54,19 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
-    timer.start(30, this);
+//    timer.start(30, this);
+    timer.start(100, this);
 }
 
 void Table::resizeGL(int w, int h)
 {
+
+    printf("in resizeGL\n");
+
+
+
+
+
     qreal aspect = qreal(w) / qreal(h ? h : 1);
     const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
     m_projection.setToIdentity();
@@ -70,7 +81,7 @@ void Table::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_texture->bind();
 
-    bool regular = false;
+    bool regular = true;
     if (regular) {
       QVector3D my_axis = {1.0, 0.0, 0.0};
       QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 30.0);
@@ -103,12 +114,11 @@ void Table::paintGL()
 
     QVector3D ani_axis2 = {1.0, 0.0, 0.0};
     QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_ani_angle2);
-    float ani_sel2 = 5.0;
     QMatrix4x4 ani_matrix2;
     ani_matrix2.translate(0.0, TARGET_PIVOT_Y, TARGET_PIVOT_Z);
     ani_matrix2.rotate(ani_rot2);
     ani_matrix2.translate(0.0, -TARGET_PIVOT_Y, -TARGET_PIVOT_Z);
-    m_program.setUniformValue("ani_sel2", ani_sel2);
+    m_program.setUniformValue("ani_sel2", m_ani_sel2);
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
 
     QVector3D ani_axis3 = {1.0, 0.0, 0.0};
@@ -160,8 +170,6 @@ void Table::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton) {
         m_ani_angle1 = 45.0 + 30.0;
-        m_image = grabFramebuffer();
-        printf("grabbed image %d * %d\n", m_image.width(), m_image.height());
         if (m_ball_in_play && !m_ball_hit) {
             m_th = QTime::currentTime().msecsSinceStartOfDay();
             m_ball_hit = true;
@@ -239,46 +247,81 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
 //    angularSpeed += acc;
 }
 
+
+bool Table::grab_image(int slot, AnimatedImage& ai)
+{
+    if (m_timer_step == slot) {
+        printf("grabbing slot %d\n", slot);
+        update();
+        ++m_timer_step;
+        return true;
+    } else if (m_timer_step == (slot + 1)) {
+        ai.m_image = grabFramebuffer();
+        ai.m_x = 0;
+        ai.m_y = 0;
+        ++m_timer_step;
+        return true;
+    }
+    return false;
+}
+
 void Table::timerEvent(QTimerEvent *)
 {
-    inr base = 10;
-    if (m_timer_step == base) {
-        update();
-        ++m_timer_step;
-    } else if (m_timer_step = (base + 1)) {
+    if (!isVisible()) {
+        m_timer_step = 0;
+    } else {
+        printf("timer step %d\n", m_timer_step);
+        int base = 10;
+
+
+        if (grab_image(base, m_image_set.m_baseline))
+            return;
         m_ani_angle1 = 45.0 + 30.0;
-        update();
-        ++m_timer_step;
-    }
-    } else if (m_timer_step = (base + 2)) {
+        if (grab_image(base + 2, m_image_set.m_bat))
+            return;
         m_ani_angle1 = 0.0;
-
-        update();
-        ++m_timer_step;
-    }
-
-
-
-
-    // Decrease angular speed (friction)
-//    angularSpeed *= 0.99;
-
-    // Stop rotation when speed goes below threshold
-//    if (angularSpeed < 0.01) {
-//        angularSpeed = 0.0;
-//    } else {
-        // Update rotation
-//        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
-
-        // Request an update
-//        update();
-//    }
-    if (m_ball_in_play) {
-        float3 bpn = ball_position_now();
-        if (bpn.v3 < -8 || bpn.v3 > 2) {
-            m_ball_in_play = false;
+        m_ani_angle3 = -15.0;
+        if (grab_image(base + 4, m_image_set.m_pitch))
+            return;
+        m_ani_angle3 = 0.0;
+        m_ani_angle2 = -60.0;
+        m_ani_sel2 = 1.0;
+        if (grab_image(base + 6, m_image_set.m_target1))
+            return;
+        m_ani_sel2 = 2.0;
+        if (grab_image(base + 8, m_image_set.m_target2))
+            return;
+        m_ani_sel2 = 3.0;
+        if (grab_image(base + 10, m_image_set.m_target3))
+            return;
+        m_ani_sel2 = 4.0;
+        if (grab_image(base + 12, m_image_set.m_target4))
+            return;
+        m_ani_sel2 = 5.0;
+        if (grab_image(base + 14, m_image_set.m_target5))
+            return;
+        m_ani_sel2 = 6.0;
+        if (grab_image(base + 16, m_image_set.m_target6))
+            return;
+        m_ani_sel2 = 7.0;
+        if (grab_image(base + 18, m_image_set.m_target7))
+            return;
+        m_ani_angle1 = 0.0;
+        m_ani_angle2 = 0.0;
+        m_ani_angle3 = 0.0;
+        m_ani_sel2 = 0.0;
+        if (m_timer_step == (base + 20)) {
+            update();
+            ++m_timer_step;
+            return;
         }
-        update();
+        if (m_timer_step == (base + 21)) {
+            printf("Handover\n");
+            m_stacked_widget->setCurrentIndex(1);
+            ++m_timer_step;
+            return;
+        }
+        ++m_timer_step;
     }
 }
 

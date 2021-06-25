@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <QStackedWidget>
 #include <QDateTime>
 #include <QDebug>
 #include <QPainter>
@@ -32,23 +33,24 @@ void Game::initializeWindow()
     connect(m_pb3, &QPushButton::clicked, this, &Game::pb3);
     connect(m_pb4, &QPushButton::clicked, this, &Game::pb4);
     connect(m_pb5, &QPushButton::clicked, this, &Game::pb5);
-    layout->addWidget(m_pb1, 0, 0, 1, 2);
-    layout->addWidget(m_pb2, 0, 2, 1, 2);
-    layout->addWidget(m_pb3, 0, 4, 1, 2);
-    layout->addWidget(m_pb4, 0, 6, 1, 2);
-    layout->addWidget(m_pb5, 0, 8, 1, 2);
+    layout->addWidget(m_pb1, 0, 0, 1, 1);
+    layout->addWidget(m_pb2, 0, 1, 1, 1);
+    layout->addWidget(m_pb3, 0, 2, 1, 1);
+    layout->addWidget(m_pb4, 0, 3, 1, 1);
+    layout->addWidget(m_pb5, 0, 4, 1, 1);
     m_pb1->setText(tr("Button 1"));
     m_pb2->setText(tr("Button 2"));
     m_pb3->setText(tr("Button 3"));
     m_pb4->setText(tr("Button 4"));
     m_pb5->setText(tr("Button 5"));
 
-    m_table = new Table(this);
-    layout->addWidget(m_table, 1, 0, 1, 5);
-    layout->setRowStretch(1, 1);
+    m_stacked_widget = new QStackedWidget;
+    m_table = new Table(m_image_set, m_stacked_widget, this);
+    m_alt_table = new AltTable(m_image_set, m_stacked_widget, this);
+    m_stacked_widget->addWidget(m_table);
+    m_stacked_widget->addWidget(m_alt_table);
+    layout->addWidget(m_stacked_widget, 1, 0, 1, 5);
 
-    m_alt_table = new AltTable(m_table, this);
-    layout->addWidget(m_alt_table, 1, 5, 1, 5);
     layout->setRowStretch(1, 1);
 
     window->setLayout(layout);

@@ -6,9 +6,10 @@
 #include <math.h>
 #include <algorithm>
 
-AltTable::AltTable(Table* the_table, QWidget *parent)
+AltTable::AltTable(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_the_table(the_table)
+    , m_image_set(image_set)
+    , m_stacked_widget(stacked_widget)
     , m_x_base(0)
     , m_y_base(0)
     , m_width((512 * 1920) / 1080)
@@ -44,7 +45,7 @@ void AltTable::paintEvent(QPaintEvent* /* event */)
     m_x_base = painter.viewport().left();
     m_y_base = painter.viewport().top();
 
-    painter.drawImage(0, 0, m_the_table->the_image());
+    painter.drawImage(0, 0, m_image_set.m_target2.m_image);
 
 //    painter.setPen(Qt::black);
 //    painter.drawRect(QRect(m_x_base,
@@ -54,3 +55,10 @@ void AltTable::paintEvent(QPaintEvent* /* event */)
 }
 
 
+void AltTable::resizeEvent(QResizeEvent*)
+{
+    if (isVisible()) {
+        printf("resize handback\n");
+        m_stacked_widget->setCurrentIndex(0);
+    }
+}

@@ -6,7 +6,9 @@
 
 #include "thingus.h"
 #include "float3.h"
+#include "image_set.h"
 
+#include <QStackedWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -21,7 +23,7 @@ class Table: public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    Table(QWidget *parent = nullptr);
+    Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
     ~Table();
     QImage the_image();
 
@@ -30,6 +32,7 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
+    bool grab_image(int slot, AnimatedImage& ai);
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -37,8 +40,11 @@ protected:
     void initShaders();
     void initTextures();
 private:
+    ImageSet& m_image_set;
+    QStackedWidget* m_stacked_widget;
     int m_timer_step;
     QImage m_image;
+    float m_ani_sel2;
     float m_ani_angle1;
     float m_ani_angle2;
     float m_ani_angle3;

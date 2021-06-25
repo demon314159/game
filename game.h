@@ -4,6 +4,7 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#include <QStackedWidget>
 #include <QMainWindow>
 #include <QObject>
 #include <QPixmap>
@@ -11,6 +12,7 @@
 #include <QWidget>
 #include "table.h"
 #include "alt_table.h"
+#include "image_set.h"
 
 class Game: public QMainWindow
 {
@@ -32,8 +34,10 @@ private slots:
 
 private:
     // Owned by layout
-    Table *m_table = nullptr;
-    AltTable *m_alt_table = nullptr;
+    ImageSet m_image_set;
+    Table* m_table = nullptr;
+    AltTable* m_alt_table = nullptr;
+    QStackedWidget* m_stacked_widget = nullptr;
     QPushButton *m_pb1 = nullptr;
     QPushButton *m_pb2 = nullptr;
     QPushButton *m_pb3 = nullptr;

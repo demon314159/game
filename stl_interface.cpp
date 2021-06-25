@@ -1,7 +1,7 @@
 
 #include "stl_interface.h"
 
-#define VERBOSE
+#define notVERBOSE
 
 StlInterface::StlInterface(const QString& file_name)
     : m_file_is_valid(false)

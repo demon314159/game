@@ -8,6 +8,8 @@ QT += multimedia widgets
 HEADERS      += game.h \
                 int3.h \
                 float3.h \
+                animated_image.h \
+                image_set.h \
                 table.h \
                 alt_table.h \
                 puck.h \
@@ -22,6 +24,8 @@ HEADERS      += game.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
+                animated_image.cpp \
+                image_set.cpp \
                 table.cpp \
                 alt_table.cpp \
                 puck.cpp \

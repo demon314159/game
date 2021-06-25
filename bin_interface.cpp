@@ -2,7 +2,7 @@
 #include "bin_interface.h"
 #include <sys/stat.h>
 
-#define VERBOSE
+#define notVERBOSE
 
 BinInterface::BinInterface(const QString& file_name)
     : m_pos(0)

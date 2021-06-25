@@ -4,7 +4,7 @@
 #include "cad_model.h"
 #include <math.h>
 
-#define VERBOSE
+#define notVERBOSE
 
 CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     : m_facet_count(0)
@@ -14,7 +14,9 @@ CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     , m_facet_v3(NULL)
     , m_facet_color(NULL)
 {
+#ifdef VERBOSE
     printf("CadModel::CadModel(CadModel) offset = (%8.6f, %8.6f, %8.6f)\n", x, y, z);
+#endif
     m_facet_count = cad_model.facets();
     if (m_facet_count > 0) {
         m_animation_id = new float[m_facet_count];
@@ -41,7 +43,9 @@ CadModel::CadModel(const VrmlInterface& vrml_interface, float animation_id)
     , m_facet_v3(NULL)
     , m_facet_color(NULL)
 {
+#ifdef VERBOSE
     printf("CadModel::CadModel(vrml) animation id = %7.3f)\n", animation_id);
+#endif
     m_facet_count = vrml_interface.facets();
     if (m_facet_count > 0) {
         m_animation_id = new float[m_facet_count];
@@ -69,9 +73,11 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
     , m_facet_v3(NULL)
     , m_facet_color(NULL)
 {
+#ifdef VERBOSE
     printf("CadModel::CadModel(stl), paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
            paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
            animation_id);
+#endif
     m_facet_count = stl_interface.facets();
     if (m_facet_count > 0) {
         m_animation_id = new float[m_facet_count];
@@ -91,7 +97,9 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
 
 CadModel::~CadModel()
 {
+#ifdef VERBOSE
     printf("~CadModel::CadModel()\n");
+#endif
     if (m_animation_id != NULL)
         delete [] m_animation_id;
     if (m_facet_v1 != NULL)
@@ -106,7 +114,9 @@ CadModel::~CadModel()
 
 void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 {
+#ifdef VERBOSE
     printf("CadModel::add(vrml) animation_id = %7.3f\n", animation_id);
+#endif
     int added_facet_count = vrml_interface.facets();
     if (added_facet_count > 0) {
         float* tva = m_animation_id;
@@ -146,9 +156,11 @@ void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 
 void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id)
 {
+#ifdef VERBOSE
     printf("CadModel::add(stl) paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
            paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
            animation_id);
+#endif
     int added_facet_count = stl_interface.facets();
     if (added_facet_count > 0) {
         float* tva = m_animation_id;
@@ -186,7 +198,9 @@ void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can,
 
 void CadModel::add(const CadModel& cad_model, float x, float y, float z)
 {
+#ifdef VERBOSE
     printf("CadModel::add(CadModel) offset = (%8.6f, %8.6f, %8.6f)\n", x, y, z);
+#endif
     int added_facet_count = cad_model.facets();
     if (added_facet_count > 0) {
         float* tva = m_animation_id;

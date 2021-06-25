@@ -29,8 +29,10 @@ public:
 
 protected:
     float3 ball_position_now();
+#ifdef NEVERMORE
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+#endif
     void timerEvent(QTimerEvent *e) override;
     bool grab_image(int slot, AnimatedImage& ai);
 
@@ -58,7 +60,6 @@ private:
 
     int m_width;
     int m_height;
-    unsigned int m_frame_count;
     QBasicTimer timer;
     QOpenGLShaderProgram m_program;
     Thingus* m_thingy;

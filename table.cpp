@@ -28,7 +28,6 @@ Table::Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *paren
 
     , m_width((512 * 1920) / 1080)
     , m_height(512)
-    , m_frame_count(0)
     , m_thingy(0)
     , m_texture(0)
 {
@@ -75,9 +74,6 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
-    ++m_frame_count;
-//    printf("frame count = %d\n", m_frame_count);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_texture->bind();
 
@@ -161,7 +157,7 @@ void Table::initTextures()
     m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
     m_texture->setWrapMode(QOpenGLTexture::Repeat);
 }
-
+#ifdef NEVERMORE
 void Table::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
@@ -187,6 +183,7 @@ void Table::mousePressEvent(QMouseEvent *e)
 //        }
     }
 }
+#endif
 
 float3 Table::ball_position_now()
 {
@@ -223,7 +220,7 @@ float3 Table::ball_position_now()
     }
     return res;
 }
-
+#ifdef NEVERMORE
 void Table::mouseReleaseEvent(QMouseEvent *e)
 {
     m_ani_angle1 = 0.0;
@@ -246,7 +243,7 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
     // Increase angular speed
 //    angularSpeed += acc;
 }
-
+#endif
 
 bool Table::grab_image(int slot, AnimatedImage& ai)
 {

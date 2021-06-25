@@ -25,8 +25,11 @@ protected:
     int text_height(QPainter& painter, const QString &s);
     void paintEvent(QPaintEvent* event) override;
     void resizeEvent(QResizeEvent*) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
 
 private:
+    int m_image_sel;
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
     int m_x_base;

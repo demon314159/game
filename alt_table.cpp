@@ -90,25 +90,53 @@ void AltTable::paintEvent(QPaintEvent* event)
     printf("paint (%d, %d) %d * %d\n", m_x_base, m_y_base, m_width, m_height);
     painter.setPen(Qt::black);
 
-    QVector4D tp1(-6.235 / 2.0, 0.0, 2.0, 1.0);
-    QVector4D tp2(6.235 / 2.0, 0.0, -7.4, 1.0);
+    QVector4D tp1(-5.529 / 2.0, 0.0, 2.0, 1.0);
+    QVector4D tp2(5.529 / 2.0, 0.0, 2.0, 1.0);
+    QVector4D tp3(6.235 / 2.0, 0.0, -7.4, 1.0);
+    QVector4D tp4(-6.235 / 2.0, 0.0, -7.4, 1.0);
     QVector4D rp1 = m_mvp_matrix * tp1;
     QVector4D rp2 = m_mvp_matrix * tp2;
+    QVector4D rp3 = m_mvp_matrix * tp3;
+    QVector4D rp4 = m_mvp_matrix * tp4;
+
+
+    rp1 =  (1.0 / rp1.w()) * rp1;
+    rp2 =  (1.0 / rp2.w()) * rp2;
+    rp3 =  (1.0 / rp3.w()) * rp3;
+    rp4 =  (1.0 / rp4.w()) * rp4;
 
     printf("rp1 = %7.3f, %7.3f\n",
            rp1.x() / rp1.w(), rp1.y() / rp1.w());
     printf("rp2 = %7.3f, %7.3f\n",
            rp2.x() / rp2.w(), rp2.y() / rp2.w());
+    printf("rp3 = %7.3f, %7.3f\n",
+           rp3.x() / rp3.w(), rp3.y() / rp3.w());
+    printf("rp4 = %7.3f, %7.3f\n",
+           rp4.x() / rp4.w(), rp4.y() / rp4.w());
 
-    float x1 = (m_width / 2) * rp1.x() / rp1.w();
-    float y1 = -(m_height / 2) * rp1.y() / rp1.w();
-    float x2 = (m_width / 2) * rp2.x() / rp2.w();
-    float y2 = -(m_height / 2) * rp2.y() / rp2.w();
+    float x1 = (m_width / 2) * rp1.x();
+    float y1 = -(m_height / 2) * rp1.y();
+
+    float x2 = (m_width / 2) * rp2.x();
+    float y2 = -(m_height / 2) * rp2.y();
+
+    float x3 = (m_width / 2) * rp3.x();
+    float y3 = -(m_height / 2) * rp3.y();
+
+    float x4 = (m_width / 2) * rp4.x();
+    float y4 = -(m_height / 2) * rp4.y();
 
     printf("x1,y1 = %7.3f, %7.3f\n", x1, y1);
     printf("x2,y2 = %7.3f, %7.3f\n", x2, y2);
+    printf("x3,y3 = %7.3f, %7.3f\n", x3, y3);
+    printf("x4,y4 = %7.3f, %7.3f\n", x4, y4);
 
-    painter.drawRect(QRect(m_width / 2 + x1, m_height / 2 + y1, x2 - x1, y2 - y1));
+    painter.drawLine(m_width / 2 + x1, m_height / 2 + y1, m_width / 2 + x2, m_height / 2 + y2);
+    painter.drawLine(m_width / 2 + x2, m_height / 2 + y2, m_width / 2 + x3, m_height / 2 + y3);
+    painter.drawLine(m_width / 2 + x3, m_height / 2 + y3, m_width / 2 + x4, m_height / 2 + y4);
+    painter.drawLine(m_width / 2 + x4, m_height / 2 + y4, m_width / 2 + x1, m_height / 2 + y1);
+
+//    painter.drawRect(QRect(m_width / 2 + x1, m_height / 2 + y1, x2 - x1, y2 - y1));
 }
 
 

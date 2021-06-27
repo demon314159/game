@@ -83,6 +83,7 @@ void Table::paintGL()
       matrix.translate(0.0, -0.25, -5.5);
       matrix.rotate(my_rot);
       // Set modelview-projection matrix
+      m_mvp_matrix = m_projection * matrix;
       m_program.setUniformValue("mvp_matrix", m_projection * matrix);
       m_program.setUniformValue("rot_matrix", matrix);
     } else {

@@ -28,6 +28,7 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
+    QPoint w2s(const QVector3D point) const;
 
 private:
     bool m_bat_on;

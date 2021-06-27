@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-Table::Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QOpenGLWidget(parent)
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
@@ -29,6 +29,7 @@ Table::Table(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *paren
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_thingy(0)
+    , m_mvp_matrix(mvp_matrix)
 {
     setMinimumHeight(980);
     setMinimumWidth(580);
@@ -57,13 +58,13 @@ void Table::initializeGL()
 void Table::resizeGL(int w, int h)
 {
 
-    printf("in resizeGL\n");
 
 
 
 
 
     qreal aspect = qreal(w) / qreal(h ? h : 1);
+    printf("in resizeGL %d x %d aspect ratio = %7.3lf\n", w, h, aspect);
     const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
     m_projection.setToIdentity();
     m_projection.perspective(fov, aspect, zNear, zFar);
@@ -91,6 +92,7 @@ void Table::paintGL()
       matrix.translate(0.0, -3.00, -13.0);
       matrix.rotate(my_rot);
       // Set modelview-projection matrix
+      m_mvp_matrix = m_projection * matrix;
       m_program.setUniformValue("mvp_matrix", m_projection * matrix);
       m_program.setUniformValue("rot_matrix", matrix);
     }
@@ -182,7 +184,7 @@ float3 Table::ball_position_now()
     if (m_ball_in_play) {
         if (m_ball_hit) {
                 int tdiff = m_th - m_t0;
-                m_hit_pos = {0.0, 0.25, -2.0 + 6.0 * (float) tdiff / 1000.0};
+                m_hit_pos = {0.0, 0.25, -2.0f + 6.0f * ((float) tdiff) / 1000.0f};
                 float dx = BAT_PIVOT_X;
                 float dz = BAT_PIVOT_Z - m_hit_pos.v3;
                 float theta = atanf(dz / dx);
@@ -244,6 +246,7 @@ bool Table::grab_image(int slot, QImage& image)
         return true;
     } else if (m_timer_step == (slot + 1)) {
         image = grabFramebuffer();
+        printf("has alpha channel: %s\n", image.hasAlphaChannel()?"yes":"no");
         ++m_timer_step;
         return true;
     }

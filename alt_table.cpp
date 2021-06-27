@@ -6,7 +6,7 @@
 #include <math.h>
 #include <algorithm>
 
-AltTable::AltTable(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_bat_on(false)
     , m_pitch_on(false)
@@ -16,6 +16,7 @@ AltTable::AltTable(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget 
     , m_y_base(0)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
+    , m_mvp_matrix(mvp_matrix)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -86,12 +87,28 @@ void AltTable::paintEvent(QPaintEvent* event)
     else if (m_image_sel == 9)
         draw_ani_image(painter, m_image_set.m_target7);
 #endif
+    printf("paint (%d, %d) %d * %d\n", m_x_base, m_y_base, m_width, m_height);
+    painter.setPen(Qt::black);
 
-//    painter.setPen(Qt::black);
-//    painter.drawRect(QRect(m_x_base,
-//                           m_y_base,
-//                           m_width - 1,
-//                           m_height));
+    QVector4D tp1(-6.235 / 2.0, 0.0, 2.0, 1.0);
+    QVector4D tp2(6.235 / 2.0, 0.0, -7.4, 1.0);
+    QVector4D rp1 = m_mvp_matrix * tp1;
+    QVector4D rp2 = m_mvp_matrix * tp2;
+
+    printf("rp1 = %7.3f, %7.3f\n",
+           rp1.x() / rp1.w(), rp1.y() / rp1.w());
+    printf("rp2 = %7.3f, %7.3f\n",
+           rp2.x() / rp2.w(), rp2.y() / rp2.w());
+
+    float x1 = (m_width / 2) * rp1.x() / rp1.w();
+    float y1 = -(m_height / 2) * rp1.y() / rp1.w();
+    float x2 = (m_width / 2) * rp2.x() / rp2.w();
+    float y2 = -(m_height / 2) * rp2.y() / rp2.w();
+
+    printf("x1,y1 = %7.3f, %7.3f\n", x1, y1);
+    printf("x2,y2 = %7.3f, %7.3f\n", x2, y2);
+
+    painter.drawRect(QRect(m_width / 2 + x1, m_height / 2 + y1, x2 - x1, y2 - y1));
 }
 
 

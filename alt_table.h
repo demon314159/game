@@ -18,7 +18,7 @@ class AltTable: public QWidget
     Q_OBJECT
 
 public:
-    explicit AltTable(ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    explicit AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
 
 protected:
     int text_width(QPainter& painter, const QString &s);
@@ -38,6 +38,7 @@ private:
     int m_y_base;
     int m_width;
     int m_height;
+    const QMatrix4x4& m_mvp_matrix;
     QPixmap m_pixmap;
 };
 

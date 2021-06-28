@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QStackedWidget>
+#include <QBasicTimer>
 
 class AltTable: public QWidget
 {
@@ -29,6 +30,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     QPoint w2s(const QVector3D point) const;
+    void timerEvent(QTimerEvent *e) override;
 
 private:
     bool m_bat_on;
@@ -41,6 +43,7 @@ private:
     int m_height;
     const QMatrix4x4& m_mvp_matrix;
     QPixmap m_pixmap;
+    QBasicTimer timer;
 };
 
 #endif // _ALT_TABLE_H_

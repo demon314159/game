@@ -22,6 +22,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setAutoFillBackground(true);
     setMinimumHeight(980);
     setMinimumWidth(580);
+    timer.start(30, this);
 }
 
 int AltTable::text_width(QPainter& painter, const QString &s)
@@ -52,6 +53,14 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
 
 void AltTable::paintEvent(QPaintEvent* event)
 {
+    QImage zimg(50, 50, QImage::Format_ARGB32);
+    zimg.fill(Qt::transparent);
+    QPainter zpainter;
+    zpainter.begin(&zimg);
+    zpainter.setPen(Qt::red);
+    zpainter.drawEllipse(0, 0, 50, 50);
+    zpainter.end();
+
     QPainter painter(this);
 //    int th = text_height(painter, QString("0"));
 
@@ -122,6 +131,8 @@ void AltTable::paintEvent(QPaintEvent* event)
     painter.drawLine(x2, y2, x3, y3);
     painter.drawLine(x3, y3, x4, y4);
     painter.drawLine(x4, y4, x1, y1);
+
+    painter.drawImage(m_x_base + m_width/2 -25, m_y_base + m_height / 2 -25, zimg);
 }
 
 
@@ -165,3 +176,6 @@ QPoint AltTable::w2s(const QVector3D point) const
     return res;
 }
 
+void AltTable::timerEvent(QTimerEvent *)
+{
+}

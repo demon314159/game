@@ -13,7 +13,7 @@ ImageSet::~ImageSet()
 void ImageSet::difference(AnimatedImage& img, int& x1, int& y1, int& x2, int& y2)
 {
     QImage& base = m_baseline;
-    QImage& active = img.m_on_image;
+    QImage& active = img.m_image;
     int nx = base.width();
     int ny = base.height();
     x1 = 0;
@@ -53,7 +53,6 @@ void ImageSet::difference(AnimatedImage& img, int& x1, int& y1, int& x2, int& y2
         y2 = maxy;
         img.m_x = x1;
         img.m_y = y1;
-        img.m_on_image = active.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-        img.m_off_image = base.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+        img.m_image = active.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     }
 }

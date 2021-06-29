@@ -7,11 +7,10 @@ AnimatedImage::AnimatedImage()
 {
 }
 
-AnimatedImage::AnimatedImage(int x, int y, const QImage& on_image, const QImage& off_image)
+AnimatedImage::AnimatedImage(int x, int y, const QImage& image)
     : m_x(x)
     , m_y(y)
-    , m_on_image(on_image)
-    , m_off_image(off_image)
+    , m_image(image)
 {
 }
 
@@ -21,7 +20,7 @@ AnimatedImage::~AnimatedImage()
 
 QRect AnimatedImage::rect() const
 {
-    QRect r(m_x, m_y, m_on_image.width(), m_on_image.height());
+    QRect r(m_x, m_y, m_image.width(), m_image.height());
     return r;
 }
 

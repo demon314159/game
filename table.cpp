@@ -254,7 +254,7 @@ bool Table::grab_image(int slot, QImage& image)
     return false;
 }
 
-bool Table::grab_ani_image(int slot, AnimatedImage& ai, const QImage& baseline)
+bool Table::grab_ani_image(int slot, AnimatedImage& ai)
 {
     if (m_timer_step == slot) {
         printf("grabbing slot %d\n", slot);
@@ -262,8 +262,7 @@ bool Table::grab_ani_image(int slot, AnimatedImage& ai, const QImage& baseline)
         ++m_timer_step;
         return true;
     } else if (m_timer_step == (slot + 1)) {
-        ai.m_on_image = grabFramebuffer();
-        ai.m_off_image = baseline;
+        ai.m_image = grabFramebuffer();
         ai.m_x = 0;
         ai.m_y = 0;
         ++m_timer_step;
@@ -279,34 +278,34 @@ void Table::timerEvent(QTimerEvent *)
         if (grab_image(base, m_image_set.m_baseline))
             return;
         m_ani_angle1 = 45.0 + 30.0;
-        if (grab_ani_image(base + 2, m_image_set.m_bat, m_image_set.m_baseline))
+        if (grab_ani_image(base + 2, m_image_set.m_bat))
             return;
         m_ani_angle1 = 0.0;
         m_ani_angle3 = -15.0;
-        if (grab_ani_image(base + 4, m_image_set.m_pitch, m_image_set.m_baseline))
+        if (grab_ani_image(base + 4, m_image_set.m_pitch))
             return;
         m_ani_angle3 = 0.0;
         m_ani_angle2 = -60.0;
         m_ani_sel2 = 1.0;
-        if (grab_ani_image(base + 6, m_image_set.m_target1, m_image_set.m_baseline))
+        if (grab_ani_image(base + 6, m_image_set.m_target1))
             return;
         m_ani_sel2 = 2.0;
-        if (grab_ani_image(base + 8, m_image_set.m_target2, m_image_set.m_baseline))
+        if (grab_ani_image(base + 8, m_image_set.m_target2))
             return;
         m_ani_sel2 = 3.0;
-        if (grab_ani_image(base + 10, m_image_set.m_target3, m_image_set.m_baseline))
+        if (grab_ani_image(base + 10, m_image_set.m_target3))
             return;
         m_ani_sel2 = 4.0;
-        if (grab_ani_image(base + 12, m_image_set.m_target4, m_image_set.m_baseline))
+        if (grab_ani_image(base + 12, m_image_set.m_target4))
             return;
         m_ani_sel2 = 5.0;
-        if (grab_ani_image(base + 14, m_image_set.m_target5, m_image_set.m_baseline))
+        if (grab_ani_image(base + 14, m_image_set.m_target5))
             return;
         m_ani_sel2 = 6.0;
-        if (grab_ani_image(base + 16, m_image_set.m_target6, m_image_set.m_baseline))
+        if (grab_ani_image(base + 16, m_image_set.m_target6))
             return;
         m_ani_sel2 = 7.0;
-        if (grab_ani_image(base + 18, m_image_set.m_target7, m_image_set.m_baseline))
+        if (grab_ani_image(base + 18, m_image_set.m_target7))
             return;
         m_ani_angle1 = 0.0;
         m_ani_angle2 = 0.0;

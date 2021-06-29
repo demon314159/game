@@ -33,7 +33,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setAutoFillBackground(true);
     setMinimumHeight(980);
     setMinimumWidth(580);
-    timer.start(15, this);
+    timer.start(30, this);
 }
 
 int AltTable::text_width(QPainter& painter, const QString &s)
@@ -68,6 +68,7 @@ void AltTable::draw_ball(QPainter &painter, const QRect& rect)
 
     if (rect.intersects(ball_rect(m_new_ball_pos))) {
 //        if (m_ball_in_play) {
+            painter.setBrush(QBrush(Qt::red));
             painter.drawEllipse(m_new_ball_pos.x() - m_ball_radius, m_new_ball_pos.y() - m_ball_radius, m_ball_radius * 2, m_ball_radius * 2);
         }
 //    }

@@ -33,7 +33,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setAutoFillBackground(true);
     setMinimumHeight(980);
     setMinimumWidth(580);
-    timer.start(30, this);
+    timer.start(15, this);
 }
 
 int AltTable::text_width(QPainter& painter, const QString &s)
@@ -60,17 +60,17 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
 
 QRect AltTable::ball_rect(const QPoint& center) const
 {
-    return QRect(center.x() - m_ball_radius, center.y() - m_ball_radius, center.x() + m_ball_radius, center.y() + m_ball_radius);
+    return QRect(center.x() - m_ball_radius - 1, center.y() - m_ball_radius - 1, center.x() + m_ball_radius + 1, center.y() + m_ball_radius + 1);
 }
 
 void AltTable::draw_ball(QPainter &painter, const QRect& rect)
 {
 
     if (rect.intersects(ball_rect(m_new_ball_pos))) {
-        if (m_ball_in_play) {
+//        if (m_ball_in_play) {
             painter.drawEllipse(m_new_ball_pos.x() - m_ball_radius, m_new_ball_pos.y() - m_ball_radius, m_ball_radius * 2, m_ball_radius * 2);
         }
-    }
+//    }
 }
 
 void AltTable::paintEvent(QPaintEvent* event)
@@ -163,8 +163,8 @@ QVector3D AltTable::ball_position_now()
             float dx = BAT_PIVOT_X;
             float dz = BAT_PIVOT_Z - m_hit_pos.z();
             float theta = atanf(dz / dx);
-            float vx = 2.0 * 6.0 * sin(theta);
-            float vz = 2.0 * 6.0 * cos(theta);
+            float vx = 4.0 * 6.0 * sin(theta);
+            float vz = 4.0 * 6.0 * cos(theta);
 //                printf("hit_pos = %7.3lf, %7.3lf\n", m_hit_pos.v1, m_hit_pos.v3);
 //                printf("bat_pos = %7.3lf, %7.3lf\n", BAT_PIVOT_X, BAT_PIVOT_Z);
 //                printf("dx = %7.3lf, dz = %7.3lf\n", BAT_PIVOT_X - m_hit_pos.v1, BAT_PIVOT_Z - m_hit_pos.v3);
@@ -207,15 +207,15 @@ QPoint AltTable::w2s(const QVector3D point) const
 void AltTable::timerEvent(QTimerEvent *)
 {
     if (m_ball_in_play) {
-        QVector3D bpn = ball_position_now();
-        if (bpn.x() < (-back_width / 2.0)
-         || bpn.x() > (back_width / 2.0)
-         || bpn.z() < (back_pos - 1.0)
-         || bpn.z() > (front_pos + 1.0)) {
-            m_ball_in_play = false;
-        }
         m_old_ball_pos = m_new_ball_pos;
         m_new_ball_pos = w2s(ball_position_now());
         update(ball_rect(m_new_ball_pos).united(ball_rect(m_old_ball_pos)));
+        QVector3D bpn = ball_position_now();
+        if (bpn.x() < (-back_width / 2.0)
+         || bpn.x() > (back_width / 2.0)
+         || bpn.z() < (back_pos)
+         || bpn.z() > (front_pos)) {
+            m_ball_in_play = false;
+        }
     }
 }

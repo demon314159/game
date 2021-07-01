@@ -310,3 +310,18 @@ float3 CadModel::translate(const float3& v, const float3& offset) const
     t.v3 = v.v3 + offset.v3;
     return t;
 }
+
+void CadModel::magnify(float mag)
+{
+    for (int i = 0; i < m_facet_count; i++) {
+        m_facet_v1[i].v1 *= mag;
+        m_facet_v1[i].v2 *= mag;
+        m_facet_v1[i].v3 *= mag;
+        m_facet_v2[i].v1 *= mag;
+        m_facet_v2[i].v2 *= mag;
+        m_facet_v2[i].v3 *= mag;
+        m_facet_v3[i].v1 *= mag;
+        m_facet_v3[i].v2 *= mag;
+        m_facet_v3[i].v3 *= mag;
+    }
+}

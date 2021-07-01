@@ -22,12 +22,12 @@ class Table: public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    Table(QMatrix4x4& mvp_matrix, QImage& image, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
     ~Table();
-    QImage the_image();
 
 protected:
     float3 ball_position_now();
+    QPoint w2s(const QVector3D point) const;
 #ifdef NEVERMORE
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
@@ -35,17 +35,18 @@ protected:
     void timerEvent(QTimerEvent *e) override;
     bool grab_image(int slot, QImage& image);
     bool grab_ani_image(int slot, AnimatedImage& ai);
+    int image_radius();
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
     void initShaders();
 private:
-    ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
+    bool m_timer_ready;
     int m_timer_step;
-    QImage m_image;
-    float m_ani_sel2;
+    QImage& m_image;
+    float m_ani_sel1;
     float m_ani_angle1;
     float m_ani_angle2;
     float m_ani_angle3;

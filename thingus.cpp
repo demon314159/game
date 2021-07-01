@@ -25,38 +25,14 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    m_cad = new CadModel(StlInterface("board.stl"), green_paint, 0.0);
-    CadModel t1(StlInterface("hammer_head.stl"), blue_paint, 1.0);
-    t1.add(StlInterface("hammer_bumper.stl"), red_paint, 1.0);
-    CadModel t2(StlInterface("hammer_head.stl"), blue_paint, 2.0);
-    t2.add(StlInterface("hammer_bumper.stl"), red_paint, 2.0);
-    CadModel t3(StlInterface("hammer_head.stl"), blue_paint, 3.0);
-    t3.add(StlInterface("hammer_bumper.stl"), red_paint, 3.0);
-    CadModel t4(StlInterface("hammer_head.stl"), blue_paint, 4.0);
-    t4.add(StlInterface("hammer_bumper.stl"), red_paint, 4.0);
-    CadModel t5(StlInterface("hammer_head.stl"), blue_paint, 5.0);
-    t5.add(StlInterface("hammer_bumper.stl"), red_paint, 5.0);
-    CadModel t6(StlInterface("hammer_head.stl"), blue_paint, 6.0);
-    t6.add(StlInterface("hammer_bumper.stl"), red_paint, 6.0);
-    CadModel t7(StlInterface("hammer_head.stl"), blue_paint, 7.0);
-    t7.add(StlInterface("hammer_bumper.stl"), red_paint, 7.0);
-    CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, 8.0);
-    bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
-    bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
-    CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, 9.0);
-//    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
-    float w = 0.416;
-    float h = 0.0;
-    m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t2, -4.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t3, -2.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t4, 0.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t5, 2.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t6, 4.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(t7, 6.0 * w, h, TARGET_PIVOT_Z);
-    m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
-    m_cad->add(pitch, 0.0, 0.0, PITCH_PIVOT_Z);
-//    m_cad->add(ball, 0.0, 0.125, 0.0);
+    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 71.0);
+    for (int i = 1; i < 71; i++) {
+        float index = (float) i;
+        float mag = 0.005 * index;
+        CadModel t1(StlInterface("ball_1.stl"), gray_paint, index);
+        t1.magnify(mag);
+        m_cad->add(t1, 0.0, 0.0, 0.0);
+    }
     initCubeGeometry();
 }
 

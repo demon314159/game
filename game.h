@@ -12,7 +12,6 @@
 #include <QWidget>
 #include "table.h"
 #include "alt_table.h"
-#include "image_set.h"
 
 class Game: public QMainWindow
 {
@@ -35,7 +34,7 @@ private slots:
 private:
     // Owned by layout
     QMatrix4x4 m_mvp_matrix;
-    ImageSet m_image_set;
+    QImage m_image;
     Table* m_table = nullptr;
     AltTable* m_alt_table = nullptr;
     QStackedWidget* m_stacked_widget = nullptr;

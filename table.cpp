@@ -5,15 +5,18 @@
 
 #include <QMouseEvent>
 #include <QTime>
+#include <QPainter>
+
 
 #include <cmath>
 
-Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+Table::Table(QMatrix4x4& mvp_matrix, QImage& image, QStackedWidget* stacked_widget, QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
+    , m_timer_ready(false)
     , m_timer_step(0)
-    , m_ani_sel2(0.0)
+    , m_image(image)
+    , m_ani_sel1(0.0)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
@@ -52,17 +55,14 @@ void Table::initializeGL()
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
 //    timer.start(16, this);
-    timer.start(30, this);
-//    timer.start(100, this);
+//    timer.start(30, this);
+    timer.start(100, this);
 }
 
 void Table::resizeGL(int w, int h)
 {
-
-
-
-
-
+    m_width = w;
+    m_height = h;
 
     qreal aspect = qreal(w) / qreal(h ? h : 1);
     printf("in resizeGL %d x %d aspect ratio = %7.3lf\n", w, h, aspect);
@@ -91,7 +91,7 @@ void Table::paintGL()
       QVector3D my_axis = {1.0, 0.0, 0.0};
       QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 90);
       QMatrix4x4 matrix;
-      matrix.translate(0.0, -3.00, -13.0);
+      matrix.translate(0.0, 0.0, -13.0);
       matrix.rotate(my_rot);
       // Set modelview-projection matrix
       m_mvp_matrix = m_projection * matrix;
@@ -99,44 +99,25 @@ void Table::paintGL()
       m_program.setUniformValue("rot_matrix", matrix);
     }
 
-    QVector3D ani_axis1 = {0.0, 1.0, 0.0};
-    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_ani_angle1);
-    float ani_sel1 = 8.0;
+//    m_ani_sel1 = 35.0;
     QMatrix4x4 ani_matrix1;
-    ani_matrix1.translate(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
-    ani_matrix1.rotate(ani_rot1);
-    ani_matrix1.translate(-BAT_PIVOT_X, 0.0, -BAT_PIVOT_Z);
-    m_program.setUniformValue("ani_sel1", ani_sel1);
-    m_program.setUniformValue("ani_matrix1", ani_matrix1);
-
-    QVector3D ani_axis2 = {1.0, 0.0, 0.0};
-    QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_ani_angle2);
     QMatrix4x4 ani_matrix2;
-    ani_matrix2.translate(0.0, TARGET_PIVOT_Y, TARGET_PIVOT_Z);
-    ani_matrix2.rotate(ani_rot2);
-    ani_matrix2.translate(0.0, -TARGET_PIVOT_Y, -TARGET_PIVOT_Z);
-    m_program.setUniformValue("ani_sel2", m_ani_sel2);
+    ani_matrix2.translate(-2.0, 0.0, 0.0);
+    m_program.setUniformValue("ani_sel1", m_ani_sel1);
+    m_program.setUniformValue("ani_matrix1", ani_matrix1);
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
-
-    QVector3D ani_axis3 = {1.0, 0.0, 0.0};
-    QQuaternion ani_rot3 = QQuaternion::fromAxisAndAngle(ani_axis3, m_ani_angle3);
-    float ani_sel3 = 9.0;
-    QMatrix4x4 ani_matrix3;
-    ani_matrix3.translate(0.0, 0.0, PITCH_PIVOT_Z);
-    ani_matrix3.rotate(ani_rot3);
-    ani_matrix3.translate(0.0, 0.0, -PITCH_PIVOT_Z);
-    m_program.setUniformValue("ani_sel3", ani_sel3);
-    m_program.setUniformValue("ani_matrix3", ani_matrix3);
-
-    float3 bpn = ball_position_now();
-    float ani_sel4 = 10.0;
-    QMatrix4x4 ani_matrix4;
-    ani_matrix4.translate(bpn.v1, bpn.v2, bpn.v3);
-    m_program.setUniformValue("ani_sel4", ani_sel4);
-    m_program.setUniformValue("ani_matrix4", ani_matrix4);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
+//    for (int i = 1; i < 70; i++) {
+//        float r = 0.005 * (float) i;
+
+//        QVector3D a(0.0, 0.0, 0.0);
+//        QVector3D b(r, 0.0, 0.0);
+//        QPoint sa = w2s(a);
+//        QPoint sb = w2s(b);
+//        printf("r = %7.3f, radius = %d pixels\n", r, sb.x() - sa.x() + 1);
+//    }
 }
 
 void Table::initShaders()
@@ -239,6 +220,15 @@ void Table::mouseReleaseEvent(QMouseEvent *e)
 }
 #endif
 
+QPoint Table::w2s(const QVector3D point) const
+{
+
+    QVector4D sp = m_mvp_matrix * QVector4D(point, 1.0);
+    QPoint res(m_width / 2 + round((sp.x() * (float) m_width) / (2.0 * sp.w())),
+               m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w())));
+    return res;
+}
+
 bool Table::grab_image(int slot, QImage& image)
 {
     if (m_timer_step == slot) {
@@ -271,91 +261,78 @@ bool Table::grab_ani_image(int slot, AnimatedImage& ai)
     }
     return false;
 }
+
+int Table::image_radius()
+{
+    const int box_w = 100;
+
+    QImage fb = grabFramebuffer();
+    QImage box = fb.copy((fb.width() - box_w) / 2, (fb.height() - box_w) / 2, box_w, box_w);
+    int nx = box.width();
+    int ny = box.height();
+    int x1 = 0;
+    int x2 = box.width() - 1;
+    int minx = x2;
+    int maxx = x1;
+    for (int j = 0; j < ny; j++) {
+        const uchar* box_line = box.constScanLine(j);
+        for (int i = 0; i < nx; i++) {
+            if ( box_line[4 * i]     != 255
+              || box_line[4 * i + 1] != 255
+              || box_line[4 * i + 2] != 255) {
+                maxx = std::max(maxx, i);
+                minx = std::min(minx, i);
+            }
+        }
+    }
+    if (maxx != x1 || minx != x2) {
+        x1 = minx;
+        x2 = maxx;
+    }
+    printf("    x1 = %d, x2 = %d\n", x1, x2);
+    int radius = (x2 - x1 + 1) / 2;
+    QImage img = box.copy(18, 18, 64, 64);
+    if (radius >= 1 && radius <= 32) {
+        int x = ((radius-1) & 7) * 64;
+        int y = (((radius-1) >> 3) & 7) * 64;
+        QPainter painter;
+        painter.begin(&m_image);
+        painter.drawImage(x, y, img);
+        painter.end();
+    }
+    return radius;
+}
+
 void Table::timerEvent(QTimerEvent *)
 {
     if (isVisible()) {
-        printf("timer step %d\n", m_timer_step);
+//        printf("timer step %d\n", m_timer_step);
         int base = 10;
-        if (grab_image(base, m_image_set.m_baseline))
-            return;
-        m_ani_angle1 = 45.0 + 30.0;
-        if (grab_ani_image(base + 2, m_image_set.m_bat))
-            return;
-        m_ani_angle1 = 0.0;
-        m_ani_angle3 = -15.0;
-        if (grab_ani_image(base + 4, m_image_set.m_pitch))
-            return;
-        m_ani_angle3 = 0.0;
-        m_ani_angle2 = -60.0;
-        m_ani_sel2 = 1.0;
-        if (grab_ani_image(base + 6, m_image_set.m_target1))
-            return;
-        m_ani_sel2 = 2.0;
-        if (grab_ani_image(base + 8, m_image_set.m_target2))
-            return;
-        m_ani_sel2 = 3.0;
-        if (grab_ani_image(base + 10, m_image_set.m_target3))
-            return;
-        m_ani_sel2 = 4.0;
-        if (grab_ani_image(base + 12, m_image_set.m_target4))
-            return;
-        m_ani_sel2 = 5.0;
-        if (grab_ani_image(base + 14, m_image_set.m_target5))
-            return;
-        m_ani_sel2 = 6.0;
-        if (grab_ani_image(base + 16, m_image_set.m_target6))
-            return;
-        m_ani_sel2 = 7.0;
-        if (grab_ani_image(base + 18, m_image_set.m_target7))
-            return;
-        m_ani_angle1 = 0.0;
-        m_ani_angle2 = 0.0;
-        m_ani_angle3 = 0.0;
-        m_ani_sel2 = 0.0;
-        if (m_timer_step == (base + 20)) {
-            update();
+
+        if (m_timer_step > base) {
+            if (m_timer_ready) {
+                int radius = image_radius();
+                printf("    radius = %d pixels\n", radius);
+                ++m_timer_step;
+                m_timer_ready = false;
+            } else {
+                m_ani_sel1 = (float) (m_timer_step - base);
+                update();
+                printf("setting up index = %7.3lf\n", m_ani_sel1);
+                m_timer_ready = true;
+            }
+        } else {
             ++m_timer_step;
-            int x1, y1, x2, y2;
-            m_image_set.difference(m_image_set.m_bat, x1, y1, x2, y2);
-            printf("bat difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_pitch, x1, y1, x2, y2);
-            printf("pitch difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target1, x1, y1, x2, y2);
-            printf("target1 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target2, x1, y1, x2, y2);
-            printf("target2 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target3, x1, y1, x2, y2);
-            printf("target3 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target4, x1, y1, x2, y2);
-            printf("target4 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target5, x1, y1, x2, y2);
-            printf("target5 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target6, x1, y1, x2, y2);
-            printf("target6 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target7, x1, y1, x2, y2);
-            printf("target7 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            return;
         }
-        if (m_timer_step == (base + 21)) {
+
+        if (m_timer_step == (base + 71)) {
             printf("Handover\n");
+            m_image.save("ball_set.png");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;
             return;
         }
-        ++m_timer_step;
     }
 }
 
-QImage Table::the_image()
-{
-    return m_image;
-}
+

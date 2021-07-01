@@ -19,7 +19,7 @@ class AltTable: public QWidget
     Q_OBJECT
 
 public:
-    explicit AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    explicit AltTable(const QMatrix4x4& mvp_matrix, QImage& image, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
 
 protected:
     const float back_width = 6.235;
@@ -27,14 +27,12 @@ protected:
     const float back_pos = -7.4;
     const float front_pos = 2.0;
 
-    QVector3D ball_position_now();
     int text_width(QPainter& painter, const QString &s);
     int text_height(QPainter& painter, const QString &s);
     void paintEvent(QPaintEvent* event) override;
     void resizeEvent(QResizeEvent*) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-    void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void draw_ball(QPainter &painter, const QRect& rect);
     QRect ball_rect(const QPoint& center) const;
     QPoint w2s(const QVector3D point) const;
@@ -57,7 +55,7 @@ private:
 
 
 
-    ImageSet& m_image_set;
+    QImage& m_image;
     QStackedWidget* m_stacked_widget;
     int m_x_base;
     int m_y_base;

@@ -56,7 +56,8 @@ void Table::initializeGL()
     m_thingy = new Thingus;
 //    timer.start(16, this);
 //    timer.start(30, this);
-    timer.start(100, this);
+//    timer.start(100, this);
+    timer.start(50, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -275,13 +276,18 @@ int Table::image_radius()
     int minx = x2;
     int maxx = x1;
     for (int j = 0; j < ny; j++) {
-        const uchar* box_line = box.constScanLine(j);
+        uchar* box_line = box.scanLine(j);
         for (int i = 0; i < nx; i++) {
             if ( box_line[4 * i]     != 255
               || box_line[4 * i + 1] != 255
               || box_line[4 * i + 2] != 255) {
                 maxx = std::max(maxx, i);
                 minx = std::min(minx, i);
+            } else {
+                box_line[4 * i] = 0;
+                box_line[4 * i + 1] = 0;
+                box_line[4 * i + 2] = 0;
+                box_line[4 * i + 3] = 0;
             }
         }
     }

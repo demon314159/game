@@ -74,6 +74,10 @@ void AltTable::paintEvent(QPaintEvent* event)
     m_x_base = painter.viewport().left();
     m_y_base = painter.viewport().top();
 
+    QImage red_box(m_width, m_height, QImage::Format_RGB32);
+    red_box.fill(Qt::red);
+
+    painter.drawImage(0, 0, red_box);
     painter.drawImage(0, 0, m_image);
 }
 

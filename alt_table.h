@@ -35,7 +35,7 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
-    void draw_ball(QPainter &painter, const QRect& rect);
+    void draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball);
     QRect ball_rect(const QPoint& center) const;
     QPoint w2s(const QVector3D point) const;
     void timerEvent(QTimerEvent *e) override;
@@ -56,7 +56,7 @@ private:
     QVector3D m_hit_pos;
 
 
-
+    QImage m_ball_set;
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
     int m_x_base;

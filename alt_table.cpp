@@ -21,6 +21,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_old_ball_pos(QPoint(0,0))
     , m_ball_pos0(QVector3D(0.0, -0.25, 0.0))
     , m_hit_pos(QVector3D(0.0, 0.0, 0.0))
+    , m_ball_set(QImage())
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
     , m_x_base(0)
@@ -33,7 +34,8 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setAutoFillBackground(true);
     setMinimumHeight(980);
     setMinimumWidth(580);
-    timer.start(30, this);
+    m_ball_set.load(":/ball_set.png");
+    timer.start(33, this);
 }
 
 int AltTable::text_width(QPainter& painter, const QString &s)
@@ -60,16 +62,15 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
 
 QRect AltTable::ball_rect(const QPoint& center) const
 {
-    return QRect(center.x() - m_ball_radius - 1, center.y() - m_ball_radius - 1, center.x() + m_ball_radius + 1, center.y() + m_ball_radius + 1);
+    return QRect(center.x() - 33, center.y() - 33, center.x() + 33, center.y() + 33);
 }
 
-void AltTable::draw_ball(QPainter &painter, const QRect& rect)
+void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
 {
 
     if (rect.intersects(ball_rect(m_new_ball_pos))) {
 //        if (m_ball_in_play) {
-            painter.setBrush(QBrush(Qt::red));
-            painter.drawEllipse(m_new_ball_pos.x() - m_ball_radius, m_new_ball_pos.y() - m_ball_radius, m_ball_radius * 2, m_ball_radius * 2);
+            painter.drawImage(m_new_ball_pos.x() - 32, m_new_ball_pos.y() - 32, the_ball);
         }
 //    }
 }
@@ -83,12 +84,22 @@ void AltTable::paintEvent(QPaintEvent* event)
     m_x_base = painter.viewport().left();
     m_y_base = painter.viewport().top();
 
-    QVector3D bpn_center = ball_position_now();
-    QVector3D bpn_right = bpn_center + QVector3D(0.1, 0.0, 0.0);
-    QPoint bc = w2s(bpn_center);
+    QVector3D bpn = ball_position_now();
+    QVector3D bpn_left = bpn + QVector3D(-0.125, 0.0, 0.0);
+    QVector3D bpn_right = bpn + QVector3D(0.125, 0.0, 0.0);
+    QPoint bl = w2s(bpn_left);
+    QPoint bc = w2s(bpn);
     QPoint br = w2s(bpn_right);
 
-    m_ball_radius = br.x() - bc.x();
+    m_ball_radius = (br.x() - bl.x() + 1) / 2;
+    QImage the_ball;
+    if (m_ball_radius >= 1 && m_ball_radius <= 32) {
+        int xp = (m_ball_radius & 7) * 64;
+        int yp = ((m_ball_radius >> 3) & 7) * 64;
+        the_ball = m_ball_set.copy(xp, yp, 64, 64);
+    } else {
+        printf("<<< ball radius our of range: %d pixels >>>\n", m_ball_radius);
+    }
 
     QRect rect = event->rect();
 //    printf("rect = (%d, %d) %d * %d\n", rect.x(), rect.y(), rect.width(), rect.height());
@@ -101,8 +112,7 @@ void AltTable::paintEvent(QPaintEvent* event)
     }
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
-    painter.setPen(Qt::red);
-    draw_ball(painter, rect);
+    draw_ball(painter, rect, the_ball);
 #ifdef NEVERMORE
         draw_ani_image(painter, m_image_set.m_target1);
         draw_ani_image(painter, m_image_set.m_target2);

@@ -26,8 +26,10 @@ void Ball::launch(const QVector3D& launch_position)
 
 void Ball::hit(const QVector3D& bat_pivot_position)
 {
-    m_t_hit = QTime::currentTime().msecsSinceStartOfDay();
-    m_bat_pivot_position = bat_pivot_position;
+    if (m_t_launch > 0) {
+        m_t_hit = QTime::currentTime().msecsSinceStartOfDay();
+        m_bat_pivot_position = bat_pivot_position;
+    }
 }
 
 void Ball::stop()

@@ -34,6 +34,7 @@ protected:
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball);
     QRect ball_rect() const;
+    QRect ball_last_rect() const;
     QPoint w2s(const QVector3D point) const;
     void timerEvent(QTimerEvent *e) override;
 

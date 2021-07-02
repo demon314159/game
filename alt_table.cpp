@@ -23,7 +23,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setMinimumHeight(980);
     setMinimumWidth(580);
     m_ball_set.load(":/ball_set.png");
-    timer.start(16, this);
+    timer.start(33, this);
 }
 
 void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
@@ -40,6 +40,13 @@ QRect AltTable::ball_rect() const
     QPoint bp = w2s(m_ball.position());
     return QRect(bp.x() - 33, bp.y() - 33, bp.x() + 33, bp.y() + 33);
 }
+
+QRect AltTable::ball_last_rect() const
+{
+    QPoint bp = w2s(m_ball.last_position());
+    return QRect(bp.x() - 33, bp.y() - 33, bp.x() + 33, bp.y() + 33);
+}
+
 
 void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
 {
@@ -86,9 +93,9 @@ void AltTable::paintEvent(QPaintEvent* event)
         QImage base_rect = m_image_set.m_baseline.copy(rect);
         painter.drawImage(rect.x(), rect.y(), base_rect);
     }
-    draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
     draw_ball(painter, rect, the_ball);
+    draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
 #ifdef NEVERMORE
         draw_ani_image(painter, m_image_set.m_target1);
         draw_ani_image(painter, m_image_set.m_target2);
@@ -146,8 +153,8 @@ QPoint AltTable::w2s(const QVector3D point) const
 void AltTable::timerEvent(QTimerEvent *)
 {
     if (m_ball.in_play()) {
-        QRect br_before = ball_rect();
         m_ball.update();
+        QRect br_before = ball_last_rect();
         QRect br_after = ball_rect();
         update(br_before.united(br_after));
 

@@ -5,8 +5,12 @@
 #include <math.h>
 #include <QTime>
 
-Ball::Ball()
-    : m_t_launch(0)
+Ball::Ball(float left, float front, float right, float back)
+    : m_left(left)
+    , m_right(right)
+    , m_front(front)
+    , m_back(back)
+    , m_t_launch(0)
     , m_t_hit(0)
     , m_launch_position(QVector3D(0.0, 0.0, 0.0))
     , m_bat_pivot_position(QVector3D(0.0, 0.0, 0.0))
@@ -60,7 +64,27 @@ QVector3D Ball::last_position() const
     return m_last_position;
 }
 
-QVector3D Ball::position_now(int t_now) const
+void Ball::check_limits(QVector3D& pos)
+{
+    if (pos.x() < m_left) {
+        pos.setX(m_left);
+        stop();
+    }
+    if (pos.x() > m_right) {
+        pos.setX(m_right);
+        stop();
+    }
+    if (pos.z() < m_back) {
+        pos.setZ(m_back);
+        stop();
+    }
+    if (pos.z() > m_front) {
+        pos.setZ(m_front);
+        stop();
+    }
+}
+
+QVector3D Ball::position_now(int t_now)
 {
     QVector3D res;
 
@@ -75,9 +99,11 @@ QVector3D Ball::position_now(int t_now) const
             float vz = hit_velocity * cos(theta);
             tdiff = t_now - m_t_hit;
             res = hit_pos + QVector3D(vx * (float) tdiff / 1000.0, 0.0, - vz * (float) tdiff / 1000.0);
+            check_limits(res);
         } else {
             int tdiff = t_now - m_t_launch;
             res = m_launch_position + QVector3D(0.0, 0.0, velocity * (float) tdiff / 1000.0);
+            check_limits(res);
         }
     } else {
         res = m_position;

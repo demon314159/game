@@ -8,7 +8,7 @@
 
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_ball()
+    , m_ball(-BACK_WIDTH / 2.0 - BALL_RADIUS, FRONT_POS + BALL_RADIUS, BACK_WIDTH / 2.0 + BALL_RADIUS, BACK_POS - BALL_RADIUS)
     , m_bat_on(false)
     , m_pitch_on(false)
     , m_ball_set(QImage())
@@ -157,13 +157,5 @@ void AltTable::timerEvent(QTimerEvent *)
         QRect br_before = ball_last_rect();
         QRect br_after = ball_rect();
         update(br_before.united(br_after));
-
-        QVector3D bp = m_ball.position();
-        if (bp.x() < (-BACK_WIDTH / 2.0)
-         || bp.x() > (BACK_WIDTH / 2.0)
-         || bp.z() < (BACK_POS)
-         || bp.z() > (FRONT_POS)) {
-            m_ball.stop();
-        }
     }
 }

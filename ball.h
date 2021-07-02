@@ -11,7 +11,7 @@ class Ball
     const float velocity = 6.0;
     const float hit_velocity = velocity * 4.0;
 public:
-    Ball();
+    Ball(float left, float front, float right, float back);
     ~Ball();
 
     void launch(const QVector3D& launch_position);
@@ -24,9 +24,14 @@ public:
     QVector3D last_position() const;
 
 protected:
-    QVector3D position_now(int t_now) const;
+    QVector3D position_now(int t_now);
+    void check_limits(QVector3D& pos);
 
 private:
+    float m_left;
+    float m_right;
+    float m_front;
+    float m_back;
     int m_t_launch;
     int m_t_hit;
     QVector3D m_launch_position;

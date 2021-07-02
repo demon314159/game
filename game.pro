@@ -12,7 +12,7 @@ HEADERS      += game.h \
                 image_set.h \
                 table.h \
                 alt_table.h \
-                puck.h \
+                ball.h \
                 paint_can.h \
                 bin_interface.h \
                 char_interface.h \
@@ -28,7 +28,7 @@ SOURCES      += main.cpp \
                 image_set.cpp \
                 table.cpp \
                 alt_table.cpp \
-                puck.cpp \
+                ball.cpp \
                 paint_can.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

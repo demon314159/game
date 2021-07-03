@@ -8,7 +8,7 @@
 
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_ball(-BACK_WIDTH / 2.0 - BALL_RADIUS, FRONT_POS + BALL_RADIUS, BACK_WIDTH / 2.0 + BALL_RADIUS, BACK_POS - BALL_RADIUS)
+    , m_ball(BACK_WIDTH + 2.0 * BALL_RADIUS, FRONT_WIDTH + 2.0 * BALL_RADIUS, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
     , m_bat_on(false)
     , m_pitch_on(false)
     , m_ball_set(QImage())
@@ -38,13 +38,13 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
 QRect AltTable::ball_rect() const
 {
     QPoint bp = w2s(m_ball.position());
-    return QRect(bp.x() - 33, bp.y() - 33, bp.x() + 33, bp.y() + 33);
+    return QRect(fmax(0.0, bp.x() - 33), fmax(0.0, bp.y() - 33), bp.x() + 33, bp.y() + 33);
 }
 
 QRect AltTable::ball_last_rect() const
 {
     QPoint bp = w2s(m_ball.last_position());
-    return QRect(bp.x() - 33, bp.y() - 33, bp.x() + 33, bp.y() + 33);
+    return QRect(fmax(0.0, bp.x() - 33), fmax(0.0, bp.y() - 33), bp.x() + 33, bp.y() + 33);
 }
 
 

@@ -26,12 +26,14 @@ public:
 protected:
     QVector3D position_now(int t_now);
     void check_limits(QVector3D& pos);
+    float left_border(float z) const;
+    float right_border(float z) const;
 
 private:
-    float m_left;
-    float m_right;
-    float m_front;
+    float m_back_width;
+    float m_front_width;
     float m_back;
+    float m_front;
     int m_t_launch;
     int m_t_hit;
     QVector3D m_launch_position;

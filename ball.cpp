@@ -5,11 +5,11 @@
 #include <math.h>
 #include <QTime>
 
-Ball::Ball(float left, float front, float right, float back)
-    : m_left(left)
-    , m_right(right)
-    , m_front(front)
+Ball::Ball(float back_width, float front_width, float back, float front)
+    : m_back_width(back_width)
+    , m_front_width(front_width)
     , m_back(back)
+    , m_front(front)
     , m_t_launch(0)
     , m_t_hit(0)
     , m_launch_position(QVector3D(0.0, 0.0, 0.0))
@@ -64,23 +64,45 @@ QVector3D Ball::last_position() const
     return m_last_position;
 }
 
+float Ball::left_border(float z) const
+{
+    float x1 = -m_back_width / 2.0;
+    float z1 = m_back;
+    float x2 = -m_front_width / 2.0;
+    float z2 = m_front;
+    return x1 + (z - z1) * (x2 - x1) / (z2 - z1);
+}
+
+float Ball::right_border(float z) const
+{
+    float x1 = m_back_width / 2.0;
+    float z1 = m_back;
+    float x2 = m_front_width / 2.0;
+    float z2 = m_front;
+    return x1 + (z - z1) * (x2 - x1) / (z2 - z1);
+}
+
 void Ball::check_limits(QVector3D& pos)
 {
-    if (pos.x() < m_left) {
-        pos.setX(m_left);
-        stop();
-    }
-    if (pos.x() > m_right) {
-        pos.setX(m_right);
-        stop();
-    }
     if (pos.z() < m_back) {
         pos.setZ(m_back);
         stop();
+        return;
     }
     if (pos.z() > m_front) {
         pos.setZ(m_front);
         stop();
+        return;
+    }
+    if (pos.x() < left_border(pos.z())) {
+        pos.setX(left_border(pos.z()));
+        stop();
+        return;
+    }
+    if (pos.x() > right_border(pos.z())) {
+        pos.setX(right_border(pos.z()));
+        stop();
+        return;
     }
 }
 

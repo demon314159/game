@@ -22,8 +22,8 @@ public:
     explicit AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
 
 protected:
-    const float BACK_WIDTH = 6.235 * 0.86736;
-    const float FRONT_WIDTH = 5.529 * 0.86736;
+    const float BACK_WIDTH = 6.235;
+    const float FRONT_WIDTH = 5.529;
     const float BACK_POS = -7.4;
     const float FRONT_POS = 2.0;
     const int TIMER_PERIOD = 33; // milliseconds

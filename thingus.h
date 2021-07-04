@@ -10,6 +10,7 @@
 #define BALL_RADIUS 0.125
 #define BAT_PIVOT_X -0.88235
 #define BAT_PIVOT_Z 1.0
+#define TARGET_WIDTH 0.416
 #define TARGET_PIVOT_Y 0.0
 #define TARGET_PIVOT_Z (-7.4 - 0.907 - 0.05)
 

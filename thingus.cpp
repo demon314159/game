@@ -45,7 +45,7 @@ Thingus::Thingus()
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
     CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, 9.0);
 //    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
-    float w = 0.416;
+    float w = TARGET_WIDTH;
     float h = 0.0;
     m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t2, -4.0 * w, h, TARGET_PIVOT_Z);

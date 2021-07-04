@@ -12,9 +12,10 @@ Ball::Ball(float back_width, float front_width, float back, float front)
     , m_front(front)
     , m_t_launch(0)
     , m_t_hit(0)
+    , m_stopped(false)
     , m_launch_position(QVector3D(0.0, 0.0, 0.0))
     , m_bat_pivot_position(QVector3D(0.0, 0.0, 0.0))
-    , m_position(QVector3D(0.0, 0.0, 0.0))
+    , m_position(QVector3D(0.0, 0.0, 4.0))
 {
 }
 
@@ -40,6 +41,14 @@ void Ball::stop()
 {
     m_t_launch = 0;
     m_t_hit = 0;
+    m_stopped = true;
+}
+
+void Ball::reset()
+{
+    stop();
+    m_stopped = false;
+    m_position = QVector3D(0.0, 0.0, 4.0);
 }
 
 void Ball::update()
@@ -48,10 +57,14 @@ void Ball::update()
     m_position = position_now(QTime::currentTime().msecsSinceStartOfDay());
 }
 
-
 bool Ball::in_play() const
 {
     return m_t_launch > 0;
+}
+
+bool Ball::stopped() const
+{
+    return m_stopped;
 }
 
 QVector3D Ball::position() const

@@ -17,9 +17,11 @@ public:
     void launch(const QVector3D& launch_position);
     void hit(const QVector3D& bat_pivot_position);
     void stop();
+    void reset();
     void update();
 
     bool in_play() const;
+    bool stopped() const;
     QVector3D position() const;
     QVector3D last_position() const;
 
@@ -36,6 +38,7 @@ private:
     float m_front;
     int m_t_launch;
     int m_t_hit;
+    bool m_stopped;
     QVector3D m_launch_position;
     QVector3D m_bat_pivot_position;
     QVector3D m_position;

@@ -6,6 +6,7 @@
 
 class ImageSet
 {
+    static const int TARGETS = 7;
 public:
     ImageSet();
     ~ImageSet();
@@ -14,13 +15,7 @@ public:
     QImage m_baseline;
     AnimatedImage m_bat;
     AnimatedImage m_pitch;
-    AnimatedImage m_target1;
-    AnimatedImage m_target2;
-    AnimatedImage m_target3;
-    AnimatedImage m_target4;
-    AnimatedImage m_target5;
-    AnimatedImage m_target6;
-    AnimatedImage m_target7;
+    AnimatedImage m_target[TARGETS];
 };
 
 #endif // _IMAGE_SET_H_

@@ -288,25 +288,25 @@ void Table::timerEvent(QTimerEvent *)
         m_ani_angle3 = 0.0;
         m_ani_angle2 = -60.0;
         m_ani_sel2 = 1.0;
-        if (grab_ani_image(base + 6, m_image_set.m_target1))
+        if (grab_ani_image(base + 6, m_image_set.m_target[0]))
             return;
         m_ani_sel2 = 2.0;
-        if (grab_ani_image(base + 8, m_image_set.m_target2))
+        if (grab_ani_image(base + 8, m_image_set.m_target[1]))
             return;
         m_ani_sel2 = 3.0;
-        if (grab_ani_image(base + 10, m_image_set.m_target3))
+        if (grab_ani_image(base + 10, m_image_set.m_target[2]))
             return;
         m_ani_sel2 = 4.0;
-        if (grab_ani_image(base + 12, m_image_set.m_target4))
+        if (grab_ani_image(base + 12, m_image_set.m_target[3]))
             return;
         m_ani_sel2 = 5.0;
-        if (grab_ani_image(base + 14, m_image_set.m_target5))
+        if (grab_ani_image(base + 14, m_image_set.m_target[4]))
             return;
         m_ani_sel2 = 6.0;
-        if (grab_ani_image(base + 16, m_image_set.m_target6))
+        if (grab_ani_image(base + 16, m_image_set.m_target[5]))
             return;
         m_ani_sel2 = 7.0;
-        if (grab_ani_image(base + 18, m_image_set.m_target7))
+        if (grab_ani_image(base + 18, m_image_set.m_target[6]))
             return;
         m_ani_angle1 = 0.0;
         m_ani_angle2 = 0.0;
@@ -317,32 +317,14 @@ void Table::timerEvent(QTimerEvent *)
             ++m_timer_step;
             int x1, y1, x2, y2;
             m_image_set.difference(m_image_set.m_bat, x1, y1, x2, y2);
-            printf("bat difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
             m_image_set.difference(m_image_set.m_pitch, x1, y1, x2, y2);
-            printf("pitch difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target1, x1, y1, x2, y2);
-            printf("target1 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target2, x1, y1, x2, y2);
-            printf("target2 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target3, x1, y1, x2, y2);
-            printf("target3 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target4, x1, y1, x2, y2);
-            printf("target4 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target5, x1, y1, x2, y2);
-            printf("target5 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target6, x1, y1, x2, y2);
-            printf("target6 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
-            m_image_set.difference(m_image_set.m_target7, x1, y1, x2, y2);
-            printf("target7 difference %d, %d, %d, %d\n", x1, y1, x2, y2);
-            printf("  width = %d, height = %d\n", x2 - x1, y2 - y1);
+            m_image_set.difference(m_image_set.m_target[0], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[1], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[2], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[3], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[4], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[5], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_target[6], x1, y1, x2, y2);
             return;
         }
         if (m_timer_step == (base + 21)) {

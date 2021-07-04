@@ -11,6 +11,9 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_ball(BACK_WIDTH + 2.0 * BALL_RADIUS, FRONT_WIDTH + 2.0 * BALL_RADIUS, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
     , m_bat_on(false)
     , m_pitch_on(false)
+    , m_target_on(false)
+    , m_target_sel(0)
+    , m_count_down(0)
     , m_ball_set(QImage())
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
@@ -23,7 +26,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setMinimumHeight(980);
     setMinimumWidth(580);
     m_ball_set.load(":/ball_set.png");
-    timer.start(33, this);
+    timer.start(TIMER_PERIOD, this);
 }
 
 void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
@@ -46,7 +49,6 @@ QRect AltTable::ball_last_rect() const
     QPoint bp = w2s(m_ball.last_position());
     return QRect(fmax(0.0, bp.x() - 33), fmax(0.0, bp.y() - 33), bp.x() + 33, bp.y() + 33);
 }
-
 
 void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
 {
@@ -94,17 +96,9 @@ void AltTable::paintEvent(QPaintEvent* event)
         painter.drawImage(rect.x(), rect.y(), base_rect);
     }
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
-    draw_ball(painter, rect, the_ball);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
-#ifdef NEVERMORE
-        draw_ani_image(painter, m_image_set.m_target1);
-        draw_ani_image(painter, m_image_set.m_target2);
-        draw_ani_image(painter, m_image_set.m_target3);
-        draw_ani_image(painter, m_image_set.m_target4);
-        draw_ani_image(painter, m_image_set.m_target5);
-        draw_ani_image(painter, m_image_set.m_target6);
-        draw_ani_image(painter, m_image_set.m_target7);
-#endif
+    draw_ani_image(painter, rect, m_image_set.m_target[m_target_sel], m_target_on);
+    draw_ball(painter, rect, the_ball);
 }
 
 void AltTable::resizeEvent(QResizeEvent*)
@@ -117,15 +111,17 @@ void AltTable::resizeEvent(QResizeEvent*)
 
 void AltTable::mousePressEvent(QMouseEvent *e)
 {
-    if (e->button() == Qt::LeftButton) {
-        m_bat_on = true;
-        update(m_image_set.m_bat.rect());
-        m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
-    } else if (e->button() == Qt::RightButton) {
-        if (!m_ball.in_play()) {
-            m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
-            m_pitch_on = true;
-            update(m_image_set.m_pitch.rect());
+    if (m_count_down == 0) {
+        if (e->button() == Qt::LeftButton) {
+            m_bat_on = true;
+            update(m_image_set.m_bat.rect());
+            m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
+        } else if (e->button() == Qt::RightButton) {
+            if (!m_ball.in_play()) {
+                m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
+                m_pitch_on = true;
+                update(m_image_set.m_pitch.rect());
+            }
         }
     }
 }
@@ -141,6 +137,18 @@ void AltTable::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
+int AltTable::target_hit(float x) const
+{
+    for (int i = 0; i < 7 ; i++) {
+        float xl = (-6.5 + 2.0 * (float) i) * TARGET_WIDTH;
+        float xr = (-5.5 + 2.0 * (float) i) * TARGET_WIDTH;
+        if (x >= xl && x <= xr) {
+            return i + 1;
+        }
+    }
+    return 0;
+}
+
 QPoint AltTable::w2s(const QVector3D point) const
 {
 
@@ -152,10 +160,30 @@ QPoint AltTable::w2s(const QVector3D point) const
 
 void AltTable::timerEvent(QTimerEvent *)
 {
-    if (m_ball.in_play()) {
-        m_ball.update();
-        QRect br_before = ball_last_rect();
-        QRect br_after = ball_rect();
-        update(br_before.united(br_after));
+    if (m_count_down > 0) {
+        if (m_count_down == 1) {
+            m_target_on = false;
+            m_ball.reset();
+            update();
+        }
+        --m_count_down;
+    } else {
+        if (m_ball.in_play()) {
+            m_ball.update();
+            QRect br_before = ball_last_rect();
+            QRect br_after = ball_rect();
+            update(br_before.united(br_after));
+        } else if (m_ball.stopped()) {
+            if (m_ball.position().z() < BACK_POS) {
+                int t1 = target_hit(m_ball.position().x() - BALL_RADIUS * 1.1);
+                int t2 = target_hit(m_ball.position().x() + BALL_RADIUS * 1.1);
+                if (t1 > 0 || t2 > 0) {
+                    m_target_sel = (t1 | t2) - 1;
+                    m_target_on = true;
+                    update(m_image_set.m_target[m_target_sel].rect());
+                }
+            }
+            m_count_down = 400 / TIMER_PERIOD;
+        }
     }
 }

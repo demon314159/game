@@ -105,6 +105,23 @@ float Ball::right_border(float z) const
     return x1 + (z - z1) * (x2 - x1) / (z2 - z1);
 }
 
+bool Ball::reflect(QVector3D& pos)
+{
+    if (pos.x() < left_border(pos.z())) {
+        m_velocity.setX(-m_velocity.x());
+        float delta = m_hit_position.x() - left_border(pos.z());
+        m_hit_position.setX(m_hit_position.x() - 2.0 * delta);
+        return true;
+    }
+    if (pos.x() > right_border(pos.z())) {
+        m_velocity.setX(-m_velocity.x());
+        float delta = right_border(pos.z()) - m_hit_position.x();
+        m_hit_position.setX(m_hit_position.x() + 2.0 * delta);
+        return true;
+    }
+    return false;
+}
+
 void Ball::check_limits(QVector3D& pos)
 {
     if (pos.z() < m_back) {
@@ -114,16 +131,6 @@ void Ball::check_limits(QVector3D& pos)
     }
     if (pos.z() > m_front) {
         pos.setZ(m_front);
-        stop();
-        return;
-    }
-    if (pos.x() < left_border(pos.z())) {
-        pos.setX(left_border(pos.z()));
-        stop();
-        return;
-    }
-    if (pos.x() > right_border(pos.z())) {
-        pos.setX(right_border(pos.z()));
         stop();
         return;
     }
@@ -138,6 +145,9 @@ QVector3D Ball::position_now(int t_now)
             int tdiff = t_now - m_t_hit;
             float dt = ((float) tdiff) / 1000.0;
             res = m_hit_position + dt * m_velocity;
+            if (reflect(res)) {
+                res = m_hit_position + dt * m_velocity;
+            }
             check_limits(res);
         } else {
             int tdiff = t_now - m_t_launch;

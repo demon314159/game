@@ -8,7 +8,7 @@
 
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_ball(BACK_WIDTH + 2.0 * BALL_RADIUS, FRONT_WIDTH + 2.0 * BALL_RADIUS, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
+    , m_ball(BACK_WIDTH, FRONT_WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
     , m_bat_on(false)
     , m_pitch_on(false)
     , m_target_on(false)

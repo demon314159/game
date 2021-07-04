@@ -27,6 +27,7 @@ public:
 
 protected:
     QVector3D position_now(int t_now);
+    bool reflect(QVector3D& pos);
     void check_limits(QVector3D& pos);
     float left_border(float z) const;
     float right_border(float z) const;

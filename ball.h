@@ -8,8 +8,8 @@
 
 class Ball
 {
-    const float velocity = 6.0;
-    const float hit_velocity = velocity * 4.0;
+    const float launch_velocity = 6.0;
+    const float hit_velocity = launch_velocity * 4.0;
 public:
     Ball(float left, float front, float right, float back);
     ~Ball();
@@ -38,9 +38,10 @@ private:
     float m_front;
     int m_t_launch;
     int m_t_hit;
+    QVector3D m_velocity;
     bool m_stopped;
     QVector3D m_launch_position;
-    QVector3D m_bat_pivot_position;
+    QVector3D m_hit_position;
     QVector3D m_position;
     QVector3D m_last_position;
 };

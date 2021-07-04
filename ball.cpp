@@ -12,10 +12,12 @@ Ball::Ball(float back_width, float front_width, float back, float front)
     , m_front(front)
     , m_t_launch(0)
     , m_t_hit(0)
+    , m_velocity(0.0, 0.0, 0.0)
     , m_stopped(false)
     , m_launch_position(QVector3D(0.0, 0.0, 0.0))
-    , m_bat_pivot_position(QVector3D(0.0, 0.0, 0.0))
+    , m_hit_position(QVector3D(0.0, 0.0, 0.0))
     , m_position(QVector3D(0.0, 0.0, 4.0))
+    , m_last_position(QVector3D(0.0, 0.0, 4.0))
 {
 }
 
@@ -25,15 +27,23 @@ Ball::~Ball()
 
 void Ball::launch(const QVector3D& launch_position)
 {
-    m_t_launch = QTime::currentTime().msecsSinceStartOfDay();
     m_launch_position = launch_position;
+    m_velocity = QVector3D(0.0, 0.0, launch_velocity);
+    m_t_launch = QTime::currentTime().msecsSinceStartOfDay();
 }
 
 void Ball::hit(const QVector3D& bat_pivot_position)
 {
     if (m_t_launch > 0) {
-        m_t_hit = QTime::currentTime().msecsSinceStartOfDay();
-        m_bat_pivot_position = bat_pivot_position;
+        int t_hit = QTime::currentTime().msecsSinceStartOfDay();
+        int tdiff = t_hit - m_t_launch;
+        float dt = ((float) tdiff) / 1000.0;
+        m_hit_position = m_launch_position + dt * m_velocity;
+        float dx = bat_pivot_position.x();
+        float dz = bat_pivot_position.z() - m_hit_position.z();
+        float theta = atanf(dz / dx);
+        m_velocity = QVector3D(hit_velocity * sin(theta), 0.0, -hit_velocity * cos(theta));
+        m_t_hit = t_hit;
     }
 }
 
@@ -125,19 +135,14 @@ QVector3D Ball::position_now(int t_now)
 
     if (m_t_launch > 0) {
         if (m_t_hit > 0) {
-            int tdiff = m_t_hit - m_t_launch;
-            QVector3D hit_pos = m_launch_position + QVector3D(0.0, 0.0, velocity * (float) tdiff / 1000.0);
-            float dx = m_bat_pivot_position.x();
-            float dz = m_bat_pivot_position.z() - hit_pos.z();
-            float theta = atanf(dz / dx);
-            float vx = hit_velocity * sin(theta);
-            float vz = hit_velocity * cos(theta);
-            tdiff = t_now - m_t_hit;
-            res = hit_pos + QVector3D(vx * (float) tdiff / 1000.0, 0.0, - vz * (float) tdiff / 1000.0);
+            int tdiff = t_now - m_t_hit;
+            float dt = ((float) tdiff) / 1000.0;
+            res = m_hit_position + dt * m_velocity;
             check_limits(res);
         } else {
             int tdiff = t_now - m_t_launch;
-            res = m_launch_position + QVector3D(0.0, 0.0, velocity * (float) tdiff / 1000.0);
+            float dt = ((float) tdiff) / 1000.0;
+            res = m_launch_position + dt * m_velocity;
             check_limits(res);
         }
     } else {

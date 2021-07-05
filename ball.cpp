@@ -16,8 +16,8 @@ Ball::Ball(float back_width, float front_width, float back, float front)
     , m_stopped(false)
     , m_launch_position(QVector3D(0.0, 0.0, 0.0))
     , m_hit_position(QVector3D(0.0, 0.0, 0.0))
-    , m_position(QVector3D(0.0, 0.0, 4.0))
-    , m_last_position(QVector3D(0.0, 0.0, 4.0))
+    , m_position(QVector3D(20.0, 0.0, -10.0))
+    , m_last_position(QVector3D(20.0, 0.0, -10.0))
 {
 }
 
@@ -58,7 +58,7 @@ void Ball::reset()
 {
     stop();
     m_stopped = false;
-    m_position = QVector3D(0.0, 0.0, 4.0);
+    m_position = QVector3D(20.0, 0.0, -10.0);
 }
 
 void Ball::update()

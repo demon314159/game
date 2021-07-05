@@ -3,7 +3,8 @@ $fs = 0.04;
 mag = 1;
 thickness = mag * 0.05;
 wback = mag * 6.235;
-wfront = mag * 5.529;
+//wfront = mag * 5.529;
+wfront = wback;
 length = mag * 9.4;
 f = 0.98;
 p0 = [-wback/2,-length];
@@ -25,6 +26,10 @@ cube([0.5,2,thickness], center=true);
 //translate([0,-2+1,thickness/2])
 //cube([0.5*f,2*f,thickness], center=true);
 }
+translate([-2.11,-thickness/2,2])
+cube([wfront/3.1,thickness,1], center = true);
+translate([2.11,-thickness/2,2])
+cube([wfront/3.1,thickness,1], center = true);
 
 
 

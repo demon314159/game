@@ -44,6 +44,8 @@ Thingus::Thingus()
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
     CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, 9.0);
+    CadModel score(StlInterface("score.stl"), blue_paint, 0.0);
+    CadModel outs(StlInterface("outs.stl"), blue_paint, 0.0);
 //    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
     float w = TARGET_WIDTH;
     float h = 0.0;
@@ -56,6 +58,8 @@ Thingus::Thingus()
     m_cad->add(t7, 6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(bat, BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
     m_cad->add(pitch, 0.0, 0.0, PITCH_PIVOT_Z);
+    m_cad->add(score, 2.1, 0.0, 1.9);
+    m_cad->add(outs, -2.1, 0.0, 1.9);
 //    m_cad->add(ball, 0.0, 0.125, 0.0);
     initCubeGeometry();
 }

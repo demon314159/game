@@ -77,10 +77,13 @@ void AltTable::paintEvent(QPaintEvent* event)
 
     int ball_radius = (br.x() - bl.x() + 1) / 2;
 
+    if (ball_radius > 32)
+        ball_radius = 32;
+
     QImage the_ball;
     if (ball_radius >= 1 && ball_radius <= 32) {
-        int xp = (ball_radius & 7) * 64;
-        int yp = ((ball_radius >> 3) & 7) * 64;
+        int xp = ((ball_radius - 1) & 7) * 64;
+        int yp = (((ball_radius - 1) >> 3) & 7) * 64;
         the_ball = m_ball_set.copy(xp, yp, 64, 64);
     } else {
         printf("<<< ball radius our of range: %d pixels >>>\n", ball_radius);

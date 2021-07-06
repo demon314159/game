@@ -27,11 +27,6 @@ public:
     QImage the_image();
 
 protected:
-    float3 ball_position_now();
-#ifdef NEVERMORE
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
-#endif
     void timerEvent(QTimerEvent *e) override;
     bool grab_image(int slot, QImage& image);
     bool grab_ani_image(int slot, AnimatedImage& ai);

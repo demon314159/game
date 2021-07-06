@@ -1,5 +1,5 @@
 $fa = 1;
-$fs = 0.4;
+$fs = 0.1;
 mag = 1 / 15;
 thickness = mag * 1;
 height = mag * 15;

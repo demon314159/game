@@ -58,12 +58,6 @@ void Table::initializeGL()
 
 void Table::resizeGL(int w, int h)
 {
-
-
-
-
-
-
     qreal aspect = qreal(w) / qreal(h ? h : 1);
     printf("in resizeGL %d x %d aspect ratio = %7.3lf\n", w, h, aspect);
     const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
@@ -78,25 +72,25 @@ void Table::paintGL()
 
     bool regular = false;
     if (regular) {
-      QVector3D my_axis = {1.0, 0.0, 0.0};
-      QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 30.0);
-      QMatrix4x4 matrix;
-      matrix.translate(0.0, -0.25, -5.5);
-      matrix.rotate(my_rot);
-      // Set modelview-projection matrix
-      m_mvp_matrix = m_projection * matrix;
-      m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-      m_program.setUniformValue("rot_matrix", matrix);
+        QVector3D my_axis = {1.0, 0.0, 0.0};
+        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
+        QMatrix4x4 matrix;
+        matrix.translate(0.0, -0.25, -6.0);
+        matrix.rotate(my_rot);
+        // Set modelview-projection matrix
+        m_mvp_matrix = m_projection * matrix;
+        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+        m_program.setUniformValue("rot_matrix", matrix);
     } else {
-      QVector3D my_axis = {1.0, 0.0, 0.0};
-      QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 90);
-      QMatrix4x4 matrix;
-      matrix.translate(0.0, -3.00, -13.0);
-      matrix.rotate(my_rot);
-      // Set modelview-projection matrix
-      m_mvp_matrix = m_projection * matrix;
-      m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-      m_program.setUniformValue("rot_matrix", matrix);
+        QVector3D my_axis = {1.0, 0.0, 0.0};
+        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 90);
+        QMatrix4x4 matrix;
+        matrix.translate(0.0, -3.00, -13.0);
+        matrix.rotate(my_rot);
+        // Set modelview-projection matrix
+        m_mvp_matrix = m_projection * matrix;
+        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+        m_program.setUniformValue("rot_matrix", matrix);
     }
 
     QVector3D ani_axis1 = {0.0, 1.0, 0.0};
@@ -128,12 +122,28 @@ void Table::paintGL()
     m_program.setUniformValue("ani_sel3", ani_sel3);
     m_program.setUniformValue("ani_matrix3", ani_matrix3);
 
+
+
+
+
     float3 bpn = ball_position_now();
     float ani_sel4 = 10.0;
     QMatrix4x4 ani_matrix4;
     ani_matrix4.translate(bpn.v1, bpn.v2, bpn.v3);
     m_program.setUniformValue("ani_sel4", ani_sel4);
     m_program.setUniformValue("ani_matrix4", ani_matrix4);
+
+
+
+    float left_digit = 67.0;
+    float middle_digit = 54.0;
+    float right_digit = 45.0;
+    QMatrix4x4 digit_matrix;
+    digit_matrix.translate(0.0, 0.1, 0.0);
+    m_program.setUniformValue("left_digit", left_digit);
+    m_program.setUniformValue("middle_digit", middle_digit);
+    m_program.setUniformValue("right_digit", right_digit);
+    m_program.setUniformValue("digit_matrix", digit_matrix);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);

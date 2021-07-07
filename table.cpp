@@ -20,9 +20,9 @@ Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacke
     , m_ball_in_play(false)
     , m_ball_hit(false)
     , m_outs(0)
-    , m_left_digit(-30)
-    , m_middle_digit(-20)
-    , m_right_digit(-10)
+    , m_left_digit(-1)
+    , m_middle_digit(-1)
+    , m_right_digit(-1)
     , m_t0(0)
     , m_th(0)
     , m_ball_pos0({0.0, -0.25, 0.0})
@@ -126,9 +126,9 @@ void Table::paintGL()
     m_program.setUniformValue("ani_matrix3", ani_matrix3);
 
 
-    float left_digit = 30.0 + (float) m_left_digit;
-    float middle_digit = 20.0 + (float) m_middle_digit;
-    float right_digit = 10.0 + (float) m_right_digit;
+    float left_digit = m_left_digit == -1 ? 0.0 : 30.0 + (float) m_left_digit;
+    float middle_digit = m_middle_digit == -1 ? 0.0 : 20.0 + (float) m_middle_digit;
+    float right_digit = m_right_digit == -1 ? 0.0 : 10.0 + (float) m_right_digit;
     float left_out = 0.0;   // 40.0
     float middle_out = 0.0; // 41.0
     float right_out = 0.0;  // 42.0
@@ -250,71 +250,37 @@ void Table::timerEvent(QTimerEvent *)
         if (grab_ani_image(base + 24, m_image_set.m_outs[2]))
             return;
         m_outs = 0;
-        m_right_digit = 0;
-        if (grab_ani_image(base + 26, m_image_set.m_right_digit[0]))
-            return;
-        m_right_digit = 1;
-        if (grab_ani_image(base + 28, m_image_set.m_right_digit[1]))
-            return;
-        m_right_digit = 2;
-        if (grab_ani_image(base + 30, m_image_set.m_right_digit[2]))
-            return;
-        m_right_digit = 3;
-        if (grab_ani_image(base + 32, m_image_set.m_right_digit[3]))
-            return;
-        m_right_digit = 4;
-        if (grab_ani_image(base + 34, m_image_set.m_right_digit[4]))
-            return;
-        m_right_digit = 5;
-        if (grab_ani_image(base + 36, m_image_set.m_right_digit[5]))
-            return;
-        m_right_digit = 6;
-        if (grab_ani_image(base + 38, m_image_set.m_right_digit[6]))
-            return;
-        m_right_digit = 7;
-        if (grab_ani_image(base + 40, m_image_set.m_right_digit[7]))
-            return;
-        m_right_digit = 8;
-        if (grab_ani_image(base + 42, m_image_set.m_right_digit[8]))
-            return;
-        m_right_digit = 9;
-        if (grab_ani_image(base + 44, m_image_set.m_right_digit[9]))
-            return;
-        m_right_digit = -10;
 
+        if (grab_digit_set(base + 26, m_right_digit, m_image_set.m_right_digit))
+            return;
+        if (grab_digit_set(base + 46, m_middle_digit, m_image_set.m_middle_digit))
+            return;
+        if (grab_digit_set(base + 66, m_left_digit, m_image_set.m_left_digit))
+            return;
 
-
-
-
-        if (m_timer_step == (base + 46)) {
+        if (m_timer_step == (base + 86)) {
             update();
             ++m_timer_step;
-            int x1, y1, x2, y2;
-            m_image_set.difference(m_image_set.m_bat, x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_pitch, x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[0], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[1], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[2], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[3], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[4], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[5], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_target[6], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_outs[0], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_outs[1], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_outs[2], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[0], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[1], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[2], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[3], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[4], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[5], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[6], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[7], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[8], x1, y1, x2, y2);
-            m_image_set.difference(m_image_set.m_right_digit[9], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_bat);
+            m_image_set.difference(m_image_set.m_pitch);
+            m_image_set.difference(m_image_set.m_target[0]);
+            m_image_set.difference(m_image_set.m_target[1]);
+            m_image_set.difference(m_image_set.m_target[2]);
+            m_image_set.difference(m_image_set.m_target[3]);
+            m_image_set.difference(m_image_set.m_target[4]);
+            m_image_set.difference(m_image_set.m_target[5]);
+            m_image_set.difference(m_image_set.m_target[6]);
+            m_image_set.difference(m_image_set.m_outs[0]);
+            m_image_set.difference(m_image_set.m_outs[1]);
+            m_image_set.difference(m_image_set.m_outs[2]);
+
+            digit_difference(m_image_set.m_right_digit);
+            digit_difference(m_image_set.m_middle_digit);
+            digit_difference(m_image_set.m_left_digit);
+
             return;
         }
-        if (m_timer_step == (base + 47)) {
+        if (m_timer_step == (base + 87)) {
             printf("Handover\n");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;
@@ -322,6 +288,56 @@ void Table::timerEvent(QTimerEvent *)
         }
         ++m_timer_step;
     }
+}
+
+bool Table::grab_digit_set(int index, int& adigit, AnimatedImage (&digit)[ImageSet::DIGITS])
+{
+    adigit = 0;
+    if (grab_ani_image(index, digit[0]))
+        return true;
+    adigit = 1;
+    if (grab_ani_image(index + 2, digit[1]))
+        return true;
+    adigit = 2;
+    if (grab_ani_image(index + 4, digit[2]))
+        return true;
+    adigit = 3;
+    if (grab_ani_image(index + 6, digit[3]))
+        return true;
+    adigit = 4;
+    if (grab_ani_image(index + 8, digit[4]))
+        return true;
+    adigit = 5;
+    if (grab_ani_image(index + 10, digit[5]))
+        return true;
+    adigit = 6;
+    if (grab_ani_image(index + 12, digit[6]))
+        return true;
+    adigit = 7;
+    if (grab_ani_image(index + 14, digit[7]))
+        return true;
+    adigit = 8;
+    if (grab_ani_image(index + 16, digit[8]))
+        return true;
+    adigit = 9;
+    if (grab_ani_image(index + 18, digit[9]))
+        return true;
+    adigit = -1;
+    return false;
+}
+
+void Table::digit_difference(AnimatedImage (&digit)[ImageSet::DIGITS])
+{
+    m_image_set.difference(digit[0]);
+    m_image_set.difference(digit[1]);
+    m_image_set.difference(digit[2]);
+    m_image_set.difference(digit[3]);
+    m_image_set.difference(digit[4]);
+    m_image_set.difference(digit[5]);
+    m_image_set.difference(digit[6]);
+    m_image_set.difference(digit[7]);
+    m_image_set.difference(digit[8]);
+    m_image_set.difference(digit[9]);
 }
 
 QImage Table::the_image()

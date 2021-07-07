@@ -10,16 +10,16 @@ ImageSet::~ImageSet()
 }
 
 
-void ImageSet::difference(AnimatedImage& img, int& x1, int& y1, int& x2, int& y2)
+void ImageSet::difference(AnimatedImage& img)
 {
     QImage& base = m_baseline;
     QImage& active = img.m_image;
     int nx = base.width();
     int ny = base.height();
-    x1 = 0;
-    y1 = 0;
-    x2 = base.width() - 1;
-    y2 = base.height() - 1;
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = base.width() - 1;
+    int y2 = base.height() - 1;
     if (nx != active.width()) {
         printf("<<< ImageSet::difference: images are different width %d vs %d >>>\n", nx, active.width());
         return;

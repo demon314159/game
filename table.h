@@ -30,6 +30,8 @@ protected:
     void timerEvent(QTimerEvent *e) override;
     bool grab_image(int slot, QImage& image);
     bool grab_ani_image(int slot, AnimatedImage& ai);
+    bool grab_digit_set(int index, int& adigit, AnimatedImage (&digit)[ImageSet::DIGITS]);
+    void digit_difference(AnimatedImage (& digit)[ImageSet::DIGITS]);
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;

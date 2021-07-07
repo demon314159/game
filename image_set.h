@@ -6,13 +6,13 @@
 
 class ImageSet
 {
+public:
     static const int TARGETS = 7;
     static const int OUTS = 3;
     static const int DIGITS = 10;
-public:
     ImageSet();
     ~ImageSet();
-    void difference(AnimatedImage&, int& x1, int& y1, int& x2, int& y2);
+    void difference(AnimatedImage&);
 
     QImage m_baseline;
     AnimatedImage m_bat;

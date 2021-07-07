@@ -70,7 +70,7 @@ void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool regular = true;
+    bool regular = false;
     if (regular) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
         QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);

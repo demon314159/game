@@ -100,11 +100,11 @@ void AltTable::paintEvent(QPaintEvent* event)
         painter.drawImage(rect.x(), rect.y(), base_rect);
     }
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
-    draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ani_image(painter, rect, m_image_set.m_target[m_target_sel], m_target_on);
     if (m_outs > 0) {
         draw_ani_image(painter, rect, m_image_set.m_outs[m_outs - 1], true);
     }
+    draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ball(painter, rect, the_ball);
 }
 

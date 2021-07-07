@@ -79,6 +79,7 @@ Thingus::Thingus()
     CadModel left_out(StlInterface("digit_x.stl"), red_paint, 40.0);
     CadModel middle_out(StlInterface("digit_x.stl"), red_paint, 41.0);
     CadModel right_out(StlInterface("digit_x.stl"), red_paint, 42.0);
+    right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
 
 //    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
     float w = TARGET_WIDTH;

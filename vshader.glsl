@@ -15,6 +15,9 @@ uniform mat4 ani_matrix3;
 uniform float left_digit;
 uniform float middle_digit;
 uniform float right_digit;
+uniform float left_out;
+uniform float middle_out;
+uniform float right_out;
 uniform mat4 digit_matrix;
 
 attribute vec3 a_position;
@@ -41,6 +44,9 @@ void main()
         gl_Position = mvp_matrix *  ani_matrix3 * vec4(a_position, 1.0);
         v_normal = rot_matrix * ani_matrix3 * vec4(billy, 0.0);
     } else if (a_animation_id > 0.0 && (a_animation_id == left_digit || a_animation_id == middle_digit || a_animation_id == right_digit)) {
+        gl_Position = mvp_matrix *  digit_matrix * vec4(a_position, 1.0);
+        v_normal = rot_matrix * digit_matrix * vec4(billy, 0.0);
+    } else if (a_animation_id > 0.0 && (a_animation_id == left_out || a_animation_id == middle_out || a_animation_id == right_out)) {
         gl_Position = mvp_matrix *  digit_matrix * vec4(a_position, 1.0);
         v_normal = rot_matrix * digit_matrix * vec4(billy, 0.0);
     } else {

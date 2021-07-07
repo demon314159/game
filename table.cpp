@@ -19,7 +19,7 @@ Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacke
     , m_ani_angle3(0.0)
     , m_ball_in_play(false)
     , m_ball_hit(false)
-    , m_blocker(false)
+    , m_outs(0)
     , m_t0(0)
     , m_th(0)
     , m_ball_pos0({0.0, -0.25, 0.0})
@@ -70,7 +70,7 @@ void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool regular = false;
+    bool regular = true;
     if (regular) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
         QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
@@ -123,14 +123,30 @@ void Table::paintGL()
     m_program.setUniformValue("ani_matrix3", ani_matrix3);
 
 
-    float left_digit = 67.0;
-    float middle_digit = 54.0;
-    float right_digit = 45.0;
+    float left_digit = 30.0;
+    float middle_digit = 21.0;
+    float right_digit = 12.0;
+    float left_out = 0.0;   // 40.0
+    float middle_out = 0.0; // 41.0
+    float right_out = 0.0;  // 42.0
+    if (m_outs == 1) {
+        left_out = 40.0;
+    } else if (m_outs == 2) {
+        left_out = 40.0;
+        middle_out = 41.0;
+    } else if (m_outs == 3) {
+        left_out = 40.0;
+        middle_out = 41.0;
+        right_out = 42.0;
+    }
     QMatrix4x4 digit_matrix;
     digit_matrix.translate(0.0, 0.1, 0.0);
     m_program.setUniformValue("left_digit", left_digit);
     m_program.setUniformValue("middle_digit", middle_digit);
     m_program.setUniformValue("right_digit", right_digit);
+    m_program.setUniformValue("left_out", left_out);
+    m_program.setUniformValue("middle_out", middle_out);
+    m_program.setUniformValue("right_out", right_out);
     m_program.setUniformValue("digit_matrix", digit_matrix);
 
     // Draw cube geometry
@@ -158,7 +174,6 @@ bool Table::grab_image(int slot, QImage& image)
         return true;
     } else if (m_timer_step == (slot + 1)) {
         image = grabFramebuffer();
-        printf("has alpha channel: %s\n", image.hasAlphaChannel()?"yes":"no");
         ++m_timer_step;
         return true;
     }
@@ -222,7 +237,17 @@ void Table::timerEvent(QTimerEvent *)
         m_ani_angle2 = 0.0;
         m_ani_angle3 = 0.0;
         m_ani_sel2 = 0.0;
-        if (m_timer_step == (base + 20)) {
+        m_outs = 1;
+        if (grab_ani_image(base + 20, m_image_set.m_outs[0]))
+            return;
+        m_outs = 2;
+        if (grab_ani_image(base + 22, m_image_set.m_outs[1]))
+            return;
+        m_outs = 3;
+        if (grab_ani_image(base + 24, m_image_set.m_outs[2]))
+            return;
+        m_outs = 0;
+        if (m_timer_step == (base + 26)) {
             update();
             ++m_timer_step;
             int x1, y1, x2, y2;
@@ -235,9 +260,12 @@ void Table::timerEvent(QTimerEvent *)
             m_image_set.difference(m_image_set.m_target[4], x1, y1, x2, y2);
             m_image_set.difference(m_image_set.m_target[5], x1, y1, x2, y2);
             m_image_set.difference(m_image_set.m_target[6], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_outs[0], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_outs[1], x1, y1, x2, y2);
+            m_image_set.difference(m_image_set.m_outs[2], x1, y1, x2, y2);
             return;
         }
-        if (m_timer_step == (base + 21)) {
+        if (m_timer_step == (base + 27)) {
             printf("Handover\n");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;

@@ -13,6 +13,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_pitch_on(false)
     , m_target_on(false)
     , m_target_sel(0)
+    , m_outs(0)
     , m_count_down(0)
     , m_ball_set(QImage())
     , m_image_set(image_set)
@@ -101,6 +102,9 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ani_image(painter, rect, m_image_set.m_target[m_target_sel], m_target_on);
+    if (m_outs > 0) {
+        draw_ani_image(painter, rect, m_image_set.m_outs[m_outs - 1], true);
+    }
     draw_ball(painter, rect, the_ball);
 }
 
@@ -184,7 +188,13 @@ void AltTable::timerEvent(QTimerEvent *)
                     m_target_sel = (t1 | t2) - 1;
                     m_target_on = true;
                     update(m_image_set.m_target[m_target_sel].rect());
+                } else {
+                    if (m_outs < 3) {
+                        ++m_outs;
+                        update(m_image_set.m_outs[m_outs - 1].rect());
+                    }
                 }
+
             }
             m_count_down = 400 / TIMER_PERIOD;
         }

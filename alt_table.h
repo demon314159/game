@@ -47,6 +47,7 @@ private:
     bool m_pitch_on;
     bool m_target_on;
     int m_target_sel;
+    int m_outs;
     int m_count_down;
     QImage m_ball_set;
     ImageSet& m_image_set;

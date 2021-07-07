@@ -9,7 +9,6 @@ HEADERS      += game.h \
                 int3.h \
                 float3.h \
                 animated_image.h \
-                animated_digit.h \
                 image_set.h \
                 table.h \
                 alt_table.h \
@@ -26,7 +25,6 @@ HEADERS      += game.h \
 SOURCES      += main.cpp \
                 game.cpp \
                 animated_image.cpp \
-                animated_digit.cpp \
                 image_set.cpp \
                 table.cpp \
                 alt_table.cpp \

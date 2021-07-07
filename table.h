@@ -47,6 +47,9 @@ private:
     bool m_ball_in_play;
     bool m_ball_hit;
     int m_outs;
+    int m_left_digit;
+    int m_middle_digit;
+    int m_right_digit;
     int m_t0;
     int m_th;
     float3 m_ball_pos0;

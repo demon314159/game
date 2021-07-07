@@ -8,6 +8,7 @@ class ImageSet
 {
     static const int TARGETS = 7;
     static const int OUTS = 3;
+    static const int DIGITS = 10;
 public:
     ImageSet();
     ~ImageSet();
@@ -18,6 +19,9 @@ public:
     AnimatedImage m_pitch;
     AnimatedImage m_target[TARGETS];
     AnimatedImage m_outs[OUTS];
+    AnimatedImage m_left_digit[DIGITS];
+    AnimatedImage m_middle_digit[DIGITS];
+    AnimatedImage m_right_digit[DIGITS];
 };
 
 #endif // _IMAGE_SET_H_

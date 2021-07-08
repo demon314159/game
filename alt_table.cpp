@@ -231,3 +231,10 @@ void AltTable::timerEvent(QTimerEvent *)
         }
     }
 }
+
+void AltTable::my_update(const QRect& rect)
+{
+    if (rect.width() > 0 && rect.height() > 0) {
+        update(rect);
+    }
+}

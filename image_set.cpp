@@ -59,5 +59,9 @@ void ImageSet::difference(AnimatedImage& img)
         img.m_x = x1;
         img.m_y = y1;
         img.m_image = active.copy(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+    } else {
+        img.m_x = 0;
+        img.m_y = 0;
+        img.m_image = QImage(); // Nothing to draw if no difference
     }
 }

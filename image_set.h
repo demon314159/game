@@ -12,7 +12,8 @@ public:
     static const int DIGITS = 10;
     ImageSet();
     ~ImageSet();
-    void difference(AnimatedImage&);
+    void difference(AnimatedImage& img);
+    void show(const QString& name, AnimatedImage& img);
 
     QImage m_baseline;
     AnimatedImage m_bat;

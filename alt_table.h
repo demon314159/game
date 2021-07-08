@@ -35,6 +35,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball);
+    void increment_score();
     QRect ball_rect() const;
     QRect ball_last_rect() const;
     int target_hit(float x) const;
@@ -48,6 +49,9 @@ private:
     bool m_target_on;
     int m_target_sel;
     int m_outs;
+    int m_left_score;
+    int m_middle_score;
+    int m_right_score;
     int m_count_down;
     QImage m_ball_set;
     ImageSet& m_image_set;

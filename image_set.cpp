@@ -9,6 +9,11 @@ ImageSet::~ImageSet()
 {
 }
 
+void ImageSet::show(const QString& name, AnimatedImage& img)
+{
+    printf("'%s': (%d, %d) %d x %d\n", name.toLatin1().data(),
+           img.m_x, img.m_y, img.m_image.width(), img.m_image.height());
+}
 
 void ImageSet::difference(AnimatedImage& img)
 {

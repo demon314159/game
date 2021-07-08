@@ -80,6 +80,7 @@ Thingus::Thingus()
     CadModel middle_out(StlInterface("digit_x.stl"), red_paint, 41.0);
     CadModel right_out(StlInterface("digit_x.stl"), red_paint, 42.0);
     right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
+    CadModel running(StlInterface("running.stl"), blue_paint, 0.0);
 
 //    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
     float w = TARGET_WIDTH;
@@ -101,7 +102,7 @@ Thingus::Thingus()
     m_cad->add(left_out, -2.1 - 0.66667, -1.0/50.0 -0.1, 1.9);
     m_cad->add(middle_out, -2.1, -1.0/50.0 -0.1, 1.9);
     m_cad->add(right_out, -2.1 + 0.66667, -1.0/50.0 -0.1, 1.9);
-//    m_cad->add(ball, 0.0, 0.125, 0.0);
+    m_cad->add(running, 0.0, 0.0, 0.0);
     initCubeGeometry();
 }
 

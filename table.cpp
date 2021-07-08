@@ -55,7 +55,7 @@ void Table::initializeGL()
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus;
 //    timer.start(16, this);
-    timer.start(30, this);
+    timer.start(15, this);
 //    timer.start(100, this);
 }
 
@@ -73,7 +73,7 @@ void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool regular = false;
+    bool regular = true;
     if (regular) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
         QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
@@ -171,7 +171,7 @@ void Table::initShaders()
 bool Table::grab_image(int slot, QImage& image)
 {
     if (m_timer_step == slot) {
-        printf("grabbing slot %d\n", slot);
+//        printf("grabbing slot %d\n", slot);
         update();
         ++m_timer_step;
         return true;
@@ -186,7 +186,7 @@ bool Table::grab_image(int slot, QImage& image)
 bool Table::grab_ani_image(int slot, AnimatedImage& ai)
 {
     if (m_timer_step == slot) {
-        printf("grabbing slot %d\n", slot);
+//        printf("grabbing slot %d\n", slot);
         update();
         ++m_timer_step;
         return true;
@@ -202,7 +202,8 @@ bool Table::grab_ani_image(int slot, AnimatedImage& ai)
 void Table::timerEvent(QTimerEvent *)
 {
     if (isVisible()) {
-        printf("timer step %d\n", m_timer_step);
+
+//        printf("timer step %d\n", m_timer_step);
         int base = 10;
         if (grab_image(base, m_image_set.m_baseline))
             return;
@@ -263,7 +264,13 @@ void Table::timerEvent(QTimerEvent *)
             ++m_timer_step;
             m_image_set.difference(m_image_set.m_bat);
             m_image_set.difference(m_image_set.m_pitch);
+
+
             m_image_set.difference(m_image_set.m_target[0]);
+            m_image_set.show("target 0", m_image_set.m_target[0]);
+
+
+
             m_image_set.difference(m_image_set.m_target[1]);
             m_image_set.difference(m_image_set.m_target[2]);
             m_image_set.difference(m_image_set.m_target[3]);

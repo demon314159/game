@@ -14,6 +14,9 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_target_on(false)
     , m_target_sel(0)
     , m_outs(0)
+    , m_left_score(0)
+    , m_middle_score(0)
+    , m_right_score(0)
     , m_count_down(0)
     , m_ball_set(QImage())
     , m_image_set(image_set)
@@ -100,10 +103,18 @@ void AltTable::paintEvent(QPaintEvent* event)
         painter.drawImage(rect.x(), rect.y(), base_rect);
     }
     draw_ani_image(painter, rect, m_image_set.m_pitch, m_pitch_on);
+
+
+//m_target_sel = 3;
+//m_target_on = true;
+
     draw_ani_image(painter, rect, m_image_set.m_target[m_target_sel], m_target_on);
     if (m_outs > 0) {
         draw_ani_image(painter, rect, m_image_set.m_outs[m_outs - 1], true);
     }
+    draw_ani_image(painter, rect, m_image_set.m_left_digit[m_left_score], true);
+    draw_ani_image(painter, rect, m_image_set.m_middle_digit[m_middle_score], true);
+    draw_ani_image(painter, rect, m_image_set.m_right_digit[m_right_score], true);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ball(painter, rect, the_ball);
 }
@@ -165,9 +176,29 @@ QPoint AltTable::w2s(const QVector3D point) const
     return res;
 }
 
+void AltTable::increment_score()
+{
+    QRect old_score_rect = m_image_set.m_left_digit[m_left_score].rect().united(m_image_set.m_middle_digit[m_middle_score].rect().united(m_image_set.m_right_digit[m_right_score].rect()));
+    bool carry = m_right_score == 9;
+    m_right_score = carry ? 0 : m_right_score + 1;
+    if (carry) {
+        carry = m_middle_score == 9;
+        m_middle_score = carry ? 0 : m_middle_score + 1;
+        if (carry) {
+            carry = m_left_score == 9;
+            m_left_score = carry ? 0 : m_left_score + 1;
+        }
+    }
+    QRect new_score_rect = m_image_set.m_left_digit[m_left_score].rect().united(m_image_set.m_middle_digit[m_middle_score].rect().united(m_image_set.m_right_digit[m_right_score].rect()));
+    update(old_score_rect.united(new_score_rect));
+}
+
 void AltTable::timerEvent(QTimerEvent *)
 {
     if (m_count_down > 0) {
+        if (m_count_down == (400 / TIMER_PERIOD) - 2) {
+           increment_score();
+        }
         if (m_count_down == 1) {
             m_target_on = false;
             m_ball.reset();

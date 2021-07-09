@@ -19,8 +19,10 @@ Thingus::Thingus()
     initializeOpenGLFunctions();
 
     vertexBuf.create();
+    PaintCan white_paint(1.0, 1.0, 1.0);
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
+    PaintCan brown_paint(0.71, 0.396, 0.114);
     PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
@@ -80,9 +82,11 @@ Thingus::Thingus()
     CadModel middle_out(StlInterface("digit_x.stl"), red_paint, 41.0);
     CadModel right_out(StlInterface("digit_x.stl"), red_paint, 42.0);
     right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
-//    CadModel running(StlInterface("running.stl"), blue_paint, 0.0);
+    CadModel diamond(StlInterface("diamond.stl"), brown_paint, 0.0);
+    CadModel bases(StlInterface("bases.stl"), white_paint, 0.0);
+    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
+//    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
 
-//    CadModel ball(StlInterface("ball.stl"), gray_paint, 0.0);
     float w = TARGET_WIDTH;
     float h = 0.0;
     m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
@@ -102,7 +106,16 @@ Thingus::Thingus()
     m_cad->add(left_out, -2.1 - 0.66667, -1.0/50.0 -0.1, 1.9);
     m_cad->add(middle_out, -2.1, -1.0/50.0 -0.1, 1.9);
     m_cad->add(right_out, -2.1 + 0.66667, -1.0/50.0 -0.1, 1.9);
-//    m_cad->add(running, 0.0, 0.0, 0.0);
+    m_cad->add(diamond, 0.0, 0.0, 0.0);
+    m_cad->add(bases, 0.0, 0.0, 0.0);
+    m_cad->add(guy, 0.0, 0.0, 0.0);
+
+//    int base_width = 2.8;
+//    int base_height = 4.3;
+//    m_cad->add(runner, 0.0, 0.0, BAT_PIVOT_Z);
+//    m_cad->add(runner, base_width, 0.0, BAT_PIVOT_Z - base_height);
+//    m_cad->add(runner, -base_width, 0.0, BAT_PIVOT_Z - base_height);
+//    m_cad->add(runner, 0.0, 0.0, BAT_PIVOT_Z - 2.0 * base_height);
     initCubeGeometry();
 }
 

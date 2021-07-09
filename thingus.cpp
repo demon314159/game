@@ -30,18 +30,25 @@ Thingus::Thingus()
     m_cad = new CadModel(StlInterface("board.stl"), green_paint, 0.0);
     CadModel t1(StlInterface("hammer_head.stl"), blue_paint, 1.0);
     t1.add(StlInterface("hammer_bumper.stl"), red_paint, 1.0);
+    t1.add(StlInterface("t_single.stl"), white_paint, 1.0);
     CadModel t2(StlInterface("hammer_head.stl"), blue_paint, 2.0);
     t2.add(StlInterface("hammer_bumper.stl"), red_paint, 2.0);
+    t2.add(StlInterface("t_triple.stl"), white_paint, 2.0);
     CadModel t3(StlInterface("hammer_head.stl"), blue_paint, 3.0);
     t3.add(StlInterface("hammer_bumper.stl"), red_paint, 3.0);
+    t3.add(StlInterface("t_double.stl"), white_paint, 3.0);
     CadModel t4(StlInterface("hammer_head.stl"), blue_paint, 4.0);
     t4.add(StlInterface("hammer_bumper.stl"), red_paint, 4.0);
+    t4.add(StlInterface("t_homer.stl"), white_paint, 4.0);
     CadModel t5(StlInterface("hammer_head.stl"), blue_paint, 5.0);
     t5.add(StlInterface("hammer_bumper.stl"), red_paint, 5.0);
+    t5.add(StlInterface("t_double.stl"), white_paint, 5.0);
     CadModel t6(StlInterface("hammer_head.stl"), blue_paint, 6.0);
     t6.add(StlInterface("hammer_bumper.stl"), red_paint, 6.0);
+    t6.add(StlInterface("t_triple.stl"), white_paint, 6.0);
     CadModel t7(StlInterface("hammer_head.stl"), blue_paint, 7.0);
     t7.add(StlInterface("hammer_bumper.stl"), red_paint, 7.0);
+    t7.add(StlInterface("t_single.stl"), white_paint, 7.0);
     CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, 8.0);
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
@@ -84,7 +91,7 @@ Thingus::Thingus()
     right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
     CadModel diamond(StlInterface("diamond.stl"), brown_paint, 0.0);
     CadModel bases(StlInterface("bases.stl"), white_paint, 0.0);
-    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
+//    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
 //    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
 
     float w = TARGET_WIDTH;
@@ -108,7 +115,7 @@ Thingus::Thingus()
     m_cad->add(right_out, -2.1 + 0.66667, -1.0/50.0 -0.1, 1.9);
     m_cad->add(diamond, 0.0, 0.0, 0.0);
     m_cad->add(bases, 0.0, 0.0, 0.0);
-    m_cad->add(guy, 0.0, 0.0, 0.0);
+//    m_cad->add(guy, 0.0, 0.0, 0.0);
 
 //    int base_width = 2.8;
 //    int base_height = 4.3;

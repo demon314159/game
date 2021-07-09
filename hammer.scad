@@ -26,8 +26,11 @@ rotate([-90,0,0]) {
 //linear_extrude(height = thickness) {
 //  polygon(points);
 //}
-translate([-c,-d-e-f,thickness/2])
-rotate([0,90,0])
-cylinder(c*2, thickness / 3, thickness / 3);
+//translate([-c,-d-e-f,thickness/2])
+//rotate([0,90,0])
+//cylinder(c*2, thickness / 3, thickness / 3);
+translate([0,-f,0.01])
+linear_extrude(height = thickness) 
+  text("HOMER",size = 0.1,direction="ttb");
 }
 

@@ -16,7 +16,8 @@ Table::Table(QMatrix4x4& mvp_matrix, QImage& image, QStackedWidget* stacked_widg
     , m_timer_ready(false)
     , m_timer_step(0)
     , m_image(image)
-    , m_ani_sel1(0.0)
+    , m_calibration_radius(1)
+    , m_ani_sel1(1.0)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
@@ -265,7 +266,7 @@ bool Table::grab_ani_image(int slot, AnimatedImage& ai)
 
 int Table::image_radius()
 {
-    const int box_w = 100;
+    const int box_w = 200;
 
     QImage fb = grabFramebuffer();
     QImage box = fb.copy((fb.width() - box_w) / 2, (fb.height() - box_w) / 2, box_w, box_w);
@@ -297,10 +298,10 @@ int Table::image_radius()
     }
     printf("    x1 = %d, x2 = %d\n", x1, x2);
     int radius = (x2 - x1 + 1) / 2;
-    QImage img = box.copy(18, 18, 64, 64);
-    if (radius >= 1 && radius <= 32) {
-        int x = ((radius-1) & 7) * 64;
-        int y = (((radius-1) >> 3) & 7) * 64;
+    QImage img = box.copy(36, 36, 128, 128);
+    if (radius >= 1 && radius <= 64) {
+        int x = ((radius-1) & 7) * 128;
+        int y = (((radius-1) >> 3) & 7) * 128;
         QPainter painter;
         painter.begin(&m_image);
         painter.drawImage(x, y, img);
@@ -314,24 +315,36 @@ void Table::timerEvent(QTimerEvent *)
     if (isVisible()) {
 //        printf("timer step %d\n", m_timer_step);
         int base = 10;
-
-        if (m_timer_step > base) {
+        if (m_timer_step >= base) {
             if (m_timer_ready) {
-                int radius = image_radius();
-                printf("    radius = %d pixels\n", radius);
+                if (m_timer_step == base) {
+                    m_calibration_radius = image_radius();
+                    printf("step 1b: resulting radius = %d pixels\n", m_calibration_radius);
+                } else {
+                    int radius = image_radius();
+                    printf("step %db: resulting radius = %d pixels\n", m_timer_step - base + 1, radius);
+                }
                 ++m_timer_step;
                 m_timer_ready = false;
             } else {
-                m_ani_sel1 = (float) (m_timer_step - base);
-                update();
-                printf("setting up index = %7.3lf\n", m_ani_sel1);
+//                m_ani_sel1 = (float) (m_timer_step - base);
+                if (m_timer_step == base) {
+                    printf("step 1a: setting up calibration image size 1.0\n");
+                    m_ani_sel1 = 1.0;
+                    update();
+                } else {
+                    m_ani_sel1 = (float) (m_timer_step - base) / (float) m_calibration_radius;
+                    printf("step %da: setting up calibration image size %7.3f\n", m_timer_step - base + 1, m_ani_sel1);
+                    update();
+
+                }
                 m_timer_ready = true;
             }
         } else {
             ++m_timer_step;
         }
 
-        if (m_timer_step == (base + 71)) {
+        if (m_timer_step == (base + 65)) {
             printf("Handover\n");
             m_image.save("ball_set.png");
             m_stacked_widget->setCurrentIndex(1);

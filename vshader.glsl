@@ -24,13 +24,8 @@ void main()
     billy = normalize(a_normal);
 
 // Calculate vertex position in screen space
-    if (a_animation_id == ani_sel1) {
-        gl_Position = mvp_matrix * ani_matrix1 * vec4(a_position, 1.0);
-        v_normal = rot_matrix * ani_matrix1 * vec4(billy, 0.0);
-    } else {
-        gl_Position = mvp_matrix * ani_matrix2 * vec4(a_position, 1.0);
-        v_normal = rot_matrix * ani_matrix2 * vec4(billy, 0.0);
-    }
+    gl_Position = mvp_matrix * vec4(ani_sel1 * a_position, 1.0);
+    v_normal = rot_matrix * vec4(billy, 0.0);
     // Pass color coordinate to fragment shader
     v_color = a_color;
 }

@@ -25,14 +25,14 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 71.0);
-    for (int i = 1; i < 71; i++) {
-        float index = (float) i;
-        float mag = 0.005 * index;
-        CadModel t1(StlInterface("ball_1.stl"), gray_paint, index);
-        t1.magnify(mag);
-        m_cad->add(t1, 0.0, 0.0, 0.0);
-    }
+    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 0.0);
+//    for (int i = 1; i < 71; i++) {
+//        float index = (float) i;
+//        float mag = 0.005 * index;
+//        CadModel t1(StlInterface("ball_1.stl"), gray_paint, index);
+//        t1.magnify(mag);
+//        m_cad->add(t1, 0.0, 0.0, 0.0);
+//    }
     initCubeGeometry();
 }
 

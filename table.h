@@ -46,6 +46,7 @@ private:
     bool m_timer_ready;
     int m_timer_step;
     QImage& m_image;
+    int m_calibration_radius;
     float m_ani_sel1;
     float m_ani_angle1;
     float m_ani_angle2;

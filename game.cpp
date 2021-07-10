@@ -11,7 +11,7 @@
 #include "table.h"
 
 Game::Game()
-    : m_image(8 * 64, 4 * 64, QImage::Format_ARGB32)
+    : m_image(8 * 128, 8 * 128, QImage::Format_ARGB32)
 {
     initializeWindow();
 }

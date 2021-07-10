@@ -9,6 +9,7 @@
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_ball(BACK_WIDTH, FRONT_WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
+    , m_guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1)
     , m_bat_on(false)
     , m_pitch_on(false)
     , m_target_on(false)
@@ -19,6 +20,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_right_score(0)
     , m_count_down(0)
     , m_ball_set(QImage())
+    , m_guy_set(QImage())
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
     , m_width((512 * 1920) / 1080)
@@ -30,6 +32,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     setMinimumHeight(980);
     setMinimumWidth(580);
     m_ball_set.load(":/ball_set.png");
+    m_guy_set.load(":/guy_set.png");
     timer.start(TIMER_PERIOD, this);
 }
 
@@ -90,6 +93,12 @@ void AltTable::paintEvent(QPaintEvent* event)
         printf("<<< ball radius our of range: %d pixels >>>\n", ball_radius);
     }
 
+    QImage the_guy;
+    int guy_radius = 32;
+    int xp = ((guy_radius - 1) & 7) * 128;
+    int yp = (((guy_radius - 1) >> 3) & 7) * 128;
+    the_guy = m_guy_set.copy(xp, yp, 128, 128);
+
     QRect rect = event->rect();
 //    printf("rect = (%d, %d) %d * %d\n", rect.x(), rect.y(), rect.width(), rect.height());
 
@@ -114,6 +123,12 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_right_digit[m_right_score], true);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
     draw_ball(painter, rect, the_ball);
+
+    painter.drawImage(w2s(m_guy.position(1)) + QPoint(-64, -64 - guy_radius), the_guy);
+    painter.drawImage(w2s(m_guy.position(2)) + QPoint(-64, -64 - guy_radius), the_guy);
+    painter.drawImage(w2s(m_guy.position(3)) + QPoint(-64, -64 - guy_radius), the_guy);
+//    painter.drawImage(w2s(m_guy.position(4)) + QPoint(-64, -64 - guy_radius), the_guy);
+
 }
 
 void AltTable::resizeEvent(QResizeEvent*)

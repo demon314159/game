@@ -7,6 +7,7 @@
 #include "table.h"
 #include "image_set.h"
 #include "ball.h"
+#include "guy.h"
 #include <QObject>
 #include <QWidget>
 #include <QPainter>
@@ -45,6 +46,7 @@ protected:
 
 private:
     Ball m_ball;
+    Guy m_guy;
     bool m_bat_on;
     bool m_pitch_on;
     bool m_target_on;
@@ -55,6 +57,7 @@ private:
     int m_right_score;
     int m_count_down;
     QImage m_ball_set;
+    QImage m_guy_set;
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
     int m_width;

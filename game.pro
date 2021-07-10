@@ -13,6 +13,7 @@ HEADERS      += game.h \
                 table.h \
                 alt_table.h \
                 ball.h \
+                guy.h \
                 paint_can.h \
                 bin_interface.h \
                 char_interface.h \
@@ -29,6 +30,7 @@ SOURCES      += main.cpp \
                 table.cpp \
                 alt_table.cpp \
                 ball.cpp \
+                guy.cpp \
                 paint_can.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

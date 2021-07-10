@@ -14,6 +14,8 @@
 
 #define PITCH_PIVOT_Z -4.0
 
+#define notGUY_SET
+
 class Thingus : protected QOpenGLFunctions
 {
 public:

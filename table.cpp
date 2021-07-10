@@ -50,7 +50,7 @@ void Table::initializeGL()
 {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
     initShaders();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -283,7 +283,7 @@ int Table::image_radius()
     for (int j = 0; j < ny; j++) {
         uchar* box_line = box.scanLine(j);
         for (int i = 0; i < nx; i++) {
-            if ( box_line[4 * i]     != 255
+            if ( box_line[4 * i]     != 0
               || box_line[4 * i + 1] != 255
               || box_line[4 * i + 2] != 255) {
                 maxx = std::max(maxx, i);
@@ -306,7 +306,7 @@ int Table::image_radius()
         y1 = miny;
         y2 = maxy;
     }
-    printf("    x1 = %d, x2 = %d, y1 = %d, y2 = %d\n", x1, x2, y1, y2);
+    printf("    x1 = %d, x2 = %d, y1 = %d, y2 = %d, center = (%d, %d)\n", x1, x2, y1, y2, (x1 + x2) / 2, (y1 + y2) / 2);
     int radius1 = (x2 - x1 + 1) / 2;
     int radius2 = (y2 - y1 + 1) / 2;
     int radius = std::max(radius1, radius2);
@@ -348,7 +348,6 @@ void Table::timerEvent(QTimerEvent *)
                     m_ani_sel1 = (float) (m_timer_step - base) / (float) m_calibration_radius;
                     printf("step %da: setting up calibration image size %7.3f\n", m_timer_step - base + 1, m_ani_sel1);
                     update();
-
                 }
                 m_timer_ready = true;
             }
@@ -358,7 +357,11 @@ void Table::timerEvent(QTimerEvent *)
 
         if (m_timer_step == (base + 65)) {
             printf("Handover\n");
-            m_image.save("guy_set.png");
+#ifdef GUY_SET
+            m_image.save("new_guy_set.png");
+#else
+            m_image.save("new_ball_set.png");
+#endif
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;
             return;

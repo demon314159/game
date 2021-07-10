@@ -27,21 +27,15 @@ Thingus::Thingus()
     PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
-
-//    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 0.0);
+#ifdef GUY_SET
     m_cad = new CadModel(StlInterface("guy_flesh.stl"), pink_paint, 0.0);
     m_cad->add(StlInterface("guy_clothes.stl"), white_paint, 0.0);
     m_cad->add(StlInterface("guy_shoes.stl"), red_paint, 0.0);
     m_cad->add(StlInterface("guy_eyes.stl"), black_paint, 0.0);
-
-    m_cad->magnify(0.4);
-//    for (int i = 1; i < 71; i++) {
-//        float index = (float) i;
-//        float mag = 0.005 * index;
-//        CadModel t1(StlInterface("ball_1.stl"), gray_paint, index);
-//        t1.magnify(mag);
-//        m_cad->add(t1, 0.0, 0.0, 0.0);
-//    }
+    m_cad->magnify(0.513);
+#else
+    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 0.0);
+#endif
     initCubeGeometry();
 }
 

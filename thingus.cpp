@@ -19,13 +19,22 @@ Thingus::Thingus()
     initializeOpenGLFunctions();
 
     vertexBuf.create();
+    PaintCan pink_paint(0.953, 0.789, 0.773);
+    PaintCan white_paint(1.0, 1.0, 1.0);
+    PaintCan black_paint(0.0, 0.0, 0.0);
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
     PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 0.0);
+//    m_cad = new CadModel(StlInterface("ball_1.stl"), gray_paint, 0.0);
+    m_cad = new CadModel(StlInterface("guy_flesh.stl"), pink_paint, 0.0);
+    m_cad->add(StlInterface("guy_clothes.stl"), white_paint, 0.0);
+    m_cad->add(StlInterface("guy_shoes.stl"), red_paint, 0.0);
+    m_cad->add(StlInterface("guy_eyes.stl"), black_paint, 0.0);
+
+    m_cad->magnify(0.4);
 //    for (int i = 1; i < 71; i++) {
 //        float index = (float) i;
 //        float mag = 0.005 * index;

@@ -274,8 +274,12 @@ int Table::image_radius()
     int ny = box.height();
     int x1 = 0;
     int x2 = box.width() - 1;
+    int y1 = 0;
+    int y2 = box.height() - 1;
     int minx = x2;
     int maxx = x1;
+    int miny = y2;
+    int maxy = y1;
     for (int j = 0; j < ny; j++) {
         uchar* box_line = box.scanLine(j);
         for (int i = 0; i < nx; i++) {
@@ -284,6 +288,8 @@ int Table::image_radius()
               || box_line[4 * i + 2] != 255) {
                 maxx = std::max(maxx, i);
                 minx = std::min(minx, i);
+                maxy = std::max(maxy, j);
+                miny = std::min(miny, j);
             } else {
                 box_line[4 * i] = 0;
                 box_line[4 * i + 1] = 0;
@@ -296,8 +302,14 @@ int Table::image_radius()
         x1 = minx;
         x2 = maxx;
     }
-    printf("    x1 = %d, x2 = %d\n", x1, x2);
-    int radius = (x2 - x1 + 1) / 2;
+    if (maxy != y1 || miny != y2) {
+        y1 = miny;
+        y2 = maxy;
+    }
+    printf("    x1 = %d, x2 = %d, y1 = %d, y2 = %d\n", x1, x2, y1, y2);
+    int radius1 = (x2 - x1 + 1) / 2;
+    int radius2 = (y2 - y1 + 1) / 2;
+    int radius = std::max(radius1, radius2);
     QImage img = box.copy(36, 36, 128, 128);
     if (radius >= 1 && radius <= 64) {
         int x = ((radius-1) & 7) * 128;
@@ -346,7 +358,7 @@ void Table::timerEvent(QTimerEvent *)
 
         if (m_timer_step == (base + 65)) {
             printf("Handover\n");
-            m_image.save("ball_set.png");
+            m_image.save("guy_set.png");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;
             return;

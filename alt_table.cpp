@@ -45,23 +45,23 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
 QRect AltTable::ball_rect() const
 {
     QPoint bp = w2s(m_ball.position());
-    return QRect(fmax(0.0, bp.x() - 33), fmax(0.0, bp.y() - 33), bp.x() + 33, bp.y() + 33);
+    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
 }
 
 QRect AltTable::ball_last_rect() const
 {
     QPoint bp = w2s(m_ball.last_position());
-    return QRect(fmax(0.0, bp.x() - 33), fmax(0.0, bp.y() - 33), bp.x() + 33, bp.y() + 33);
+    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
 }
 
 void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
 {
     QPoint bp = w2s(m_ball.position());
-    QRect br =  QRect(bp.x() - 33, bp.y() - 33, bp.x() + 33, bp.y() + 33);
+    QRect br =  QRect(bp.x() - 65, bp.y() - 65, bp.x() + 65, bp.y() + 65);
 
     if (rect.intersects(br)) {
 //        if (m_ball_in_play) {
-            painter.drawImage(bp.x() - 32, bp.y() - 32, the_ball);
+            painter.drawImage(bp.x() - 64, bp.y() - 64, the_ball);
 //        }
     }
 }
@@ -81,14 +81,11 @@ void AltTable::paintEvent(QPaintEvent* event)
 
     int ball_radius = (br.x() - bl.x() + 1) / 2;
 
-    if (ball_radius > 32)
-        ball_radius = 32;
-
     QImage the_ball;
-    if (ball_radius >= 1 && ball_radius <= 32) {
-        int xp = ((ball_radius - 1) & 7) * 64;
-        int yp = (((ball_radius - 1) >> 3) & 7) * 64;
-        the_ball = m_ball_set.copy(xp, yp, 64, 64);
+    if (ball_radius >= 1 && ball_radius <= 64) {
+        int xp = ((ball_radius - 1) & 7) * 128;
+        int yp = (((ball_radius - 1) >> 3) & 7) * 128;
+        the_ball = m_ball_set.copy(xp, yp, 128, 128);
     } else {
         printf("<<< ball radius our of range: %d pixels >>>\n", ball_radius);
     }

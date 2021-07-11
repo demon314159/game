@@ -35,7 +35,8 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
-//    void draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball);
+    void draw_ball(QPainter &painter, const QRect& rect);
+    void draw_guy(QPainter &painter, const QRect& rect);
     void increment_score();
     int ball_radius(const QVector3D& position) const;
     int guy_radius(const QVector3D& position) const;

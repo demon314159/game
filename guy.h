@@ -14,8 +14,8 @@ public:
     ~Guy();
 
     void update();
-    QVector3D position(int base) const;
-    QVector3D last_position(int base) const;
+    QVector3D position() const;
+    QVector3D last_position() const;
 
 protected:
 

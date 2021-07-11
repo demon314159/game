@@ -13,7 +13,9 @@ public:
     Guy(float left, float right, float back, float front);
     ~Guy();
 
+    void update();
     QVector3D position(int base) const;
+    QVector3D last_position(int base) const;
 
 protected:
 
@@ -22,6 +24,8 @@ private:
     float m_right;
     float m_back;
     float m_front;
+    float m_position; // 0.0 to 4.0
+    float m_last_position;
 };
 
 #endif // _GUY_H_

@@ -45,28 +45,69 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
     }
 }
 
-QRect AltTable::ball_rect() const
-{
-    QPoint bp = w2s(m_ball.position());
-    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
-}
+//QRect AltTable::ball_rect() const
+//{
+//    QPoint bp = w2s(m_ball.position());
+//    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
+//}
 
-QRect AltTable::ball_last_rect() const
-{
-    QPoint bp = w2s(m_ball.last_position());
-    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
-}
+//QRect AltTable::ball_last_rect() const
+//{
+//    QPoint bp = w2s(m_ball.last_position());
+//    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
+//}
 
-void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
-{
-    QPoint bp = w2s(m_ball.position());
-    QRect br =  QRect(bp.x() - 65, bp.y() - 65, bp.x() + 65, bp.y() + 65);
-
-    if (rect.intersects(br)) {
+//void AltTable::draw_ball(QPainter &painter, const QRect& rect, const QImage& the_ball)
+//{
+//    QPoint bp = w2s(m_ball.position());
+//    QRect br =  QRect(bp.x() - 65, bp.y() - 65, bp.x() + 65, bp.y() + 65);
+//
+//    if (rect.intersects(br)) {
 //        if (m_ball_in_play) {
-            painter.drawImage(bp.x() - 64, bp.y() - 64, the_ball);
+//            painter.drawImage(bp.x() - 64, bp.y() - 64, the_ball);
 //        }
-    }
+//    }
+//}
+
+
+QRect AltTable::ball_rect(const QVector3D& position) const
+{
+    QPoint screen_pos = w2s(position);
+    int screen_radius = ball_radius(position);
+
+    return QRect(std::max(0, screen_pos.x() - screen_radius - 2),
+                 std::max(0, screen_pos.y() - screen_radius - 2),
+                 2 * screen_radius + 4,
+                 2 * screen_radius + 4);
+}
+
+QRect AltTable::guy_rect(const QVector3D& position) const
+{
+    QPoint screen_pos = w2s(position);
+    int screen_radius = guy_radius(position);
+
+    return QRect(std::max(0, screen_pos.x() - screen_radius - 2),
+                 std::max(0, screen_pos.y() - screen_radius - 2),
+                 2 * screen_radius + 4,
+                 2 * screen_radius + 4);
+}
+
+int AltTable::ball_radius(const QVector3D& position) const
+{
+    QVector3D pos_left = position + QVector3D(-BALL_RADIUS, 0.0, 0.0);
+    QVector3D pos_right = position + QVector3D(BALL_RADIUS, 0.0, 0.0);
+    QPoint bl = w2s(pos_left);
+    QPoint br = w2s(pos_right);
+    return (br.x() - bl.x() + 1) / 2;
+}
+
+int AltTable::guy_radius(const QVector3D& position) const
+{
+    QVector3D pos_left = position + QVector3D(-GUY_RADIUS, 0.0, 0.0);
+    QVector3D pos_right = position + QVector3D(GUY_RADIUS, 0.0, 0.0);
+    QPoint bl = w2s(pos_left);
+    QPoint br = w2s(pos_right);
+    return (br.x() - bl.x() + 1) / 2;
 }
 
 void AltTable::paintEvent(QPaintEvent* event)
@@ -76,22 +117,6 @@ void AltTable::paintEvent(QPaintEvent* event)
     m_width = painter.viewport().width();
     m_height = painter.viewport().height();
 
-    QVector3D bpn = m_ball.position();
-    QVector3D bpn_left = bpn + QVector3D(-BALL_RADIUS, 0.0, 0.0);
-    QVector3D bpn_right = bpn + QVector3D(BALL_RADIUS, 0.0, 0.0);
-    QPoint bl = w2s(bpn_left);
-    QPoint br = w2s(bpn_right);
-
-    int ball_radius = (br.x() - bl.x() + 1) / 2;
-
-    QImage the_ball;
-    if (ball_radius >= 1 && ball_radius <= 64) {
-        int xp = ((ball_radius - 1) & 7) * 128;
-        int yp = (((ball_radius - 1) >> 3) & 7) * 128;
-        the_ball = m_ball_set.copy(xp, yp, 128, 128);
-    } else {
-        printf("<<< ball radius our of range: %d pixels >>>\n", ball_radius);
-    }
 
     QImage the_guy;
     int guy_radius = 32;
@@ -122,8 +147,25 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_middle_digit[m_middle_score], true);
     draw_ani_image(painter, rect, m_image_set.m_right_digit[m_right_score], true);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
-    draw_ball(painter, rect, the_ball);
 
+    QVector3D bp = m_ball.position();
+    if (rect.intersects(ball_rect(bp))) {
+        int br = ball_radius(bp);
+        QImage the_ball;
+        if (br >= 1 && br <= 64) {
+            int xp = ((br - 1) & 7) * 128;
+            int yp = (((br - 1) >> 3) & 7) * 128;
+            int bx = std::max(xp, xp + 64 - br - 2);
+            int by = std::max(yp, yp + 64 - br - 2);
+            int sx = std::min(2 * br + 4, 128);
+            the_ball = m_ball_set.copy(bx, by, sx, sx);
+            QPoint bs = w2s(bp);
+
+            painter.drawImage(bs.x() - sx / 2, bs.y() - sx / 2, the_ball);
+        } else {
+            printf("<<< ball radius our of range: %d pixels >>>\n", br);
+        }
+    }
     painter.drawImage(w2s(m_guy.position(1)) + QPoint(-64, -64 - guy_radius), the_guy);
     painter.drawImage(w2s(m_guy.position(2)) + QPoint(-64, -64 - guy_radius), the_guy);
     painter.drawImage(w2s(m_guy.position(3)) + QPoint(-64, -64 - guy_radius), the_guy);
@@ -220,8 +262,8 @@ void AltTable::timerEvent(QTimerEvent *)
     } else {
         if (m_ball.in_play()) {
             m_ball.update();
-            QRect br_before = ball_last_rect();
-            QRect br_after = ball_rect();
+            QRect br_before = ball_rect(m_ball.last_position());
+            QRect br_after = ball_rect(m_ball.position());
             update(br_before.united(br_after));
         } else if (m_ball.stopped()) {
             if (m_ball.position().z() < BACK_POS) {

@@ -81,7 +81,7 @@ void AltTable::draw_ball(QPainter &painter, const QRect& rect)
 void AltTable::draw_guy(QPainter &painter, const QRect& rect)
 {
     QVector3D bp = m_guy.position();
-    if (rect.intersects(ball_rect(bp))) {
+    if (rect.intersects(guy_rect(bp))) {
         int br = guy_radius(bp);
         QImage the_guy;
         if (br >= 1 && br <= 64) {
@@ -141,12 +141,12 @@ int AltTable::guy_radius(const QVector3D& position) const
 
 void AltTable::paintEvent(QPaintEvent* event)
 {
+    QRect rect = event->rect();
     QPainter painter(this);
     // w2s() function depends on these
     m_width = painter.viewport().width();
     m_height = painter.viewport().height();
 
-    QRect rect = event->rect();
 //    printf("rect = (%d, %d) %d * %d\n", rect.x(), rect.y(), rect.width(), rect.height());
 
     if (rect == painter.viewport()) {
@@ -166,8 +166,8 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_right_digit[m_right_score], true);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
 
-    draw_guy(painter, rect);
     draw_ball(painter, rect);
+    draw_guy(painter, rect);
 }
 
 void AltTable::resizeEvent(QResizeEvent*)
@@ -229,7 +229,9 @@ QPoint AltTable::w2s(const QVector3D point) const
 
 void AltTable::increment_score()
 {
-    QRect old_score_rect = m_image_set.m_left_digit[m_left_score].rect().united(m_image_set.m_middle_digit[m_middle_score].rect().united(m_image_set.m_right_digit[m_right_score].rect()));
+    QRect old_score_rect1 = m_image_set.m_left_digit[m_left_score].rect();
+    QRect old_score_rect2 = m_image_set.m_middle_digit[m_middle_score].rect();
+    QRect old_score_rect3 = m_image_set.m_right_digit[m_right_score].rect();
     bool carry = m_right_score == 9;
     m_right_score = carry ? 0 : m_right_score + 1;
     if (carry) {
@@ -240,8 +242,16 @@ void AltTable::increment_score()
             m_left_score = carry ? 0 : m_left_score + 1;
         }
     }
-    QRect new_score_rect = m_image_set.m_left_digit[m_left_score].rect().united(m_image_set.m_middle_digit[m_middle_score].rect().united(m_image_set.m_right_digit[m_right_score].rect()));
-    update(old_score_rect.united(new_score_rect));
+    QRect new_score_rect1 = m_image_set.m_left_digit[m_left_score].rect();
+    QRect new_score_rect2 = m_image_set.m_middle_digit[m_middle_score].rect();
+    QRect new_score_rect3 = m_image_set.m_right_digit[m_right_score].rect();
+
+    update(old_score_rect1);
+    update(old_score_rect2);
+    update(old_score_rect3);
+    update(new_score_rect1);
+    update(new_score_rect2);
+    update(new_score_rect3);
 }
 
 void AltTable::timerEvent(QTimerEvent *)
@@ -258,14 +268,16 @@ void AltTable::timerEvent(QTimerEvent *)
         m_guy.update();
         QRect gr_before = guy_rect(m_guy.last_position());
         QRect gr_after = guy_rect(m_guy.position());
-        update(gr_before.united(gr_after));
+        update(gr_before);
+        update(gr_after);
         --m_count_down;
     } else {
         if (m_ball.in_play()) {
             m_ball.update();
             QRect br_before = ball_rect(m_ball.last_position());
             QRect br_after = ball_rect(m_ball.position());
-            update(br_before.united(br_after));
+            update(br_before);
+            update(br_after);
         } else if (m_ball.stopped()) {
             if (m_ball.position().z() < BACK_POS) {
                 int t1 = target_hit(m_ball.position().x() - BALL_RADIUS * 1.1);
@@ -287,9 +299,3 @@ void AltTable::timerEvent(QTimerEvent *)
     }
 }
 
-void AltTable::my_update(const QRect& rect)
-{
-    if (rect.width() > 0 && rect.height() > 0) {
-        update(rect);
-    }
-}

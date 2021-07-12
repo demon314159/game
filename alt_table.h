@@ -46,7 +46,6 @@ protected:
     int target_hit(float x) const;
     QPoint w2s(const QVector3D point) const;
     void timerEvent(QTimerEvent *e) override;
-    void my_update(const QRect& rect);
 
 private:
     Ball m_ball;

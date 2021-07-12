@@ -45,16 +45,25 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
     }
 }
 
-//QRect AltTable::ball_rect() const
+//void AltTable::draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite)
 //{
-//    QPoint bp = w2s(m_ball.position());
-//    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
-//}
-
-//QRect AltTable::ball_last_rect() const
-//{
-//    QPoint bp = w2s(m_ball.last_position());
-//    return QRect(fmax(0.0, bp.x() - 65), fmax(0.0, bp.y() - 65), bp.x() + 65, bp.y() + 65);
+//    QVector3D bp = m_ball.position();
+//    if (rect.intersects(ball_rect(bp))) {
+//        int br = ball_radius(bp);
+//        QImage the_ball;
+//        if (br >= 1 && br <= 64) {
+//            int xp = ((br - 1) & 7) * 128;
+//            int yp = (((br - 1) >> 3) & 7) * 128;
+//            int bx = std::max(xp, xp + 64 - br - 2);
+//            int by = std::max(yp, yp + 64 - br - 2);
+//            int sx = std::min(2 * br + 4, 128);
+//            the_ball = m_ball_set.copy(bx, by, sx, sx);
+//            QPoint bs = w2s(bp);
+//            painter.drawImage(bs.x() - sx / 2, bs.y() - sx / 2, the_ball);
+//        } else {
+//            printf("<<< ball radius our of range: %d pixels >>>\n", br);
+//        }
+//    }
 //}
 
 void AltTable::draw_ball(QPainter &painter, const QRect& rect)

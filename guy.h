@@ -4,11 +4,11 @@
 #if !defined(_GUY_H_)
 #define _GUY_H_
 
-#include <QVector3D>
+#include "sprite.h"
 
 #define GUY_RADIUS 0.25
 
-class Guy
+class Guy: public Sprite
 {
     const float run_velocity = 4.4;
 public:
@@ -16,12 +16,12 @@ public:
     ~Guy();
 
     void launch(float start_position, float stop_position);
-    void update();
     QVector3D calc_position(float pos) const;
-    QVector3D position() const;
-    QVector3D last_position() const;
 
-    bool in_play() const;
+    void update() override;
+    bool in_play() const override;
+    QVector3D position() const override;
+    QVector3D last_position() const override;
 
 protected:
 

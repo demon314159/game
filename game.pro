@@ -12,6 +12,7 @@ HEADERS      += game.h \
                 image_set.h \
                 table.h \
                 alt_table.h \
+                sprite.h \
                 ball.h \
                 guy.h \
                 paint_can.h \

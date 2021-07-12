@@ -4,11 +4,11 @@
 #if !defined(_BALL_H_)
 #define _BALL_H_
 
-#include <QVector3D>
+#include "sprite.h"
 
 #define BALL_RADIUS 0.125
 
-class Ball
+class Ball: public Sprite
 {
     const float launch_velocity = 6.0;
     const float hit_velocity = launch_velocity * 4.0;
@@ -20,12 +20,11 @@ public:
     void hit(const QVector3D& bat_pivot_position);
     void stop();
     void reset();
-    void update();
-
-    bool in_play() const;
     bool stopped() const;
-    QVector3D position() const;
-    QVector3D last_position() const;
+    void update() override;
+    bool in_play() const override;
+    QVector3D position() const override;
+    QVector3D last_position() const override;
 
 protected:
     QVector3D position_now(int t_now);

@@ -167,7 +167,8 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
 
     draw_ball(painter, rect);
-    draw_guy(painter, rect);
+    if (m_guy.in_play())
+      draw_guy(painter, rect);
 }
 
 void AltTable::resizeEvent(QResizeEvent*)
@@ -256,20 +257,21 @@ void AltTable::increment_score()
 
 void AltTable::timerEvent(QTimerEvent *)
 {
+    m_guy.update();
+    QRect gr_before = guy_rect(m_guy.last_position());
+    QRect gr_after = guy_rect(m_guy.position());
+    update(gr_before);
+    update(gr_after);
     if (m_count_down > 0) {
         if (m_count_down == (400 / TIMER_PERIOD) - 2) {
            increment_score();
+           m_guy.launch(0.0, 4.0);
         }
         if (m_count_down == 1) {
             m_target_on = false;
             m_ball.reset();
             update();
         }
-        m_guy.update();
-        QRect gr_before = guy_rect(m_guy.last_position());
-        QRect gr_after = guy_rect(m_guy.position());
-        update(gr_before);
-        update(gr_after);
         --m_count_down;
     } else {
         if (m_ball.in_play()) {

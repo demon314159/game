@@ -123,6 +123,8 @@ Thingus::Thingus()
 //    m_cad->add(runner, base_width, 0.0, BAT_PIVOT_Z - base_height);
 //    m_cad->add(runner, -base_width, 0.0, BAT_PIVOT_Z - base_height);
 //    m_cad->add(runner, 0.0, 0.0, BAT_PIVOT_Z - 2.0 * base_height);
+
+    printf("total facets = %d\n", m_cad->facets());
     initCubeGeometry();
 }
 

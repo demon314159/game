@@ -73,7 +73,7 @@ void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool regular = true;
+    bool regular = false;
     if (regular) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
         QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
@@ -264,13 +264,7 @@ void Table::timerEvent(QTimerEvent *)
             ++m_timer_step;
             m_image_set.difference(m_image_set.m_bat);
             m_image_set.difference(m_image_set.m_pitch);
-
-
             m_image_set.difference(m_image_set.m_target[0]);
-            m_image_set.show("target 0", m_image_set.m_target[0]);
-
-
-
             m_image_set.difference(m_image_set.m_target[1]);
             m_image_set.difference(m_image_set.m_target[2]);
             m_image_set.difference(m_image_set.m_target[3]);
@@ -280,11 +274,9 @@ void Table::timerEvent(QTimerEvent *)
             m_image_set.difference(m_image_set.m_outs[0]);
             m_image_set.difference(m_image_set.m_outs[1]);
             m_image_set.difference(m_image_set.m_outs[2]);
-
             digit_difference(m_image_set.m_right_digit);
             digit_difference(m_image_set.m_middle_digit);
             digit_difference(m_image_set.m_left_digit);
-
             return;
         }
         if (m_timer_step == (base + 87)) {

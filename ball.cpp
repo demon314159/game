@@ -6,7 +6,8 @@
 #include <QTime>
 
 Ball::Ball(float back_width, float front_width, float back, float front)
-    : m_back_width(back_width)
+    : Sprite(":/ball_set.png", BALL_RADIUS)
+    , m_back_width(back_width)
     , m_front_width(front_width)
     , m_back(back)
     , m_front(front)

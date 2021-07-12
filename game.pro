@@ -30,6 +30,7 @@ SOURCES      += main.cpp \
                 image_set.cpp \
                 table.cpp \
                 alt_table.cpp \
+                sprite.cpp \
                 ball.cpp \
                 guy.cpp \
                 paint_can.cpp \

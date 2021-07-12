@@ -6,7 +6,8 @@
 #include <QTime>
 
 Guy::Guy(float left, float right, float back, float front)
-    : m_left(left)
+    : Sprite(":/guy_set.png", GUY_RADIUS)
+    , m_left(left)
     , m_right(right)
     , m_back(back)
     , m_front(front)

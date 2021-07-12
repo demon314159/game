@@ -6,6 +6,7 @@
 
 #include "table.h"
 #include "image_set.h"
+#include "sprite.h"
 #include "ball.h"
 #include "guy.h"
 #include <QObject>
@@ -37,15 +38,9 @@ protected:
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void increment_score();
 
-    void draw_ball(QPainter &painter, const QRect& rect);
-    void draw_guy(QPainter &painter, const QRect& rect);
-
-    int ball_radius(const QVector3D& position) const;
-    int guy_radius(const QVector3D& position) const;
-
-    QRect ball_rect(const QVector3D& position) const;
-    QRect guy_rect(const QVector3D& position) const;
-
+    void draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite);
+    QRect sprite_rect(const QVector3D& position, const Sprite& sprite) const;
+    int sprite_radius(const QVector3D& position, const Sprite& sprite) const;
     int target_hit(float x) const;
     QPoint w2s(const QVector3D point) const;
     void timerEvent(QTimerEvent *e) override;
@@ -62,8 +57,6 @@ private:
     int m_middle_score;
     int m_right_score;
     int m_count_down;
-    QImage m_ball_set;
-    QImage m_guy_set;
     ImageSet& m_image_set;
     QStackedWidget* m_stacked_widget;
     int m_width;

@@ -38,6 +38,7 @@ protected:
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void increment_score();
 
+    void update_sprite(Sprite& sprite);
     void draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite);
     QRect sprite_rect(const QVector3D& position, const Sprite& sprite) const;
     int sprite_radius(const QVector3D& position, const Sprite& sprite) const;

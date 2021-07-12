@@ -41,6 +41,15 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
     }
 }
 
+void AltTable::update_sprite(Sprite& sprite)
+{
+    sprite.update();
+    QRect before = sprite_rect(sprite.last_position(), sprite);
+    QRect after = sprite_rect(sprite.position(), sprite);
+    update(before);
+    update(after);
+}
+
 void AltTable::draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite)
 {
     QVector3D sprite_pos = sprite.position();
@@ -198,11 +207,7 @@ void AltTable::increment_score()
 
 void AltTable::timerEvent(QTimerEvent *)
 {
-    m_guy.update();
-    QRect gr_before = sprite_rect(m_guy.last_position(), m_guy);
-    QRect gr_after = sprite_rect(m_guy.position(), m_guy);
-    update(gr_before);
-    update(gr_after);
+    update_sprite(m_guy);
     if (m_count_down > 0) {
         if (m_count_down == (400 / TIMER_PERIOD) - 2) {
            increment_score();
@@ -216,11 +221,7 @@ void AltTable::timerEvent(QTimerEvent *)
         --m_count_down;
     } else {
         if (m_ball.in_play()) {
-            m_ball.update();
-            QRect br_before = sprite_rect(m_ball.last_position(), m_ball);
-            QRect br_after = sprite_rect(m_ball.position(), m_ball);
-            update(br_before);
-            update(br_after);
+            update_sprite(m_ball);
         } else if (m_ball.stopped()) {
             if (m_ball.position().z() < BACK_POS) {
                 int t1 = target_hit(m_ball.position().x() - BALL_RADIUS * 1.1);

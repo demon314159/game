@@ -26,21 +26,21 @@ QVector3D Guy::calc_position(float pos) const
     if (pos <= 1.0) {
         float xc = (m_right + m_left)/2.0;
         float yc = (m_front + m_back) / 2.0;
-        return QVector3D(xc + pos * (m_right - xc), 0.0, m_front + pos * (yc - m_front));
+        return QVector3D(xc + pos * (m_right - xc), GUY_RADIUS, m_front + pos * (yc - m_front));
     } else if (pos <= 2.0) {
         float xc = (m_right + m_left)/2.0;
         float yc = (m_front + m_back) / 2.0;
-        return QVector3D(m_right + (pos - 1.0) * (xc - m_right), 0.0, yc + (pos - 1.0) * (m_back - yc));
+        return QVector3D(m_right + (pos - 1.0) * (xc - m_right), GUY_RADIUS, yc + (pos - 1.0) * (m_back - yc));
     } else if (pos <= 3.0) {
         float xc = (m_right + m_left)/2.0;
         float yc = (m_front + m_back) / 2.0;
-        return QVector3D(xc + (pos - 2.0) * (m_left - xc), 0.0, m_back + (pos - 2.0) * (yc - m_back));
+        return QVector3D(xc + (pos - 2.0) * (m_left - xc), GUY_RADIUS, m_back + (pos - 2.0) * (yc - m_back));
     } else if (pos <= 4.0) {
         float xc = (m_right + m_left)/2.0;
         float yc = (m_front + m_back) / 2.0;
-        return QVector3D(m_left + (pos - 3.0) * (xc - m_left), 0.0, yc + (pos - 3.0) * (m_front - yc));
+        return QVector3D(m_left + (pos - 3.0) * (xc - m_left), GUY_RADIUS, yc + (pos - 3.0) * (m_front - yc));
     } else {
-        return QVector3D(m_right, 0.0, m_front);
+        return QVector3D(m_right, GUY_RADIUS, m_front);
     }
 }
 

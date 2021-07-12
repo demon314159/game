@@ -92,7 +92,7 @@ void AltTable::draw_guy(QPainter &painter, const QRect& rect)
             int sx = std::min(2 * br + 4, 128);
             the_guy = m_guy_set.copy(bx, by, sx, sx);
             QPoint bs = w2s(bp);
-            painter.drawImage(bs.x() - sx / 2, bs.y() - sx / 2 - br, the_guy);
+            painter.drawImage(bs.x() - sx / 2, bs.y() - sx / 2, the_guy);
         } else {
             printf("<<< guy radius our of range: %d pixels >>>\n", br);
         }
@@ -116,7 +116,7 @@ QRect AltTable::guy_rect(const QVector3D& position) const
     int screen_radius = guy_radius(position);
 
     return QRect(std::max(0, screen_pos.x() - screen_radius - 2),
-                 std::max(0, screen_pos.y() - screen_radius - 2 - screen_radius),
+                 std::max(0, screen_pos.y() - screen_radius - 2),
                  2 * screen_radius + 4,
                  2 * screen_radius + 4);
 }
@@ -265,7 +265,7 @@ void AltTable::timerEvent(QTimerEvent *)
     if (m_count_down > 0) {
         if (m_count_down == (400 / TIMER_PERIOD) - 2) {
            increment_score();
-           m_guy.launch(0.0, 4.0);
+           m_guy.launch(0.0, 2.0);
         }
         if (m_count_down == 1) {
             m_target_on = false;

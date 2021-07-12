@@ -6,6 +6,8 @@
 
 #include <QVector3D>
 
+#define BALL_RADIUS 0.125
+
 class Ball
 {
     const float launch_velocity = 6.0;

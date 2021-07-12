@@ -6,6 +6,8 @@
 
 #include <QVector3D>
 
+#define GUY_RADIUS 0.25
+
 class Guy
 {
     const float run_velocity = 4.4;

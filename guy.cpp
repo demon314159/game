@@ -11,6 +11,7 @@ Guy::Guy(float left, float right, float back, float front)
     , m_right(right)
     , m_back(back)
     , m_front(front)
+    , m_start_position(0.0)
     , m_stop_position(0.0)
     , m_t_launch(0.0)
     , m_position(0.0)
@@ -59,7 +60,9 @@ void Guy::launch(float start_position, float stop_position)
 {
     m_last_position = m_position;
     m_position = start_position;
+    m_start_position = start_position;
     m_stop_position = stop_position;
+    m_t_launch = QTime::currentTime().msecsSinceStartOfDay();
 }
 
 bool Guy::in_play() const
@@ -71,7 +74,11 @@ void Guy::update()
 {
     if (m_position < m_stop_position) {
       m_last_position = m_position;
-      m_position = fmin(m_position + 0.05, m_stop_position);
+
+        int t_now = QTime::currentTime().msecsSinceStartOfDay();
+        int dt = t_now - m_t_launch;
+        float dp = run_velocity * ((float) dt) / 1000.0;
+        m_position = fmin(m_start_position + dp, m_stop_position);
    }
 }
 

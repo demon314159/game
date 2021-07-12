@@ -10,7 +10,8 @@
 
 class Guy: public Sprite
 {
-    const float run_velocity = 4.4;
+    const float run_velocity = 2.0;
+
 public:
     Guy(float left, float right, float back, float front);
     ~Guy();
@@ -30,6 +31,7 @@ private:
     float m_right;
     float m_back;
     float m_front;
+    float m_start_position;
     float m_stop_position;
     int m_t_launch;
     float m_position; // 0.0 to 4.0

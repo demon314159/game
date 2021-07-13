@@ -5,6 +5,11 @@
 
 int main(int argv, char **args)
 {
+    int view_ix = 0;
+    if (argv > 1) {
+        view_ix = atoi(args[1]);
+    }
+    printf("view_ix = %d\n", view_ix);
     QApplication app(argv, args);
     app.setApplicationName("Game");
 
@@ -15,7 +20,7 @@ int main(int argv, char **args)
 //    format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
-    Game game;
+    Game game(view_ix);
     game.show();
 
     return app.exec();

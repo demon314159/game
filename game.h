@@ -19,7 +19,7 @@ class Game: public QMainWindow
     Q_OBJECT
 
 public:
-    Game();
+    Game(int view_ix);
     ~Game();
 
 private:
@@ -34,6 +34,7 @@ private slots:
 
 private:
     // Owned by layout
+    int m_view_ix;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;
     ImageSet m_image_set;

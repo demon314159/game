@@ -34,8 +34,8 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
-    setMinimumHeight(980);
-    setMinimumWidth(580);
+//    setMinimumHeight(980);
+//    setMinimumWidth(580);
     timer.start(TIMER_PERIOD, this);
 }
 

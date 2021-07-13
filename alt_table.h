@@ -21,7 +21,7 @@ class AltTable: public QWidget
     Q_OBJECT
 
 public:
-    explicit AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    explicit AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
 
 protected:
     static const int MAX_GUYS = 4;
@@ -39,6 +39,7 @@ protected:
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void increment_score();
     void check_score();
+    QVector3D corrected_sprite_position(const QVector3D& position, const Sprite& sprite);
 
 
     void update_guys();
@@ -71,6 +72,7 @@ private:
     int m_width;
     int m_height;
     const QMatrix4x4& m_mvp_matrix;
+    const QMatrix4x4& m_rot_matrix;
     QBasicTimer timer;
 };
 

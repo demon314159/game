@@ -10,8 +10,9 @@
 class Sprite
 {
 public:
-    Sprite(const QString& file_name, float radius);
+    Sprite(const QString& file_name, float radius, const QVector3D& error_vector);
     float radius() const;
+    QVector3D error_vector() const;
     QImage copy(int x, int y, int w, int h) const;
     virtual void update() = 0;
     virtual bool in_play() const = 0;
@@ -19,6 +20,7 @@ public:
     virtual QVector3D last_position() const = 0;
 private:
     float m_radius;
+    QVector3D m_error_vector;
     QImage m_set;
 };
 

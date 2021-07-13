@@ -45,8 +45,8 @@ void Game::initializeWindow()
     m_pb5->setText(tr("Button 5"));
 
     m_stacked_widget = new QStackedWidget;
-    m_table = new Table(m_mvp_matrix, m_image_set, m_stacked_widget, this);
-    m_alt_table = new AltTable(m_mvp_matrix, m_image_set, m_stacked_widget, this);
+    m_table = new Table(m_mvp_matrix, m_rot_matrix, m_image_set, m_stacked_widget, this);
+    m_alt_table = new AltTable(m_mvp_matrix, m_rot_matrix, m_image_set, m_stacked_widget, this);
     m_stacked_widget->addWidget(m_table);
     m_stacked_widget->addWidget(m_alt_table);
     layout->addWidget(m_stacked_widget, 1, 0, 1, 5);

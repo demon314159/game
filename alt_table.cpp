@@ -6,7 +6,7 @@
 #include <math.h>
 #include <algorithm>
 
-AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_ball(BACK_WIDTH, FRONT_WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
     , m_guy({
@@ -30,6 +30,7 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWi
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_mvp_matrix(mvp_matrix)
+    , m_rot_matrix(rot_matrix)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -47,18 +48,25 @@ void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const Animat
     }
 }
 
+QVector3D AltTable::corrected_sprite_position(const QVector3D& position, const Sprite& sprite)
+{
+    QVector4D error_vector = m_rot_matrix * QVector4D(sprite.error_vector(), 0.0);
+    return position + QVector3D(0.0, 0.0, error_vector.z());
+}
+
 void AltTable::update_sprite(Sprite& sprite)
 {
     sprite.update();
-    QRect before = sprite_rect(sprite.last_position(), sprite);
-    QRect after = sprite_rect(sprite.position(), sprite);
+    QRect before = sprite_rect(corrected_sprite_position(sprite.last_position(), sprite), sprite);
+    QRect after = sprite_rect(corrected_sprite_position(sprite.position(), sprite), sprite);
     update(before);
     update(after);
 }
 
 void AltTable::draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite)
 {
-    QVector3D sprite_pos = sprite.position();
+    QVector3D sprite_pos = corrected_sprite_position(sprite.position(), sprite);
+
     if (rect.intersects(sprite_rect(sprite_pos, sprite))) {
         int sr = sprite_radius(sprite_pos, sprite);
         if (sr >= 1 && sr <= 64) {

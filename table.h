@@ -22,7 +22,7 @@ class Table: public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    Table(QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
     ~Table();
     QImage the_image();
 
@@ -64,6 +64,7 @@ private:
     Thingus* m_thingy;
     QMatrix4x4 m_projection;
     QMatrix4x4& m_mvp_matrix;
+    QMatrix4x4& m_rot_matrix;
 
     QVector2D mousePressPosition;
     QVector3D rotationAxis;

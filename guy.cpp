@@ -6,7 +6,7 @@
 #include <QTime>
 
 Guy::Guy(float left, float right, float back, float front)
-    : Sprite(":/guy_set.png", GUY_RADIUS)
+    : Sprite(":/guy_set.png", GUY_RADIUS, QVector3D(0.0, -GUY_RADIUS, 0.0))
     , m_left(left)
     , m_right(right)
     , m_back(back)

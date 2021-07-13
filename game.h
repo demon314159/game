@@ -35,6 +35,7 @@ private slots:
 private:
     // Owned by layout
     QMatrix4x4 m_mvp_matrix;
+    QMatrix4x4 m_rot_matrix;
     ImageSet m_image_set;
     Table* m_table = nullptr;
     AltTable* m_alt_table = nullptr;

@@ -3,8 +3,9 @@
 //
 #include "sprite.h"
 
-Sprite::Sprite(const QString& file_name, float radius)
-    :m_radius(radius)
+Sprite::Sprite(const QString& file_name, float radius, const QVector3D& error_vector)
+    : m_radius(radius)
+    , m_error_vector(error_vector)
 {
     m_set.load(file_name);
 }
@@ -12,6 +13,11 @@ Sprite::Sprite(const QString& file_name, float radius)
 float Sprite::radius() const
 {
     return m_radius;
+}
+
+QVector3D Sprite::error_vector() const
+{
+    return m_error_vector;
 }
 
 QImage Sprite::copy(int x, int y, int w, int h) const

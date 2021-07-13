@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+Table::Table(QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QOpenGLWidget(parent)
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
@@ -33,6 +33,7 @@ Table::Table(QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacke
     , m_height(512)
     , m_thingy(0)
     , m_mvp_matrix(mvp_matrix)
+    , m_rot_matrix(rot_matrix)
 {
     setMinimumHeight(980);
     setMinimumWidth(580);
@@ -73,7 +74,7 @@ void Table::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool regular = true;
+    bool regular = false;
     if (regular) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
         QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
@@ -82,6 +83,7 @@ void Table::paintGL()
         matrix.rotate(my_rot);
         // Set modelview-projection matrix
         m_mvp_matrix = m_projection * matrix;
+        m_rot_matrix = matrix;
         m_program.setUniformValue("mvp_matrix", m_projection * matrix);
         m_program.setUniformValue("rot_matrix", matrix);
     } else {
@@ -92,6 +94,7 @@ void Table::paintGL()
         matrix.rotate(my_rot);
         // Set modelview-projection matrix
         m_mvp_matrix = m_projection * matrix;
+        m_rot_matrix = matrix;
         m_program.setUniformValue("mvp_matrix", m_projection * matrix);
         m_program.setUniformValue("rot_matrix", matrix);
     }

@@ -17,6 +17,7 @@ public:
     ~Guy();
 
     void launch(float start_position, float stop_position);
+    void relaunch(float move_position);
     QVector3D calc_position(float pos) const;
 
     void update() override;

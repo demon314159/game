@@ -65,6 +65,17 @@ void Guy::launch(float start_position, float stop_position)
     m_t_launch = QTime::currentTime().msecsSinceStartOfDay();
 }
 
+void Guy::relaunch(float move_position)
+{
+    if (in_play()) {
+        m_last_position = m_position;
+        m_position = m_stop_position;
+        m_start_position = m_stop_position;
+        m_stop_position = fmin(m_stop_position + move_position, 4.0);
+        m_t_launch = QTime::currentTime().msecsSinceStartOfDay();
+    }
+}
+
 bool Guy::in_play() const
 {
     return m_position > 0.0 && m_position < 4.0;

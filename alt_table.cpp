@@ -9,7 +9,13 @@
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_ball(BACK_WIDTH, FRONT_WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
-    , m_guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1)
+    , m_guy({
+            Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
+            Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
+            Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
+            Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1)
+            })
+    , m_guy_ix(0)
     , m_bat_on(false)
     , m_pitch_on(false)
     , m_target_on(false)
@@ -117,8 +123,7 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
 
     draw_sprite(painter, rect, m_ball);
-    if (m_guy.in_play())
-      draw_sprite(painter, rect, m_guy);
+    draw_guys(painter, rect);
 }
 
 void AltTable::resizeEvent(QResizeEvent*)
@@ -205,13 +210,50 @@ void AltTable::increment_score()
     update(new_score_rect3);
 }
 
+void AltTable::draw_guys(QPainter &painter, const QRect& rect)
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        if (m_guy[i].in_play())
+          draw_sprite(painter, rect, m_guy[i]);
+    }
+}
+
+void AltTable::update_guys()
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        update_sprite(m_guy[i]);
+    }
+}
+
+void AltTable::launch_guys(int hit)
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        if (i == m_guy_ix) {
+            m_guy[i].launch(0.0, (float) hit);
+        } else {
+            m_guy[i].relaunch((float) hit);
+        }
+    }
+    m_guy_ix = m_guy_ix == (MAX_GUYS - 1) ? 0 : m_guy_ix + 1;
+}
+
 void AltTable::timerEvent(QTimerEvent *)
 {
-    update_sprite(m_guy);
+    update_guys();
     if (m_count_down > 0) {
         if (m_count_down == (400 / TIMER_PERIOD) - 2) {
            increment_score();
-           m_guy.launch(0.0, 2.0);
+           if (m_target_on) {
+               if (m_target_sel == 0 || m_target_sel == 6) {
+                   launch_guys(1);
+                } else if (m_target_sel == 2 || m_target_sel == 4) {
+                   launch_guys(2);
+                } else if (m_target_sel == 1 || m_target_sel == 5) {
+                   launch_guys(3);
+                } else if (m_target_sel == 3) {
+                   launch_guys(4);
+                }
+           }
         }
         if (m_count_down == 1) {
             m_target_on = false;

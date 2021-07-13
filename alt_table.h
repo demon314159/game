@@ -24,6 +24,7 @@ public:
     explicit AltTable(const QMatrix4x4& mvp_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
 
 protected:
+    static const int MAX_GUYS = 4;
     const float BACK_WIDTH = 6.235;
 //    const float FRONT_WIDTH = 5.529;
     const float FRONT_WIDTH = BACK_WIDTH;
@@ -38,6 +39,11 @@ protected:
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void increment_score();
 
+
+    void update_guys();
+    void launch_guys(int hit);
+    void draw_guys(QPainter &painter, const QRect& rect);
+
     void update_sprite(Sprite& sprite);
     void draw_sprite(QPainter &painter, const QRect& rect, const Sprite& sprite);
     QRect sprite_rect(const QVector3D& position, const Sprite& sprite) const;
@@ -48,7 +54,8 @@ protected:
 
 private:
     Ball m_ball;
-    Guy m_guy;
+    Guy m_guy[MAX_GUYS];
+    int m_guy_ix;
     bool m_bat_on;
     bool m_pitch_on;
     bool m_target_on;

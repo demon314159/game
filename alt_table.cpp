@@ -225,6 +225,16 @@ void AltTable::update_guys()
     }
 }
 
+void AltTable::check_score()
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        if (m_guy[i].scored()) {
+            m_guy[i].reset_score();
+            increment_score();
+        }
+    }
+}
+
 void AltTable::launch_guys(int hit)
 {
     for (int i = 0; i < MAX_GUYS; i++) {
@@ -240,9 +250,9 @@ void AltTable::launch_guys(int hit)
 void AltTable::timerEvent(QTimerEvent *)
 {
     update_guys();
+    check_score();
     if (m_count_down > 0) {
         if (m_count_down == (400 / TIMER_PERIOD) - 2) {
-           increment_score();
            if (m_target_on) {
                if (m_target_sel == 0 || m_target_sel == 6) {
                    launch_guys(1);

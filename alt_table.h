@@ -38,6 +38,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void increment_score();
+    void check_score();
 
 
     void update_guys();

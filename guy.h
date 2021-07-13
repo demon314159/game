@@ -18,7 +18,8 @@ public:
 
     void launch(float start_position, float stop_position);
     void relaunch(float move_position);
-    QVector3D calc_position(float pos) const;
+    bool scored() const;
+    void reset_score();
 
     void update() override;
     bool in_play() const override;
@@ -26,6 +27,7 @@ public:
     QVector3D last_position() const override;
 
 protected:
+    QVector3D calc_position(float pos) const;
 
 private:
     float m_left;

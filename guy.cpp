@@ -23,6 +23,20 @@ Guy::~Guy()
 {
 }
 
+bool Guy::scored() const
+{
+    return m_position >= 4.0;
+}
+
+void Guy::reset_score()
+{
+    m_last_position = m_position;
+    m_position = 0.0;
+    m_start_position = 0.0;
+    m_stop_position = 0.0;
+    m_t_launch = 0;
+}
+
 QVector3D Guy::calc_position(float pos) const
 {
     if (pos <= 1.0) {

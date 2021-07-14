@@ -13,8 +13,9 @@ struct VertexData
     float animation_id;
 };
 
-Thingus::Thingus()
-    : m_vertices(0)
+Thingus::Thingus(float tilt)
+    : m_tilt(tilt)
+    , m_vertices(0)
 {
     initializeOpenGLFunctions();
 
@@ -28,27 +29,34 @@ Thingus::Thingus()
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
     m_cad = new CadModel(StlInterface("board.stl"), green_paint, 0.0);
-    CadModel t1(StlInterface("hammer_head.stl"), blue_paint, 1.0);
-    t1.add(StlInterface("hammer_bumper.stl"), red_paint, 1.0);
+    CadModel t1(StlInterface("target_body.stl"), blue_paint, 1.0);
+    t1.add(StlInterface("target_bumper.stl"), red_paint, 1.0);
     t1.add(StlInterface("t_single.stl"), white_paint, 1.0);
-    CadModel t2(StlInterface("hammer_head.stl"), blue_paint, 2.0);
-    t2.add(StlInterface("hammer_bumper.stl"), red_paint, 2.0);
+    t1.rotate_ax(90.0 - m_tilt);
+    CadModel t2(StlInterface("target_body.stl"), blue_paint, 2.0);
+    t2.add(StlInterface("target_bumper.stl"), red_paint, 2.0);
     t2.add(StlInterface("t_triple.stl"), white_paint, 2.0);
-    CadModel t3(StlInterface("hammer_head.stl"), blue_paint, 3.0);
-    t3.add(StlInterface("hammer_bumper.stl"), red_paint, 3.0);
+    t2.rotate_ax(90.0 - m_tilt);
+    CadModel t3(StlInterface("target_body.stl"), blue_paint, 3.0);
+    t3.add(StlInterface("target_bumper.stl"), red_paint, 3.0);
     t3.add(StlInterface("t_double.stl"), white_paint, 3.0);
-    CadModel t4(StlInterface("hammer_head.stl"), blue_paint, 4.0);
-    t4.add(StlInterface("hammer_bumper.stl"), red_paint, 4.0);
+    t3.rotate_ax(90.0 - m_tilt);
+    CadModel t4(StlInterface("target_body.stl"), blue_paint, 4.0);
+    t4.add(StlInterface("target_bumper.stl"), red_paint, 4.0);
     t4.add(StlInterface("t_homer.stl"), white_paint, 4.0);
-    CadModel t5(StlInterface("hammer_head.stl"), blue_paint, 5.0);
-    t5.add(StlInterface("hammer_bumper.stl"), red_paint, 5.0);
+    t4.rotate_ax(90.0 - m_tilt);
+    CadModel t5(StlInterface("target_body.stl"), blue_paint, 5.0);
+    t5.add(StlInterface("target_bumper.stl"), red_paint, 5.0);
     t5.add(StlInterface("t_double.stl"), white_paint, 5.0);
-    CadModel t6(StlInterface("hammer_head.stl"), blue_paint, 6.0);
-    t6.add(StlInterface("hammer_bumper.stl"), red_paint, 6.0);
+    t5.rotate_ax(90.0 - m_tilt);
+    CadModel t6(StlInterface("target_body.stl"), blue_paint, 6.0);
+    t6.add(StlInterface("target_bumper.stl"), red_paint, 6.0);
     t6.add(StlInterface("t_triple.stl"), white_paint, 6.0);
-    CadModel t7(StlInterface("hammer_head.stl"), blue_paint, 7.0);
-    t7.add(StlInterface("hammer_bumper.stl"), red_paint, 7.0);
+    t6.rotate_ax(90.0 - m_tilt);
+    CadModel t7(StlInterface("target_body.stl"), blue_paint, 7.0);
+    t7.add(StlInterface("target_bumper.stl"), red_paint, 7.0);
     t7.add(StlInterface("t_single.stl"), white_paint, 7.0);
+    t7.rotate_ax(90.0 - m_tilt);
     CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, 8.0);
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, 8.0);
     bat.add(StlInterface("bat_post.stl"), gray_paint, 8.0);
@@ -95,7 +103,7 @@ Thingus::Thingus()
 //    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
 
     float w = TARGET_WIDTH;
-    float h = 0.0;
+    float h = TARGET_PIVOT_Y;
     m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t2, -4.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t3, -2.0 * w, h, TARGET_PIVOT_Z);

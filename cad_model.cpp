@@ -3,6 +3,9 @@
 //
 #include "cad_model.h"
 #include <math.h>
+#include <QVector3D>
+#include <QVector4D>
+#include <QQuaternion>
 
 #define notVERBOSE
 
@@ -309,4 +312,25 @@ float3 CadModel::translate(const float3& v, const float3& offset) const
     t.v2 = v.v2 + offset.v2;
     t.v3 = v.v3 + offset.v3;
     return t;
+}
+
+void CadModel::rotate_vertex(float3& vertex, const QMatrix4x4& matrix)
+{
+    QVector4D r = matrix * QVector4D(vertex.v1, vertex.v2, vertex.v3, 1.0);
+    vertex.v1 = r.x();
+    vertex.v2 = r.y();
+    vertex.v3 = r.z();
+}
+
+void CadModel::rotate_ax(float angle)
+{
+    QVector3D my_axis = {1.0, 0.0, 0.0};
+    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
+    QMatrix4x4 matrix;
+    matrix.rotate(my_rot);
+    for (int i = 0; i < m_facet_count; i++) {
+        rotate_vertex(m_facet_v1[i], matrix);
+        rotate_vertex(m_facet_v2[i], matrix);
+        rotate_vertex(m_facet_v3[i], matrix);
+    }
 }

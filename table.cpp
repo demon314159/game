@@ -13,6 +13,7 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
     , m_image_set(image_set)
     , m_stacked_widget(stacked_widget)
     , m_timer_step(0)
+    , m_tilt(0.0)
     , m_ani_sel2(0.0)
     , m_ani_angle1(0.0)
     , m_ani_angle2(0.0)
@@ -31,18 +32,21 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
 
     , m_width((512 * 1920) / 1080)
     , m_height(512)
-    , m_thingy(0)
+    , m_thingy(NULL)
     , m_view_ix(view_ix)
     , m_mvp_matrix(mvp_matrix)
     , m_rot_matrix(rot_matrix)
 {
     if (m_view_ix == 2) {
+        m_tilt = 90.0;
         setMinimumHeight(1834);
         setMinimumWidth(1062);
     } else if (m_view_ix == 1) {
+        m_tilt = 35.0;
         setMinimumHeight(994);
         setMinimumWidth(1902);
     } else {
+        m_tilt = 90.0;
         setMinimumHeight(994);
         setMinimumWidth(580);
     }
@@ -63,7 +67,7 @@ void Table::initializeGL()
     initShaders();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    m_thingy = new Thingus;
+    m_thingy = new Thingus(m_tilt);
 //    timer.start(16, this);
     timer.start(15, this);
 //    timer.start(100, this);
@@ -85,7 +89,7 @@ void Table::paintGL()
 
     if (m_view_ix == 1) {
         QVector3D my_axis = {1.0, 0.0, 0.0};
-        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 35.0);
+        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, m_tilt);
         QMatrix4x4 matrix;
         matrix.translate(0.0, -0.25, -6.0);
         matrix.rotate(my_rot);
@@ -96,7 +100,7 @@ void Table::paintGL()
         m_program.setUniformValue("rot_matrix", matrix);
     } else { // m_viewIx == 0 or m_view_ix == 2
         QVector3D my_axis = {1.0, 0.0, 0.0};
-        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, 90);
+        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, m_tilt);
         QMatrix4x4 matrix;
         matrix.translate(0.0, -3.00, -13.0);
         matrix.rotate(my_rot);

@@ -42,6 +42,7 @@ private:
     QStackedWidget* m_stacked_widget;
     int m_timer_step;
     QImage m_image;
+    float m_tilt;
     float m_ani_sel2;
     float m_ani_angle1;
     float m_ani_angle2;

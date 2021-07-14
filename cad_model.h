@@ -5,6 +5,7 @@
 #define _CAD_MODEL_H_
 
 #include <QString>
+#include <QMatrix4x4>
 #include "float3.h"
 #include "int3.h"
 #include "vrml_interface.h"
@@ -21,6 +22,7 @@ public:
     void add(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     void add(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
+    void rotate_ax(float angle);
     int facets() const;
     float facet_animation_id(int facet_ix) const;
     float3 facet_v1(int facet_ix) const;
@@ -29,6 +31,9 @@ public:
     float3 facet_color(int facet_ix) const;
     float3 facet_normal(int facet_ix) const;
     float3 translate(const float3& v, const float3& offset) const;
+
+protected:
+    void rotate_vertex(float3& vertex, const QMatrix4x4& matrix);
 
 private:
     int m_facet_count;

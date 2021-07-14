@@ -99,6 +99,7 @@ Thingus::Thingus(float tilt)
     right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
     CadModel diamond(StlInterface("diamond.stl"), brown_paint, 0.0);
     CadModel bases(StlInterface("bases.stl"), white_paint, 0.0);
+    CadModel side_bumpers(StlInterface("side_bumpers.stl"), red_paint, 0.0);
 //    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
 //    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
 
@@ -123,6 +124,7 @@ Thingus::Thingus(float tilt)
     m_cad->add(right_out, -2.1 + 0.66667, -1.0/50.0 -0.1, 1.9);
     m_cad->add(diamond, 0.0, 0.0, 0.0);
     m_cad->add(bases, 0.0, 0.0, 0.0);
+    m_cad->add(side_bumpers, 0.0, 0.0, 0.0);
 //    m_cad->add(guy, 0.0, 0.0, 0.0);
 
 //    int base_width = 2.8;

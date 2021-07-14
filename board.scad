@@ -1,13 +1,16 @@
 include_body = true;
 include_pitch_flap = false;
+include_bumper = false;
 $fa = 1;
-$fs = 0.04;
+$fs = 0.01;
 mag = 1;
 thickness = mag * 0.05;
 width = mag * 6.235;
 length = mag * 9.4;
 porch_length = mag * 0.45;
 porch_width = width/3.05 + porch_length;
+bumper_radius = thickness;
+bumper_length = length + porch_length;
 f = 0.98; // Pitch flap tolerance
 p0 = [-width/2,-length];
 p1 = [-width/2, porch_length];
@@ -41,6 +44,21 @@ translate([0,0,2])
       cube([0.5*f,2*f,thickness], center=true);
     }
   }
+if (include_bumper) {  
+  translate([-width/2+bumper_radius,2*bumper_radius,2-bumper_length+porch_length]) {
+    cylinder(bumper_length,bumper_radius, bumper_radius);
+    sphere(bumper_radius);  
+    translate([0,0,bumper_length])  
+      sphere(bumper_radius);  
+  }
+  translate([width/2-bumper_radius,2*bumper_radius,2-bumper_length+porch_length]) {
+    sphere(bumper_radius);  
+    translate([0,0,bumper_length])  
+      sphere(bumper_radius);  
+    cylinder(bumper_length,bumper_radius, bumper_radius);
+  }    
+}    
+
 
 
 

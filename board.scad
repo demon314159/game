@@ -1,6 +1,6 @@
 include_body = true;
 include_pitch_flap = false;
-include_bumper = false;
+include_bumper = true;
 $fa = 1;
 $fs = 0.01;
 mag = 1;
@@ -45,13 +45,15 @@ translate([0,0,2])
     }
   }
 if (include_bumper) {  
-  translate([-width/2+bumper_radius,2*bumper_radius,2-bumper_length+porch_length]) {
+  scale([1,2,1])    
+  translate([-width/2,bumper_radius,2-bumper_length+porch_length]) {
     cylinder(bumper_length,bumper_radius, bumper_radius);
     sphere(bumper_radius);  
     translate([0,0,bumper_length])  
       sphere(bumper_radius);  
   }
-  translate([width/2-bumper_radius,2*bumper_radius,2-bumper_length+porch_length]) {
+  scale([1,2,1])    
+  translate([width/2,bumper_radius,2-bumper_length+porch_length]) {
     sphere(bumper_radius);  
     translate([0,0,bumper_length])  
       sphere(bumper_radius);  

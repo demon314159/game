@@ -15,6 +15,11 @@ float Sprite::radius() const
     return m_radius;
 }
 
+bool Sprite::is_reversed() const
+{
+    return false;
+}
+
 QVector3D Sprite::error_vector() const
 {
     return m_error_vector;
@@ -22,5 +27,9 @@ QVector3D Sprite::error_vector() const
 
 QImage Sprite::copy(int x, int y, int w, int h) const
 {
-    return m_set.copy(x, y, w, h);
+    if (is_reversed()) {
+        return m_set.copy(x, y, w, h).mirrored(true, false);
+     } else {
+        return m_set.copy(x, y, w, h);
+     }
 }

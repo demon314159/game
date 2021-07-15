@@ -14,6 +14,7 @@ public:
     float radius() const;
     QVector3D error_vector() const;
     QImage copy(int x, int y, int w, int h) const;
+    virtual bool is_reversed() const;
     virtual void update() = 0;
     virtual bool in_play() const = 0;
     virtual QVector3D position() const = 0;

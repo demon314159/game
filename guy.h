@@ -21,6 +21,7 @@ public:
     bool scored() const;
     void reset_score();
 
+    bool is_reversed() const override;
     void update() override;
     bool in_play() const override;
     QVector3D position() const override;

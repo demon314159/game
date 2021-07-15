@@ -23,9 +23,6 @@ Thingus::Thingus(float tilt)
     PaintCan lit_paint(2.0, 2.0, 0.0);
     float f = 0.6;
     PaintCan unlit_paint(f, f, 0.0);
-//    PaintCan unlit_paint(0.329412, 1.0, 0.517647);
-
-
     PaintCan white_paint(1.0, 1.0, 1.0);
     PaintCan black_paint(0.0, 0.0, 0.0);
     PaintCan red_paint(1.0, 0.0, 0.0);
@@ -70,55 +67,52 @@ Thingus::Thingus(float tilt)
     CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, ANI_ID_PITCH);
     CadModel score(StlInterface("score.stl"), blue_paint, 0.0);
     CadModel outs(StlInterface("outs.stl"), blue_paint, 0.0);
-    CadModel right_digit(StlInterface("digit_0.stl"), blue_paint, 10.0);
-    right_digit.add(StlInterface("digit_1.stl"), blue_paint, 11.0);
-    right_digit.add(StlInterface("digit_2.stl"), blue_paint, 12.0);
-    right_digit.add(StlInterface("digit_3.stl"), blue_paint, 13.0);
-    right_digit.add(StlInterface("digit_4.stl"), blue_paint, 14.0);
-    right_digit.add(StlInterface("digit_5.stl"), blue_paint, 15.0);
-    right_digit.add(StlInterface("digit_6.stl"), blue_paint, 16.0);
-    right_digit.add(StlInterface("digit_7.stl"), blue_paint, 17.0);
-    right_digit.add(StlInterface("digit_8.stl"), blue_paint, 18.0);
-    right_digit.add(StlInterface("digit_9.stl"), blue_paint, 19.0);
-    CadModel middle_digit(StlInterface("digit_0.stl"), blue_paint, 20.0);
-    middle_digit.add(StlInterface("digit_1.stl"), blue_paint, 21.0);
-    middle_digit.add(StlInterface("digit_2.stl"), blue_paint, 22.0);
-    middle_digit.add(StlInterface("digit_3.stl"), blue_paint, 23.0);
-    middle_digit.add(StlInterface("digit_4.stl"), blue_paint, 24.0);
-    middle_digit.add(StlInterface("digit_5.stl"), blue_paint, 25.0);
-    middle_digit.add(StlInterface("digit_6.stl"), blue_paint, 26.0);
-    middle_digit.add(StlInterface("digit_7.stl"), blue_paint, 27.0);
-    middle_digit.add(StlInterface("digit_8.stl"), blue_paint, 28.0);
-    middle_digit.add(StlInterface("digit_9.stl"), blue_paint, 29.0);
-    CadModel left_digit(StlInterface("digit_0.stl"), blue_paint, 30.0);
-    left_digit.add(StlInterface("digit_1.stl"), blue_paint, 31.0);
-    left_digit.add(StlInterface("digit_2.stl"), blue_paint, 32.0);
-    left_digit.add(StlInterface("digit_3.stl"), blue_paint, 33.0);
-    left_digit.add(StlInterface("digit_4.stl"), blue_paint, 34.0);
-    left_digit.add(StlInterface("digit_5.stl"), blue_paint, 35.0);
-    left_digit.add(StlInterface("digit_6.stl"), blue_paint, 36.0);
-    left_digit.add(StlInterface("digit_7.stl"), blue_paint, 37.0);
-    left_digit.add(StlInterface("digit_8.stl"), blue_paint, 38.0);
-    left_digit.add(StlInterface("digit_9.stl"), blue_paint, 39.0);
-    CadModel left_out(StlInterface("digit_x.stl"), red_paint, 40.0);
-    CadModel middle_out(StlInterface("digit_x.stl"), red_paint, 41.0);
-    CadModel right_out(StlInterface("digit_x.stl"), red_paint, 42.0);
-    right_out.add(StlInterface("game_over.stl"), red_paint, 42.0);
+    CadModel right_digit(StlInterface("digit_0.stl"), blue_paint, ANI_ID_SCORE_RIGHT);
+    right_digit.add(StlInterface("digit_1.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 1.0);
+    right_digit.add(StlInterface("digit_2.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 2.0);
+    right_digit.add(StlInterface("digit_3.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 3.0);
+    right_digit.add(StlInterface("digit_4.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 4.0);
+    right_digit.add(StlInterface("digit_5.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 5.0);
+    right_digit.add(StlInterface("digit_6.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 6.0);
+    right_digit.add(StlInterface("digit_7.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 7.0);
+    right_digit.add(StlInterface("digit_8.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 8.0);
+    right_digit.add(StlInterface("digit_9.stl"), blue_paint, ANI_ID_SCORE_RIGHT + 9.0);
+    CadModel middle_digit(StlInterface("digit_0.stl"), blue_paint, ANI_ID_SCORE_MIDDLE);
+    middle_digit.add(StlInterface("digit_1.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 1.0);
+    middle_digit.add(StlInterface("digit_2.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 2.0);
+    middle_digit.add(StlInterface("digit_3.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 3.0);
+    middle_digit.add(StlInterface("digit_4.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 4.0);
+    middle_digit.add(StlInterface("digit_5.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 5.0);
+    middle_digit.add(StlInterface("digit_6.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 6.0);
+    middle_digit.add(StlInterface("digit_7.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 7.0);
+    middle_digit.add(StlInterface("digit_8.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 8.0);
+    middle_digit.add(StlInterface("digit_9.stl"), blue_paint, ANI_ID_SCORE_MIDDLE + 9.0);
+    CadModel left_digit(StlInterface("digit_0.stl"), blue_paint, ANI_ID_SCORE_LEFT);
+    left_digit.add(StlInterface("digit_1.stl"), blue_paint, ANI_ID_SCORE_LEFT + 1.0);
+    left_digit.add(StlInterface("digit_2.stl"), blue_paint, ANI_ID_SCORE_LEFT + 2.0);
+    left_digit.add(StlInterface("digit_3.stl"), blue_paint, ANI_ID_SCORE_LEFT + 3.0);
+    left_digit.add(StlInterface("digit_4.stl"), blue_paint, ANI_ID_SCORE_LEFT + 4.0);
+    left_digit.add(StlInterface("digit_5.stl"), blue_paint, ANI_ID_SCORE_LEFT + 5.0);
+    left_digit.add(StlInterface("digit_6.stl"), blue_paint, ANI_ID_SCORE_LEFT + 6.0);
+    left_digit.add(StlInterface("digit_7.stl"), blue_paint, ANI_ID_SCORE_LEFT + 7.0);
+    left_digit.add(StlInterface("digit_8.stl"), blue_paint, ANI_ID_SCORE_LEFT + 8.0);
+    left_digit.add(StlInterface("digit_9.stl"), blue_paint, ANI_ID_SCORE_LEFT + 9.0);
+    CadModel left_out(StlInterface("digit_x.stl"), red_paint, ANI_ID_OUT1);
+    CadModel middle_out(StlInterface("digit_x.stl"), red_paint, ANI_ID_OUT2);
+    CadModel right_out(StlInterface("digit_x.stl"), red_paint, ANI_ID_OUT3);
+    right_out.add(StlInterface("game_over.stl"), red_paint, ANI_ID_OUT3);
     CadModel diamond(StlInterface("diamond.stl"), brown_paint, 0.0);
     CadModel bases(StlInterface("bases.stl"), white_paint, 0.0);
     CadModel side_bumpers(StlInterface("side_bumpers.stl"), red_paint, 0.0);
     CadModel unlit_light(StlInterface("light_base.stl"), black_paint, 0.0);
     unlit_light.add(StlInterface("light_top.stl"), unlit_paint, 0.0);
-    CadModel lit_light1(StlInterface("light_top.stl"), lit_paint, 51.0);
-    CadModel lit_light2(StlInterface("light_top.stl"), lit_paint, 52.0);
-    CadModel lit_light3(StlInterface("light_top.stl"), lit_paint, 53.0);
-    CadModel lit_light4(StlInterface("light_top.stl"), lit_paint, 54.0);
-    CadModel lit_light5(StlInterface("light_top.stl"), lit_paint, 55.0);
-    CadModel lit_light6(StlInterface("light_top.stl"), lit_paint, 56.0);
-    CadModel lit_light7(StlInterface("light_top.stl"), lit_paint, 57.0);
-
-//    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
-//    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
+    CadModel lit_light1(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT1);
+    CadModel lit_light2(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT2);
+    CadModel lit_light3(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT3);
+    CadModel lit_light4(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT4);
+    CadModel lit_light5(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT5);
+    CadModel lit_light6(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT6);
+    CadModel lit_light7(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT7);
 
     float w = TARGET_WIDTH;
     float h = TARGET_PIVOT_Y;
@@ -152,7 +146,6 @@ Thingus::Thingus(float tilt)
     m_cad->add(unlit_light, 2.0 * w, 0.0, ll);
     m_cad->add(unlit_light, 4.0 * w, 0.0, ll);
     m_cad->add(unlit_light, 6.0 * w, 0.0, ll);
-
     m_cad->add(lit_light1, -6.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light2, -4.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light3, -2.0 * w, rise - 0.1, ll);
@@ -160,27 +153,6 @@ Thingus::Thingus(float tilt)
     m_cad->add(lit_light5, 2.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light6, 4.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light7, 6.0 * w, rise - 0.1, ll);
-
-
-//    m_cad->add(lit_light, -6.0 * w, rise, ll);
-//    m_cad->add(lit_light, -4.0 * w, rise, ll);
-//    m_cad->add(unlit_light, -2.0 * w, rise, ll);
-//    m_cad->add(lit_light, 0.0, rise, ll);
-//    m_cad->add(lit_light, 2.0 * w, rise, ll);
-//    m_cad->add(lit_light, 4.0 * w, rise, ll);
-//    m_cad->add(lit_light, 6.0 * w, rise, ll);
-
-
-
-//    m_cad->add(guy, 0.0, 0.0, 0.0);
-
-//    int base_width = 2.8;
-//    int base_height = 4.3;
-//    m_cad->add(runner, 0.0, 0.0, BAT_PIVOT_Z);
-//    m_cad->add(runner, base_width, 0.0, BAT_PIVOT_Z - base_height);
-//    m_cad->add(runner, -base_width, 0.0, BAT_PIVOT_Z - base_height);
-//    m_cad->add(runner, 0.0, 0.0, BAT_PIVOT_Z - 2.0 * base_height);
-
     printf("total facets = %d\n", m_cad->facets());
     initCubeGeometry();
 }

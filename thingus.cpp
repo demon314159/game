@@ -109,8 +109,13 @@ Thingus::Thingus(float tilt)
     CadModel side_bumpers(StlInterface("side_bumpers.stl"), red_paint, 0.0);
     CadModel unlit_light(StlInterface("light_base.stl"), black_paint, 0.0);
     unlit_light.add(StlInterface("light_top.stl"), unlit_paint, 0.0);
-    CadModel lit_light(StlInterface("light_base.stl"), black_paint, 0.0);
-    lit_light.add(StlInterface("light_top.stl"), lit_paint, 0.0);
+    CadModel lit_light1(StlInterface("light_top.stl"), lit_paint, 51.0);
+    CadModel lit_light2(StlInterface("light_top.stl"), lit_paint, 52.0);
+    CadModel lit_light3(StlInterface("light_top.stl"), lit_paint, 53.0);
+    CadModel lit_light4(StlInterface("light_top.stl"), lit_paint, 54.0);
+    CadModel lit_light5(StlInterface("light_top.stl"), lit_paint, 55.0);
+    CadModel lit_light6(StlInterface("light_top.stl"), lit_paint, 56.0);
+    CadModel lit_light7(StlInterface("light_top.stl"), lit_paint, 57.0);
 
 //    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
 //    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
@@ -138,13 +143,32 @@ Thingus::Thingus(float tilt)
     m_cad->add(diamond, 0.0, 0.0, 0.0);
     m_cad->add(bases, 0.0, 0.0, 0.0);
     m_cad->add(side_bumpers, 0.0, 0.0, 0.0);
-    m_cad->add(lit_light, -6.0 * w, 0.0, ll);
-    m_cad->add(lit_light, -4.0 * w, 0.0, ll);
+    float thickness = 0.05;
+    float rise = thickness / 8.0;
+    m_cad->add(unlit_light, -6.0 * w, 0.0, ll);
+    m_cad->add(unlit_light, -4.0 * w, 0.0, ll);
     m_cad->add(unlit_light, -2.0 * w, 0.0, ll);
-    m_cad->add(lit_light, 0.0, 0.0, ll);
-    m_cad->add(lit_light, 2.0 * w, 0.0, ll);
-    m_cad->add(lit_light, 4.0 * w, 0.0, ll);
-    m_cad->add(lit_light, 6.0 * w, 0.0, ll);
+    m_cad->add(unlit_light, 0.0, 0.0, ll);
+    m_cad->add(unlit_light, 2.0 * w, 0.0, ll);
+    m_cad->add(unlit_light, 4.0 * w, 0.0, ll);
+    m_cad->add(unlit_light, 6.0 * w, 0.0, ll);
+
+    m_cad->add(lit_light1, -6.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light2, -4.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light3, -2.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light4, 0.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light5, 2.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light6, 4.0 * w, rise - 0.1, ll);
+    m_cad->add(lit_light7, 6.0 * w, rise - 0.1, ll);
+
+
+//    m_cad->add(lit_light, -6.0 * w, rise, ll);
+//    m_cad->add(lit_light, -4.0 * w, rise, ll);
+//    m_cad->add(unlit_light, -2.0 * w, rise, ll);
+//    m_cad->add(lit_light, 0.0, rise, ll);
+//    m_cad->add(lit_light, 2.0 * w, rise, ll);
+//    m_cad->add(lit_light, 4.0 * w, rise, ll);
+//    m_cad->add(lit_light, 6.0 * w, rise, ll);
 
 
 

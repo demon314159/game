@@ -147,6 +147,7 @@ void Table::paintGL()
     float left_out = 0.0;   // 40.0
     float middle_out = 0.0; // 41.0
     float right_out = 0.0;  // 42.0
+    float light_sel = 52.0;
     if (m_outs == 1) {
         left_out = 40.0;
     } else if (m_outs == 2) {
@@ -166,6 +167,7 @@ void Table::paintGL()
     m_program.setUniformValue("middle_out", middle_out);
     m_program.setUniformValue("right_out", right_out);
     m_program.setUniformValue("digit_matrix", digit_matrix);
+    m_program.setUniformValue("light_sel", light_sel);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);

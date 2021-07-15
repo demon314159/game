@@ -1,7 +1,7 @@
 label = "HOMER";
 include_body = false;
-include_bumper = false;
-include_label = true;
+include_bumper = true;
+include_label = false;
 $fa = 1;
 $fs = 0.01;
 mag = 0.416/2.2;
@@ -35,7 +35,7 @@ rotate([-90,0,0]) {
   if (include_bumper) {
     translate([-c,0,thickness/2])
       rotate([0,90,0])
-        cylinder(c*2, thickness / 3, thickness / 3);
+        cylinder(c*2, 1.2*thickness / 2, 1.2*thickness / 2);
   }    
   if (include_label) {
     translate([0,0.03,0.01])

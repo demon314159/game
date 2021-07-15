@@ -15,6 +15,7 @@
 #define ANI_ID_TARGET6 6.0
 #define ANI_ID_TARGET7 7.0
 #define ANI_ID_BAT     8.0
+#define ANI_ID_PITCH   9.0
 
 #define BAT_PIVOT_X -0.88235
 #define BAT_PIVOT_Z 1.0

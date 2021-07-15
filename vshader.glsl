@@ -9,10 +9,10 @@ uniform mat4 rot_matrix;
 uniform float light_sel;
 uniform float bat_ani_id;
 uniform float target_ani_id;
-uniform float ani_sel3;
+uniform float pitch_ani_id;
 uniform mat4 bat_matrix;
 uniform mat4 ani_matrix2;
-uniform mat4 ani_matrix3;
+uniform mat4 pitch_matrix;
 uniform float left_digit;
 uniform float middle_digit;
 uniform float right_digit;
@@ -41,9 +41,9 @@ void main()
     } else if (a_animation_id > 0.0 && a_animation_id == target_ani_id) {
         gl_Position = mvp_matrix *  ani_matrix2 * vec4(a_position, 1.0);
         v_normal = rot_matrix * ani_matrix2 * vec4(billy, 0.0);
-    } else if (a_animation_id > 0.0 && a_animation_id == ani_sel3) {
-        gl_Position = mvp_matrix *  ani_matrix3 * vec4(a_position, 1.0);
-        v_normal = rot_matrix * ani_matrix3 * vec4(billy, 0.0);
+    } else if (a_animation_id > 0.0 && a_animation_id == pitch_ani_id) {
+        gl_Position = mvp_matrix *  pitch_matrix * vec4(a_position, 1.0);
+        v_normal = rot_matrix * pitch_matrix * vec4(billy, 0.0);
     } else if (a_animation_id > 0.0 && (a_animation_id == left_digit || a_animation_id == middle_digit || a_animation_id == right_digit)) {
         gl_Position = mvp_matrix *  digit_matrix * vec4(a_position, 1.0);
         v_normal = rot_matrix * digit_matrix * vec4(billy, 0.0);

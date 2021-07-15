@@ -17,7 +17,7 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
     , m_target_ani_id(0.0)
     , m_bat_angle(0.0)
     , m_ani_angle2(0.0)
-    , m_ani_angle3(0.0)
+    , m_pitch_angle(0.0)
     , m_ball_in_play(false)
     , m_ball_hit(false)
     , m_outs(0)
@@ -131,14 +131,14 @@ void Table::paintGL()
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
 
     QVector3D ani_axis3 = {1.0, 0.0, 0.0};
-    QQuaternion ani_rot3 = QQuaternion::fromAxisAndAngle(ani_axis3, m_ani_angle3);
-    float ani_sel3 = 9.0;
-    QMatrix4x4 ani_matrix3;
-    ani_matrix3.translate(0.0, 0.0, PITCH_PIVOT_Z);
-    ani_matrix3.rotate(ani_rot3);
-    ani_matrix3.translate(0.0, 0.0, -PITCH_PIVOT_Z);
-    m_program.setUniformValue("ani_sel3", ani_sel3);
-    m_program.setUniformValue("ani_matrix3", ani_matrix3);
+    QQuaternion ani_rot3 = QQuaternion::fromAxisAndAngle(ani_axis3, m_pitch_angle);
+    float pitch_ani_id = ANI_ID_PITCH;
+    QMatrix4x4 pitch_matrix;
+    pitch_matrix.translate(0.0, 0.0, PITCH_PIVOT_Z);
+    pitch_matrix.rotate(ani_rot3);
+    pitch_matrix.translate(0.0, 0.0, -PITCH_PIVOT_Z);
+    m_program.setUniformValue("pitch_ani_id", pitch_ani_id);
+    m_program.setUniformValue("pitch_matrix", pitch_matrix);
 
 
     float left_digit = m_left_digit == -1 ? 0.0 : 30.0 + (float) m_left_digit;
@@ -228,10 +228,10 @@ void Table::timerEvent(QTimerEvent *)
         if (grab_ani_image(base + 2, m_image_set.m_bat))
             return;
         m_bat_angle = 0.0;
-        m_ani_angle3 = -15.0;
+        m_pitch_angle = -15.0;
         if (grab_ani_image(base + 4, m_image_set.m_pitch))
             return;
-        m_ani_angle3 = 0.0;
+        m_pitch_angle = 0.0;
         m_ani_angle2 = -60.0;
         m_target_ani_id = ANI_ID_TARGET1;
         if (grab_ani_image(base + 6, m_image_set.m_target[0]))
@@ -256,7 +256,7 @@ void Table::timerEvent(QTimerEvent *)
             return;
         m_bat_angle = 0.0;
         m_ani_angle2 = 0.0;
-        m_ani_angle3 = 0.0;
+        m_pitch_angle = 0.0;
         m_target_ani_id = 0.0;
         m_outs = 1;
         if (grab_ani_image(base + 20, m_image_set.m_outs[0]))

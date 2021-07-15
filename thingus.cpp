@@ -67,7 +67,7 @@ Thingus::Thingus(float tilt)
     CadModel bat(StlInterface("bat_sleeve.stl"), red_paint, ANI_ID_BAT);
     bat.add(StlInterface("bat_shaft.stl"), blue_paint, ANI_ID_BAT);
     bat.add(StlInterface("bat_post.stl"), gray_paint, ANI_ID_BAT);
-    CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, 9.0);
+    CadModel pitch(StlInterface("pitch.stl"), pure_green_paint, ANI_ID_PITCH);
     CadModel score(StlInterface("score.stl"), blue_paint, 0.0);
     CadModel outs(StlInterface("outs.stl"), blue_paint, 0.0);
     CadModel right_digit(StlInterface("digit_0.stl"), blue_paint, 10.0);

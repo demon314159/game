@@ -144,17 +144,15 @@ void AltTable::resizeEvent(QResizeEvent*)
 
 void AltTable::mousePressEvent(QMouseEvent *e)
 {
-    if (m_count_down == 0) {
-        if (e->button() == Qt::LeftButton) {
-            m_bat_on = true;
-            update(m_image_set.m_bat.rect());
-            m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
-        } else if (e->button() == Qt::RightButton) {
-            if (!m_ball.in_play()) {
-                m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
-                m_pitch_on = true;
-                update(m_image_set.m_pitch.rect());
-            }
+    if (e->button() == Qt::LeftButton) {
+        m_bat_on = true;
+        update(m_image_set.m_bat.rect());
+        m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
+    } else if (e->button() == Qt::RightButton) {
+        if (!m_ball.in_play()) {
+            m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
+            m_pitch_on = true;
+            update(m_image_set.m_pitch.rect());
         }
     }
 }

@@ -43,8 +43,8 @@ private:
     int m_timer_step;
     QImage m_image;
     float m_tilt;
-    float m_ani_sel2;
-    float m_ani_angle1;
+    float m_target_ani_id;
+    float m_bat_angle;
     float m_ani_angle2;
     float m_ani_angle3;
     bool m_ball_in_play;

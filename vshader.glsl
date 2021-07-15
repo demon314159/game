@@ -7,10 +7,10 @@ precision mediump float;
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
 uniform float light_sel;
-uniform float ani_sel1;
-uniform float ani_sel2;
+uniform float bat_ani_id;
+uniform float target_ani_id;
 uniform float ani_sel3;
-uniform mat4 ani_matrix1;
+uniform mat4 bat_matrix;
 uniform mat4 ani_matrix2;
 uniform mat4 ani_matrix3;
 uniform float left_digit;
@@ -35,10 +35,10 @@ void main()
     billy = normalize(a_normal);
 
 // Calculate vertex position in screen space
-    if (a_animation_id > 0.0 && a_animation_id == ani_sel1) {
-        gl_Position = mvp_matrix *  ani_matrix1 * vec4(a_position, 1.0);
-        v_normal = rot_matrix * ani_matrix1 * vec4(billy, 0.0);
-    } else if (a_animation_id > 0.0 && a_animation_id == ani_sel2) {
+    if (a_animation_id > 0.0 && a_animation_id == bat_ani_id) {
+        gl_Position = mvp_matrix *  bat_matrix * vec4(a_position, 1.0);
+        v_normal = rot_matrix * bat_matrix * vec4(billy, 0.0);
+    } else if (a_animation_id > 0.0 && a_animation_id == target_ani_id) {
         gl_Position = mvp_matrix *  ani_matrix2 * vec4(a_position, 1.0);
         v_normal = rot_matrix * ani_matrix2 * vec4(billy, 0.0);
     } else if (a_animation_id > 0.0 && a_animation_id == ani_sel3) {

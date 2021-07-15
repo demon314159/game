@@ -14,8 +14,8 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
     , m_stacked_widget(stacked_widget)
     , m_timer_step(0)
     , m_tilt(0.0)
-    , m_ani_sel2(0.0)
-    , m_ani_angle1(0.0)
+    , m_target_ani_id(0.0)
+    , m_bat_angle(0.0)
     , m_ani_angle2(0.0)
     , m_ani_angle3(0.0)
     , m_ball_in_play(false)
@@ -112,14 +112,14 @@ void Table::paintGL()
     }
 
     QVector3D ani_axis1 = {0.0, 1.0, 0.0};
-    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_ani_angle1);
-    float ani_sel1 = 8.0;
-    QMatrix4x4 ani_matrix1;
-    ani_matrix1.translate(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
-    ani_matrix1.rotate(ani_rot1);
-    ani_matrix1.translate(-BAT_PIVOT_X, 0.0, -BAT_PIVOT_Z);
-    m_program.setUniformValue("ani_sel1", ani_sel1);
-    m_program.setUniformValue("ani_matrix1", ani_matrix1);
+    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_bat_angle);
+    float bat_ani_id = ANI_ID_BAT;
+    QMatrix4x4 bat_matrix;
+    bat_matrix.translate(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z);
+    bat_matrix.rotate(ani_rot1);
+    bat_matrix.translate(-BAT_PIVOT_X, 0.0, -BAT_PIVOT_Z);
+    m_program.setUniformValue("bat_ani_id", bat_ani_id);
+    m_program.setUniformValue("bat_matrix", bat_matrix);
 
     QVector3D ani_axis2 = {1.0, 0.0, 0.0};
     QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_ani_angle2);
@@ -127,7 +127,7 @@ void Table::paintGL()
     ani_matrix2.translate(0.0, TARGET_PIVOT_Y, TARGET_PIVOT_Z);
     ani_matrix2.rotate(ani_rot2);
     ani_matrix2.translate(0.0, -TARGET_PIVOT_Y, -TARGET_PIVOT_Z);
-    m_program.setUniformValue("ani_sel2", m_ani_sel2);
+    m_program.setUniformValue("target_ani_id", m_target_ani_id);
     m_program.setUniformValue("ani_matrix2", ani_matrix2);
 
     QVector3D ani_axis3 = {1.0, 0.0, 0.0};
@@ -224,40 +224,40 @@ void Table::timerEvent(QTimerEvent *)
         int base = 10;
         if (grab_image(base, m_image_set.m_baseline))
             return;
-        m_ani_angle1 = 45.0 + 30.0;
+        m_bat_angle = 45.0 + 30.0;
         if (grab_ani_image(base + 2, m_image_set.m_bat))
             return;
-        m_ani_angle1 = 0.0;
+        m_bat_angle = 0.0;
         m_ani_angle3 = -15.0;
         if (grab_ani_image(base + 4, m_image_set.m_pitch))
             return;
         m_ani_angle3 = 0.0;
         m_ani_angle2 = -60.0;
-        m_ani_sel2 = 1.0;
+        m_target_ani_id = ANI_ID_TARGET1;
         if (grab_ani_image(base + 6, m_image_set.m_target[0]))
             return;
-        m_ani_sel2 = 2.0;
+        m_target_ani_id = ANI_ID_TARGET2;
         if (grab_ani_image(base + 8, m_image_set.m_target[1]))
             return;
-        m_ani_sel2 = 3.0;
+        m_target_ani_id = ANI_ID_TARGET3;
         if (grab_ani_image(base + 10, m_image_set.m_target[2]))
             return;
-        m_ani_sel2 = 4.0;
+        m_target_ani_id = ANI_ID_TARGET4;
         if (grab_ani_image(base + 12, m_image_set.m_target[3]))
             return;
-        m_ani_sel2 = 5.0;
+        m_target_ani_id = ANI_ID_TARGET5;
         if (grab_ani_image(base + 14, m_image_set.m_target[4]))
             return;
-        m_ani_sel2 = 6.0;
+        m_target_ani_id = ANI_ID_TARGET6;
         if (grab_ani_image(base + 16, m_image_set.m_target[5]))
             return;
-        m_ani_sel2 = 7.0;
+        m_target_ani_id = ANI_ID_TARGET7;
         if (grab_ani_image(base + 18, m_image_set.m_target[6]))
             return;
-        m_ani_angle1 = 0.0;
+        m_bat_angle = 0.0;
         m_ani_angle2 = 0.0;
         m_ani_angle3 = 0.0;
-        m_ani_sel2 = 0.0;
+        m_target_ani_id = 0.0;
         m_outs = 1;
         if (grab_ani_image(base + 20, m_image_set.m_outs[0]))
             return;

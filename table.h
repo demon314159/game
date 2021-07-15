@@ -44,8 +44,9 @@ private:
     QImage m_image;
     float m_tilt;
     float m_target_ani_id;
+    float m_light_ani_id;
     float m_bat_angle;
-    float m_ani_angle2;
+    float m_target_angle;
     float m_pitch_angle;
     bool m_ball_in_play;
     bool m_ball_hit;

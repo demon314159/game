@@ -6,7 +6,7 @@ precision mediump float;
 
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
-uniform float light_sel;
+uniform float light_ani_id;
 uniform float bat_ani_id;
 uniform float target_ani_id;
 uniform float pitch_ani_id;
@@ -50,7 +50,7 @@ void main()
     } else if (a_animation_id > 0.0 && (a_animation_id == left_out || a_animation_id == middle_out || a_animation_id == right_out)) {
         gl_Position = mvp_matrix *  digit_matrix * vec4(a_position, 1.0);
         v_normal = rot_matrix * digit_matrix * vec4(billy, 0.0);
-    } else if (a_animation_id > 0.0 && (a_animation_id == light_sel)) {
+    } else if (a_animation_id > 0.0 && (a_animation_id == light_ani_id)) {
         gl_Position = mvp_matrix *  digit_matrix * vec4(a_position, 1.0);
         v_normal = rot_matrix * digit_matrix * vec4(billy, 0.0);
     } else {

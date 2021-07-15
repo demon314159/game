@@ -15,8 +15,9 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
     , m_timer_step(0)
     , m_tilt(0.0)
     , m_target_ani_id(0.0)
+    , m_light_ani_id(0.0)
     , m_bat_angle(0.0)
-    , m_ani_angle2(0.0)
+    , m_target_angle(0.0)
     , m_pitch_angle(0.0)
     , m_ball_in_play(false)
     , m_ball_hit(false)
@@ -122,7 +123,7 @@ void Table::paintGL()
     m_program.setUniformValue("bat_matrix", bat_matrix);
 
     QVector3D ani_axis2 = {1.0, 0.0, 0.0};
-    QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_ani_angle2);
+    QQuaternion ani_rot2 = QQuaternion::fromAxisAndAngle(ani_axis2, m_target_angle);
     QMatrix4x4 ani_matrix2;
     ani_matrix2.translate(0.0, TARGET_PIVOT_Y, TARGET_PIVOT_Z);
     ani_matrix2.rotate(ani_rot2);
@@ -147,7 +148,6 @@ void Table::paintGL()
     float left_out = 0.0;   // 40.0
     float middle_out = 0.0; // 41.0
     float right_out = 0.0;  // 42.0
-    float light_sel = 52.0;
     if (m_outs == 1) {
         left_out = 40.0;
     } else if (m_outs == 2) {
@@ -167,7 +167,7 @@ void Table::paintGL()
     m_program.setUniformValue("middle_out", middle_out);
     m_program.setUniformValue("right_out", right_out);
     m_program.setUniformValue("digit_matrix", digit_matrix);
-    m_program.setUniformValue("light_sel", light_sel);
+    m_program.setUniformValue("light_ani_id", m_light_ani_id);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
@@ -232,7 +232,7 @@ void Table::timerEvent(QTimerEvent *)
         if (grab_ani_image(base + 4, m_image_set.m_pitch))
             return;
         m_pitch_angle = 0.0;
-        m_ani_angle2 = -60.0;
+        m_target_angle = -60.0;
         m_target_ani_id = ANI_ID_TARGET1;
         if (grab_ani_image(base + 6, m_image_set.m_target[0]))
             return;
@@ -255,7 +255,7 @@ void Table::timerEvent(QTimerEvent *)
         if (grab_ani_image(base + 18, m_image_set.m_target[6]))
             return;
         m_bat_angle = 0.0;
-        m_ani_angle2 = 0.0;
+        m_target_angle = 0.0;
         m_pitch_angle = 0.0;
         m_target_ani_id = 0.0;
         m_outs = 1;
@@ -275,8 +275,30 @@ void Table::timerEvent(QTimerEvent *)
             return;
         if (grab_digit_set(base + 66, m_left_digit, m_image_set.m_left_digit))
             return;
+        m_light_ani_id = ANI_ID_LIGHT1;
+        if (grab_ani_image(base + 86, m_image_set.m_light[0]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT2;
+        if (grab_ani_image(base + 88, m_image_set.m_light[1]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT3;
+        if (grab_ani_image(base + 90, m_image_set.m_light[2]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT4;
+        if (grab_ani_image(base + 92, m_image_set.m_light[3]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT5;
+        if (grab_ani_image(base + 94, m_image_set.m_light[4]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT6;
+        if (grab_ani_image(base + 96, m_image_set.m_light[5]))
+            return;
+        m_light_ani_id = ANI_ID_LIGHT7;
+        if (grab_ani_image(base + 98, m_image_set.m_light[6]))
+            return;
+        m_light_ani_id = 0.0;
 
-        if (m_timer_step == (base + 86)) {
+        if (m_timer_step == (base + 100)) {
             update();
             ++m_timer_step;
             m_image_set.difference(m_image_set.m_bat);
@@ -294,9 +316,16 @@ void Table::timerEvent(QTimerEvent *)
             digit_difference(m_image_set.m_right_digit);
             digit_difference(m_image_set.m_middle_digit);
             digit_difference(m_image_set.m_left_digit);
+            m_image_set.difference(m_image_set.m_light[0]);
+            m_image_set.difference(m_image_set.m_light[1]);
+            m_image_set.difference(m_image_set.m_light[2]);
+            m_image_set.difference(m_image_set.m_light[3]);
+            m_image_set.difference(m_image_set.m_light[4]);
+            m_image_set.difference(m_image_set.m_light[5]);
+            m_image_set.difference(m_image_set.m_light[6]);
             return;
         }
-        if (m_timer_step == (base + 87)) {
+        if (m_timer_step == (base + 101)) {
             printf("Handover\n");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;

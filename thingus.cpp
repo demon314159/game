@@ -20,7 +20,14 @@ Thingus::Thingus(float tilt)
     initializeOpenGLFunctions();
 
     vertexBuf.create();
+    PaintCan lit_paint(2.0, 2.0, 0.0);
+    float f = 0.6;
+    PaintCan unlit_paint(f, f, 0.0);
+//    PaintCan unlit_paint(0.329412, 1.0, 0.517647);
+
+
     PaintCan white_paint(1.0, 1.0, 1.0);
+    PaintCan black_paint(0.0, 0.0, 0.0);
     PaintCan red_paint(1.0, 0.0, 0.0);
     PaintCan blue_paint(0.329412, 0.517647, 1.000000);
     PaintCan brown_paint(0.71, 0.396, 0.114);
@@ -100,11 +107,17 @@ Thingus::Thingus(float tilt)
     CadModel diamond(StlInterface("diamond.stl"), brown_paint, 0.0);
     CadModel bases(StlInterface("bases.stl"), white_paint, 0.0);
     CadModel side_bumpers(StlInterface("side_bumpers.stl"), red_paint, 0.0);
+    CadModel unlit_light(StlInterface("light_base.stl"), black_paint, 0.0);
+    unlit_light.add(StlInterface("light_top.stl"), unlit_paint, 0.0);
+    CadModel lit_light(StlInterface("light_base.stl"), black_paint, 0.0);
+    lit_light.add(StlInterface("light_top.stl"), lit_paint, 0.0);
+
 //    CadModel guy(StlInterface("guy.stl"), blue_paint, 0.0);
 //    CadModel runner(StlInterface("runner.stl"), blue_paint, 50.0);
 
     float w = TARGET_WIDTH;
     float h = TARGET_PIVOT_Y;
+    float ll = -7.0;
     m_cad->add(t1, -6.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t2, -4.0 * w, h, TARGET_PIVOT_Z);
     m_cad->add(t3, -2.0 * w, h, TARGET_PIVOT_Z);
@@ -125,6 +138,16 @@ Thingus::Thingus(float tilt)
     m_cad->add(diamond, 0.0, 0.0, 0.0);
     m_cad->add(bases, 0.0, 0.0, 0.0);
     m_cad->add(side_bumpers, 0.0, 0.0, 0.0);
+    m_cad->add(lit_light, -6.0 * w, 0.0, ll);
+    m_cad->add(lit_light, -4.0 * w, 0.0, ll);
+    m_cad->add(unlit_light, -2.0 * w, 0.0, ll);
+    m_cad->add(lit_light, 0.0, 0.0, ll);
+    m_cad->add(lit_light, 2.0 * w, 0.0, ll);
+    m_cad->add(lit_light, 4.0 * w, 0.0, ll);
+    m_cad->add(lit_light, 6.0 * w, 0.0, ll);
+
+
+
 //    m_cad->add(guy, 0.0, 0.0, 0.0);
 
 //    int base_width = 2.8;

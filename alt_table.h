@@ -39,6 +39,7 @@ protected:
     void draw_lights(QPainter& painter, const QRect& rect);
     void increment_score();
     void check_score();
+    bool any_guy_is_running() const;
     QVector3D corrected_sprite_position(const QVector3D& position, const Sprite& sprite);
 
 

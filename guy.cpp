@@ -111,3 +111,8 @@ bool Guy::is_reversed() const
 {
     return m_position < 1.0 || m_position >= 3.0;
 }
+
+bool Guy::is_running() const
+{
+    return (m_position > 0.0) && (m_position < m_stop_position);
+}

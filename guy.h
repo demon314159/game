@@ -20,6 +20,7 @@ public:
     void relaunch(float move_position);
     bool scored() const;
     void reset_score();
+    bool is_running() const;
 
     bool is_reversed() const override;
     void update() override;

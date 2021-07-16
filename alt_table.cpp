@@ -157,7 +157,7 @@ void AltTable::mousePressEvent(QMouseEvent *e)
         update(m_image_set.m_bat.rect());
         m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
     } else if (e->button() == Qt::RightButton) {
-        if (!m_ball.in_play()) {
+        if ((m_outs < 3) && !m_ball.in_play() && !any_guy_is_running()) {
             m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
             m_pitch_on = true;
             update(m_image_set.m_pitch.rect());
@@ -319,3 +319,11 @@ void AltTable::timerEvent(QTimerEvent *)
     }
 }
 
+bool AltTable::any_guy_is_running() const
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        if (m_guy[i].is_running())
+            return true;
+    }
+    return false;
+}

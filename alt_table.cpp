@@ -39,12 +39,19 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
     timer.start(TIMER_PERIOD, this);
 }
 
-void AltTable::draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
+void AltTable::draw_ani_image(QPainter& painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
 {
     if (rect.intersects(img.rect())) {
         if (on_flag) {
             painter.drawImage(img.m_x, img.m_y, img.m_image);
         }
+    }
+}
+
+void AltTable::draw_lights(QPainter& painter, const QRect& rect)
+{
+    for (int i = 0; i < m_light_box.lights(); i++) {
+        draw_ani_image(painter, rect, m_image_set.m_light[i], m_light_box.is_on(i));
     }
 }
 
@@ -129,6 +136,7 @@ void AltTable::paintEvent(QPaintEvent* event)
     draw_ani_image(painter, rect, m_image_set.m_middle_digit[m_middle_score], true);
     draw_ani_image(painter, rect, m_image_set.m_right_digit[m_right_score], true);
     draw_ani_image(painter, rect, m_image_set.m_bat, m_bat_on);
+    draw_lights(painter, rect);
 
     draw_sprite(painter, rect, m_ball);
     draw_guys(painter, rect);
@@ -271,9 +279,19 @@ void AltTable::timerEvent(QTimerEvent *)
                 }
            }
         }
+        if (m_count_down == (400 / TIMER_PERIOD) - 1) {
+           if (m_target_on) {
+               m_light_box.set_on(m_target_sel);
+               update(m_image_set.m_light[m_target_sel].rect());
+           }
+        }
         if (m_count_down == 1) {
             m_target_on = false;
             m_ball.reset();
+            if (m_light_box.all_on()) {
+                m_light_box.set_all_off();
+                --m_outs;
+            }
             update();
         }
         --m_count_down;
@@ -294,7 +312,6 @@ void AltTable::timerEvent(QTimerEvent *)
                         update(m_image_set.m_outs[m_outs - 1].rect());
                     }
                 }
-
             }
             m_count_down = 400 / TIMER_PERIOD;
         }

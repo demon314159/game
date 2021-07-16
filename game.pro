@@ -15,6 +15,7 @@ HEADERS      += game.h \
                 sprite.h \
                 ball.h \
                 guy.h \
+                light_box.h \
                 paint_can.h \
                 bin_interface.h \
                 char_interface.h \
@@ -33,6 +34,7 @@ SOURCES      += main.cpp \
                 sprite.cpp \
                 ball.cpp \
                 guy.cpp \
+                light_box.cpp \
                 paint_can.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

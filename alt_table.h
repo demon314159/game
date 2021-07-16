@@ -9,6 +9,7 @@
 #include "sprite.h"
 #include "ball.h"
 #include "guy.h"
+#include "light_box.h"
 #include <QObject>
 #include <QWidget>
 #include <QPainter>
@@ -36,7 +37,8 @@ protected:
     void resizeEvent(QResizeEvent*) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-    void draw_ani_image(QPainter &painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
+    void draw_ani_image(QPainter& painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
+    void draw_lights(QPainter& painter, const QRect& rect);
     void increment_score();
     void check_score();
     QVector3D corrected_sprite_position(const QVector3D& position, const Sprite& sprite);
@@ -55,6 +57,7 @@ protected:
     void timerEvent(QTimerEvent *e) override;
 
 private:
+    LightBox m_light_box;
     Ball m_ball;
     Guy m_guy[MAX_GUYS];
     int m_guy_ix;

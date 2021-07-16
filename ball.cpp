@@ -38,12 +38,15 @@ void Ball::hit(const QVector3D& bat_pivot_position)
         int t_hit = QTime::currentTime().msecsSinceStartOfDay();
         int tdiff = t_hit - m_t_launch;
         float dt = ((float) tdiff) / 1000.0;
-        m_hit_position = m_launch_position + dt * m_velocity;
+        QVector3D hit_position = m_launch_position + dt * m_velocity;
         float dx = bat_pivot_position.x();
-        float dz = bat_pivot_position.z() - m_hit_position.z();
-        float theta = atanf(dz / dx);
-        m_velocity = QVector3D(hit_velocity * sin(theta), 0.0, -hit_velocity * cos(theta));
-        m_t_hit = t_hit;
+        float dz = bat_pivot_position.z() - hit_position.z();
+        if (fabs(dz) < 1.0) {
+            m_hit_position = hit_position;
+            float theta = atanf(dz / dx);
+            m_velocity = QVector3D(hit_velocity * sin(theta), 0.0, -hit_velocity * cos(theta));
+            m_t_hit = t_hit;
+        }
     }
 }
 

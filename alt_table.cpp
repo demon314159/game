@@ -32,6 +32,8 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
     , m_mvp_matrix(mvp_matrix)
     , m_rot_matrix(rot_matrix)
 {
+    setFocusPolicy(Qt::StrongFocus);
+    grabKeyboard();
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
 //    setMinimumHeight(980);
@@ -163,29 +165,75 @@ void AltTable::resizeEvent(QResizeEvent*)
     }
 }
 
-void AltTable::mousePressEvent(QMouseEvent *e)
+
+void AltTable::bat_button_on()
 {
-    if (e->button() == Qt::LeftButton) {
-        m_bat_on = true;
-        update(m_image_set.m_bat.rect());
-        m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
-    } else if (e->button() == Qt::RightButton) {
-        if ((m_outs < 3) && !m_ball.in_play() && !any_guy_is_running()) {
-            m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
-            m_pitch_on = true;
-            update(m_image_set.m_pitch.rect());
-        }
+    m_bat_on = true;
+    update(m_image_set.m_bat.rect());
+    m_ball.hit(QVector3D(BAT_PIVOT_X, 0.0, BAT_PIVOT_Z));
+}
+
+void AltTable::bat_button_off()
+{
+    m_bat_on = false;
+    update(m_image_set.m_bat.rect());
+}
+
+void AltTable::pitch_button_on()
+{
+    if ((m_outs < 3) && !m_ball.in_play() && !any_guy_is_running()) {
+        m_ball.launch(QVector3D(0.0, BALL_RADIUS, -2.0));
+        m_pitch_on = true;
+        update(m_image_set.m_pitch.rect());
     }
 }
 
-void AltTable::mouseReleaseEvent(QMouseEvent *e)
+void AltTable::pitch_button_off()
 {
-    if (e->button() == Qt::LeftButton) {
-        m_bat_on = false;
-        update(m_image_set.m_bat.rect());
-    } else if (e->button() == Qt::RightButton) {
         m_pitch_on = false;
         update(m_image_set.m_pitch.rect());
+}
+
+void AltTable::keyPressEvent(QKeyEvent* e)
+{
+    unsigned int a = e->nativeScanCode();
+    if (a == 0x32) {
+        bat_button_on();
+    } else if (a == 0x3e) {
+        pitch_button_on();
+    } else if (a == 0x39) {
+        new_game();
+    }
+//    ::keyPressEvent(e);
+}
+
+void AltTable::keyReleaseEvent(QKeyEvent* e)
+{
+    unsigned int a = e->nativeScanCode();
+    if (a == 0x32) {
+        bat_button_off();
+    } else if (a == 0x3e) {
+        pitch_button_off();
+    } else if (a == 0x4e) {
+    }
+//    ::keyPressEvent(e);
+}
+
+void AltTable::mousePressEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton) {
+        bat_button_on();
+    } else if (e->button() == Qt::RightButton) {
+        pitch_button_on();
+    }
+}
+
+void AltTable::mouseReleaseEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton) {
+        bat_button_off();
+    } else if (e->button() == Qt::RightButton) {
+        pitch_button_off();
     }
 }
 

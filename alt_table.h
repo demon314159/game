@@ -33,9 +33,11 @@ protected:
     const int TIMER_PERIOD = 33; // milliseconds
 
     void paintEvent(QPaintEvent* event) override;
-    void resizeEvent(QResizeEvent*) override;
-    void mousePressEvent(QMouseEvent *e) override;
+    void resizeEvent(QResizeEvent* event) override;
+    void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void keyPressEvent(QKeyEvent* e) override;
+    void keyReleaseEvent(QKeyEvent* e) override;
     void draw_ani_image(QPainter& painter, const QRect& rect, const AnimatedImage& img, bool on_flag);
     void draw_lights(QPainter& painter, const QRect& rect);
     void increment_score();
@@ -43,6 +45,10 @@ protected:
     bool any_guy_is_running() const;
     QVector3D corrected_sprite_position(const QVector3D& position, const Sprite& sprite);
 
+    void bat_button_on();
+    void bat_button_off();
+    void pitch_button_on();
+    void pitch_button_off();
 
     void update_guys();
     void launch_guys(int hit);

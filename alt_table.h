@@ -23,6 +23,7 @@ class AltTable: public QWidget
 
 public:
     explicit AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    void new_game();
 
 protected:
     static const int MAX_GUYS = 4;

@@ -39,6 +39,19 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
     timer.start(TIMER_PERIOD, this);
 }
 
+void AltTable::new_game()
+{
+    for (int i = 0; i < MAX_GUYS; i++) {
+        m_guy[i].reset_score();
+    }
+    m_outs = 0;
+    m_left_score = 0;
+    m_middle_score = 0;
+    m_right_score = 0;
+    m_light_box.set_all_off();
+    update();
+}
+
 void AltTable::draw_ani_image(QPainter& painter, const QRect& rect, const AnimatedImage& img, bool on_flag)
 {
     if (rect.intersects(img.rect())) {

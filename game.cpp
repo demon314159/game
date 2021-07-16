@@ -39,7 +39,7 @@ void Game::initializeWindow()
     layout->addWidget(m_pb3, 0, 2, 1, 1);
     layout->addWidget(m_pb4, 0, 3, 1, 1);
     layout->addWidget(m_pb5, 0, 4, 1, 1);
-    m_pb1->setText(tr("Button 1"));
+    m_pb1->setText(tr("New Game"));
     m_pb2->setText(tr("Button 2"));
     m_pb3->setText(tr("Button 3"));
     m_pb4->setText(tr("Button 4"));
@@ -61,6 +61,7 @@ void Game::initializeWindow()
 
 void Game::pb1()
 {
+    m_alt_table->new_game();
 }
 
 void Game::pb2()

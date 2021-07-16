@@ -39,11 +39,15 @@ void Game::initializeWindow()
     layout->addWidget(m_pb3, 0, 2, 1, 1);
     layout->addWidget(m_pb4, 0, 3, 1, 1);
     layout->addWidget(m_pb5, 0, 4, 1, 1);
-    m_pb1->setText(tr("New Game"));
+    m_pb1->setText(tr("(N)ew Game"));
     m_pb2->setText(tr("Button 2"));
     m_pb3->setText(tr("Button 3"));
     m_pb4->setText(tr("Button 4"));
     m_pb5->setText(tr("Button 5"));
+    m_pb2->hide();
+    m_pb3->hide();
+    m_pb4->hide();
+    m_pb5->hide();
 
     m_stacked_widget = new QStackedWidget;
     m_table = new Table(m_view_ix, m_mvp_matrix, m_rot_matrix, m_image_set, m_stacked_widget, this);

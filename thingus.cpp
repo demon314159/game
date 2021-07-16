@@ -113,6 +113,7 @@ Thingus::Thingus(float tilt)
     CadModel lit_light5(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT5);
     CadModel lit_light6(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT6);
     CadModel lit_light7(StlInterface("light_top.stl"), lit_paint, ANI_ID_LIGHT7);
+    CadModel cancel(StlInterface("cancel.stl"), blue_paint, 0.0);
 
     float w = TARGET_WIDTH;
     float h = TARGET_PIVOT_Y;
@@ -153,6 +154,7 @@ Thingus::Thingus(float tilt)
     m_cad->add(lit_light5, 2.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light6, 4.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light7, 6.0 * w, rise - 0.1, ll);
+    m_cad->add(cancel, 0.0, 0.0, 0.0);
     printf("total facets = %d\n", m_cad->facets());
     initCubeGeometry();
 }

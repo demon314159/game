@@ -290,7 +290,8 @@ void AltTable::timerEvent(QTimerEvent *)
             m_ball.reset();
             if (m_light_box.all_on()) {
                 m_light_box.set_all_off();
-                --m_outs;
+                if (m_outs > 0)
+                    --m_outs;
             }
             update();
         }

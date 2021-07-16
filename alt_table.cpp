@@ -8,7 +8,7 @@
 
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
-    , m_ball(BACK_WIDTH, FRONT_WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
+    , m_ball(WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
     , m_guy({
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),

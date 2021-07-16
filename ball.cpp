@@ -5,12 +5,11 @@
 #include <math.h>
 #include <QTime>
 
-Ball::Ball(float back_width, float front_width, float back, float front)
+Ball::Ball(float table_width, float table_back, float table_front)
     : Sprite(":/ball_set.png", BALL_RADIUS, QVector3D(0.0, 0.0, 0.0))
-    , m_back_width(back_width)
-    , m_front_width(front_width)
-    , m_back(back)
-    , m_front(front)
+    , m_width(table_width)
+    , m_back(table_back)
+    , m_front(table_front)
     , m_t_launch(0)
     , m_t_hit(0)
     , m_velocity(0.0, 0.0, 0.0)
@@ -88,35 +87,17 @@ QVector3D Ball::last_position() const
     return m_last_position;
 }
 
-float Ball::left_border(float z) const
-{
-    float x1 = -m_back_width / 2.0;
-    float z1 = m_back;
-    float x2 = -m_front_width / 2.0;
-    float z2 = m_front;
-    return x1 + (z - z1) * (x2 - x1) / (z2 - z1);
-}
-
-float Ball::right_border(float z) const
-{
-    float x1 = m_back_width / 2.0;
-    float z1 = m_back;
-    float x2 = m_front_width / 2.0;
-    float z2 = m_front;
-    return x1 + (z - z1) * (x2 - x1) / (z2 - z1);
-}
-
 bool Ball::reflect(QVector3D& pos)
 {
-    if (pos.x() < left_border(pos.z())) {
+    if (pos.x() < (-m_width / 2.0)) {
         m_velocity.setX(-m_velocity.x());
-        float delta = m_hit_position.x() - left_border(pos.z());
+        float delta = m_hit_position.x() - (-m_width / 2.0);
         m_hit_position.setX(m_hit_position.x() - 2.0 * delta);
         return true;
     }
-    if (pos.x() > right_border(pos.z())) {
+    if (pos.x() > (m_width / 2.0)) {
         m_velocity.setX(-m_velocity.x());
-        float delta = right_border(pos.z()) - m_hit_position.x();
+        float delta = (m_width / 2.0) - m_hit_position.x();
         m_hit_position.setX(m_hit_position.x() + 2.0 * delta);
         return true;
     }

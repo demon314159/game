@@ -77,7 +77,6 @@ void Table::initializeGL()
 void Table::resizeGL(int w, int h)
 {
     qreal aspect = qreal(w) / qreal(h ? h : 1);
-    printf("in resizeGL %d x %d aspect ratio = %7.3lf\n", w, h, aspect);
     const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
     m_projection.setToIdentity();
     m_projection.perspective(fov, aspect, zNear, zFar);
@@ -326,7 +325,6 @@ void Table::timerEvent(QTimerEvent *)
             return;
         }
         if (m_timer_step == (base + 101)) {
-            printf("Handover\n");
             m_stacked_widget->setCurrentIndex(1);
             ++m_timer_step;
             return;

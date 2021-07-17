@@ -155,7 +155,6 @@ Thingus::Thingus(float tilt)
     m_cad->add(lit_light6, 4.0 * w, rise - 0.1, ll);
     m_cad->add(lit_light7, 6.0 * w, rise - 0.1, ll);
     m_cad->add(cancel, 0.0, 0.0, 0.0);
-    printf("total facets = %d\n", m_cad->facets());
     initCubeGeometry();
 }
 

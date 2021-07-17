@@ -160,7 +160,6 @@ void AltTable::paintEvent(QPaintEvent* event)
 void AltTable::resizeEvent(QResizeEvent*)
 {
     if (isVisible()) {
-        printf("resize handback\n");
         m_stacked_widget->setCurrentIndex(0);
     }
 }

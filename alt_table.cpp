@@ -197,9 +197,9 @@ void AltTable::keyPressEvent(QKeyEvent* e)
 {
     unsigned int a = e->nativeScanCode();
     if (a == 0x32) {
-        bat_button_on();
-    } else if (a == 0x3e) {
         pitch_button_on();
+    } else if (a == 0x3e) {
+        bat_button_on();
     } else if (a == 0x39) {
         new_game();
     }
@@ -210,9 +210,9 @@ void AltTable::keyReleaseEvent(QKeyEvent* e)
 {
     unsigned int a = e->nativeScanCode();
     if (a == 0x32) {
-        bat_button_off();
-    } else if (a == 0x3e) {
         pitch_button_off();
+    } else if (a == 0x3e) {
+        bat_button_off();
     } else if (a == 0x4e) {
     }
 //    ::keyPressEvent(e);
@@ -221,18 +221,18 @@ void AltTable::keyReleaseEvent(QKeyEvent* e)
 void AltTable::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        bat_button_on();
-    } else if (e->button() == Qt::RightButton) {
         pitch_button_on();
+    } else if (e->button() == Qt::RightButton) {
+        bat_button_on();
     }
 }
 
 void AltTable::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        bat_button_off();
-    } else if (e->button() == Qt::RightButton) {
         pitch_button_off();
+    } else if (e->button() == Qt::RightButton) {
+        bat_button_off();
     }
 }
 

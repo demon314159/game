@@ -12,9 +12,9 @@ Arcade Baseball
   './game 2' launches a 1062 x 1834 Top View for monitor in portrait mode
 
 
-  Right mouse button or right shift key pitches the Ball
+  Left mouse button or left shift key pitches the Ball
 
-  Left mouse button or left shift key activates the Bat
+  Right mouse button or right shift key activates the Bat
 
   Game Over after three Outs
 

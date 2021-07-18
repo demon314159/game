@@ -18,8 +18,8 @@ int main(int argv, char **args)
     printf("\n  './game 1' launches a 1902 x 994 Perspective View\n");
     printf("\n  './game 2' launches a 1062 x 1834 Top View for monitor in portrait mode\n");
     printf("\n");
-    printf("\n  Right mouse button or right shift key pitches the Ball\n");
-    printf("\n  Left mouse button or left shift key activates the Bat\n");
+    printf("\n  Left mouse button or left shift key pitches the Ball\n");
+    printf("\n  Right mouse button or right shift key activates the Bat\n");
     printf("\n  Game Over after three Outs\n");
     printf("\n  (Hitting all targets will cancel an Out)\n");
     printf("\n  The N key will start a new game\n\n");

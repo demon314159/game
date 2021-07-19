@@ -21,3 +21,8 @@ Arcade Baseball
   (Hitting all targets will cancel an Out)
 
   The N key will start a new game
+
+To build this program:
+
+This is a Qt application so run `qmake chess.pro` to generate the Makefile, then run `make`
+

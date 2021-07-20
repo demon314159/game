@@ -4,6 +4,7 @@
 #if !defined(_ALT_TABLE_H_)
 #define _ALT_TABLE_H_
 
+#include "high_score.h"
 #include "table.h"
 #include "image_set.h"
 #include "sprite.h"
@@ -11,6 +12,7 @@
 #include "guy.h"
 #include "light_box.h"
 #include <QObject>
+#include <QLabel>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
@@ -22,7 +24,7 @@ class AltTable: public QWidget
     Q_OBJECT
 
 public:
-    explicit AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
+    explicit AltTable(QLabel* label, const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
     void new_game();
 
 protected:
@@ -63,8 +65,10 @@ protected:
     void timerEvent(QTimerEvent *e) override;
 
 private:
+    HighScore m_high_score;
     LightBox m_light_box;
     Ball m_ball;
+    QLabel* m_label;
     Guy m_guy[MAX_GUYS];
     int m_guy_ix;
     bool m_bat_on;

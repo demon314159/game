@@ -5,7 +5,7 @@
 
 HighScore::HighScore()
     : m_score(0)
-    , m_name("no high score yet")
+    , m_name("anonymous")
 {
     // read_from_file
 }

@@ -6,9 +6,11 @@
 
 #include <QString>
 
+#define HIGH_SCORE_FILE_NAME "high_score.dat"
+
 class HighScore
 {
-    const QString file_name = "high_score.dat";
+    static const int MAX_CHARS = 32;
 
 public:
     HighScore();
@@ -20,7 +22,7 @@ public:
 
 private:
     int m_score;
-    QString m_name;
+    char m_name[MAX_CHARS];
 };
 
 #endif // _HIGH_SCORE_H_

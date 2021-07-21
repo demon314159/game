@@ -13,6 +13,7 @@
 #include "table.h"
 #include "alt_table.h"
 #include "image_set.h"
+#include "high_score.h"
 
 class Game: public QMainWindow
 {
@@ -34,6 +35,7 @@ private slots:
 
 private:
     // Owned by layout
+    HighScore m_high_score;
     int m_view_ix;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;

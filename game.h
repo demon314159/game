@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QPixmap>
 #include <QPushButton>
+#include <QLabel>
 #include <QWidget>
 #include "table.h"
 #include "alt_table.h"
@@ -28,10 +29,6 @@ private:
 
 private slots:
     void pb1();
-    void pb2();
-    void pb3();
-    void pb4();
-    void pb5();
 
 private:
     // Owned by layout
@@ -44,10 +41,7 @@ private:
     AltTable* m_alt_table = nullptr;
     QStackedWidget* m_stacked_widget = nullptr;
     QPushButton* m_pb1 = nullptr;
-    QPushButton* m_pb2 = nullptr;
-    QPushButton* m_pb3 = nullptr;
-    QPushButton* m_pb4 = nullptr;
-    QPushButton* m_pb5 = nullptr;
+    QLabel* m_label = nullptr;
 };
 
 #endif // _GAME_H

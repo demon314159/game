@@ -25,6 +25,12 @@ public:
     explicit AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent = nullptr);
     void new_game();
 
+public slots:
+    void new_game_ready();
+
+signals:
+    void game_over(int score);
+
 protected:
     static const int MAX_GUYS = 4;
     const float WIDTH = 6.235;

@@ -29,6 +29,13 @@ private:
 
 private slots:
     void pb1();
+    void game_over(int score);
+
+signals:
+    void new_game_ready();
+
+protected:
+    void high_score_message();
 
 private:
     // Owned by layout

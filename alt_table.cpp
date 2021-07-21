@@ -41,8 +41,14 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
     timer.start(TIMER_PERIOD, this);
 }
 
+void AltTable::new_game_ready()
+{
+    grabKeyboard();
+}
+
 void AltTable::new_game()
 {
+
     for (int i = 0; i < MAX_GUYS; i++) {
         m_guy[i].reset_score();
     }
@@ -203,7 +209,7 @@ void AltTable::keyPressEvent(QKeyEvent* e)
     } else if (a == 0x39) {
         new_game();
     }
-//    ::keyPressEvent(e);
+    QWidget::keyPressEvent(e);
 }
 
 void AltTable::keyReleaseEvent(QKeyEvent* e)
@@ -215,7 +221,7 @@ void AltTable::keyReleaseEvent(QKeyEvent* e)
         bat_button_off();
     } else if (a == 0x4e) {
     }
-//    ::keyPressEvent(e);
+    QWidget::keyReleaseEvent(e);
 }
 
 void AltTable::mousePressEvent(QMouseEvent* e)
@@ -371,6 +377,10 @@ void AltTable::timerEvent(QTimerEvent *)
                     if (m_outs < 3) {
                         ++m_outs;
                         update(m_image_set.m_outs[m_outs - 1].rect());
+                        if (m_outs == 3) {
+                            releaseKeyboard();
+                            emit(game_over(m_left_score * 100 + m_middle_score * 10 + m_right_score));
+                        }
                     }
                 }
             }
@@ -387,3 +397,4 @@ bool AltTable::any_guy_is_running() const
     }
     return false;
 }
+

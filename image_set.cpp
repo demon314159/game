@@ -43,7 +43,8 @@ void ImageSet::difference(AnimatedImage& img)
         for (int i = 0; i < nx; i++) {
             if ( base_line[4 * i]     != active_line[4 * i]
               || base_line[4 * i + 1] != active_line[4 * i + 1]
-              || base_line[4 * i + 2] != active_line[4 * i + 2] ) {
+              || base_line[4 * i + 2] != active_line[4 * i + 2]
+              || base_line[4 * i + 3] != active_line[4 * i + 3] ) {
                 maxx = std::max(maxx, i);
                 minx = std::min(minx, i);
                 maxy = std::max(maxy, j);

@@ -6,10 +6,9 @@
 #include <math.h>
 #include <algorithm>
 
-AltTable::AltTable(QLabel* label, const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
+AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_ball(WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
-    , m_label(label)
     , m_guy({
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
@@ -33,10 +32,6 @@ AltTable::AltTable(QLabel* label, const QMatrix4x4& mvp_matrix, const QMatrix4x4
     , m_mvp_matrix(mvp_matrix)
     , m_rot_matrix(rot_matrix)
 {
-
-    m_label->setText(QString("H I G H   S C O R E :   %1   by   %2")
-                     .arg(m_high_score.score()).arg(m_high_score.name()));
-
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
     setBackgroundRole(QPalette::Base);

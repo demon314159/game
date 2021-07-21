@@ -9,7 +9,6 @@
 #include <QObject>
 #include <QPixmap>
 #include <QPushButton>
-#include <QLabel>
 #include <QWidget>
 #include "table.h"
 #include "alt_table.h"
@@ -47,7 +46,6 @@ private:
     QPushButton* m_pb3 = nullptr;
     QPushButton* m_pb4 = nullptr;
     QPushButton* m_pb5 = nullptr;
-    QLabel* m_label;
 };
 
 #endif // _GAME_H

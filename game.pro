@@ -47,5 +47,6 @@ SOURCES      += main.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc \
-                images.qrc
+                images.qrc \
+                models.qrc
 

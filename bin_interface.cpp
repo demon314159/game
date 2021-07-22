@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QDataStream>
 
-#define VERBOSE
+#define notVERBOSE
 
 BinInterface::BinInterface(const QString& file_name)
     : m_pos(0)
@@ -44,9 +44,17 @@ BinInterface::BinInterface(const QString& file_name)
     QDataStream ds(&ffi);
     int n = ds.readRawData(m_buf, m_size);
     ffi.close();
+    if (n != m_size) {
+#ifdef VERBOSE
+        printf("<<< Expecting %d bytes but read %d bytes >>>\n", m_size, n);
+#endif
+        m_size = 0;
+        return;
+    } else {
 #ifdef VERBOSE
     printf("Bytes read = %d\n", n);
 #endif
+    }
 }
 
 BinInterface::~BinInterface()

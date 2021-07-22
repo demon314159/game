@@ -1,8 +1,9 @@
 
 #include "bin_interface.h"
-#include <sys/stat.h>
+#include <QFile>
+#include <QDataStream>
 
-#define notVERBOSE
+#define VERBOSE
 
 BinInterface::BinInterface(const QString& file_name)
     : m_pos(0)
@@ -12,28 +13,40 @@ BinInterface::BinInterface(const QString& file_name)
 #ifdef VERBOSE
     printf("BinInterface(%s)\n", file_name.toLatin1().data());
 #endif
-    FILE* ffi = fopen(file_name.toLatin1().data(), "r");
-    if (ffi == NULL) {
+
+    if (!QFile::exists(file_name)) {
+#ifdef VERBOSE
+        printf("<<< File not found '%s' >>>\n", file_name.toLatin1().data());
+#endif
+        return;
+    }
+
+    QFile ffi(file_name);
+    if (!ffi.open(QIODevice::ReadOnly)) {
 #ifdef VERBOSE
         printf("<<< Error opening file '%s' >>>\n", file_name.toLatin1().data());
 #endif
-    } else {
-        struct stat st;
-        stat(file_name.toLatin1().data(), &st);
-        m_size = st.st_size;
-        m_buf = new char[m_size];
-#ifdef VERBOSE
-        printf("Size of file = %d\n", m_size);
-#endif
-        int n = fread(m_buf, 1, m_size, ffi);
-        fclose(ffi);
-#ifdef VERBOSE
-        printf("Bytes read = %d\n", n);
-#endif
-        if (n != m_size) {
-            m_size = 0;
-        }
+        return;
     }
+
+    m_size = ffi.size();
+    if (m_size == 0) {
+#ifdef VERBOSE
+        printf("<<< File is empty '%s' >>>\n", file_name.toLatin1().data());
+#endif
+        return;
+    }
+
+    m_buf = new char[m_size];
+#ifdef VERBOSE
+    printf("Size of file = %d\n", m_size);
+#endif
+    QDataStream ds(&ffi);
+    int n = ds.readRawData(m_buf, m_size);
+    ffi.close();
+#ifdef VERBOSE
+    printf("Bytes read = %d\n", n);
+#endif
 }
 
 BinInterface::~BinInterface()

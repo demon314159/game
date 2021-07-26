@@ -1,4 +1,4 @@
-label = "HIT ALL TARGETS TO CANCEL ONE OUT";
+label = "HIT ALL TARGETS TO CANCEL AN OUT";
 $fa = 1;
 $fs = 0.1;
 mag = 1 / 15;

@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = arcade_baseball
+TARGET = arcade-baseball
 
 QT += widgets
 

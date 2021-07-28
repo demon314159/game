@@ -6,7 +6,7 @@
 
 #include <QString>
 
-#define HIGH_SCORE_FILE_NAME "high_score.dat"
+#define HIGH_SCORE_FILE_NAME ".arcade_baseball.dat"
 
 class HighScore
 {

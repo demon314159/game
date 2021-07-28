@@ -14,9 +14,9 @@ int main(int argv, char **args)
 
     printf("\nArcade Baseball\n\n");
     printf("\n  There are three ways to experience this game:\n");
-    printf("\n  './arcade_baseball' or './arcade_baseball 0' launches a 580 x 994 Top View\n");
-    printf("\n  './arcade_baseball 1' launches a 1902 x 994 Perspective View\n");
-    printf("\n  './arcade_baseball 2' launches a 1062 x 1834 Top View for monitor in portrait mode\n");
+    printf("\n  'arcade-baseball' or 'arcade-baseball 0' launches a 580 x 994 Top View\n");
+    printf("\n  'arcade-baseball 1' launches a 1902 x 994 Perspective View\n");
+    printf("\n  'arcade-baseball 2' launches a 1062 x 1834 Top View for monitor in portrait mode\n");
     printf("\n");
     printf("\n  Left mouse button or left shift key pitches the Ball\n");
     printf("\n  Right mouse button or right shift key activates the Bat\n");
@@ -26,9 +26,6 @@ int main(int argv, char **args)
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
-//    format.setStencilBufferSize(8);
-//    format.setVersion(3, 2);
-//    format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
     Game game(view_ix);

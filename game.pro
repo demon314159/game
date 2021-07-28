@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = game
 
-QT += multimedia widgets
+QT += widgets
 
 ## CONFIG += qt debug
 

@@ -40,8 +40,12 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, Image
 {
     if (m_view_ix == 1) {
         m_tilt = 90.0;
+        setMinimumWidth(337);
+        setMinimumHeight(600);
     } else {
         m_tilt = 35.0;
+        setMinimumWidth(600);
+        setMinimumHeight(337);
     }
 }
 

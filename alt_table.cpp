@@ -231,6 +231,7 @@ void AltTable::mousePressEvent(QMouseEvent* e)
     } else if (e->button() == Qt::RightButton) {
         bat_button_on();
     }
+    QWidget::mousePressEvent(e);
 }
 
 void AltTable::mouseReleaseEvent(QMouseEvent* e)
@@ -240,6 +241,7 @@ void AltTable::mouseReleaseEvent(QMouseEvent* e)
     } else if (e->button() == Qt::RightButton) {
         bat_button_off();
     }
+    QWidget::mouseReleaseEvent(e);
 }
 
 int AltTable::target_hit(float x) const

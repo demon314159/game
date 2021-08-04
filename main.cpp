@@ -13,10 +13,9 @@ int main(int argv, char **args)
     app.setApplicationName("Arcade Baseball");
 
     printf("\nArcade Baseball\n\n");
-    printf("\n  There are three ways to experience this game:\n");
-    printf("\n  'arcade-baseball' or 'arcade-baseball 0' launches a 580 x 994 Top View\n");
-    printf("\n  'arcade-baseball 1' launches a 1902 x 994 Perspective View\n");
-    printf("\n  'arcade-baseball 2' launches a 1062 x 1834 Top View for monitor in portrait mode\n");
+    printf("\n  There are two ways to experience this game:\n");
+    printf("\n  'arcade-baseball' launches a Perspective View in Landscape format\n");
+    printf("\n  'arcade-baseball 1' launches a Top View in Portrait format\n");
     printf("\n");
     printf("\n  Left mouse button or left shift key pitches the Ball\n");
     printf("\n  Right mouse button or right shift key activates the Bat\n");
@@ -29,7 +28,7 @@ int main(int argv, char **args)
     QSurfaceFormat::setDefaultFormat(format);
 
     Game game(view_ix);
-    game.show();
+    game.showMaximized();
 
     return app.exec();
 }

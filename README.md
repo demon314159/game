@@ -3,13 +3,11 @@
 Arcade Baseball
 
 
-  There are three ways to experience this game:
+  There are two ways to experience this game:
 
-  'arcade-baseball' or 'arcade-baseball 0' launches a 580 x 994 Top View
+  'arcade-baseball' launches a Perspective View in Landscape format
 
-  'arcade-baseball 1' launches a 1902 x 994 Perspective View
-
-  'arcade-baseball 2' launches a 1062 x 1834 Top View for monitor in portrait mode
+  'arcade-baseball 1' launches a Top View in Portrait format
 
 
   Left mouse button or left shift key pitches the Ball

@@ -30,8 +30,11 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
     void initShaders();
+    void keyPressEvent(QKeyEvent* e) override;
+    void keyReleaseEvent(QKeyEvent* e) override;
 private:
-    float m_tilt;
+    float m_xrot;
+    float m_yrot;
 
     int m_width;
     int m_height;

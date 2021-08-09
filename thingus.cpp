@@ -13,9 +13,8 @@ struct VertexData
     float animation_id;
 };
 
-Thingus::Thingus(float tilt)
-    : m_tilt(tilt)
-    , m_vertices(0)
+Thingus::Thingus()
+    : m_vertices(0)
 {
     initializeOpenGLFunctions();
 
@@ -33,6 +32,9 @@ Thingus::Thingus(float tilt)
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
     m_cad = new CadModel(StlInterface("cube.stl"), red_paint, 0.0);
+    CadModel t1 = CadModel(StlInterface("axes.stl"), blue_paint, 0.0);
+
+    m_cad->add(t1);
 
     initCubeGeometry();
 }

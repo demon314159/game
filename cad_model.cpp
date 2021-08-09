@@ -7,7 +7,46 @@
 #include <QVector4D>
 #include <QQuaternion>
 
-#define notVERBOSE
+#define VERBOSE
+
+CadModel::CadModel(float length, float radius, const PaintCan& paint_can, float animation_id)
+    : m_facet_count(0)
+    , m_animation_id(NULL)
+    , m_facet_v1(NULL)
+    , m_facet_v2(NULL)
+    , m_facet_v3(NULL)
+    , m_facet_color(NULL)
+{
+#ifdef VERBOSE
+    printf("CadModel::CadModel(length=%8.6f, radius = %8.6f)\n", length, radius);
+#endif
+    m_facet_count = 4;
+    m_animation_id = new float[m_facet_count];
+    m_facet_v1 = new float3[m_facet_count];
+    m_facet_v2 = new float3[m_facet_count];
+    m_facet_v3 = new float3[m_facet_count];
+    m_facet_color = new float3[m_facet_count];
+    for (int i = 0; i < m_facet_count; i++) {
+        m_animation_id[i] = animation_id;
+        m_facet_color[i] = paint_can.ambient_color();
+    }
+    // end_face 1
+    m_facet_v1[0] = {-radius, 0.0, 0.0};
+    m_facet_v2[0] = {radius, 0.0, 0.0};
+    m_facet_v3[0] = {0.0, 0.0, radius};
+    // bottom_face
+    m_facet_v1[1] = {radius, 0.0, 0.0};
+    m_facet_v2[1] = {-radius, 0.0, 0.0};
+    m_facet_v3[1] = {0.0, length, 0.0};
+    // side_face 1
+    m_facet_v1[2] = {radius, 0.0, 0.0};
+    m_facet_v2[2] = {0.0, length, 0.0};
+    m_facet_v3[2] = {0.0, 0.0, radius};
+    // side_face 2
+    m_facet_v1[3] = {0.0, length, 0.0};
+    m_facet_v2[3] = {-radius, 0.0, 0.0};
+    m_facet_v3[3] = {0.0, 0.0, radius};
+}
 
 CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     : m_facet_count(0)

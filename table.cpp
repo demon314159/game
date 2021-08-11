@@ -43,7 +43,8 @@ void Table::initializeGL()
 {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     initShaders();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -61,38 +62,48 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
+    QVector3D axis_y = {0.0, 1.0, 0.0};
+    QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); // creates a soft red image when background is white
 
-    if (m_view_ix == 0) {
-        QVector3D axis1 = {1.0, 0.0, 0.0};
-        QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
-        QVector3D axis2 = {0.0, 1.0, 0.0};
-        QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
-        QQuaternion my_rot = rot2 * rot1;
+    QVector3D axis1 = {1.0, 0.0, 0.0};
+    QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
+    QVector3D axis2 = {0.0, 1.0, 0.0};
+    QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
+    QQuaternion my_rot = rot2 * rot1;
 
-        QMatrix4x4 matrix;
-        matrix.translate(0.0, -0.25, -6.0);
-        matrix.rotate(my_rot);
-        // Set modelview-projection matrix
-        m_mvp_matrix = m_projection * matrix;
-        m_rot_matrix = matrix;
-        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-        m_program.setUniformValue("rot_matrix", matrix);
-    } else { // m_viewIx == 1
-        QVector3D my_axis = {1.0, 0.0, 0.0};
-        QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, m_xrot);
-        QMatrix4x4 matrix;
-        matrix.translate(0.0, -3.00, -13.0);
-        matrix.rotate(my_rot);
-        // Set modelview-projection matrix
-        m_mvp_matrix = m_projection * matrix;
-        m_rot_matrix = matrix;
-        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-        m_program.setUniformValue("rot_matrix", matrix);
-    }
+    QMatrix4x4 matrix;
+    matrix.translate(0.0, -0.25, -6.0);
+    matrix.rotate(my_rot);
+    // Set modelview-projection matrix
+    m_mvp_matrix = m_projection * matrix;
+    m_rot_matrix = matrix;
+    m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+    m_program.setUniformValue("rot_matrix", matrix);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); // creates a cyan image when background is white
+
+
+    // Set modelview-projection matrix
+    matrix.rotate(eye_rot);
+    m_mvp_matrix = m_projection * matrix;
+    m_rot_matrix = matrix;
+
+    m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+    m_program.setUniformValue("rot_matrix", matrix);
+
+    // Draw cube geometry
+    m_thingy->drawCubeGeometry(&m_program);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
 }
 
 void Table::initShaders()

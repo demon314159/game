@@ -32,10 +32,19 @@ Thingus::Thingus()
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
 //    m_cad = new CadModel(StlInterface("cube.stl"), red_paint, 0.0);
-    m_cad = new CadModel(2.0, 0.25, red_paint, 0.0);
+    m_cad = new CadModel(2.0, 0.25, gray_paint, 0.0);
     CadModel t1 = CadModel(StlInterface("axes.stl"), blue_paint, 0.0);
+//    CadModel t2 = CadModel(StlInterface("board.stl"), gray_paint, 0.0);
+    CadModel t3 = CadModel(2.0, 0.25, gray_paint, 0.0);
 
     m_cad->add(t1);
+//    m_cad->add(t2);
+    m_cad->add(t3,0,0,2);
+    m_cad->add(t3,0,0,1);
+    m_cad->add(t3,0,0,-1);
+    m_cad->add(t3,0,0,-2);
+    m_cad->add(t3,0,0,-3);
+    m_cad->add(t3,0,0,-4);
 
     initCubeGeometry();
 }

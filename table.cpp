@@ -19,15 +19,9 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     , m_mvp_matrix(mvp_matrix)
     , m_rot_matrix(rot_matrix)
 {
-    if (m_view_ix == 1) {
-        m_xrot = 90.0;
-        setMinimumWidth(337);
-        setMinimumHeight(600);
-    } else {
-        m_xrot = 35.0;
-        setMinimumWidth(600);
-        setMinimumHeight(337);
-    }
+    m_xrot = 0.0;
+    setMinimumWidth(600);
+    setMinimumHeight(337);
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
 }

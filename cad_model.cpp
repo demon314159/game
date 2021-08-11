@@ -373,3 +373,31 @@ void CadModel::rotate_ax(float angle)
         rotate_vertex(m_facet_v3[i], matrix);
     }
 }
+
+void CadModel::rotate_ay(float angle)
+{
+    QVector3D my_axis = {0.0, 1.0, 0.0};
+    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
+    QMatrix4x4 matrix;
+    matrix.rotate(my_rot);
+    for (int i = 0; i < m_facet_count; i++) {
+        rotate_vertex(m_facet_v1[i], matrix);
+        rotate_vertex(m_facet_v2[i], matrix);
+        rotate_vertex(m_facet_v3[i], matrix);
+    }
+}
+
+void CadModel::magnify(float factor)
+{
+    for (int i = 0; i < m_facet_count; i++) {
+        m_facet_v1[i].v1 *= factor;
+        m_facet_v1[i].v2 *= factor;
+        m_facet_v1[i].v3 *= factor;
+        m_facet_v2[i].v1 *= factor;
+        m_facet_v2[i].v2 *= factor;
+        m_facet_v2[i].v3 *= factor;
+        m_facet_v3[i].v1 *= factor;
+        m_facet_v3[i].v2 *= factor;
+        m_facet_v3[i].v3 *= factor;
+    }
+}

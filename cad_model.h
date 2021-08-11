@@ -24,6 +24,8 @@ public:
     void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     void add(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     void rotate_ax(float angle);
+    void rotate_ay(float angle);
+    void magnify(float factor);
     int facets() const;
     float facet_animation_id(int facet_ix) const;
     float3 facet_v1(int facet_ix) const;

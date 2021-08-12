@@ -87,12 +87,16 @@ void Table::paintGL()
 
 
     // Set modelview-projection matrix
-    matrix.rotate(eye_rot);
-    m_mvp_matrix = m_projection * matrix;
-    m_rot_matrix = matrix;
+    my_rot = eye_rot * rot2 * rot1;
+    QMatrix4x4 matrix2;
+    matrix2.translate(0.0, -0.25, -6.0);
+    matrix2.rotate(my_rot);
 
-    m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-    m_program.setUniformValue("rot_matrix", matrix);
+    m_mvp_matrix = m_projection * matrix2;
+    m_rot_matrix = matrix2;
+
+    m_program.setUniformValue("mvp_matrix", m_projection * matrix2);
+    m_program.setUniformValue("rot_matrix", matrix2);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);

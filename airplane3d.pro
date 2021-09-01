@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = gams
+TARGET = airplane3d
 
 QT += widgets
 

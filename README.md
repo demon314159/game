@@ -1,4 +1,4 @@
-# gams
+# airplane-3d
 
 Steroscopic rendering of airplanes.
 Hit arrow keys to move planes.

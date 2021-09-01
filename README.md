@@ -1,6 +1,7 @@
 # gams
 
-Giant Animated Metal Spiders
+Steroscopic rendering of airplanes.
+Hit arrow keys to move planes.
 
 To build this program:
 

@@ -6,6 +6,7 @@
 
 #include "thingus.h"
 #include "float3.h"
+#include "qa.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -33,6 +34,8 @@ protected:
     void keyPressEvent(QKeyEvent* e) override;
     void keyReleaseEvent(QKeyEvent* e) override;
 private:
+    Qa m_qa;
+    int m_ms_at_start;
     float m_xrot;
     float m_yrot;
 

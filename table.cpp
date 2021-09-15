@@ -10,6 +10,7 @@
 
 Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidget *parent)
     : QOpenGLWidget(parent)
+    , m_ms_at_start(QTime::currentTime().msecsSinceStartOfDay())
     , m_xrot(0.0)
     , m_yrot(0.0)
     , m_width((512 * 1920) / 1080)
@@ -43,7 +44,7 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus();
-    timer.start(100, this);
+    timer.start(33, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -56,6 +57,12 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
+    float turns_per_second = 1.0 / 20.0;
+
+    int ms_in = QTime::currentTime().msecsSinceStartOfDay() - m_ms_at_start;
+    m_qa.add_sample(ms_in);
+    m_yrot = (360.0 * turns_per_second / 1000.0) * (float) ms_in;
+
     QVector3D axis_y = {0.0, 1.0, 0.0};
     QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
 
@@ -101,7 +108,7 @@ void Table::paintGL()
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
+//    update();
 }
 
 void Table::initShaders()
@@ -119,6 +126,7 @@ void Table::initShaders()
 void Table::timerEvent(QTimerEvent *)
 {
     if (isVisible()) {
+        update();
     }
 }
 

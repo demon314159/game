@@ -108,6 +108,7 @@ void Table::paintGL()
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glFlush();
 //    update();
 }
 

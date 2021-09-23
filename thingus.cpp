@@ -34,24 +34,9 @@ Thingus::Thingus()
 //    m_cad = new CadModel(StlInterface("cube.stl"), red_paint, 0.0);
 //    m_cad = new CadModel(2.0, 0.25, gray_paint, 0.0);
     m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
-    CadModel t1 = CadModel(StlInterface("plane.stl"), gray_paint, 0.0);
-    t1.rotate_ax(-90.0);
-    t1.magnify(1.0/50.0);
-//    CadModel t3 = CadModel(2.0, 0.25, gray_paint, 0.0);
 
-    m_cad->add(t1, 0.0, 0.0, -3.0);
-    t1.rotate_ay(90.0);
-    m_cad->add(t1, -3.0, 0.0, 0.0);
-    t1.rotate_ay(90.0);
-    m_cad->add(t1, 0.0, 0.0, 3.0);
-    t1.rotate_ay(90.0);
-    m_cad->add(t1, 3.0, 0.0, 0.0);
-//    m_cad->add(t3,0,0,2);
-//    m_cad->add(t3,0,0,1);
-//    m_cad->add(t3,0,0,-1);
-//    m_cad->add(t3,0,0,-2);
-//    m_cad->add(t3,0,0,-3);
-//    m_cad->add(t3,0,0,-4);
+    CadModel t1 = CadModel(StlInterface("cube1.stl"), red_paint, 0.0);
+    m_cad->add(t1, 0.0, 0.0, 0.0);
 
     initCubeGeometry();
 }

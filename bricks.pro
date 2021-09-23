@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = airplane3d
+TARGET = bricks
 
 QT += widgets
 
@@ -8,7 +8,6 @@ QT += widgets
 HEADERS      += game.h \
                 int3.h \
                 float3.h \
-                qa.h \
                 table.h \
                 paint_can.h \
                 bin_interface.h \
@@ -21,7 +20,6 @@ HEADERS      += game.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
-                qa.cpp \
                 table.cpp \
                 paint_can.cpp \
                 bin_interface.cpp \

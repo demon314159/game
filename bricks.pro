@@ -8,8 +8,10 @@ QT += widgets
 HEADERS      += game.h \
                 int3.h \
                 float3.h \
+                facet.h \
                 table.h \
                 paint_can.h \
+                brick_shape.h \
                 bin_interface.h \
                 char_interface.h \
                 token_interface.h \
@@ -22,6 +24,7 @@ SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 paint_can.cpp \
+                brick_shape.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \
                 token_interface.cpp \

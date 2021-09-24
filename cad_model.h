@@ -7,6 +7,7 @@
 #include <QString>
 #include <QMatrix4x4>
 #include "float3.h"
+#include "facet.h"
 #include "int3.h"
 #include "vrml_interface.h"
 #include "stl_interface.h"
@@ -15,7 +16,6 @@
 class CadModel
 {
 public:
-    CadModel(float length, float radius, const PaintCan& paint_can, float animation_id = 0.0);
     CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
@@ -40,11 +40,7 @@ protected:
 
 private:
     int m_facet_count;
-    float* m_animation_id;
-    float3* m_facet_v1;
-    float3* m_facet_v2;
-    float3* m_facet_v3;
-    float3* m_facet_color;
+    facet* m_facet;
 };
 
 #endif // _CAD_MODEL_H_

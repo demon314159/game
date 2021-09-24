@@ -4,6 +4,7 @@
 
 #include <QVector3D>
 #include "paint_can.h"
+#include "brick_shape.h"
 
 struct VertexData
 {
@@ -31,11 +32,13 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-//    m_cad = new CadModel(StlInterface("cube.stl"), red_paint, 0.0);
-//    m_cad = new CadModel(2.0, 0.25, gray_paint, 0.0);
+    BrickShape proto(2.0, 1.0, 1.0, 0.1);
+
+    printf("brick facet count = %d\n", proto.facet_count());
+
     m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
 
-    CadModel t1 = CadModel(StlInterface("cube1.stl"), red_paint, 0.0);
+    CadModel t1 = CadModel(StlInterface("cube.stl"), red_paint, 0.0);
     m_cad->add(t1, 0.0, 0.0, 0.0);
 
     initCubeGeometry();

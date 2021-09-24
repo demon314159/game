@@ -9,111 +9,52 @@
 
 #define VERBOSE
 
-CadModel::CadModel(float length, float radius, const PaintCan& paint_can, float animation_id)
-    : m_facet_count(0)
-    , m_animation_id(NULL)
-    , m_facet_v1(NULL)
-    , m_facet_v2(NULL)
-    , m_facet_v3(NULL)
-    , m_facet_color(NULL)
-{
-#ifdef VERBOSE
-    printf("CadModel::CadModel(length=%8.6f, radius = %8.6f)\n", length, radius);
-#endif
-    m_facet_count = 4;
-    m_animation_id = new float[m_facet_count];
-    m_facet_v1 = new float3[m_facet_count];
-    m_facet_v2 = new float3[m_facet_count];
-    m_facet_v3 = new float3[m_facet_count];
-    m_facet_color = new float3[m_facet_count];
-    for (int i = 0; i < m_facet_count; i++) {
-        m_animation_id[i] = animation_id;
-        m_facet_color[i] = paint_can.ambient_color();
-    }
-    // end_face 1
-    m_facet_v1[0] = {-radius, 0.0, 0.0};
-    m_facet_v2[0] = {radius, 0.0, 0.0};
-    m_facet_v3[0] = {0.0, 0.0, radius};
-    // bottom_face
-    m_facet_v1[1] = {radius, 0.0, 0.0};
-    m_facet_v2[1] = {-radius, 0.0, 0.0};
-    m_facet_v3[1] = {0.0, length, 0.0};
-    // side_face 1
-    m_facet_v1[2] = {radius, 0.0, 0.0};
-    m_facet_v2[2] = {0.0, length, 0.0};
-    m_facet_v3[2] = {0.0, 0.0, radius};
-    // side_face 2
-    m_facet_v1[3] = {0.0, length, 0.0};
-    m_facet_v2[3] = {-radius, 0.0, 0.0};
-    m_facet_v3[3] = {0.0, 0.0, radius};
-}
-
 CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     : m_facet_count(0)
-    , m_animation_id(NULL)
-    , m_facet_v1(NULL)
-    , m_facet_v2(NULL)
-    , m_facet_v3(NULL)
-    , m_facet_color(NULL)
+    , m_facet(NULL)
 {
 #ifdef VERBOSE
     printf("CadModel::CadModel(CadModel) offset = (%8.6f, %8.6f, %8.6f)\n", x, y, z);
 #endif
     m_facet_count = cad_model.facets();
     if (m_facet_count > 0) {
-        m_animation_id = new float[m_facet_count];
-        m_facet_v1 = new float3[m_facet_count];
-        m_facet_v2 = new float3[m_facet_count];
-        m_facet_v3 = new float3[m_facet_count];
-        m_facet_color = new float3[m_facet_count];
+        m_facet = new facet[m_facet_count];
         float3 offset = {x, y, z};
         for (int i = 0; i < m_facet_count; i++) {
-            m_animation_id[i] = cad_model.facet_animation_id(i);
-            m_facet_v1[i] = translate(cad_model.facet_v1(i), offset);
-            m_facet_v2[i] = translate(cad_model.facet_v2(i), offset);
-            m_facet_v3[i] = translate(cad_model.facet_v3(i), offset);
-            m_facet_color[i] = cad_model.facet_color(i);
+            m_facet[i].animation_id = cad_model.facet_animation_id(i);
+            m_facet[i].v1 = translate(cad_model.facet_v1(i), offset);
+            m_facet[i].v2 = translate(cad_model.facet_v2(i), offset);
+            m_facet[i].v3 = translate(cad_model.facet_v3(i), offset);
+            m_facet[i].color = cad_model.facet_color(i);
         }
     }
 }
 
 CadModel::CadModel(const VrmlInterface& vrml_interface, float animation_id)
     : m_facet_count(0)
-    , m_animation_id(NULL)
-    , m_facet_v1(NULL)
-    , m_facet_v2(NULL)
-    , m_facet_v3(NULL)
-    , m_facet_color(NULL)
+    , m_facet(NULL)
 {
 #ifdef VERBOSE
     printf("CadModel::CadModel(vrml) animation id = %7.3f)\n", animation_id);
 #endif
     m_facet_count = vrml_interface.facets();
     if (m_facet_count > 0) {
-        m_animation_id = new float[m_facet_count];
-        m_facet_v1 = new float3[m_facet_count];
-        m_facet_v2 = new float3[m_facet_count];
-        m_facet_v3 = new float3[m_facet_count];
-        m_facet_color = new float3[m_facet_count];
+        m_facet = new facet[m_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
             int3 v = vrml_interface.facet_points(i);
             int m = vrml_interface.facet_material(i);
-            m_animation_id[i] = animation_id;
-            m_facet_v1[i] = vrml_interface.point(v.v1);
-            m_facet_v2[i] = vrml_interface.point(v.v2);
-            m_facet_v3[i] = vrml_interface.point(v.v3);
-            m_facet_color[i] = vrml_interface.ambient_color(m);
+            m_facet[i].animation_id = animation_id;
+            m_facet[i].v1 = vrml_interface.point(v.v1);
+            m_facet[i].v2 = vrml_interface.point(v.v2);
+            m_facet[i].v3 = vrml_interface.point(v.v3);
+            m_facet[i].color = vrml_interface.ambient_color(m);
         }
     }
 }
 
 CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id)
     : m_facet_count(0)
-    , m_animation_id(NULL)
-    , m_facet_v1(NULL)
-    , m_facet_v2(NULL)
-    , m_facet_v3(NULL)
-    , m_facet_color(NULL)
+    , m_facet(NULL)
 {
 #ifdef VERBOSE
     printf("CadModel::CadModel(stl), paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
@@ -122,17 +63,13 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
 #endif
     m_facet_count = stl_interface.facets();
     if (m_facet_count > 0) {
-        m_animation_id = new float[m_facet_count];
-        m_facet_v1 = new float3[m_facet_count];
-        m_facet_v2 = new float3[m_facet_count];
-        m_facet_v3 = new float3[m_facet_count];
-        m_facet_color = new float3[m_facet_count];
+        m_facet = new facet[m_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
-            m_animation_id[i] = animation_id;
-            m_facet_v1[i] = stl_interface.facet_v1(i);
-            m_facet_v2[i] = stl_interface.facet_v2(i);
-            m_facet_v3[i] = stl_interface.facet_v3(i);
-            m_facet_color[i] = paint_can.ambient_color();
+            m_facet[i].animation_id = animation_id;
+            m_facet[i].v1 = stl_interface.facet_v1(i);
+            m_facet[i].v2 = stl_interface.facet_v2(i);
+            m_facet[i].v3 = stl_interface.facet_v3(i);
+            m_facet[i].color = paint_can.ambient_color();
         }
     }
 }
@@ -142,16 +79,8 @@ CadModel::~CadModel()
 #ifdef VERBOSE
     printf("~CadModel::CadModel()\n");
 #endif
-    if (m_animation_id != NULL)
-        delete [] m_animation_id;
-    if (m_facet_v1 != NULL)
-        delete [] m_facet_v1;
-    if (m_facet_v2 != NULL)
-        delete [] m_facet_v2;
-    if (m_facet_v3 != NULL)
-        delete [] m_facet_v3;
-    if (m_facet_color != NULL)
-        delete [] m_facet_color;
+    if (m_facet != NULL)
+        delete [] m_facet;
 }
 
 void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
@@ -161,38 +90,22 @@ void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 #endif
     int added_facet_count = vrml_interface.facets();
     if (added_facet_count > 0) {
-        float* tva = m_animation_id;
-        float3* tv1 = m_facet_v1;
-        float3* tv2 = m_facet_v2;
-        float3* tv3 = m_facet_v3;
-        float3* tv4 = m_facet_color;
-        m_animation_id = new float[m_facet_count + added_facet_count];
-        m_facet_v1 = new float3[m_facet_count + added_facet_count];
-        m_facet_v2 = new float3[m_facet_count + added_facet_count];
-        m_facet_v3 = new float3[m_facet_count + added_facet_count];
-        m_facet_color = new float3[m_facet_count + added_facet_count];
+        facet* tfacet = m_facet;
+        m_facet = new facet[m_facet_count + added_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
-            m_animation_id[i] = tva[i];
-            m_facet_v1[i] = tv1[i];
-            m_facet_v2[i] = tv2[i];
-            m_facet_v3[i] = tv3[i];
-            m_facet_color[i] = tv4[i];
+            m_facet[i] = tfacet[i];
         }
         for (int i = 0; i < added_facet_count; i++) {
             int3 v = vrml_interface.facet_points(i);
             int m = vrml_interface.facet_material(i);
-            m_animation_id[m_facet_count + i] = animation_id;
-            m_facet_v1[m_facet_count + i] = vrml_interface.point(v.v1);
-            m_facet_v2[m_facet_count + i] = vrml_interface.point(v.v2);
-            m_facet_v3[m_facet_count + i] = vrml_interface.point(v.v3);
-            m_facet_color[m_facet_count + i] = vrml_interface.ambient_color(m);
+            m_facet[m_facet_count + i].animation_id = animation_id;
+            m_facet[m_facet_count + i].v1 = vrml_interface.point(v.v1);
+            m_facet[m_facet_count + i].v2 = vrml_interface.point(v.v2);
+            m_facet[m_facet_count + i].v3 = vrml_interface.point(v.v3);
+            m_facet[m_facet_count + i].color = vrml_interface.ambient_color(m);
         }
         m_facet_count += added_facet_count;
-        delete [] tva;
-        delete [] tv1;
-        delete [] tv2;
-        delete [] tv3;
-        delete [] tv4;
+        delete [] tfacet;
     }
 }
 
@@ -205,36 +118,20 @@ void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can,
 #endif
     int added_facet_count = stl_interface.facets();
     if (added_facet_count > 0) {
-        float* tva = m_animation_id;
-        float3* tv1 = m_facet_v1;
-        float3* tv2 = m_facet_v2;
-        float3* tv3 = m_facet_v3;
-        float3* tv4 = m_facet_color;
-        m_animation_id = new float[m_facet_count + added_facet_count];
-        m_facet_v1 = new float3[m_facet_count + added_facet_count];
-        m_facet_v2 = new float3[m_facet_count + added_facet_count];
-        m_facet_v3 = new float3[m_facet_count + added_facet_count];
-        m_facet_color = new float3[m_facet_count + added_facet_count];
+        facet* tfacet = m_facet;
+        m_facet = new facet[m_facet_count + added_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
-            m_animation_id[i] = tva[i];
-            m_facet_v1[i] = tv1[i];
-            m_facet_v2[i] = tv2[i];
-            m_facet_v3[i] = tv3[i];
-            m_facet_color[i] = tv4[i];
+            m_facet[i] = tfacet[i];
         }
         for (int i = 0; i < added_facet_count; i++) {
-            m_animation_id[m_facet_count + i] = animation_id;
-            m_facet_v1[m_facet_count + i] = stl_interface.facet_v1(i);
-            m_facet_v2[m_facet_count + i] = stl_interface.facet_v2(i);
-            m_facet_v3[m_facet_count + i] = stl_interface.facet_v3(i);
-            m_facet_color[m_facet_count +i] = paint_can.ambient_color();
+            m_facet[m_facet_count + i].animation_id = animation_id;
+            m_facet[m_facet_count + i].v1 = stl_interface.facet_v1(i);
+            m_facet[m_facet_count + i].v2 = stl_interface.facet_v2(i);
+            m_facet[m_facet_count + i].v3 = stl_interface.facet_v3(i);
+            m_facet[m_facet_count + i].color = paint_can.ambient_color();
         }
         m_facet_count += added_facet_count;
-        delete [] tva;
-        delete [] tv1;
-        delete [] tv2;
-        delete [] tv3;
-        delete [] tv4;
+        delete [] tfacet;
     }
 }
 
@@ -245,37 +142,21 @@ void CadModel::add(const CadModel& cad_model, float x, float y, float z)
 #endif
     int added_facet_count = cad_model.facets();
     if (added_facet_count > 0) {
-        float* tva = m_animation_id;
-        float3* tv1 = m_facet_v1;
-        float3* tv2 = m_facet_v2;
-        float3* tv3 = m_facet_v3;
-        float3* tv4 = m_facet_color;
-        m_animation_id = new float[m_facet_count + added_facet_count];
-        m_facet_v1 = new float3[m_facet_count + added_facet_count];
-        m_facet_v2 = new float3[m_facet_count + added_facet_count];
-        m_facet_v3 = new float3[m_facet_count + added_facet_count];
-        m_facet_color = new float3[m_facet_count + added_facet_count];
+        facet* tfacet = m_facet;
+        m_facet = new facet[m_facet_count + added_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
-            m_animation_id[i] = tva[i];
-            m_facet_v1[i] = tv1[i];
-            m_facet_v2[i] = tv2[i];
-            m_facet_v3[i] = tv3[i];
-            m_facet_color[i] = tv4[i];
+            m_facet[i] = tfacet[i];
         }
         float3 offset = {x, y, z};
         for (int i = 0; i < added_facet_count; i++) {
-            m_animation_id[m_facet_count + i] = cad_model.facet_animation_id(i);
-            m_facet_v1[m_facet_count + i] = translate(cad_model.facet_v1(i), offset);
-            m_facet_v2[m_facet_count + i] = translate(cad_model.facet_v2(i), offset);
-            m_facet_v3[m_facet_count + i] = translate(cad_model.facet_v3(i), offset);
-            m_facet_color[m_facet_count +i] = cad_model.facet_color(i);
+            m_facet[m_facet_count + i].animation_id = cad_model.facet_animation_id(i);
+            m_facet[m_facet_count + i].v1 = translate(cad_model.facet_v1(i), offset);
+            m_facet[m_facet_count + i].v2 = translate(cad_model.facet_v2(i), offset);
+            m_facet[m_facet_count + i].v3 = translate(cad_model.facet_v3(i), offset);
+            m_facet[m_facet_count + i].color = cad_model.facet_color(i);
         }
         m_facet_count += added_facet_count;
-        delete [] tva;
-        delete [] tv1;
-        delete [] tv2;
-        delete [] tv3;
-        delete [] tv4;
+        delete [] tfacet;
     }
 }
 
@@ -287,7 +168,7 @@ int CadModel::facets() const
 float CadModel::facet_animation_id(int facet_ix) const
 {
     if (facet_ix < m_facet_count)
-        return m_animation_id[facet_ix];
+        return m_facet[facet_ix].animation_id;
     else
         return 0.0;
 }
@@ -295,7 +176,7 @@ float CadModel::facet_animation_id(int facet_ix) const
 float3 CadModel::facet_v1(int facet_ix) const
 {
     if (facet_ix < m_facet_count)
-        return m_facet_v1[facet_ix];
+        return m_facet[facet_ix].v1;
     else
         return {0.0, 0.0, 0.0};
 }
@@ -303,7 +184,7 @@ float3 CadModel::facet_v1(int facet_ix) const
 float3 CadModel::facet_v2(int facet_ix) const
 {
     if (facet_ix < m_facet_count)
-        return m_facet_v2[facet_ix];
+        return m_facet[facet_ix].v2;
     else
         return {0.0, 0.0, 0.0};
 }
@@ -311,7 +192,7 @@ float3 CadModel::facet_v2(int facet_ix) const
 float3 CadModel::facet_v3(int facet_ix) const
 {
     if (facet_ix < m_facet_count)
-        return m_facet_v3[facet_ix];
+        return m_facet[facet_ix].v3;
     else
         return {0.0, 0.0, 0.0};
 }
@@ -319,7 +200,7 @@ float3 CadModel::facet_v3(int facet_ix) const
 float3 CadModel::facet_color(int facet_ix) const
 {
     if (facet_ix < m_facet_count)
-        return m_facet_color[facet_ix];
+        return m_facet[facet_ix].color;
     else
         return float3{.0, 0.0, 0.0};
 }
@@ -368,9 +249,9 @@ void CadModel::rotate_ax(float angle)
     QMatrix4x4 matrix;
     matrix.rotate(my_rot);
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet_v1[i], matrix);
-        rotate_vertex(m_facet_v2[i], matrix);
-        rotate_vertex(m_facet_v3[i], matrix);
+        rotate_vertex(m_facet[i].v1, matrix);
+        rotate_vertex(m_facet[i].v2, matrix);
+        rotate_vertex(m_facet[i].v3, matrix);
     }
 }
 
@@ -381,23 +262,23 @@ void CadModel::rotate_ay(float angle)
     QMatrix4x4 matrix;
     matrix.rotate(my_rot);
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet_v1[i], matrix);
-        rotate_vertex(m_facet_v2[i], matrix);
-        rotate_vertex(m_facet_v3[i], matrix);
+        rotate_vertex(m_facet[i].v1, matrix);
+        rotate_vertex(m_facet[i].v2, matrix);
+        rotate_vertex(m_facet[i].v3, matrix);
     }
 }
 
 void CadModel::magnify(float factor)
 {
     for (int i = 0; i < m_facet_count; i++) {
-        m_facet_v1[i].v1 *= factor;
-        m_facet_v1[i].v2 *= factor;
-        m_facet_v1[i].v3 *= factor;
-        m_facet_v2[i].v1 *= factor;
-        m_facet_v2[i].v2 *= factor;
-        m_facet_v2[i].v3 *= factor;
-        m_facet_v3[i].v1 *= factor;
-        m_facet_v3[i].v2 *= factor;
-        m_facet_v3[i].v3 *= factor;
+        m_facet[i].v1.v1 *= factor;
+        m_facet[i].v1.v2 *= factor;
+        m_facet[i].v1.v3 *= factor;
+        m_facet[i].v2.v1 *= factor;
+        m_facet[i].v2.v2 *= factor;
+        m_facet[i].v2.v3 *= factor;
+        m_facet[i].v3.v1 *= factor;
+        m_facet[i].v3.v2 *= factor;
+        m_facet[i].v3.v3 *= factor;
     }
 }

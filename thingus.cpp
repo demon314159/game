@@ -34,11 +34,12 @@ Thingus::Thingus()
 
     BrickShape proto(2.0, 1.0, 1.0, 0.1);
 
-    printf("brick facet count = %d\n", proto.facet_count());
+    printf("brick facet count = %d\n", proto.facets());
 
     m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
 
-    CadModel t1 = CadModel(StlInterface("cube.stl"), red_paint, 0.0);
+//    CadModel t1 = CadModel(StlInterface("cube.stl"), red_paint, 0.0);
+    CadModel t1 = CadModel(proto, red_paint, 0.0);
     m_cad->add(t1, 0.0, 0.0, 0.0);
 
     initCubeGeometry();

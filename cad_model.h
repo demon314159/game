@@ -13,15 +13,31 @@
 #include "stl_interface.h"
 #include "paint_can.h"
 
+#include "brick_shape.h"  // this will become a general shape class
+
 class CadModel
 {
 public:
     CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
+
+// this will become a general shape class of which brick is just one shape
+    CadModel(const BrickShape& bs, const PaintCan& paint_can, float animation_id = 0.0);
+
+
     ~CadModel();
     void add(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
+
+
+
+// this will become a general shape class of which brick is just one shape
+    void add(const BrickShape& bs, const PaintCan& paint_can, float animation_id = 0.0);
+
+
+
+
     void add(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     void rotate_ax(float angle);
     void rotate_ay(float angle);

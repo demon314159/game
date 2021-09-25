@@ -33,6 +33,7 @@ Thingus::Thingus()
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
     BrickShape proto(2.0, 2.0 / 3.0, 1.0, 0.1);
+    BrickShape hproto(1.0, 2.0 / 3.0, 1.0, 0.1);
 
     printf("brick facet count = %d\n", proto.facets());
 
@@ -40,6 +41,7 @@ Thingus::Thingus()
 
 //    CadModel t1 = CadModel(StlInterface("cube.stl"), red_paint, 0.0);
     CadModel t1 = CadModel(proto, red_paint, 0.0);
+    CadModel t2 = CadModel(hproto, red_paint, 0.0);
     float y_offset = -1.0;
     float h = y_offset;
     m_cad->add(t1, -4.0, h, 0.0);
@@ -49,22 +51,34 @@ Thingus::Thingus()
     m_cad->add(t1, 4.0, h, 0.0);
 
     h = y_offset + 2.0 / 3.0;
+    m_cad->add(t2, -4.5, h, 0.0);
     m_cad->add(t1, -3.0, h, 0.0);
     m_cad->add(t1, -1.0, h, 0.0);
     m_cad->add(t1, 1.0, h, 0.0);
     m_cad->add(t1, 3.0, h, 0.0);
+    m_cad->add(t2, 4.5, h, 0.0);
 
     h = y_offset + 4.0 / 3.0;
+    m_cad->add(t1, -4.0, h, 0.0);
     m_cad->add(t1, -2.0, h, 0.0);
     m_cad->add(t1, 0.0, h, 0.0);
     m_cad->add(t1, 2.0, h, 0.0);
+    m_cad->add(t1, 4.0, h, 0.0);
 
     h = y_offset + 6.0 / 3.0;
+    m_cad->add(t2, -4.5, h, 0.0);
+    m_cad->add(t1, -3.0, h, 0.0);
     m_cad->add(t1, -1.0, h, 0.0);
     m_cad->add(t1, 1.0, h, 0.0);
+    m_cad->add(t1, 3.0, h, 0.0);
+    m_cad->add(t2, 4.5, h, 0.0);
 
     h = y_offset + 8.0 / 3.0;
+    m_cad->add(t1, -4.0, h, 0.0);
+    m_cad->add(t1, -2.0, h, 0.0);
     m_cad->add(t1, 0.0, h, 0.0);
+    m_cad->add(t1, 2.0, h, 0.0);
+    m_cad->add(t1, 4.0, h, 0.0);
 
 
     initCubeGeometry();

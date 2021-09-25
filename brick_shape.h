@@ -2,16 +2,17 @@
 #ifndef _BRICK_SHAPE_H_
 #define _BRICK_SHAPE_H_
 
+#include "shape.h"
 #include "float3.h"
 #include "facet.h"
 
-class BrickShape
+class BrickShape: public Shape
 {
 public:
     BrickShape(float dimx, float dimy, float dimz, float dimb);
-    ~BrickShape();
-    int facets() const;
-    facet get_facet(int facet_ix) const;
+    virtual ~BrickShape();
+    int facets() const override;
+    facet get_facet(int facet_ix) const override;
 
 private:
     float m_dimx;

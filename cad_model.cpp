@@ -74,7 +74,7 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
     }
 }
 
-CadModel::CadModel(const BrickShape& bs, const PaintCan& paint_can, float animation_id)
+CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id)
     : m_facet_count(0)
     , m_facet(NULL)
 {
@@ -83,14 +83,14 @@ CadModel::CadModel(const BrickShape& bs, const PaintCan& paint_can, float animat
            paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
            animation_id);
 #endif
-    m_facet_count = bs.facets();
+    m_facet_count = s.facets();
     if (m_facet_count > 0) {
         m_facet = new facet[m_facet_count];
         for (int i = 0; i < m_facet_count; i++) {
             m_facet[i].animation_id = animation_id;
-            m_facet[i].v1 = bs.get_facet(i).v1;
-            m_facet[i].v2 = bs.get_facet(i).v2;
-            m_facet[i].v3 = bs.get_facet(i).v3;
+            m_facet[i].v1 = s.get_facet(i).v1;
+            m_facet[i].v2 = s.get_facet(i).v2;
+            m_facet[i].v3 = s.get_facet(i).v3;
             m_facet[i].color = paint_can.ambient_color();
         }
     }
@@ -157,14 +157,14 @@ void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can,
     }
 }
 
-void CadModel::add(const BrickShape& bs, const PaintCan& paint_can, float animation_id)
+void CadModel::add(const Shape& s, const PaintCan& paint_can, float animation_id)
 {
 #ifdef VERBOSE
     printf("CadModel::add(shape) paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
            paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
            animation_id);
 #endif
-    int added_facet_count = bs.facets();
+    int added_facet_count = s.facets();
     if (added_facet_count > 0) {
         facet* tfacet = m_facet;
         m_facet = new facet[m_facet_count + added_facet_count];
@@ -173,9 +173,9 @@ void CadModel::add(const BrickShape& bs, const PaintCan& paint_can, float animat
         }
         for (int i = 0; i < added_facet_count; i++) {
             m_facet[m_facet_count + i].animation_id = animation_id;
-            m_facet[m_facet_count + i].v1 = bs.get_facet(i).v1;
-            m_facet[m_facet_count + i].v2 = bs.get_facet(i).v2;
-            m_facet[m_facet_count + i].v3 = bs.get_facet(i).v3;
+            m_facet[m_facet_count + i].v1 = s.get_facet(i).v1;
+            m_facet[m_facet_count + i].v2 = s.get_facet(i).v2;
+            m_facet[m_facet_count + i].v3 = s.get_facet(i).v3;
             m_facet[m_facet_count + i].color = paint_can.ambient_color();
         }
         m_facet_count += added_facet_count;

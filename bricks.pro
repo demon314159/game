@@ -9,6 +9,7 @@ HEADERS      += game.h \
                 int3.h \
                 float3.h \
                 facet.h \
+                shape.h \
                 table.h \
                 paint_can.h \
                 brick_shape.h \

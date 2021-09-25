@@ -4,7 +4,7 @@
 
 #include <QVector3D>
 #include "paint_can.h"
-#include "brick2_shape.h"
+#include "brick_shape.h"
 
 struct VertexData
 {
@@ -32,8 +32,8 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    Brick2Shape proto(2.0, 2.0 / 3.0, 1.0, 0.1);
-    Brick2Shape hproto(1.0, 2.0 / 3.0, 1.0, 0.1);
+    BrickShape proto(2.0, 2.0 / 3.0, 1.0, 0.025);
+    BrickShape hproto(1.0, 2.0 / 3.0, 1.0, 0.025);
 
     printf("brick facet count = %d\n", proto.facets());
 

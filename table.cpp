@@ -66,7 +66,7 @@ void Table::paintGL()
     QQuaternion my_rot = rot2 * rot1;
 
     QMatrix4x4 matrix;
-    matrix.translate(0.0, -0.25, -6.0);
+    matrix.translate(0.0, -0.25, -8.0);
     matrix.rotate(my_rot);
     // Set modelview-projection matrix
     m_mvp_matrix = m_projection * matrix;

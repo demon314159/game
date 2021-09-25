@@ -13,6 +13,7 @@ HEADERS      += game.h \
                 table.h \
                 paint_can.h \
                 brick_shape.h \
+                brick2_shape.h \
                 bin_interface.h \
                 char_interface.h \
                 token_interface.h \
@@ -26,6 +27,7 @@ SOURCES      += main.cpp \
                 table.cpp \
                 paint_can.cpp \
                 brick_shape.cpp \
+                brick2_shape.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \
                 token_interface.cpp \

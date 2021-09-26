@@ -32,53 +32,59 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-    BrickShape proto(2.0, 2.0 / 3.0, 1.0, 0.025);
-    BrickShape hproto(1.0, 2.0 / 3.0, 1.0, 0.025);
+    float dimw = 1.0;
+    float dimh = 2.0 / 3.0;
+    float dimb = 0.025;
 
-    printf("brick facet count = %d\n", proto.facets());
+    BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
+    BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);
+    BrickShape half_brick(dimw, dimh, dimw, dimb);
 
     m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
 
-//    CadModel t1 = CadModel(StlInterface("cube.stl"), red_paint, 0.0);
-    CadModel t1 = CadModel(proto, red_paint, 0.0);
-    CadModel t2 = CadModel(hproto, red_paint, 0.0);
+    CadModel tf = CadModel(front_brick, red_paint, 0.0);
+    CadModel ts = CadModel(side_brick, red_paint, 0.0);
+    CadModel th = CadModel(half_brick, red_paint, 0.0);
     float y_offset = -1.0;
     float h = y_offset;
-    m_cad->add(t1, -4.0, h, 0.0);
-    m_cad->add(t1, -2.0, h, 0.0);
-    m_cad->add(t1, 0.0, h, 0.0);
-    m_cad->add(t1, 2.0, h, 0.0);
-    m_cad->add(t1, 4.0, h, 0.0);
+    m_cad->add(th, -1.5, h, -4.0);
+    m_cad->add(ts, -1.5, h, -2.5);
+    m_cad->add(ts, -1.5, h, -0.5);
+    m_cad->add(tf, 0.0, h, 0.0);
+    m_cad->add(tf, 2.0, h, 0.0);
+    m_cad->add(tf, 4.0, h, 0.0);
 
     h = y_offset + 2.0 / 3.0;
-    m_cad->add(t2, -4.5, h, 0.0);
-    m_cad->add(t1, -3.0, h, 0.0);
-    m_cad->add(t1, -1.0, h, 0.0);
-    m_cad->add(t1, 1.0, h, 0.0);
-    m_cad->add(t1, 3.0, h, 0.0);
-    m_cad->add(t2, 4.5, h, 0.0);
+    m_cad->add(ts, -1.5, h, -3.5);
+    m_cad->add(ts, -1.5, h, -1.5);
+    m_cad->add(tf, -1.0, h, 0.0);
+    m_cad->add(tf, 1.0, h, 0.0);
+    m_cad->add(tf, 3.0, h, 0.0);
+    m_cad->add(th, 4.5, h, 0.0);
 
     h = y_offset + 4.0 / 3.0;
-    m_cad->add(t1, -4.0, h, 0.0);
-    m_cad->add(t1, -2.0, h, 0.0);
-    m_cad->add(t1, 0.0, h, 0.0);
-    m_cad->add(t1, 2.0, h, 0.0);
-    m_cad->add(t1, 4.0, h, 0.0);
+    m_cad->add(th, -1.5, h, -4.0);
+    m_cad->add(ts, -1.5, h, -2.5);
+    m_cad->add(ts, -1.5, h, -0.5);
+    m_cad->add(tf, 0.0, h, 0.0);
+    m_cad->add(tf, 2.0, h, 0.0);
+    m_cad->add(tf, 4.0, h, 0.0);
 
     h = y_offset + 6.0 / 3.0;
-    m_cad->add(t2, -4.5, h, 0.0);
-    m_cad->add(t1, -3.0, h, 0.0);
-    m_cad->add(t1, -1.0, h, 0.0);
-    m_cad->add(t1, 1.0, h, 0.0);
-    m_cad->add(t1, 3.0, h, 0.0);
-    m_cad->add(t2, 4.5, h, 0.0);
+    m_cad->add(ts, -1.5, h, -3.5);
+    m_cad->add(ts, -1.5, h, -1.5);
+    m_cad->add(tf, -1.0, h, 0.0);
+    m_cad->add(tf, 1.0, h, 0.0);
+    m_cad->add(tf, 3.0, h, 0.0);
+    m_cad->add(th, 4.5, h, 0.0);
 
     h = y_offset + 8.0 / 3.0;
-    m_cad->add(t1, -4.0, h, 0.0);
-    m_cad->add(t1, -2.0, h, 0.0);
-    m_cad->add(t1, 0.0, h, 0.0);
-    m_cad->add(t1, 2.0, h, 0.0);
-    m_cad->add(t1, 4.0, h, 0.0);
+    m_cad->add(th, -1.5, h, -4.0);
+    m_cad->add(ts, -1.5, h, -2.5);
+    m_cad->add(ts, -1.5, h, -0.5);
+    m_cad->add(tf, 0.0, h, 0.0);
+    m_cad->add(tf, 2.0, h, 0.0);
+    m_cad->add(tf, 4.0, h, 0.0);
 
     initCubeGeometry();
 }

@@ -10,7 +10,7 @@ int main(int argv, char **args)
         view_ix = atoi(args[1]);
     }
     QApplication app(argv, args);
-    app.setApplicationName("GAMS");
+    app.setApplicationName("Bricks");
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);

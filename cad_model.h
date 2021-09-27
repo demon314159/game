@@ -17,6 +17,7 @@
 class CadModel
 {
 public:
+    CadModel();
     CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);

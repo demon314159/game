@@ -7,7 +7,16 @@
 #include <QVector4D>
 #include <QQuaternion>
 
-#define VERBOSE
+#define notVERBOSE
+
+CadModel::CadModel()
+    : m_facet_count(0)
+    , m_facet(NULL)
+{
+#ifdef VERBOSE
+    printf("CadModel::CadModel()\n");
+#endif
+}
 
 CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     : m_facet_count(0)

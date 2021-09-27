@@ -30,23 +30,31 @@ Thingus::Thingus()
     PaintCan brown_paint(0.71, 0.396, 0.114);
     PaintCan pure_green_paint(0.0, 1.0, 0.0);
     PaintCan green_paint(0.329412, 1.0, 0.517647);
+    PaintCan table_paint(0.658, 1.0, 1.0);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
     float dimw = 1.0;
     float dimh = 2.0 / 3.0;
     float dimb = 0.025;
 
+    float tablex = 9.0 * dimw;
+    float tabley = dimh / 20.0;
+    float tablez = 7.0 * dimw;
+    float tableb = dimb / 20.0;
+
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);
     BrickShape half_brick(dimw, dimh, dimw, dimb);
-
-    m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
+    BrickShape table(tablex, tabley, tablez, tableb);
 
     CadModel tf = CadModel(front_brick, red_paint, 0.0);
     CadModel ts = CadModel(side_brick, red_paint, 0.0);
     CadModel th = CadModel(half_brick, red_paint, 0.0);
+    CadModel tt = CadModel(table, table_paint, 1.0);
     float y_offset = -1.0;
     float h = y_offset;
+    m_cad = new CadModel();
+
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);
     m_cad->add(ts, -1.5, h, -0.5);
@@ -85,6 +93,8 @@ Thingus::Thingus()
     m_cad->add(tf, 0.0, h, 0.0);
     m_cad->add(tf, 2.0, h, 0.0);
     m_cad->add(tf, 4.0, h, 0.0);
+
+    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
 
     initCubeGeometry();
 }

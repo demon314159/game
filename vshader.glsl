@@ -22,7 +22,12 @@ void main()
 
 // Calculate vertex position in screen space
     gl_Position = mvp_matrix * vec4(a_position, 1.0);
-    v_normal = rot_matrix * vec4(billy, 0.0);
+    if (a_animation_id == 1.0) {
+        v_normal = vec4(0.0, 0.0, 1.0, 0.0);
+    } else {
+        v_normal = rot_matrix * vec4(billy, 0.0);
+    }
+
     // Pass color coordinate to fragment shader
     v_color = a_color;
 }

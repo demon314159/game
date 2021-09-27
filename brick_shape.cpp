@@ -73,14 +73,14 @@ void BrickShape::define_shape()
 
 void BrickShape::add_face(int v1, int v2, int v3, int v4, bool flip)
 {
-    printf("add_face(%d, %d, %d, %d, %s)\n", v1, v2, v3, v4, flip ? "true" : "false");
+//    printf("add_face(%d, %d, %d, %d, %s)\n", v1, v2, v3, v4, flip ? "true" : "false");
     add_face(v1, v2, v3, flip);
     add_face(v1, v3, v4, flip);
 }
 
 void BrickShape::add_face(int v1, int v2, int v3, bool flip)
 {
-    printf("add_face(%d, %d, %d, %s)\n", v1, v2, v3, flip ? "true" : "false");
+//    printf("add_face(%d, %d, %d, %s)\n", v1, v2, v3, flip ? "true" : "false");
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = 0.0;
         m_facet[m_facet_count].color = {1.0, 1.0, 1.0};

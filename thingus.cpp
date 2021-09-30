@@ -51,9 +51,27 @@ Thingus::Thingus()
     CadModel ts = CadModel(side_brick, red_paint, 0.0);
     CadModel th = CadModel(half_brick, red_paint, 0.0);
     CadModel tt = CadModel(table, table_paint, 1.0);
-    float y_offset = -1.0;
+    float y_offset = -2.0;
     float h = y_offset;
     m_cad = new CadModel();
+
+
+    BrickShape vslat(0.2 * dimw, 4 * dimw, 0.2 *dimw, dimb);
+    CadModel vs = CadModel(vslat, white_paint, 0.0);
+    BrickShape hslat(3.0 * dimw, 0.2 * dimw, 0.2 * dimw, dimb);
+    CadModel hs = CadModel(hslat, white_paint, 0.0);
+
+    float ground = y_offset - dimh / 2.0;
+    float wz = dimw / 2.0 - 0.1 * dimw;
+    m_cad->add(vs, (0.0 + 0.1) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
+    m_cad->add(vs, (1.0) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
+    m_cad->add(vs, (2.0) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
+    m_cad->add(vs, (3.0 - 0.1) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
+    m_cad->add(hs, 1.5 * dimw, ground + (0.0 + 0.1) * dimw + 2.0 * dimh, wz);
+    m_cad->add(hs, 1.5 * dimw, ground + (1.0) * dimw + 2.0 * dimh, wz);
+    m_cad->add(hs, 1.5 * dimw, ground + (2.0) * dimw + 2.0 * dimh, wz);
+    m_cad->add(hs, 1.5 * dimw, ground + (3.0) * dimw + 2.0 * dimh, wz);
+    m_cad->add(hs, 1.5 * dimw, ground + (4.0 - 0.1) * dimw + 2.0 * dimh, wz);
 
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);
@@ -74,19 +92,47 @@ Thingus::Thingus()
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);
     m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(tf, 0.0, h, 0.0);
-    m_cad->add(tf, 2.0, h, 0.0);
+    m_cad->add(th, -0.5, h, 0.0);
     m_cad->add(tf, 4.0, h, 0.0);
 
     h = y_offset + 6.0 / 3.0;
     m_cad->add(ts, -1.5, h, -3.5);
     m_cad->add(ts, -1.5, h, -1.5);
     m_cad->add(tf, -1.0, h, 0.0);
-    m_cad->add(tf, 1.0, h, 0.0);
-    m_cad->add(tf, 3.0, h, 0.0);
+    m_cad->add(th, 3.5, h, 0.0);
     m_cad->add(th, 4.5, h, 0.0);
 
     h = y_offset + 8.0 / 3.0;
+    m_cad->add(th, -1.5, h, -4.0);
+    m_cad->add(ts, -1.5, h, -2.5);
+    m_cad->add(ts, -1.5, h, -0.5);
+    m_cad->add(th, -0.5, h, 0.0);
+    m_cad->add(tf, 4.0, h, 0.0);
+    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
+
+    h = y_offset + 10.0 / 3.0;
+    m_cad->add(ts, -1.5, h, -3.5);
+    m_cad->add(ts, -1.5, h, -1.5);
+    m_cad->add(tf, -1.0, h, 0.0);
+    m_cad->add(th, 3.5, h, 0.0);
+    m_cad->add(th, 4.5, h, 0.0);
+
+    h = y_offset + 12.0 / 3.0;
+    m_cad->add(th, -1.5, h, -4.0);
+    m_cad->add(ts, -1.5, h, -2.5);
+    m_cad->add(ts, -1.5, h, -0.5);
+    m_cad->add(th, -0.5, h, 0.0);
+    m_cad->add(tf, 4.0, h, 0.0);
+    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
+
+    h = y_offset + 14.0 / 3.0;
+    m_cad->add(ts, -1.5, h, -3.5);
+    m_cad->add(ts, -1.5, h, -1.5);
+    m_cad->add(tf, -1.0, h, 0.0);
+    m_cad->add(th, 3.5, h, 0.0);
+    m_cad->add(th, 4.5, h, 0.0);
+
+    h = y_offset + 16.0 / 3.0;
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);
     m_cad->add(ts, -1.5, h, -0.5);

@@ -12,6 +12,7 @@ HEADERS      += game.h \
                 shape.h \
                 table.h \
                 paint_can.h \
+                cube_shape.h \
                 brick_shape.h \
                 bin_interface.h \
                 char_interface.h \
@@ -19,12 +20,14 @@ HEADERS      += game.h \
                 vrml_interface.h \
                 stl_interface.h \
                 cad_model.h \
+                frame_model.h \
                 thingus.h
 
 SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 paint_can.cpp \
+                cube_shape.cpp \
                 brick_shape.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \
@@ -32,6 +35,7 @@ SOURCES      += main.cpp \
                 vrml_interface.cpp \
                 stl_interface.cpp \
                 cad_model.cpp \
+                frame_model.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc

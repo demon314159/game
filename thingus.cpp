@@ -4,7 +4,9 @@
 
 #include <QVector3D>
 #include "paint_can.h"
+#include "cube_shape.h"
 #include "brick_shape.h"
+#include "frame_model.h"
 
 struct VertexData
 {
@@ -40,12 +42,17 @@ Thingus::Thingus()
     float tablex = 9.0 * dimw;
     float tabley = dimh / 20.0;
     float tablez = 7.0 * dimw;
-    float tableb = dimb / 20.0;
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);
     BrickShape half_brick(dimw, dimh, dimw, dimb);
-    BrickShape table(tablex, tabley, tablez, tableb);
+    CubeShape table(tablex, tabley, tablez);
+
+    m_cad = new CadModel();
+
+    FrameModel ff(3.0 * dimw, 4.0 * dimw, dimw, dimb, dimw / 10.0, dimw / 10.0, dimw / 10.0, white_paint, 0.0);
+    m_cad->add(ff, dimw * 1.5, dimh * 1.5, 0.0);
+
 
     CadModel tf = CadModel(front_brick, red_paint, 0.0);
     CadModel ts = CadModel(side_brick, red_paint, 0.0);
@@ -53,25 +60,9 @@ Thingus::Thingus()
     CadModel tt = CadModel(table, table_paint, 1.0);
     float y_offset = -2.0;
     float h = y_offset;
-    m_cad = new CadModel();
 
-
-    BrickShape vslat(0.2 * dimw, 4 * dimw, 0.2 *dimw, dimb);
-    CadModel vs = CadModel(vslat, white_paint, 0.0);
-    BrickShape hslat(3.0 * dimw, 0.2 * dimw, 0.2 * dimw, dimb);
-    CadModel hs = CadModel(hslat, white_paint, 0.0);
 
     float ground = y_offset - dimh / 2.0;
-    float wz = dimw / 2.0 - 0.1 * dimw;
-    m_cad->add(vs, (0.0 + 0.1) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
-    m_cad->add(vs, (1.0) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
-    m_cad->add(vs, (2.0) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
-    m_cad->add(vs, (3.0 - 0.1) * dimw, ground + 2 * dimw + 2.0 * dimh, wz);
-    m_cad->add(hs, 1.5 * dimw, ground + (0.0 + 0.1) * dimw + 2.0 * dimh, wz);
-    m_cad->add(hs, 1.5 * dimw, ground + (1.0) * dimw + 2.0 * dimh, wz);
-    m_cad->add(hs, 1.5 * dimw, ground + (2.0) * dimw + 2.0 * dimh, wz);
-    m_cad->add(hs, 1.5 * dimw, ground + (3.0) * dimw + 2.0 * dimh, wz);
-    m_cad->add(hs, 1.5 * dimw, ground + (4.0 - 0.1) * dimw + 2.0 * dimh, wz);
 
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);

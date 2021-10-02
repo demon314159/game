@@ -7,7 +7,7 @@
 #include <QVector4D>
 #include <QQuaternion>
 
-#define VERBOSE
+#define notVERBOSE
 
 CadModel::CadModel()
     : m_facet_count(0)

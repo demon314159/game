@@ -50,19 +50,38 @@ Thingus::Thingus()
 
     m_cad = new CadModel();
 
-    FrameModel ff(3.0 * dimw, 4.0 * dimw, dimw, dimb, dimw / 10.0, dimw / 10.0, dimw / 10.0, white_paint, 0.0);
+    float f_dimx = 3.0 * dimw;
+    float f_dimy = 4.0 * dimw;
+    float f_dimz = dimw;
+    float f_sill = dimw / 10.0;
+    float f_head = dimw / 10.0;
+    float f_jamb = dimw / 10.0;
+    float f_rail = f_sill * 4.0;
+    float f_stile = f_jamb * 4.0;
+    float sill_offset = 0.75 * f_dimz / 2.0;
+    float f_grille = f_jamb;
+
+
+    FrameModel ff(f_dimx, f_dimy, f_dimz, dimb, f_sill, f_head, f_jamb, white_paint, 0.0);
     m_cad->add(ff, dimw * 1.5, dimh * 1.5, 0.0);
 
+    FrameModel fs(f_dimx, f_dimy, f_jamb, dimb, f_rail, f_rail, f_stile, white_paint, 0.0);
+    m_cad->add(fs, dimw * 1.5, dimh * 1.5, sill_offset);
 
-    CadModel tf = CadModel(front_brick, red_paint, 0.0);
-    CadModel ts = CadModel(side_brick, red_paint, 0.0);
-    CadModel th = CadModel(half_brick, red_paint, 0.0);
-    CadModel tt = CadModel(table, table_paint, 1.0);
+    BrickShape vs(f_grille, f_dimy, f_grille, dimb);
+    CadModel vgrille(vs, white_paint, 0.0);
+    BrickShape hs(f_dimx, f_grille, f_grille, dimb);
+    CadModel hgrille(hs, white_paint, 0.0);
+
+    m_cad->add(vgrille, f_dimx / 2.0, dimh * 1.5, sill_offset);
+    m_cad->add(hgrille, dimw * 1.5, dimh * 1.5, sill_offset);
+
+    CadModel tf(front_brick, red_paint, 0.0);
+    CadModel ts(side_brick, red_paint, 0.0);
+    CadModel th(half_brick, red_paint, 0.0);
+    CadModel tt(table, table_paint, 1.0);
     float y_offset = -2.0;
     float h = y_offset;
-
-
-    float ground = y_offset - dimh / 2.0;
 
     m_cad->add(th, -1.5, h, -4.0);
     m_cad->add(ts, -1.5, h, -2.5);
@@ -130,7 +149,6 @@ Thingus::Thingus()
     m_cad->add(tf, 0.0, h, 0.0);
     m_cad->add(tf, 2.0, h, 0.0);
     m_cad->add(tf, 4.0, h, 0.0);
-
     m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
 
     initCubeGeometry();

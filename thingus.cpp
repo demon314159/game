@@ -6,7 +6,7 @@
 #include "paint_can.h"
 #include "cube_shape.h"
 #include "brick_shape.h"
-#include "frame_model.h"
+#include "window_model.h"
 
 struct VertexData
 {
@@ -50,31 +50,8 @@ Thingus::Thingus()
 
     m_cad = new CadModel();
 
-    float f_dimx = 3.0 * dimw;
-    float f_dimy = 4.0 * dimw;
-    float f_dimz = dimw;
-    float f_sill = dimw / 10.0;
-    float f_head = dimw / 10.0;
-    float f_jamb = dimw / 10.0;
-    float f_rail = f_sill * 4.0;
-    float f_stile = f_jamb * 4.0;
-    float sill_offset = 0.75 * f_dimz / 2.0;
-    float f_grille = f_jamb;
-
-
-    FrameModel ff(f_dimx, f_dimy, f_dimz, dimb, f_sill, f_head, f_jamb, white_paint, 0.0);
-    m_cad->add(ff, dimw * 1.5, dimh * 1.5, 0.0);
-
-    FrameModel fs(f_dimx, f_dimy, f_jamb, dimb, f_rail, f_rail, f_stile, white_paint, 0.0);
-    m_cad->add(fs, dimw * 1.5, dimh * 1.5, sill_offset);
-
-    BrickShape vs(f_grille, f_dimy, f_grille, dimb);
-    CadModel vgrille(vs, white_paint, 0.0);
-    BrickShape hs(f_dimx, f_grille, f_grille, dimb);
-    CadModel hgrille(hs, white_paint, 0.0);
-
-    m_cad->add(vgrille, f_dimx / 2.0, dimh * 1.5, sill_offset);
-    m_cad->add(hgrille, dimw * 1.5, dimh * 1.5, sill_offset);
+    WindowModel ww(3.0 * dimw, 4.0 * dimw, dimw, dimb, 1, 2, white_paint, 0.0);
+    m_cad->add(ww, dimw * 1.5, dimh * 1.5, 0.0);
 
     CadModel tf(front_brick, red_paint, 0.0);
     CadModel ts(side_brick, red_paint, 0.0);

@@ -21,6 +21,7 @@ HEADERS      += game.h \
                 stl_interface.h \
                 cad_model.h \
                 frame_model.h \
+                window_model.h \
                 thingus.h
 
 SOURCES      += main.cpp \
@@ -36,6 +37,7 @@ SOURCES      += main.cpp \
                 stl_interface.cpp \
                 cad_model.cpp \
                 frame_model.cpp \
+                window_model.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc

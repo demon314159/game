@@ -8,6 +8,8 @@
 #include "brick_shape.h"
 #include "window_model.h"
 
+#include "bill_of_materials.h"
+
 struct VertexData
 {
     QVector3D position;
@@ -42,6 +44,9 @@ Thingus::Thingus()
     float tablex = 9.0 * dimw;
     float tabley = dimh / 20.0;
     float tablez = 7.0 * dimw;
+
+
+    BillOfMaterials bom();
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);

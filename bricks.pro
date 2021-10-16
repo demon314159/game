@@ -14,6 +14,8 @@ HEADERS      += game.h \
                 paint_can.h \
                 cube_shape.h \
                 brick_shape.h \
+                material.h \
+                bill_of_materials.h \
                 bin_interface.h \
                 char_interface.h \
                 token_interface.h \
@@ -30,6 +32,8 @@ SOURCES      += main.cpp \
                 paint_can.cpp \
                 cube_shape.cpp \
                 brick_shape.cpp \
+                material.cpp \
+                bill_of_materials.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \
                 token_interface.cpp \

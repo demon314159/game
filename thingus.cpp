@@ -8,7 +8,8 @@
 #include "brick_shape.h"
 #include "window_model.h"
 
-#include "bill_of_materials.h"
+#include "elements.h"
+#include "document.h"
 
 struct VertexData
 {
@@ -46,7 +47,9 @@ Thingus::Thingus()
     float tablez = 7.0 * dimw;
 
 
-    BillOfMaterials bom();
+    Document doc;
+    BrickElement* be = new BrickElement({2.0, 1.0, 1.0}, {0.5, 0.5, 0.5}, dimb);
+    doc.add_element(be);
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);

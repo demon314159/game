@@ -10,13 +10,13 @@ public:
     Document();
     ~Document();
     int elements() const;
-    void add_element(ElementPtr e);
-    ElementPtr get_element(int i) const;
+    void add_element(Element* e);
+    Element* get_element(int i) const;
 
 private:
     int m_max_elements;
     int m_elements;
-    ElementPtr* m_element_ptr;
+    Element** m_element_ptr;
     void double_the_storage();
 };
 

@@ -7,7 +7,7 @@ Document::Document()
     , m_elements(0)
 {
     printf("Document()\n");
-    m_element_ptr = new ElementPtr[m_max_elements];
+    m_element_ptr = new Element*[m_max_elements];
 }
 
 Document::~Document()
@@ -24,7 +24,7 @@ int Document::elements() const
     return m_elements;
 }
 
-void Document::add_element(ElementPtr e)
+void Document::add_element(Element* e)
 {
     printf("Document::add_element()\n");
     if (m_elements >= m_max_elements) {
@@ -34,7 +34,7 @@ void Document::add_element(ElementPtr e)
     ++m_elements;
 }
 
-ElementPtr Document::get_element(int i) const
+Element* Document::get_element(int i) const
 {
     return m_element_ptr[i];
 }
@@ -46,7 +46,7 @@ void Document::double_the_storage()
     // and copy existing data to new array
     // to seamlessly keep the buffer larger than data
     m_max_elements = 2 * m_max_elements;
-    ElementPtr* temp = new ElementPtr[m_max_elements];
+    Element** temp = new Element*[m_max_elements];
     for (int i = 0; i < m_elements; i++) {
         temp[i] = m_element_ptr[i];
     }

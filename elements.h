@@ -16,8 +16,6 @@ private:
     float3 m_pos;
 };
 
-typedef Element* ElementPtr;
-
 class BrickElement: public Element
 {
 public:

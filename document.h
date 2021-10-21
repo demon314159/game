@@ -3,6 +3,7 @@
 #define _DOCUMENT_H_
 
 #include "elements.h"
+#include <QString>
 
 class Document
 {
@@ -12,6 +13,7 @@ public:
     int elements() const;
     void add_element(Element* e);
     Element* get_element(int i) const;
+    void save_to_file(QString& file_name) const;
 
 private:
     int m_max_elements;

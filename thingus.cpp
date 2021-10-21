@@ -89,7 +89,7 @@ Thingus::Thingus()
     doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
 
     height = 4.5;
-    doc.add_element(new WindowElement(3.0, 0.0, height, NORTH, 3.0, 6.0, 1, 2));
+    doc.add_element(new WindowElement(3.0, 0.0, height, NORTH, 3, 6, 1, 2));
 
     height = 5.0;
     doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
@@ -120,7 +120,8 @@ Thingus::Thingus()
     doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
     doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
 
-
+    QString file_name = "house.txt";
+    doc.save_to_file(file_name);
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);

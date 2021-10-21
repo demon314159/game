@@ -48,8 +48,79 @@ Thingus::Thingus()
 
 
     Document doc;
-    BrickElement* be = new BrickElement({2.0, 1.0, 1.0}, {0.5, 0.5, 0.5}, dimb);
-    doc.add_element(be);
+//    BrickElement* be = new BrickElement(0, 0.5, 0, 0);
+//    doc.add_element(be);
+
+    float height = 0.0;
+    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
+    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
+    doc.add_element(new BrickElement(1.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
+
+    height = 1.0;
+    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
+    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(2.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(4.5, 0.0, height, NORTH));
+    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
+
+    height = 2.0;
+    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
+    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
+    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
+    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
+
+    height = 3.0;
+    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
+    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
+    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
+    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
+
+    height = 4.0;
+    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
+    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
+    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
+    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
+
+    height = 4.5;
+    doc.add_element(new WindowElement(3.0, 0.0, height, NORTH, 3.0, 6.0, 1, 2));
+
+    height = 5.0;
+    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
+    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
+    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
+    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
+
+    height = 6.0;
+    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
+    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
+    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
+    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
+
+    height = 7.0;
+    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
+    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
+    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
+    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
+
+    height = 8.0;
+    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
+    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
+    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
+    doc.add_element(new BrickElement(1.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
+    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
+
+
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);

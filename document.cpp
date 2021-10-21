@@ -6,13 +6,11 @@ Document::Document()
     : m_max_elements(16384)
     , m_elements(0)
 {
-    printf("Document()\n");
     m_element_ptr = new Element*[m_max_elements];
 }
 
 Document::~Document()
 {
-    printf("~Document()\n");
     for (int i = 0; i < m_elements; i++) {
         delete m_element_ptr[i];
     }
@@ -26,7 +24,6 @@ int Document::elements() const
 
 void Document::add_element(Element* e)
 {
-    printf("Document::add_element()\n");
     if (m_elements >= m_max_elements) {
         double_the_storage();
     }
@@ -41,7 +38,6 @@ Element* Document::get_element(int i) const
 
 void Document::double_the_storage()
 {
-    printf("Document::double_the_storage\n");
     // this will double the value of m_max_items
     // and copy existing data to new array
     // to seamlessly keep the buffer larger than data

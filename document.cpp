@@ -9,6 +9,8 @@
 Document::Document()
     : m_max_elements(16384)
     , m_elements(0)
+    , m_error_flag(false)
+    , m_error_message("no errors")
 {
     m_element_ptr = new Element*[m_max_elements];
 }
@@ -24,6 +26,16 @@ Document::~Document()
 int Document::elements() const
 {
     return m_elements;
+}
+
+bool Document::error_flag() const
+{
+    return m_error_flag;
+}
+
+QString Document::error_message() const
+{
+    return m_error_message;
 }
 
 void Document::add_element(Element* e)
@@ -72,3 +84,165 @@ void Document::save_to_file(QString& file_name) const
     }
     ffi.close();
 }
+
+bool Document::load_from_file(QString& file_name)
+{
+    TokenInterface ti(file_name);
+    ti.advance();
+    if (!expect(ti, "Bricks"))
+        return false;
+    if (!expect(ti, "Document"))
+        return false;
+    if (!expect(ti, "v0"))
+        return false;
+    if (!expect(ti, "."))
+        return false;
+    if (!expect(ti, "1"))
+        return false;
+    if (!expect(ti, "."))
+        return false;
+    if (!expect(ti, "0"))
+        return false;
+    while (!ti.is_eof()) {
+        QString ename = ti.current();
+        ti.advance();
+        if (ename == "HalfBrick") {
+            float x, y, z;
+            if (!expect(ti, "("))
+                return false;
+            if (!parse_float3(ti, x, y, z))
+                return false;
+            if (!expect(ti, ")"))
+                return false;
+            add_element(new HalfBrickElement(x, y, z));
+        } else if (ename == "Brick") {
+            float x, y, z;
+            int o;
+            if (!expect(ti, "("))
+                return false;
+            if (!parse_float3(ti, x, y, z))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, o))
+                return false;
+            if (!expect(ti, ")"))
+                return false;
+            add_element(new BrickElement(x, y, z, o));
+        } else if (ename == "Window") {
+            float x, y, z;
+            int o, w, h, hg, vg;
+            if (!expect(ti, "("))
+                return false;
+            if (!parse_float3(ti, x, y, z))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, o))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, w))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, h))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, hg))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, vg))
+                return false;
+            if (!expect(ti, ")"))
+                return false;
+            add_element(new WindowElement(x, y, z, o, w, h, hg, vg));
+        } else {
+            m_error_message = QString("Expecing 'HalfBrick' or 'Brick' or 'Window' but found '%1'").arg(ename);
+            m_error_flag = true;
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Document::expect(TokenInterface& ti, const QString& pattern)
+{
+    if (ti.current() == pattern) {
+        ti.advance();
+        return true;
+    }
+    m_error_message = QString("Expecing '%1' but found '%2'").arg(pattern).arg(ti.current());
+    m_error_flag = true;
+    return false;
+}
+
+bool Document::parse_float3(TokenInterface& ti, float& x, float& y, float& z)
+{
+    if (!parse_float(ti, x))
+        return false;
+    if (!expect(ti, ","))
+        return false;
+    if (!parse_float(ti, y))
+        return false;
+    if (!expect(ti, ","))
+        return false;
+    return parse_float(ti, z);
+}
+
+bool Document::parse_integer(TokenInterface& ti, int &v)
+{
+    QString s = "";
+    if (ti.current() == "+" || ti.current() == "-") {
+        s += ti.current();
+        ti.advance();
+    }
+    if (!ti.is_unsigned_integer()) {
+        m_error_message = QString("expecting integer but found '%1'").arg(ti.current());
+        return false;
+    }
+    s += ti.current();
+    ti.advance();
+    bool res;
+    v = s.toInt(&res);
+    if (!res) {
+        m_error_message = QString("error converting integer '%1'").arg(s);
+        return false;
+    }
+    return true;
+}
+
+bool Document::parse_float(TokenInterface& ti, float& v)
+{
+    QString s = "";
+    if (ti.current() == "+" || ti.current() == "-") {
+        s += ti.current();
+        ti.advance();
+    }
+    if (!ti.is_unsigned_integer()) {
+        m_error_message = QString("expecting float but found '%1'").arg(ti.current());
+        return false;
+    }
+    s += ti.current();
+    ti.advance();
+    if (ti.current() == ".") {
+        s += ".";
+        ti.advance();
+        if (!ti.is_unsigned_integer()) {
+            m_error_message = QString("expecting float but found '%1'").arg(ti.current());
+            return false;
+        }
+        s += ti.current();
+        ti.advance();
+    }
+    bool res;
+    v = s.toFloat(&res);
+    if (!res) {
+        m_error_message = QString("error converting float '%1'").arg(s);
+        return false;
+    }
+    return true;
+}
+

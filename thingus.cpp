@@ -47,10 +47,11 @@ Thingus::Thingus()
     float tablez = 7.0 * dimw;
 
 
+    QString file_name = "house.txt";
+    QString out_file_name = "home.txt";
     Document doc;
-//    BrickElement* be = new BrickElement(0, 0.5, 0, 0);
-//    doc.add_element(be);
 
+#ifdef NEVERMORE
     float height = 0.0;
     doc.add_element(new HalfBrickElement(0.0, 4.0, height));
     doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
@@ -120,8 +121,17 @@ Thingus::Thingus()
     doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
     doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
 
-    QString file_name = "house.txt";
     doc.save_to_file(file_name);
+#endif
+
+    if (!doc.load_from_file(file_name)) {
+        printf("Error loading doc: '%s'\n", doc.error_message().toLatin1().data());
+    } else {
+        printf("Loaded doc\n");
+        doc.save_to_file(out_file_name);
+    }
+
+
 
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);

@@ -48,87 +48,12 @@ Thingus::Thingus()
 
 
     QString file_name = "house.txt";
-    QString out_file_name = "home.txt";
     Document doc;
-
-#ifdef NEVERMORE
-    float height = 0.0;
-    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
-    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
-    doc.add_element(new BrickElement(1.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
-
-    height = 1.0;
-    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
-    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(2.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(4.5, 0.0, height, NORTH));
-    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
-
-    height = 2.0;
-    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
-    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
-    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
-    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
-
-    height = 3.0;
-    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
-    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
-    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
-    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
-
-    height = 4.0;
-    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
-    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
-    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
-    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
-
-    height = 4.5;
-    doc.add_element(new WindowElement(3.0, 0.0, height, NORTH, 3, 6, 1, 2));
-
-    height = 5.0;
-    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
-    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
-    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
-    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
-
-    height = 6.0;
-    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
-    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
-    doc.add_element(new HalfBrickElement(1.0, 0.0, height));
-    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
-
-    height = 7.0;
-    doc.add_element(new BrickElement(0.0, 3.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 1.5, height, WEST));
-    doc.add_element(new BrickElement(0.5, 0.0, height, NORTH));
-    doc.add_element(new HalfBrickElement(5.0, 0.0, height));
-    doc.add_element(new HalfBrickElement(6.0, 0.0, height));
-
-    height = 8.0;
-    doc.add_element(new HalfBrickElement(0.0, 4.0, height));
-    doc.add_element(new BrickElement(0.0, 2.5, height, WEST));
-    doc.add_element(new BrickElement(0.0, 0.5, height, WEST));
-    doc.add_element(new BrickElement(1.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(3.5, 0.0, height, NORTH));
-    doc.add_element(new BrickElement(5.5, 0.0, height, NORTH));
-
-    doc.save_to_file(file_name);
-#endif
 
     if (!doc.load_from_file(file_name)) {
         printf("Error loading doc: '%s'\n", doc.error_message().toLatin1().data());
     } else {
         printf("Loaded doc\n");
-        doc.save_to_file(out_file_name);
     }
 
 

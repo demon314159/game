@@ -1,7 +1,7 @@
 
 #include "token_interface.h"
 
-#define VERBOSE
+#define notVERBOSE
 
 TokenInterface::TokenInterface(const QString& file_name)
     : m_ci(file_name)

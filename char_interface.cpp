@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 #include <ctype.h>
 
-#define VERBOSE
+#define notVERBOSE
 
 CharInterface::CharInterface(const QString& file_name)
     : m_pos(0)

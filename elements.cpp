@@ -32,6 +32,12 @@ CadModel& Element::get_model()
     return m_default_model;
 }
 
+PaintCan Element::red_paint(1.0, 0.0, 0.0);
+PaintCan Element::white_paint(1.0, 1.0, 1.0);
+CadModel Element::m_default_model(BrickShape(Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
+
+CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0 * Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
+CadModel BrickElement::m_model_ew = CadModel(BrickShape(Element::dimw, Element::dimh, 2.0 * Element::dimw, Element::dimb), Element::red_paint, 0.0);
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
 {

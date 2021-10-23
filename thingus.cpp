@@ -25,18 +25,6 @@ Thingus::Thingus()
     initializeOpenGLFunctions();
 
     vertexBuf.create();
-    PaintCan lit_paint(2.0, 2.0, 0.0);
-    float f = 0.6;
-    PaintCan unlit_paint(f, f, 0.0);
-    PaintCan white_paint(1.0, 1.0, 1.0);
-    PaintCan black_paint(0.0, 0.0, 0.0);
-    PaintCan red_paint(1.0, 0.0, 0.0);
-    PaintCan blue_paint(0.329412, 0.517647, 1.000000);
-    PaintCan brown_paint(0.71, 0.396, 0.114);
-    PaintCan pure_green_paint(0.0, 1.0, 0.0);
-    PaintCan green_paint(0.329412, 1.0, 0.517647);
-    PaintCan table_paint(0.658, 1.0, 1.0);
-    PaintCan gray_paint(0.7, 0.7, 0.7);
 
     float dimw = 1.0;
     float dimh = 2.0 / 3.0;
@@ -44,7 +32,7 @@ Thingus::Thingus()
     float tablex = 9.0 * dimw;
     float tabley = dimh / 20.0;
     float tablez = 7.0 * dimw;
-
+    PaintCan table_paint(0.658, 1.0, 1.0);
 
     QString file_name = "house.txt";
     Document doc;

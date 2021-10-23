@@ -17,11 +17,11 @@
 class Element
 {
 public:
-    const float dimw = 1.0;
-    const float dimh = 2.0 / 3.0;
-    const float dimb = 0.025;
-    const PaintCan red_paint = PaintCan(1.0, 0.0, 0.0);
-    const PaintCan white_paint = PaintCan(1.0, 1.0, 1.0);
+    static constexpr float dimw = 1.0;
+    static constexpr float dimh = 2.0 / 3.0;
+    static constexpr float dimb = 0.025;
+    static PaintCan red_paint;
+    static PaintCan white_paint;
     Element(float3 pos);
     Element() = delete;
     virtual ~Element();
@@ -31,7 +31,8 @@ public:
 
 private:
     float3 m_pos;
-    CadModel m_default_model = CadModel(BrickShape(dimw, dimh, dimw, dimb), red_paint, 0.0);
+//    CadModel m_default_model = CadModel(BrickShape(dimw, dimh, dimw, dimb), red_paint, 0.0);
+    static CadModel m_default_model;
 };
 
 class HalfBrickElement: public Element
@@ -52,8 +53,10 @@ public:
 
 private:
     int m_orientation;
-    CadModel m_model_ns = CadModel(BrickShape(2.0 * dimw, dimh, dimw, dimb), red_paint, 0.0);
-    CadModel m_model_ew = CadModel(BrickShape(dimw, dimh, 2.0 * dimw, dimb), red_paint, 0.0);
+//    CadModel m_model_ns = CadModel(BrickShape(2.0 * dimw, dimh, dimw, dimb), red_paint, 0.0);
+//    CadModel m_model_ew = CadModel(BrickShape(dimw, dimh, 2.0 * dimw, dimb), red_paint, 0.0);
+    static CadModel m_model_ns;
+    static CadModel m_model_ew;
 };
 
 class WindowElement: public Element

@@ -8,7 +8,7 @@
 class WindowModel: public CadModel
 {
 public:
-    WindowModel(float dimx, float dimy, float dimz, float dimb, int vgrills, int hgrills, const PaintCan& paint_can, float animation_id = 0.0);
+    WindowModel(float dimx, float dimy, float dimz, float dimb, int vgrilles, int hgrilles, const PaintCan& paint_can, float animation_id = 0.0);
     virtual ~WindowModel();
 
 private:

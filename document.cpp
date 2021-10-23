@@ -246,3 +246,12 @@ bool Document::parse_float(TokenInterface& ti, float& v)
     return true;
 }
 
+void Document::build_model(CadModel* model)
+{
+    for (int i = 0; i < m_elements; i++) {
+        Element* e = m_element_ptr[i];
+        float3 pos = e->get_pos();
+        CadModel cm(e->get_model());
+        model->add(cm, pos.v1, pos.v2, pos.v3);
+    }
+}

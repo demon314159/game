@@ -105,15 +105,6 @@ CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id
     }
 }
 
-CadModel::~CadModel()
-{
-#ifdef VERBOSE
-    printf("~CadModel::CadModel()\n");
-#endif
-    if (m_facet != NULL)
-        delete [] m_facet;
-}
-
 void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 {
 #ifdef VERBOSE
@@ -339,3 +330,13 @@ void CadModel::magnify(float factor)
         m_facet[i].v3.v3 *= factor;
     }
 }
+
+CadModel::~CadModel()
+{
+#ifdef VERBOSE
+    printf("~CadModel::CadModel()\n");
+#endif
+    if (m_facet != NULL)
+        delete [] m_facet;
+}
+

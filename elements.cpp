@@ -1,5 +1,6 @@
 
 #include "elements.h"
+#include "window_model.h"
 #include <stdio.h>
 
 Element::Element(float3 pos)
@@ -17,6 +18,19 @@ void Element::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
+float3 Element::get_pos() const
+{
+    float3 pos;
+    pos.v1 = m_pos.v1 * dimw;
+    pos.v2 = m_pos.v2 * dimh;
+    pos.v3 = m_pos.v3 * dimw;
+    return pos;
+}
+
+CadModel& Element::get_model()
+{
+    return m_default_model;
+}
 
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
@@ -36,6 +50,14 @@ BrickElement::BrickElement(float xpos, float ypos, float zpos, int orientation)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
 {
+
+}
+
+CadModel& BrickElement::get_model()
+{
+    if (m_orientation == 0 || m_orientation == 2)
+        return m_model_ns;
+    return m_model_ew;
 }
 
 void BrickElement::save_to_file(QDataStream& ds) const
@@ -55,7 +77,14 @@ WindowElement::WindowElement(float xpos, float ypos, float zpos, int orientation
     , m_height(height)
     , m_hgrilles(hgrilles)
     , m_vgrilles(vgrilles)
+    , m_model(WindowModel(width * dimw, height * dimh, dimw, dimb, vgrilles, hgrilles, white_paint, 0.0))
 {
+    if (orientation == 1)
+        m_model.rotate_ay(90.0);
+    else if (orientation == 2)
+        m_model.rotate_ay(180.0);
+    else if (orientation == 3)
+        m_model.rotate_ay(270.0);
 }
 
 void WindowElement::save_to_file(QDataStream& ds) const
@@ -65,6 +94,11 @@ void WindowElement::save_to_file(QDataStream& ds) const
     Element::save_to_file(ds);
     msg = QString(", %1, %2, %3, %4, %5)\n").arg(m_orientation).arg(m_width).arg(m_height).arg(m_hgrilles).arg(m_vgrilles);
     ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+CadModel& WindowElement::get_model()
+{
+    return m_model;
 }
 
 

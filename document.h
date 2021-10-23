@@ -4,6 +4,8 @@
 
 #include "elements.h"
 #include "token_interface.h"
+#include "cad_model.h"
+#include "cad_model.h"
 #include <QString>
 
 class Document
@@ -22,6 +24,7 @@ public:
     bool parse_float3(TokenInterface& ti, float& x, float& y, float& z);
     bool parse_integer(TokenInterface& ti, int &v);
     bool parse_float(TokenInterface& ti, float& v);
+    void build_model(CadModel* model);
 
 private:
     int m_max_elements;

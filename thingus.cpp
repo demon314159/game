@@ -40,7 +40,6 @@ Thingus::Thingus()
 
     float dimw = 1.0;
     float dimh = 2.0 / 3.0;
-    float dimb = 0.025;
 
     float tablex = 9.0 * dimw;
     float tabley = dimh / 20.0;
@@ -56,12 +55,21 @@ Thingus::Thingus()
         printf("Loaded doc\n");
     }
 
+    CadModel house;
+    doc.build_model(&house);
 
+    printf("house has %d facets\n", house.facets());
 
+    m_cad = new CadModel(house, 0.0, -2.0, 0.0);
+
+    CubeShape table(tablex, tabley, tablez);
+    CadModel tt(table, table_paint, 1.0);
+    m_cad->add(tt, tablex / 2.0 - 1.5, -2.0 - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
+
+#ifdef NEVERMORE
     BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
     BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);
     BrickShape half_brick(dimw, dimh, dimw, dimb);
-    CubeShape table(tablex, tabley, tablez);
 
     m_cad = new CadModel();
 
@@ -71,7 +79,6 @@ Thingus::Thingus()
     CadModel tf(front_brick, red_paint, 0.0);
     CadModel ts(side_brick, red_paint, 0.0);
     CadModel th(half_brick, red_paint, 0.0);
-    CadModel tt(table, table_paint, 1.0);
     float y_offset = -2.0;
     float h = y_offset;
 
@@ -141,7 +148,7 @@ Thingus::Thingus()
     m_cad->add(tf, 0.0, h, 0.0);
     m_cad->add(tf, 2.0, h, 0.0);
     m_cad->add(tf, 4.0, h, 0.0);
-    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
+#endif
 
     initCubeGeometry();
 }

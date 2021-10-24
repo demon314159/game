@@ -7,6 +7,7 @@
 #include "cube_shape.h"
 #include "brick_shape.h"
 #include "window_model.h"
+#include "bounding_box.h"
 
 #include "elements.h"
 #include "document.h"
@@ -26,10 +27,6 @@ Thingus::Thingus()
 
     vertexBuf.create();
 
-    float tablex = 9.0 * Element::dimw;
-    float tabley = Element::dimh / 20.0;
-    float tablez = 7.0 * Element::dimw;
-    PaintCan table_paint(0.658, 1.0, 1.0);
 
     QString file_name = "house.txt";
     Document doc;
@@ -45,11 +42,19 @@ Thingus::Thingus()
 
     printf("house has %d facets\n", house.facets());
 
+// this step should be removed so there is just one model built, the view should handle this job
     m_cad = new CadModel(house, -2.0, -2.0, 0.0);
+    BoundingBox bb = m_cad->bounding_box();
+    printf("bb (%f, %f, %f) to (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
+
+    float tablex = bb.vmax.v1 - bb.vmin.v1 + Element::dimw;
+    float tabley = Element::dimh / 20.0;
+    float tablez = bb.vmax.v3 - bb.vmin.v3 + Element::dimw;
+    PaintCan table_paint(0.658, 1.0, 1.0);
 
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
-    m_cad->add(tt, tablex / 2.0 - 3.5, -2.0 - Element::dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
+    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw / 2.0, bb.vmin.v2, bb.vmin.v3 + tablez / 2 - Element::dimw / 2.0);
 
     initCubeGeometry();
 }

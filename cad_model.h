@@ -8,6 +8,7 @@
 #include <QMatrix4x4>
 #include "float3.h"
 #include "facet.h"
+#include "bounding_box.h"
 #include "int3.h"
 #include "vrml_interface.h"
 #include "stl_interface.h"
@@ -37,7 +38,7 @@ public:
     float3 facet_v3(int facet_ix) const;
     float3 facet_color(int facet_ix) const;
     float3 facet_normal(int facet_ix) const;
-    float3 translate(const float3& v, const float3& offset) const;
+    BoundingBox bounding_box() const;
 
 protected:
     void rotate_vertex(float3& vertex, const QMatrix4x4& matrix);
@@ -45,6 +46,7 @@ protected:
 private:
     int m_facet_count;
     facet* m_facet;
+    float3 translate(const float3& v, const float3& offset) const;
 };
 
 #endif // _CAD_MODEL_H_

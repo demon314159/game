@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
+#include "elements.h"
 #include "cad_model.h"
 
 class Thingus : protected QOpenGLFunctions

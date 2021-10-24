@@ -26,12 +26,9 @@ Thingus::Thingus()
 
     vertexBuf.create();
 
-    float dimw = 1.0;
-    float dimh = 2.0 / 3.0;
-
-    float tablex = 9.0 * dimw;
-    float tabley = dimh / 20.0;
-    float tablez = 7.0 * dimw;
+    float tablex = 9.0 * Element::dimw;
+    float tabley = Element::dimh / 20.0;
+    float tablez = 7.0 * Element::dimw;
     PaintCan table_paint(0.658, 1.0, 1.0);
 
     QString file_name = "house.txt";
@@ -48,95 +45,11 @@ Thingus::Thingus()
 
     printf("house has %d facets\n", house.facets());
 
-    m_cad = new CadModel(house, 0.0, -2.0, 0.0);
+    m_cad = new CadModel(house, -2.0, -2.0, 0.0);
 
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
-    m_cad->add(tt, tablex / 2.0 - 1.5, -2.0 - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
-
-#ifdef NEVERMORE
-    BrickShape front_brick(2.0 * dimw, dimh, dimw, dimb);
-    BrickShape side_brick(dimw, dimh, 2.0 * dimw, dimb);
-    BrickShape half_brick(dimw, dimh, dimw, dimb);
-
-    m_cad = new CadModel();
-
-    WindowModel ww(3.0 * dimw, 4.0 * dimw, dimw, dimb, 1, 2, white_paint, 0.0);
-    m_cad->add(ww, dimw * 1.5, dimh * 1.5, 0.0);
-
-    CadModel tf(front_brick, red_paint, 0.0);
-    CadModel ts(side_brick, red_paint, 0.0);
-    CadModel th(half_brick, red_paint, 0.0);
-    float y_offset = -2.0;
-    float h = y_offset;
-
-    m_cad->add(th, -1.5, h, -4.0);
-    m_cad->add(ts, -1.5, h, -2.5);
-    m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(tf, 0.0, h, 0.0);
-    m_cad->add(tf, 2.0, h, 0.0);
-    m_cad->add(tf, 4.0, h, 0.0);
-
-    h = y_offset + 2.0 / 3.0;
-    m_cad->add(ts, -1.5, h, -3.5);
-    m_cad->add(ts, -1.5, h, -1.5);
-    m_cad->add(tf, -1.0, h, 0.0);
-    m_cad->add(tf, 1.0, h, 0.0);
-    m_cad->add(tf, 3.0, h, 0.0);
-    m_cad->add(th, 4.5, h, 0.0);
-
-    h = y_offset + 4.0 / 3.0;
-    m_cad->add(th, -1.5, h, -4.0);
-    m_cad->add(ts, -1.5, h, -2.5);
-    m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(th, -0.5, h, 0.0);
-    m_cad->add(tf, 4.0, h, 0.0);
-
-    h = y_offset + 6.0 / 3.0;
-    m_cad->add(ts, -1.5, h, -3.5);
-    m_cad->add(ts, -1.5, h, -1.5);
-    m_cad->add(tf, -1.0, h, 0.0);
-    m_cad->add(th, 3.5, h, 0.0);
-    m_cad->add(th, 4.5, h, 0.0);
-
-    h = y_offset + 8.0 / 3.0;
-    m_cad->add(th, -1.5, h, -4.0);
-    m_cad->add(ts, -1.5, h, -2.5);
-    m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(th, -0.5, h, 0.0);
-    m_cad->add(tf, 4.0, h, 0.0);
-    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
-
-    h = y_offset + 10.0 / 3.0;
-    m_cad->add(ts, -1.5, h, -3.5);
-    m_cad->add(ts, -1.5, h, -1.5);
-    m_cad->add(tf, -1.0, h, 0.0);
-    m_cad->add(th, 3.5, h, 0.0);
-    m_cad->add(th, 4.5, h, 0.0);
-
-    h = y_offset + 12.0 / 3.0;
-    m_cad->add(th, -1.5, h, -4.0);
-    m_cad->add(ts, -1.5, h, -2.5);
-    m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(th, -0.5, h, 0.0);
-    m_cad->add(tf, 4.0, h, 0.0);
-    m_cad->add(tt, tablex / 2.0 - 3.0, y_offset - dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
-
-    h = y_offset + 14.0 / 3.0;
-    m_cad->add(ts, -1.5, h, -3.5);
-    m_cad->add(ts, -1.5, h, -1.5);
-    m_cad->add(tf, -1.0, h, 0.0);
-    m_cad->add(th, 3.5, h, 0.0);
-    m_cad->add(th, 4.5, h, 0.0);
-
-    h = y_offset + 16.0 / 3.0;
-    m_cad->add(th, -1.5, h, -4.0);
-    m_cad->add(ts, -1.5, h, -2.5);
-    m_cad->add(ts, -1.5, h, -0.5);
-    m_cad->add(tf, 0.0, h, 0.0);
-    m_cad->add(tf, 2.0, h, 0.0);
-    m_cad->add(tf, 4.0, h, 0.0);
-#endif
+    m_cad->add(tt, tablex / 2.0 - 3.5, -2.0 - Element::dimh / 2.0 - tabley / 2.0, 1.5 - tablez / 2.0);
 
     initCubeGeometry();
 }

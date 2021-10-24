@@ -24,38 +24,29 @@ Thingus::Thingus()
     : m_vertices(0)
 {
     initializeOpenGLFunctions();
-
     vertexBuf.create();
-
 
     QString file_name = "house.txt";
     Document doc;
-
     if (!doc.load_from_file(file_name)) {
         printf("Error loading doc: '%s'\n", doc.error_message().toLatin1().data());
     } else {
         printf("Loaded doc\n");
     }
-
     CadModel house;
     doc.build_model(&house);
-
     printf("house has %d facets\n", house.facets());
 
 // this step should be removed so there is just one model built, the view should handle this job
     m_cad = new CadModel(house, -2.0, -2.0, 0.0);
     BoundingBox bb = m_cad->bounding_box();
-    printf("bb (%f, %f, %f) to (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
-
-    float tablex = bb.vmax.v1 - bb.vmin.v1 + Element::dimw;
+    float tablex = bb.vmax.v1 - bb.vmin.v1 + 2 * Element::dimw;
     float tabley = Element::dimh / 20.0;
-    float tablez = bb.vmax.v3 - bb.vmin.v3 + Element::dimw;
+    float tablez = bb.vmax.v3 - bb.vmin.v3 + 2 * Element::dimw;
     PaintCan table_paint(0.658, 1.0, 1.0);
-
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
-    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw / 2.0, bb.vmin.v2, bb.vmin.v3 + tablez / 2 - Element::dimw / 2.0);
-
+    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2, bb.vmin.v3 + tablez / 2 - Element::dimw);
     initCubeGeometry();
 }
 

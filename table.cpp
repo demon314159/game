@@ -46,10 +46,11 @@ void Table::initializeGL()
 
 
 
-//    glClearColor(1.0f, 0.7f, 0.7f, 1.0f); // pink
+//    glClearColor(1.0f, 0.8f, 0.8f, 1.0f); // pink
 
 
-    glClearColor(1.0f, 1.0f, 0.4f, 1.0f); // yellow
+//    glClearColor(1.0f, 1.0f, 0.4f, 1.0f); // yellow
+    glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
 
 
 
@@ -78,7 +79,7 @@ void Table::paintGL()
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
     QVector3D axis2 = {0.0, 1.0, 0.0};
     QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
-    QQuaternion my_rot = rot2 * rot1;
+    QQuaternion my_rot = rot1 * rot2;
 
     QMatrix4x4 matrix;
     matrix.translate(0.0, -0.25, -8.0);

@@ -43,7 +43,10 @@ Thingus::Thingus()
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2 * Element::dimw;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 2 * Element::dimw;
-    PaintCan table_paint(0.658, 1.0, 1.0);
+
+//    PaintCan table_paint(0.658, 1.0, 1.0);
+    PaintCan table_paint(0.4, 0.8, 1.0);
+
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
     m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2, bb.vmin.v3 + tablez / 2 - Element::dimw);

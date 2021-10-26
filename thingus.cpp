@@ -1,6 +1,7 @@
 
 #include "thingus.h"
 #include <ctype.h>
+#include <math.h>
 
 #include <QVector3D>
 #include "paint_can.h"
@@ -22,6 +23,8 @@ struct VertexData
 
 Thingus::Thingus()
     : m_vertices(0)
+    , m_rad_xz(2.0)
+    , m_center({0.0, 0.0, 0.0})
 {
     initializeOpenGLFunctions();
     vertexBuf.create();
@@ -39,17 +42,32 @@ Thingus::Thingus()
 
 // this step should be removed so there is just one model built, the view should handle this job
     m_cad = new CadModel(house, -2.0, -2.0, 0.0);
+//
+//    PaintCan ball_paint(1.0, 0.0, 0.0);
+//    m_cad = new CadModel(StlInterface("ball6.stl"), ball_paint, 0.0);
+
     BoundingBox bb = m_cad->bounding_box();
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2 * Element::dimw;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 2 * Element::dimw;
 
-//    PaintCan table_paint(0.658, 1.0, 1.0);
     PaintCan table_paint(0.4, 0.8, 1.0);
 
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
-    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2, bb.vmin.v3 + tablez / 2 - Element::dimw);
+    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - Element::dimw);
+
+    bb = m_cad->bounding_box();
+    m_rad_xz = fmax(    fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0     , fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0 );
+    m_rad_xz = fmax(    m_rad_xz    , fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
+    m_rad_xz = fmax(m_rad_xz, 2.0);
+    m_rad_xz *= 1.5;
+    m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
+    m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
+    m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
+
+    printf("bb (%f, %f, %f) to (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
+
     initCubeGeometry();
 }
 
@@ -136,4 +154,14 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices);
+}
+
+float Thingus::rad_xz() const
+{
+    return m_rad_xz;
+}
+
+float3 Thingus::center() const
+{
+    return m_center;
 }

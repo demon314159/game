@@ -13,6 +13,8 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     , m_ms_at_start(QTime::currentTime().msecsSinceStartOfDay())
     , m_xrot(0.0)
     , m_yrot(0.0)
+    , m_aspect(1.0)
+    , m_camz(8.0)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_thingy(NULL)
@@ -60,15 +62,24 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus();
+    resize_calc();
     timer.start(33, this);
 }
 
+void Table::resize_calc()
+{
+    float znear = m_camz;
+    float zfar = (m_thingy == NULL) ? m_camz * 4.0 : m_camz + 2.0 * m_thingy->rad_xz();
+    float fov = 45.0;
+    m_projection.setToIdentity();
+    m_projection.perspective(fov, m_aspect, znear, zfar);
+}
+
+
 void Table::resizeGL(int w, int h)
 {
-    qreal aspect = qreal(w) / qreal(h ? h : 1);
-    const qreal zNear = 2.5, zFar = 15.0, fov = 45.0;
-    m_projection.setToIdentity();
-    m_projection.perspective(fov, aspect, zNear, zFar);
+    m_aspect = qreal(w) / qreal(h ? h : 1);
+    resize_calc();
 }
 
 void Table::paintGL()
@@ -82,8 +93,11 @@ void Table::paintGL()
     QQuaternion my_rot = rot1 * rot2;
 
     QMatrix4x4 matrix;
-    matrix.translate(0.0, -0.25, -8.0);
+    float rad_xz = (m_thingy == NULL) ? 2.0 : m_thingy->rad_xz();
+    float3 center = (m_thingy == NULL) ? float3{0.0, 0.0, 0.0} : m_thingy->center();
+    matrix.translate(0.0, 0.0, -m_camz - rad_xz);
     matrix.rotate(my_rot);
+    matrix.translate(-center.v1, -center.v2, -center.v3);
     // Set modelview-projection matrix
     m_mvp_matrix = m_projection * matrix;
     m_rot_matrix = matrix;
@@ -117,16 +131,48 @@ void Table::keyPressEvent(QKeyEvent* e)
 {
     unsigned int a = e->nativeScanCode();
     if (a == 0x6f) { // up
-        m_xrot -= 10.0;
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_xrot -= 1.0;
+        else
+            m_xrot -= 10.0;
         update();
     } else if (a == 0x74) { // down
-        m_xrot += 10.0;
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_xrot += 1.0;
+        else
+            m_xrot += 10.0;
         update();
     } else if (a == 0x71) { // left
-        m_yrot -= 10.0;
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_yrot -= 1.0;
+        else
+            m_yrot -= 10.0;
         update();
     } else if (a == 0x72) { // right
-        m_yrot += 10.0;
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_yrot += 1.0;
+        else
+            m_yrot += 10.0;
+        update();
+    } else if (a == 0x1f) { // i or I
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_camz *= (29.0 / 30.0);
+        else
+            m_camz *= (2.0 / 3.0);
+        resize_calc();
+        update();
+    } else if (a == 0x20) { // o or O
+        if (e->modifiers() & Qt::ShiftModifier)
+            m_camz *= (30.0 / 29.0);
+        else
+           m_camz *= (3.0 / 2.0);
+        resize_calc();
+        update();
+    } else if (a == 0x2b) { // h or H
+        m_camz = 8.0;
+        m_xrot = 0.0;
+        m_yrot = 0.0;
+        resize_calc();
         update();
     }
     QWidget::keyPressEvent(e);

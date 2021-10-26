@@ -32,10 +32,13 @@ protected:
     void initShaders();
     void keyPressEvent(QKeyEvent* e) override;
     void keyReleaseEvent(QKeyEvent* e) override;
+    void resize_calc();
 private:
     int m_ms_at_start;
     float m_xrot;
     float m_yrot;
+    qreal m_aspect;
+    float m_camz;
 
     int m_width;
     int m_height;

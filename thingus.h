@@ -15,14 +15,14 @@ public:
     virtual ~Thingus();
 
     void drawCubeGeometry(QOpenGLShaderProgram *program);
-    float rad_xz() const;
+    float radius() const;
     float3 center() const;
 
 private:
     CadModel *m_cad = nullptr;
     void initCubeGeometry();
     int m_vertices;
-    float m_rad_xz;
+    float m_radius;
     float3 m_center;
     QOpenGLBuffer vertexBuf;
 };

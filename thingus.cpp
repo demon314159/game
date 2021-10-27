@@ -23,7 +23,7 @@ struct VertexData
 
 Thingus::Thingus()
     : m_vertices(0)
-    , m_rad_xz(2.0)
+    , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
 {
     initializeOpenGLFunctions();
@@ -58,16 +58,13 @@ Thingus::Thingus()
     m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - Element::dimw);
 
     bb = m_cad->bounding_box();
-    m_rad_xz = fmax(    fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0     , fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0 );
-    m_rad_xz = fmax(    m_rad_xz    , fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
-    m_rad_xz = fmax(m_rad_xz, 2.0);
-    m_rad_xz *= 1.5;
+    m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
+    m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
+    m_radius = fmax(m_radius, 2.0);
+    m_radius *= 1.5;
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
-
-    printf("bb (%f, %f, %f) to (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
-
     initCubeGeometry();
 }
 
@@ -156,9 +153,9 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawArrays(GL_TRIANGLES, 0, m_vertices);
 }
 
-float Thingus::rad_xz() const
+float Thingus::radius() const
 {
-    return m_rad_xz;
+    return m_radius;
 }
 
 float3 Thingus::center() const

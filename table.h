@@ -38,6 +38,7 @@ private:
     float m_xrot;
     float m_yrot;
     qreal m_aspect;
+    float m_fov;
     float m_camz;
 
     int m_width;

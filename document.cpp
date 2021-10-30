@@ -159,8 +159,26 @@ bool Document::load_from_file(QString& file_name)
             if (!expect(ti, ")"))
                 return false;
             add_element(new WindowElement(x, y, z, o, w, h, hg, vg));
+        } else if (ename == "Ledge") {
+            float x, y, z;
+            int o, w;
+            if (!expect(ti, "("))
+                return false;
+            if (!parse_float3(ti, x, y, z))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, o))
+                return false;
+            if (!expect(ti, ","))
+                return false;
+            if (!parse_integer(ti, w))
+                return false;
+            if (!expect(ti, ")"))
+                return false;
+            add_element(new LedgeElement(x, y, z, o, w));
         } else {
-            m_error_message = QString("Expecing 'HalfBrick' or 'Brick' or 'Window' but found '%1'").arg(ename);
+            m_error_message = QString("Expecing 'HalfBrick' or 'Brick' or 'Window' or 'Ledge' but found '%1'").arg(ename);
             m_error_flag = true;
             return false;
         }

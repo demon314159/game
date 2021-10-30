@@ -1,5 +1,6 @@
 
 #include "elements.h"
+#include "brick_shape.h"
 #include "window_model.h"
 #include <stdio.h>
 
@@ -34,6 +35,7 @@ CadModel& Element::get_model()
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
+PaintCan Element::gray_paint(0.8, 0.8, 0.8);
 CadModel Element::m_default_model(BrickShape(Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
 
 CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0 * Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
@@ -103,6 +105,34 @@ void WindowElement::save_to_file(QDataStream& ds) const
 }
 
 CadModel& WindowElement::get_model()
+{
+    return m_model;
+}
+
+LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, int width)
+    : Element({xpos, ypos, zpos})
+    , m_orientation(orientation)
+    , m_width(width)
+    , m_model(BrickShape(width * dimw, dimh, dimw, dimb), gray_paint, 0.0)
+{
+    if (orientation == 1)
+        m_model.rotate_ay(90.0);
+    else if (orientation == 2)
+        m_model.rotate_ay(180.0);
+    else if (orientation == 3)
+        m_model.rotate_ay(270.0);
+}
+
+void LedgeElement::save_to_file(QDataStream& ds) const
+{
+    QString msg = "Ledge(";
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+    Element::save_to_file(ds);
+    msg = QString(", %1, %2)\n").arg(m_orientation).arg(m_width);
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+CadModel& LedgeElement::get_model()
 {
     return m_model;
 }

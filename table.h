@@ -6,6 +6,7 @@
 
 #include "thingus.h"
 #include "float3.h"
+#include <document.h>
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -14,6 +15,7 @@
 #include <QVector2D>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
+#include <QMouseEvent>
 
 class Table: public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -33,7 +35,10 @@ protected:
     void keyPressEvent(QKeyEvent* e) override;
     void keyReleaseEvent(QKeyEvent* e) override;
     void resize_calc();
+    void mousePressEvent(QMouseEvent* e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
 private:
+    Document m_doc;
     int m_ms_at_start;
     float m_xrot;
     float m_yrot;

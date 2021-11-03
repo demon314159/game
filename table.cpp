@@ -28,6 +28,12 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     setMinimumHeight(337);
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
+    QString file_name = "house.txt";
+    if (!m_doc.load_from_file(file_name)) {
+        printf("Error loading doc: '%s'\n", m_doc.error_message().toLatin1().data());
+    } else {
+        printf("Loaded doc\n");
+    }
 }
 
 Table::~Table()
@@ -62,7 +68,7 @@ void Table::initializeGL()
     initShaders();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    m_thingy = new Thingus();
+    m_thingy = new Thingus(m_doc);
     resize_calc();
     timer.start(33, this);
 }
@@ -167,7 +173,7 @@ void Table::keyPressEvent(QKeyEvent* e)
         resize_calc();
         update();
     }
-    QWidget::keyPressEvent(e);
+    QOpenGLWidget::keyPressEvent(e);
 }
 
 void Table::keyReleaseEvent(QKeyEvent* e)
@@ -176,10 +182,30 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     if (a == 0x32) {
     } else if (a == 0x3e) {
     }
-    QWidget::keyReleaseEvent(e);
+    QOpenGLWidget::keyReleaseEvent(e);
 }
 
+void Table::mousePressEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton) {
+        printf("Left button, x = %d, y = %d\n", e->pos().x(), e->pos().y());
+        for (int i = 0; i < m_doc.elements(); i++) {
+            Element* e = m_doc.get_element(i);
 
+        }
+
+    } else if (e->button() == Qt::RightButton) {
+    }
+    QOpenGLWidget::mousePressEvent(e);
+}
+
+void Table::mouseReleaseEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton) {
+    } else if (e->button() == Qt::RightButton) {
+    }
+    QOpenGLWidget::mouseReleaseEvent(e);
+}
 
 
 

@@ -11,7 +11,6 @@
 #include "bounding_box.h"
 
 #include "elements.h"
-#include "document.h"
 
 struct VertexData
 {
@@ -21,7 +20,7 @@ struct VertexData
     float animation_id;
 };
 
-Thingus::Thingus()
+Thingus::Thingus(Document& doc)
     : m_vertices(0)
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -29,13 +28,6 @@ Thingus::Thingus()
     initializeOpenGLFunctions();
     vertexBuf.create();
 
-    QString file_name = "house.txt";
-    Document doc;
-    if (!doc.load_from_file(file_name)) {
-        printf("Error loading doc: '%s'\n", doc.error_message().toLatin1().data());
-    } else {
-        printf("Loaded doc\n");
-    }
     CadModel house;
     doc.build_model(&house);
     printf("house has %d facets\n", house.facets());

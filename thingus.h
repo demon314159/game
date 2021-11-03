@@ -7,11 +7,12 @@
 #include <QOpenGLBuffer>
 #include "cad_model.h"
 #include "float3.h"
+#include "document.h"
 
 class Thingus : protected QOpenGLFunctions
 {
 public:
-    Thingus();
+    Thingus(Document& doc);
     virtual ~Thingus();
 
     void drawCubeGeometry(QOpenGLShaderProgram *program);

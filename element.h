@@ -29,8 +29,10 @@ public:
     virtual ~Element();
     float3 get_pos() const;
     virtual void save_to_file(QDataStream& ds) const;
-    virtual CadModel& get_model();
-    virtual Face get_top_face() const;
+    virtual CadModel& model();
+    virtual Face top_face() const;
+    virtual int sub_face_count() const;
+    virtual Face top_sub_face(int ix) const;
 
 private:
     float3 m_pos;
@@ -51,8 +53,10 @@ public:
     BrickElement(float xpos, float ypos, float zpos, int orientation);
     BrickElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& get_model() override;
-    Face get_top_face() const override;
+    CadModel& model() override;
+    Face top_face() const override;
+    int sub_face_count() const override;
+    Face top_sub_face(int ix) const override;
 
 private:
     int m_orientation;
@@ -69,8 +73,10 @@ public:
                   int width, int height, int hgrilles, int vgrilles);
     WindowElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& get_model() override;
-    Face get_top_face() const override;
+    CadModel& model() override;
+    Face top_face() const override;
+    int sub_face_count() const override;
+    Face top_sub_face(int ix) const override;
 
 private:
     int m_orientation;
@@ -87,8 +93,10 @@ public:
     LedgeElement(float xpos, float ypos, float zpos, int orientation, int width);
     LedgeElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& get_model() override;
-    Face get_top_face() const override;
+    CadModel& model() override;
+    Face top_face() const override;
+    int sub_face_count() const override;
+    Face top_sub_face(int ix) const override;
 
 private:
     int m_orientation;

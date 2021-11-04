@@ -28,12 +28,12 @@ float3 Element::get_pos() const
     return pos;
 }
 
-CadModel& Element::get_model()
+CadModel& Element::model()
 {
     return m_default_model;
 }
 
-Face Element::get_top_face() const
+Face Element::top_face() const
 {
     Face f;
     f.v1.v1 = (m_pos.v1 - 0.5) * dimw;
@@ -49,6 +49,17 @@ Face Element::get_top_face() const
     f.v4.v2 = (m_pos.v2 + 0.5) * dimh;
     f.v4.v3 = (m_pos.v3 - 0.5) * dimw;
     return f;
+}
+
+int Element::sub_face_count() const
+{
+    return 1;  // Default half-brick
+}
+
+Face Element::top_sub_face(int ix) const
+{
+    (void) ix;
+    return top_face();
 }
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
@@ -79,14 +90,14 @@ BrickElement::BrickElement(float xpos, float ypos, float zpos, int orientation)
 
 }
 
-CadModel& BrickElement::get_model()
+CadModel& BrickElement::model()
 {
     if (m_orientation == 0 || m_orientation == 2)
         return m_model_ns;
     return m_model_ew;
 }
 
-Face BrickElement::get_top_face() const
+Face BrickElement::top_face() const
 {
     Face f;
     float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
@@ -105,6 +116,36 @@ Face BrickElement::get_top_face() const
     f.v4.v1 = (pos.v1 + xf) * dimw;
     f.v4.v2 = (pos.v2 + yf) * dimh;
     f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
+}
+
+int BrickElement::sub_face_count() const
+{
+    return 2;  // full brick
+}
+
+Face BrickElement::top_sub_face(int ix) const
+{
+    Face f;
+    float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
+    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
+    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
+
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
+    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
     return f;
 }
 
@@ -144,12 +185,12 @@ void WindowElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-CadModel& WindowElement::get_model()
+CadModel& WindowElement::model()
 {
     return m_model;
 }
 
-Face WindowElement::get_top_face() const
+Face WindowElement::top_face() const
 {
     Face f;
 
@@ -169,6 +210,36 @@ Face WindowElement::get_top_face() const
     f.v4.v1 = (pos.v1 + xf) * dimw;
     f.v4.v2 = (pos.v2 + yf) * dimh;
     f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
+}
+
+int WindowElement::sub_face_count() const
+{
+    return m_width;
+}
+
+Face WindowElement::top_sub_face(int ix) const
+{
+    Face f;
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = m_height / 2.0;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
+    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
+
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
+    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
     return f;
 }
 
@@ -195,12 +266,12 @@ void LedgeElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-CadModel& LedgeElement::get_model()
+CadModel& LedgeElement::model()
 {
     return m_model;
 }
 
-Face LedgeElement::get_top_face() const
+Face LedgeElement::top_face() const
 {
     Face f;
 
@@ -220,6 +291,36 @@ Face LedgeElement::get_top_face() const
     f.v4.v1 = (pos.v1 + xf) * dimw;
     f.v4.v2 = (pos.v2 + yf) * dimh;
     f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
+}
+
+int LedgeElement::sub_face_count() const
+{
+    return m_width;
+}
+
+Face LedgeElement::top_sub_face(int ix) const
+{
+    Face f;
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
+    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
+
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
+    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
     return f;
 }
 

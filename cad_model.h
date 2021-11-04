@@ -14,6 +14,7 @@
 #include "stl_interface.h"
 #include "paint_can.h"
 #include "shape.h"
+#include "face.h"
 
 class CadModel
 {

@@ -9,13 +9,14 @@ HEADERS      += game.h \
                 int3.h \
                 float3.h \
                 facet.h \
+                face.h \
                 bounding_box.h \
                 shape.h \
                 table.h \
                 paint_can.h \
                 cube_shape.h \
                 brick_shape.h \
-                elements.h \
+                element.h \
                 document.h \
                 bin_interface.h \
                 char_interface.h \
@@ -33,7 +34,7 @@ SOURCES      += main.cpp \
                 paint_can.cpp \
                 cube_shape.cpp \
                 brick_shape.cpp \
-                elements.cpp \
+                element.cpp \
                 document.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

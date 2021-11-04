@@ -379,3 +379,5 @@ BoundingBox CadModel::bounding_box() const
     }
     return bb;
 }
+
+

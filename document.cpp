@@ -270,6 +270,6 @@ void Document::build_model(CadModel* model)
         Element* e = m_element_ptr[i];
         float3 pos = e->get_pos();
         CadModel cm(e->get_model());
-        model->add(cm, pos.v1, pos.v2, pos.v3);
+        model->add(cm, pos.v1 * Element::dimw, pos.v2 * Element::dimh, pos.v3 * Element::dimw);
     }
 }

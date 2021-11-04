@@ -1,5 +1,5 @@
 
-#include "elements.h"
+#include "element.h"
 #include "brick_shape.h"
 #include "window_model.h"
 #include <stdio.h>
@@ -22,15 +22,33 @@ void Element::save_to_file(QDataStream& ds) const
 float3 Element::get_pos() const
 {
     float3 pos;
-    pos.v1 = m_pos.v1 * dimw;
-    pos.v2 = m_pos.v2 * dimh;
-    pos.v3 = m_pos.v3 * dimw;
+    pos.v1 = m_pos.v1;
+    pos.v2 = m_pos.v2;
+    pos.v3 = m_pos.v3;
     return pos;
 }
 
 CadModel& Element::get_model()
 {
     return m_default_model;
+}
+
+Face Element::get_top_face() const
+{
+    Face f;
+    f.v1.v1 = (m_pos.v1 - 0.5) * dimw;
+    f.v1.v2 = (m_pos.v2 + 0.5) * dimh;
+    f.v1.v3 = (m_pos.v3 - 0.5) * dimw;
+    f.v2.v1 = (m_pos.v1 - 0.5) * dimw;
+    f.v2.v2 = (m_pos.v2 + 0.5) * dimh;
+    f.v2.v3 = (m_pos.v3 + 0.5) * dimw;
+    f.v3.v1 = (m_pos.v1 + 0.5) * dimw;
+    f.v3.v2 = (m_pos.v2 + 0.5) * dimh;
+    f.v3.v3 = (m_pos.v3 + 0.5) * dimw;
+    f.v4.v1 = (m_pos.v1 + 0.5) * dimw;
+    f.v4.v2 = (m_pos.v2 + 0.5) * dimh;
+    f.v4.v3 = (m_pos.v3 - 0.5) * dimw;
+    return f;
 }
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
@@ -66,6 +84,28 @@ CadModel& BrickElement::get_model()
     if (m_orientation == 0 || m_orientation == 2)
         return m_model_ns;
     return m_model_ew;
+}
+
+Face BrickElement::get_top_face() const
+{
+    Face f;
+    float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf) * dimw;
+    f.v2.v1 = (pos.v1 - xf) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 + zf) * dimw;
+    f.v3.v1 = (pos.v1 + xf) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 + zf) * dimw;
+    f.v4.v1 = (pos.v1 + xf) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
 }
 
 void BrickElement::save_to_file(QDataStream& ds) const
@@ -109,6 +149,29 @@ CadModel& WindowElement::get_model()
     return m_model;
 }
 
+Face WindowElement::get_top_face() const
+{
+    Face f;
+
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = m_height / 2.0;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf) * dimw;
+    f.v2.v1 = (pos.v1 - xf) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 + zf) * dimw;
+    f.v3.v1 = (pos.v1 + xf) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 + zf) * dimw;
+    f.v4.v1 = (pos.v1 + xf) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
+}
+
 LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, int width)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
@@ -137,5 +200,26 @@ CadModel& LedgeElement::get_model()
     return m_model;
 }
 
+Face LedgeElement::get_top_face() const
+{
+    Face f;
 
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    float3 pos = get_pos();
+    f.v1.v1 = (pos.v1 - xf) * dimw;
+    f.v1.v2 = (pos.v2 + yf) * dimh;
+    f.v1.v3 = (pos.v3 - zf) * dimw;
+    f.v2.v1 = (pos.v1 - xf) * dimw;
+    f.v2.v2 = (pos.v2 + yf) * dimh;
+    f.v2.v3 = (pos.v3 + zf) * dimw;
+    f.v3.v1 = (pos.v1 + xf) * dimw;
+    f.v3.v2 = (pos.v2 + yf) * dimh;
+    f.v3.v3 = (pos.v3 + zf) * dimw;
+    f.v4.v1 = (pos.v1 + xf) * dimw;
+    f.v4.v2 = (pos.v2 + yf) * dimh;
+    f.v4.v3 = (pos.v3 - zf) * dimw;
+    return f;
+}
 

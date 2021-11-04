@@ -10,7 +10,7 @@
 #include "window_model.h"
 #include "bounding_box.h"
 
-#include "elements.h"
+#include "element.h"
 
 struct VertexData
 {
@@ -33,7 +33,8 @@ Thingus::Thingus(Document& doc)
     printf("house has %d facets\n", house.facets());
 
 // this step should be removed so there is just one model built, the view should handle this job
-    m_cad = new CadModel(house, -2.0, -2.0, 0.0);
+//    m_cad = new CadModel(house, -2.0, -2.0, 0.0);
+    m_cad = new CadModel(house, 0.0, 0.0, 0.0);
 //
 //    PaintCan ball_paint(1.0, 0.0, 0.0);
 //    m_cad = new CadModel(StlInterface("ball6.stl"), ball_paint, 0.0);

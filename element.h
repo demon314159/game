@@ -3,6 +3,7 @@
 #define _ELEMENTS_H_
 
 #include "float3.h"
+#include "face.h"
 #include "brick_shape.h"
 #include "paint_can.h"
 #include "cad_model.h"
@@ -26,13 +27,13 @@ public:
     Element(float3 pos);
     Element() = delete;
     virtual ~Element();
-    virtual void save_to_file(QDataStream& ds) const;
     float3 get_pos() const;
+    virtual void save_to_file(QDataStream& ds) const;
     virtual CadModel& get_model();
+    virtual Face get_top_face() const;
 
 private:
     float3 m_pos;
-//    CadModel m_default_model = CadModel(BrickShape(dimw, dimh, dimw, dimb), red_paint, 0.0);
     static CadModel m_default_model;
 };
 
@@ -51,6 +52,7 @@ public:
     BrickElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     CadModel& get_model() override;
+    Face get_top_face() const override;
 
 private:
     int m_orientation;
@@ -68,6 +70,7 @@ public:
     WindowElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     CadModel& get_model() override;
+    Face get_top_face() const override;
 
 private:
     int m_orientation;
@@ -85,6 +88,7 @@ public:
     LedgeElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     CadModel& get_model() override;
+    Face get_top_face() const override;
 
 private:
     int m_orientation;

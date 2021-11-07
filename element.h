@@ -30,9 +30,12 @@ public:
     float3 get_pos() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual CadModel& model();
+    virtual float top_level() const;
     virtual Face top_face() const;
     virtual int sub_face_count() const;
     virtual Face top_sub_face(int ix) const;
+    Face gen_face(float xf, float yf, float zf) const;
+    Face gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
 
 private:
     float3 m_pos;
@@ -74,6 +77,7 @@ public:
     WindowElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     CadModel& model() override;
+    float top_level() const override;
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;

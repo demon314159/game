@@ -221,7 +221,7 @@ void Table::select_brick(int x, int y)
         Element* e = m_doc.get_element(i);
         Face tf = e->top_face();
         if (inside_face(tf, x, y)) {
-            printf("   Inside Element #%d\n", i);
+            printf("   Inside Element #%d  level = %f\n", i, e->top_level());
             for (int j = 0; j < e->sub_face_count(); j++) {
                 Face sf = e->top_sub_face(j);
                 if (inside_face(sf, x, y)) {

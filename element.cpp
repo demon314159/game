@@ -33,22 +33,50 @@ CadModel& Element::model()
     return m_default_model;
 }
 
-Face Element::top_face() const
+Face Element::gen_face(float xf, float yf, float zf) const
 {
     Face f;
-    f.v1.v1 = (m_pos.v1 - 0.5) * dimw;
-    f.v1.v2 = (m_pos.v2 + 0.5) * dimh;
-    f.v1.v3 = (m_pos.v3 - 0.5) * dimw;
-    f.v2.v1 = (m_pos.v1 - 0.5) * dimw;
-    f.v2.v2 = (m_pos.v2 + 0.5) * dimh;
-    f.v2.v3 = (m_pos.v3 + 0.5) * dimw;
-    f.v3.v1 = (m_pos.v1 + 0.5) * dimw;
-    f.v3.v2 = (m_pos.v2 + 0.5) * dimh;
-    f.v3.v3 = (m_pos.v3 + 0.5) * dimw;
-    f.v4.v1 = (m_pos.v1 + 0.5) * dimw;
-    f.v4.v2 = (m_pos.v2 + 0.5) * dimh;
-    f.v4.v3 = (m_pos.v3 - 0.5) * dimw;
+    f.v1.v1 = (m_pos.v1 - xf) * dimw;
+    f.v1.v2 = (m_pos.v2 + yf) * dimh;
+    f.v1.v3 = (m_pos.v3 - zf) * dimw;
+    f.v2.v1 = (m_pos.v1 - xf) * dimw;
+    f.v2.v2 = (m_pos.v2 + yf) * dimh;
+    f.v2.v3 = (m_pos.v3 + zf) * dimw;
+    f.v3.v1 = (m_pos.v1 + xf) * dimw;
+    f.v3.v2 = (m_pos.v2 + yf) * dimh;
+    f.v3.v3 = (m_pos.v3 + zf) * dimw;
+    f.v4.v1 = (m_pos.v1 + xf) * dimw;
+    f.v4.v2 = (m_pos.v2 + yf) * dimh;
+    f.v4.v3 = (m_pos.v3 - zf) * dimw;
     return f;
+}
+
+Face Element::gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const
+{
+    Face f;
+    f.v1.v1 = (m_pos.v1 - xf + xoff) * dimw;
+    f.v1.v2 = (m_pos.v2 + yf) * dimh;
+    f.v1.v3 = (m_pos.v3 - zf + zoff) * dimw;
+    f.v2.v1 = (m_pos.v1 - xf + xoff) * dimw;
+    f.v2.v2 = (m_pos.v2 + yf) * dimh;
+    f.v2.v3 = (m_pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v3.v1 = (m_pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v3.v2 = (m_pos.v2 + yf) * dimh;
+    f.v3.v3 = (m_pos.v3 - zf + zoff + 1.0) * dimw;
+    f.v4.v1 = (m_pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v4.v2 = (m_pos.v2 + yf) * dimh;
+    f.v4.v3 = (m_pos.v3 - zf + zoff) * dimw;
+    return f;
+}
+
+float Element::top_level() const
+{
+    return m_pos.v2 + 0.5;
+}
+
+Face Element::top_face() const
+{
+    return gen_face(0.5, 0.5, 0.5);
 }
 
 int Element::sub_face_count() const
@@ -99,24 +127,10 @@ CadModel& BrickElement::model()
 
 Face BrickElement::top_face() const
 {
-    Face f;
     float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf) * dimw;
-    f.v2.v1 = (pos.v1 - xf) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 + zf) * dimw;
-    f.v3.v1 = (pos.v1 + xf) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 + zf) * dimw;
-    f.v4.v1 = (pos.v1 + xf) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf) * dimw;
-    return f;
+    return gen_face(xf, yf, zf);
 }
 
 int BrickElement::sub_face_count() const
@@ -126,27 +140,12 @@ int BrickElement::sub_face_count() const
 
 Face BrickElement::top_sub_face(int ix) const
 {
-    Face f;
     float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
-    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
-    return f;
+    return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 void BrickElement::save_to_file(QDataStream& ds) const
@@ -190,27 +189,18 @@ CadModel& WindowElement::model()
     return m_model;
 }
 
+float WindowElement::top_level() const
+{
+    float3 pos = get_pos();
+    return pos.v2 + m_height / 2.0;
+}
+
 Face WindowElement::top_face() const
 {
-    Face f;
-
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = m_height / 2.0;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf) * dimw;
-    f.v2.v1 = (pos.v1 - xf) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 + zf) * dimw;
-    f.v3.v1 = (pos.v1 + xf) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 + zf) * dimw;
-    f.v4.v1 = (pos.v1 + xf) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf) * dimw;
-    return f;
+    return gen_face(xf, yf, zf);
 }
 
 int WindowElement::sub_face_count() const
@@ -220,27 +210,12 @@ int WindowElement::sub_face_count() const
 
 Face WindowElement::top_sub_face(int ix) const
 {
-    Face f;
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = m_height / 2.0;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
-    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
-    return f;
+    return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, int width)
@@ -273,25 +248,10 @@ CadModel& LedgeElement::model()
 
 Face LedgeElement::top_face() const
 {
-    Face f;
-
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf) * dimw;
-    f.v2.v1 = (pos.v1 - xf) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 + zf) * dimw;
-    f.v3.v1 = (pos.v1 + xf) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 + zf) * dimw;
-    f.v4.v1 = (pos.v1 + xf) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf) * dimw;
-    return f;
+    return gen_face(xf, yf, zf);
 }
 
 int LedgeElement::sub_face_count() const
@@ -301,26 +261,11 @@ int LedgeElement::sub_face_count() const
 
 Face LedgeElement::top_sub_face(int ix) const
 {
-    Face f;
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-
-    float3 pos = get_pos();
-    f.v1.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v1.v2 = (pos.v2 + yf) * dimh;
-    f.v1.v3 = (pos.v3 - zf + zoff) * dimw;
-    f.v2.v1 = (pos.v1 - xf + xoff) * dimw;
-    f.v2.v2 = (pos.v2 + yf) * dimh;
-    f.v2.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v3.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v3.v2 = (pos.v2 + yf) * dimh;
-    f.v3.v3 = (pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v4.v1 = (pos.v1 - xf + xoff + 1.0) * dimw;
-    f.v4.v2 = (pos.v2 + yf) * dimh;
-    f.v4.v3 = (pos.v3 - zf + zoff) * dimw;
-    return f;
+    return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 

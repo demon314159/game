@@ -48,24 +48,7 @@ void Table::initializeGL()
 {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-//    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-//    glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
-//
-//
-//    glClearColor(0.7f, 0.7f, 0.3f, 1.0f);
-
-
-
-//    glClearColor(1.0f, 0.8f, 0.8f, 1.0f); // pink
-
-
-//    glClearColor(1.0f, 1.0f, 0.4f, 1.0f); // yellow
     glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
-
-
-
-
-//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     initShaders();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -116,6 +99,10 @@ void Table::paintGL()
     m_rot_matrix = matrix;
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
+    // Animate marker
+    QMatrix4x4 marker_matrix;
+    marker_matrix.translate(0.0, 5.5 * 2.0 / 3.0, 0.0);
+    m_program.setUniformValue("marker_matrix", marker_matrix);
 
     // Draw cube geometry
     m_thingy->drawCubeGeometry(&m_program);

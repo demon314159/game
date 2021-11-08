@@ -28,28 +28,20 @@ Thingus::Thingus(Document& doc)
     initializeOpenGLFunctions();
     vertexBuf.create();
 
-    CadModel house;
-    doc.build_model(&house);
-    printf("house has %d facets\n", house.facets());
+    PaintCan marker_paint(0.0, 1.0, 0.0);
+    PaintCan table_paint(0.4, 0.8, 1.0);
 
-// this step should be removed so there is just one model built, the view should handle this job
-//    m_cad = new CadModel(house, -2.0, -2.0, 0.0);
-    m_cad = new CadModel(house, 0.0, 0.0, 0.0);
-//
-//    PaintCan ball_paint(1.0, 0.0, 0.0);
-//    m_cad = new CadModel(StlInterface("ball6.stl"), ball_paint, 0.0);
-
+    m_cad = new CadModel (StlInterface(QString("marker.stl")), marker_paint, 2.0);
+    doc.build_model(m_cad);
+    printf("%d facets\n", m_cad->facets());
     BoundingBox bb = m_cad->bounding_box();
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 2.0;
 
-    PaintCan table_paint(0.4, 0.8, 1.0);
-
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
     m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - 1.0);
-
     bb = m_cad->bounding_box();
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );

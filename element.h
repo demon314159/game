@@ -18,7 +18,6 @@
 class Element
 {
 public:
-    static constexpr float dimw = 1.0;
     static constexpr float dimh = 2.0 / 3.0;
     static constexpr float dimb = 0.025;
     static PaintCan red_paint;
@@ -66,8 +65,6 @@ public:
 
 private:
     int m_orientation;
-//    CadModel m_model_ns = CadModel(BrickShape(2.0 * dimw, dimh, dimw, dimb), red_paint, 0.0);
-//    CadModel m_model_ew = CadModel(BrickShape(dimw, dimh, 2.0 * dimw, dimb), red_paint, 0.0);
     static CadModel m_model_ns;
     static CadModel m_model_ew;
 };

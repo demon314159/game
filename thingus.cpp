@@ -40,15 +40,15 @@ Thingus::Thingus(Document& doc)
 //    m_cad = new CadModel(StlInterface("ball6.stl"), ball_paint, 0.0);
 
     BoundingBox bb = m_cad->bounding_box();
-    float tablex = bb.vmax.v1 - bb.vmin.v1 + 2 * Element::dimw;
+    float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
-    float tablez = bb.vmax.v3 - bb.vmin.v3 + 2 * Element::dimw;
+    float tablez = bb.vmax.v3 - bb.vmin.v3 + 2.0;
 
     PaintCan table_paint(0.4, 0.8, 1.0);
 
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, table_paint, 1.0);
-    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - Element::dimw, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - Element::dimw);
+    m_cad->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - 1.0);
 
     bb = m_cad->bounding_box();
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);

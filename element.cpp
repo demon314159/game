@@ -36,36 +36,36 @@ CadModel& Element::model()
 Face Element::gen_face(float xf, float yf, float zf) const
 {
     Face f;
-    f.v1.v1 = (m_pos.v1 - xf) * dimw;
+    f.v1.v1 = (m_pos.v1 - xf);
     f.v1.v2 = (m_pos.v2 + yf) * dimh;
-    f.v1.v3 = (m_pos.v3 - zf) * dimw;
-    f.v2.v1 = (m_pos.v1 - xf) * dimw;
+    f.v1.v3 = (m_pos.v3 - zf);
+    f.v2.v1 = (m_pos.v1 - xf);
     f.v2.v2 = (m_pos.v2 + yf) * dimh;
-    f.v2.v3 = (m_pos.v3 + zf) * dimw;
-    f.v3.v1 = (m_pos.v1 + xf) * dimw;
+    f.v2.v3 = (m_pos.v3 + zf);
+    f.v3.v1 = (m_pos.v1 + xf);
     f.v3.v2 = (m_pos.v2 + yf) * dimh;
-    f.v3.v3 = (m_pos.v3 + zf) * dimw;
-    f.v4.v1 = (m_pos.v1 + xf) * dimw;
+    f.v3.v3 = (m_pos.v3 + zf);
+    f.v4.v1 = (m_pos.v1 + xf);
     f.v4.v2 = (m_pos.v2 + yf) * dimh;
-    f.v4.v3 = (m_pos.v3 - zf) * dimw;
+    f.v4.v3 = (m_pos.v3 - zf);
     return f;
 }
 
 Face Element::gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const
 {
     Face f;
-    f.v1.v1 = (m_pos.v1 - xf + xoff) * dimw;
+    f.v1.v1 = (m_pos.v1 - xf + xoff);
     f.v1.v2 = (m_pos.v2 + yf) * dimh;
-    f.v1.v3 = (m_pos.v3 - zf + zoff) * dimw;
-    f.v2.v1 = (m_pos.v1 - xf + xoff) * dimw;
+    f.v1.v3 = (m_pos.v3 - zf + zoff);
+    f.v2.v1 = (m_pos.v1 - xf + xoff);
     f.v2.v2 = (m_pos.v2 + yf) * dimh;
-    f.v2.v3 = (m_pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v3.v1 = (m_pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v2.v3 = (m_pos.v3 - zf + zoff + 1.0);
+    f.v3.v1 = (m_pos.v1 - xf + xoff + 1.0);
     f.v3.v2 = (m_pos.v2 + yf) * dimh;
-    f.v3.v3 = (m_pos.v3 - zf + zoff + 1.0) * dimw;
-    f.v4.v1 = (m_pos.v1 - xf + xoff + 1.0) * dimw;
+    f.v3.v3 = (m_pos.v3 - zf + zoff + 1.0);
+    f.v4.v1 = (m_pos.v1 - xf + xoff + 1.0);
     f.v4.v2 = (m_pos.v2 + yf) * dimh;
-    f.v4.v3 = (m_pos.v3 - zf + zoff) * dimw;
+    f.v4.v3 = (m_pos.v3 - zf + zoff);
     return f;
 }
 
@@ -115,10 +115,10 @@ bool Element::contains(float3 pos) const
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
 PaintCan Element::gray_paint(0.8, 0.8, 0.8);
-CadModel Element::m_default_model(BrickShape(Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
+CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
 
-CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0 * Element::dimw, Element::dimh, Element::dimw, Element::dimb), Element::red_paint, 0.0);
-CadModel BrickElement::m_model_ew = CadModel(BrickShape(Element::dimw, Element::dimh, 2.0 * Element::dimw, Element::dimb), Element::red_paint, 0.0);
+CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
+CadModel BrickElement::m_model_ew = CadModel(BrickShape(1.0, Element::dimh, 2.0, Element::dimb), Element::red_paint, 0.0);
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
 {
@@ -195,7 +195,7 @@ WindowElement::WindowElement(float xpos, float ypos, float zpos, int orientation
     , m_height(height)
     , m_hgrilles(hgrilles)
     , m_vgrilles(vgrilles)
-    , m_model(WindowModel(width * dimw, height * dimh, dimw, dimb, vgrilles, hgrilles, white_paint, 0.0))
+    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, white_paint, 0.0))
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);
@@ -260,7 +260,7 @@ LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, 
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
     , m_width(width)
-    , m_model(BrickShape(width * dimw, dimh, dimw, dimb), gray_paint, 0.0)
+    , m_model(BrickShape(width, dimh, 1.0, dimb), gray_paint, 0.0)
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);

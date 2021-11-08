@@ -34,8 +34,10 @@ public:
     virtual Face top_face() const;
     virtual int sub_face_count() const;
     virtual Face top_sub_face(int ix) const;
+    virtual bool contains(float3 pos) const;
     Face gen_face(float xf, float yf, float zf) const;
     Face gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
+    bool gen_contains(float3 pos, float xf, float yf, float zf) const;
 
 private:
     float3 m_pos;
@@ -60,6 +62,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
+    bool contains(float3 pos) const override;
 
 private:
     int m_orientation;
@@ -81,6 +84,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
+    bool contains(float3 pos) const override;
 
 private:
     int m_orientation;
@@ -101,6 +105,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
+    bool contains(float3 pos) const override;
 
 private:
     int m_orientation;

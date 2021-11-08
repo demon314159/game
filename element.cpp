@@ -69,6 +69,23 @@ Face Element::gen_sub_face(float xf, float yf, float zf, float xoff, float zoff)
     return f;
 }
 
+bool Element::gen_contains(float3 pos, float xf, float yf, float zf) const
+{
+    if (pos.v1 < (m_pos.v1 - xf))
+        return false;
+    if (pos.v1 > (m_pos.v1 + xf))
+        return false;
+    if (pos.v2 < (m_pos.v2 - yf))
+        return false;
+    if (pos.v2 > (m_pos.v2 + yf))
+        return false;
+    if (pos.v3 < (m_pos.v3 - zf))
+        return false;
+    if (pos.v3 > (m_pos.v3 + zf))
+        return false;
+    return true;
+}
+
 float Element::top_level() const
 {
     return m_pos.v2 + 0.5;
@@ -88,6 +105,11 @@ Face Element::top_sub_face(int ix) const
 {
     (void) ix;
     return top_face();
+}
+
+bool Element::contains(float3 pos) const
+{
+    return gen_contains(pos, 0.5, 0.5, 0.5);
 }
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
@@ -146,6 +168,14 @@ Face BrickElement::top_sub_face(int ix) const
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
     return gen_sub_face(xf, yf, zf, xoff, zoff);
+}
+
+bool BrickElement::contains(float3 pos) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
+    return gen_contains(pos, xf, yf, zf);
 }
 
 void BrickElement::save_to_file(QDataStream& ds) const
@@ -218,6 +248,14 @@ Face WindowElement::top_sub_face(int ix) const
     return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
+bool WindowElement::contains(float3 pos) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = m_height / 2.0;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    return gen_contains(pos, xf, yf, zf);
+}
+
 LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, int width)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
@@ -267,5 +305,13 @@ Face LedgeElement::top_sub_face(int ix) const
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
     return gen_sub_face(xf, yf, zf, xoff, zoff);
+}
+
+bool LedgeElement::contains(float3 pos) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    return gen_contains(pos, xf, yf, zf);
 }
 

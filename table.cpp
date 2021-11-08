@@ -217,17 +217,39 @@ void Table::select_brick(int x, int y)
 {
 //    printf("Mouse position (%d, %d)\n", x, y);
     printf("try:\n");
+    float max_level = -1.0;
+    float3 sel_pos = {0.0, 0.0, 0.0};
     for (int i = 0; i < m_doc.elements(); i++) {
         Element* e = m_doc.get_element(i);
         Face tf = e->top_face();
         if (inside_face(tf, x, y)) {
-            printf("   Inside Element #%d  level = %f\n", i, e->top_level());
+//            printf("   Inside Element #%d  level = %f\n", i, e->top_level());
             for (int j = 0; j < e->sub_face_count(); j++) {
                 Face sf = e->top_sub_face(j);
                 if (inside_face(sf, x, y)) {
-                    printf("   Subface %d\n", j);
+                    if (e->top_level() > max_level) {
+                        max_level = e->top_level();
+                        sel_pos.v1 = (sf.v1.v1 + sf.v3.v1) / 2.0;
+                        sel_pos.v2 = e->top_level();
+                        sel_pos.v3 = (sf.v1.v3 + sf.v3.v3) / 2.0;
+//                        printf("   Subface center (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
+                    }
                 }
             }
+        }
+    }
+    bool occupied = false;
+    if (max_level >= 0.0) {
+        sel_pos.v2 += 0.5;
+//        printf("Position Selected: (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
+        for (int i = 0; i < m_doc.elements(); i++) {
+            Element* e = m_doc.get_element(i);
+            if (e->contains(sel_pos)) {
+                occupied = true;
+            }
+        }
+        if (!occupied) {
+            printf("Finally a location: (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
         }
     }
 }

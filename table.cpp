@@ -101,7 +101,7 @@ void Table::paintGL()
     m_program.setUniformValue("rot_matrix", matrix);
     // Animate marker
     QMatrix4x4 marker_matrix;
-    marker_matrix.translate(0.0, 5.0 * 2.0 / 3.0, 0.0);
+    marker_matrix.translate(0.0, 9.0 * 2.0 / 3.0, -4.0);
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
     // Draw cube geometry

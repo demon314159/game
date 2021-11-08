@@ -6,6 +6,7 @@ precision mediump float;
 
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
+uniform mat4 marker_matrix;
 
 attribute vec3 a_position;
 attribute vec3 a_normal;
@@ -21,7 +22,11 @@ void main()
     billy = normalize(a_normal);
 
 // Calculate vertex position in screen space
-    gl_Position = mvp_matrix * vec4(a_position, 1.0);
+    if (a_animation_id == 2.0) {
+        gl_Position = mvp_matrix *  marker_matrix * vec4(a_position, 1.0);
+    } else {
+        gl_Position = mvp_matrix * vec4(a_position, 1.0);
+    }
     if (a_animation_id == 1.0) {
         v_normal = vec4(0.0, 0.0, 1.0, 0.0);
     } else {

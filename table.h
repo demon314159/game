@@ -41,6 +41,7 @@ protected:
     void select_brick(int x, int y);
     bool inside_face(const Face& f, int sx, int sy);
     int zcross(const QPoint& a, const QPoint& b, int sx, int sy) const;
+    float distance(float3 pos1, float3 pos2) const;
 private:
     Document m_doc;
     int m_ms_at_start;
@@ -49,6 +50,8 @@ private:
     qreal m_aspect;
     float m_fov;
     float m_camz;
+    bool m_marker_flag;
+    float3 m_marker_pos;
 
     int m_width;
     int m_height;

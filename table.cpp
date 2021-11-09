@@ -17,6 +17,8 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     , m_aspect(1.0)
     , m_fov(45.0)
     , m_camz(8.0)
+    , m_marker_flag(false)
+    , m_marker_pos({0.0, 0.0, 0.0})
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_thingy(NULL)
@@ -101,7 +103,11 @@ void Table::paintGL()
     m_program.setUniformValue("rot_matrix", matrix);
     // Animate marker
     QMatrix4x4 marker_matrix;
-    marker_matrix.translate(0.0, 9.0 * 2.0 / 3.0, -4.0);
+    if (m_marker_flag) {
+        marker_matrix.translate(m_marker_pos.v1, (m_marker_pos.v2 - 0.5) * 2.0 / 3.0, m_marker_pos.v3);
+    } else {
+        marker_matrix.translate(0.0, 0.0, 0.0);
+    }
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
     // Draw cube geometry
@@ -200,6 +206,14 @@ QPoint Table::w2s(const QVector3D point) const
     return res;
 }
 
+float Table::distance(float3 pos1, float3 pos2) const
+{
+    return sqrt((pos1.v1 - pos2.v1) * (pos1.v1 - pos2.v1)
+              + (pos1.v2 - pos2.v2) * (pos1.v2 - pos2.v2)
+              + (pos1.v3 - pos2.v3) * (pos1.v3 - pos2.v3));
+
+}
+
 void Table::select_brick(int x, int y)
 {
 //    printf("Mouse position (%d, %d)\n", x, y);
@@ -236,7 +250,24 @@ void Table::select_brick(int x, int y)
             }
         }
         if (!occupied) {
-            printf("Finally a location: (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
+            if (m_marker_flag) {
+                if (distance(m_marker_pos, sel_pos) < 0.1) {
+                    m_marker_flag = false;
+                    m_marker_pos = {0.0, 0.0, 0.0};
+                } else if (distance(m_marker_pos, sel_pos) == 1.0 && m_marker_pos.v2 == sel_pos.v2) {
+                    printf("add brick\n");
+                    m_marker_pos = {0.0, 0.0, 0.0};
+                    m_marker_flag = false;
+                } else {
+                    m_marker_pos = sel_pos;
+                    m_marker_flag = true;
+                }
+            } else {
+                m_marker_pos = sel_pos;
+                m_marker_flag = true;
+//                printf("Finally a location: (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
+            }
+            update();
         }
     }
 }

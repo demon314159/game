@@ -37,6 +37,11 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     } else {
         printf("Loaded doc\n");
     }
+    m_history.execute(new AddBrickCommand(QString("First one")));
+    m_history.execute(new AddBrickCommand(QString("Second one")));
+    m_history.execute(new AddBrickCommand(QString("Third one")));
+    m_history.execute(new AddBrickCommand(QString("Fourth one")));
+    m_history.execute(new AddBrickCommand(QString("Fifth one")));
 }
 
 Table::~Table()
@@ -168,6 +173,18 @@ void Table::keyPressEvent(QKeyEvent* e)
         }
         resize_calc();
         update();
+    } else if (a == 0x1e) { // u or U
+        if (m_history.can_undo())
+            m_history.undo();
+        else
+            printf("At first command\n");
+    } else if (a == 0x1b) { // r or R
+        if (m_history.can_redo())
+            m_history.redo();
+        else
+            printf("At last command\n");
+    } else if (a == 0x36) { // c or C
+        m_history.execute(new AddBrickCommand(QString("Keyboard command")));
     }
     QOpenGLWidget::keyPressEvent(e);
 }

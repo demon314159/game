@@ -17,6 +17,8 @@ HEADERS      += game.h \
                 cube_shape.h \
                 brick_shape.h \
                 element.h \
+                command.h \
+                history.h \
                 document.h \
                 bin_interface.h \
                 char_interface.h \
@@ -35,6 +37,8 @@ SOURCES      += main.cpp \
                 cube_shape.cpp \
                 brick_shape.cpp \
                 element.cpp \
+                command.cpp \
+                history.cpp \
                 document.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

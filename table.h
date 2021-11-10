@@ -6,7 +6,8 @@
 
 #include "thingus.h"
 #include "float3.h"
-#include <document.h>
+#include "document.h"
+#include "history.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -44,6 +45,8 @@ protected:
     float distance(float3 pos1, float3 pos2) const;
 private:
     Document m_doc;
+    History m_history;
+
     int m_ms_at_start;
     float m_xrot;
     float m_yrot;

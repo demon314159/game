@@ -1,6 +1,6 @@
 
-#ifndef _ELEMENTS_H_
-#define _ELEMENTS_H_
+#ifndef _ELEMENT_H_
+#define _ELEMENT_H_
 
 #include "float3.h"
 #include "face.h"
@@ -110,4 +110,4 @@ private:
     CadModel m_model;
 };
 
-#endif // _ELEMENTS_H_
+#endif // _ELEMENT_H_

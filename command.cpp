@@ -6,22 +6,61 @@ Command::~Command()
 {
 }
 
-AddBrickCommand::AddBrickCommand(const QString& msg)
-    : m_msg(msg)
+AddElementCommand::AddElementCommand(Element* e, Document* doc)
+    : m_ix(0)
+    , m_element_to_add(e)
+    , m_doc(doc)
 {
+    printf("Construct AddElementCommand\n");
 }
 
-void AddBrickCommand::execute()
+AddElementCommand::~AddElementCommand()
 {
-    printf("Execute '%s'\n", m_msg.toLatin1().data());
+    printf("Destroy AddElementCommand\n");
+    if (m_element_to_add != NULL)
+        delete m_element_to_add;
 }
 
-void AddBrickCommand::unexecute()
+void AddElementCommand::execute()
 {
-    printf("Unexecute '%s'\n", m_msg.toLatin1().data());
+    printf("Execute AddElementCommand\n");
+    m_ix = m_doc->elements();
+    m_doc->add_element(m_element_to_add);
+    m_element_to_add = NULL;
 }
 
-AddBrickCommand::~AddBrickCommand()
+void AddElementCommand::unexecute()
 {
-    printf("Destroy '%s'\n", m_msg.toLatin1().data());
+    printf("Unexecute AddElementCommand\n");
+    m_element_to_add = m_doc->remove_element(m_ix);
 }
+
+RemoveElementCommand::RemoveElementCommand(int ix, Document* doc)
+    : m_ix(ix)
+    , m_removed_element(NULL)
+    , m_doc(doc)
+{
+    printf("Construct RemoveElementCommand\n");
+}
+
+RemoveElementCommand::~RemoveElementCommand()
+{
+    printf("Destroy RemoveElementCommand\n");
+    if (m_removed_element != NULL)
+        delete m_removed_element;
+}
+
+void RemoveElementCommand::execute()
+{
+    printf("Execute RemoveElementCommand\n");
+    m_removed_element = m_doc->remove_element(m_ix);
+}
+
+void RemoveElementCommand::unexecute()
+{
+    printf("Unexecute RemoveElementCommand\n");
+    m_doc->add_element(m_removed_element, m_ix);
+    m_removed_element = NULL;
+}
+
+

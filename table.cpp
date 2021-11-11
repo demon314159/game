@@ -32,16 +32,11 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
     QString file_name = "house.txt";
-    if (!m_doc.load_from_file(file_name)) {
+    if (!m_doc.load(file_name)) {
         printf("Error loading doc: '%s'\n", m_doc.error_message().toLatin1().data());
     } else {
         printf("Loaded doc\n");
     }
-    m_history.execute(new AddBrickCommand(QString("First one")));
-    m_history.execute(new AddBrickCommand(QString("Second one")));
-    m_history.execute(new AddBrickCommand(QString("Third one")));
-    m_history.execute(new AddBrickCommand(QString("Fourth one")));
-    m_history.execute(new AddBrickCommand(QString("Fifth one")));
 }
 
 Table::~Table()
@@ -184,7 +179,7 @@ void Table::keyPressEvent(QKeyEvent* e)
         else
             printf("At last command\n");
     } else if (a == 0x36) { // c or C
-        m_history.execute(new AddBrickCommand(QString("Keyboard command")));
+        m_history.execute(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), &m_doc));
     }
     QOpenGLWidget::keyPressEvent(e);
 }

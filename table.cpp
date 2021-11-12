@@ -230,7 +230,7 @@ float Table::distance(float3 pos1, float3 pos2) const
 void Table::select_brick(int x, int y)
 {
 //    printf("Mouse position (%d, %d)\n", x, y);
-    printf("try:\n");
+//    printf("try:\n");
     float max_level = -1.0;
     float3 sel_pos = {0.0, 0.0, 0.0};
     for (int i = 0; i < m_doc.elements(); i++) {
@@ -268,7 +268,7 @@ void Table::select_brick(int x, int y)
                     m_marker_flag = false;
                     m_marker_pos = {0.0, 0.0, 0.0};
                 } else if (distance(m_marker_pos, sel_pos) == 1.0 && m_marker_pos.v2 == sel_pos.v2) {
-                    printf("add brick\n");
+//                    printf("add brick\n");
                     m_marker_pos = {0.0, 0.0, 0.0};
                     m_marker_flag = false;
                 } else {

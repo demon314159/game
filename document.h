@@ -13,20 +13,20 @@ public:
     Document();
     ~Document();
     int elements() const;
-    const Element* element(int i) const;
+    const Element* element(int ix) const;
     void add_element(Element* e);
     void add_element(Element* e, int ix);
     Element* remove_element(int ix);
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;
-    bool is_dirty() const;
-    void clean();
-    void build_model(CadModel* model) const;
+    bool last_model_valid() const;
+    void build_model(CadModel* model);
 
 private:
-    bool m_is_dirty;
+    bool m_last_model_valid;
     int m_max_elements;
     int m_elements;
+    Element m_dummy;
     Element** m_element_ptr;
 
     void double_the_storage();

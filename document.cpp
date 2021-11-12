@@ -2,14 +2,12 @@
 #include "document.h"
 #include <QFile>
 #include <QDataStream>
-#include <stdio.h>
-
-#define VERBOSE
 
 Document::Document()
-    : m_is_dirty(false)
+    : m_last_model_valid(false)
     , m_max_elements(16384)
     , m_elements(0)
+    , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
 {
     m_element_ptr = new Element*[m_max_elements];
 }
@@ -27,9 +25,13 @@ int Document::elements() const
     return m_elements;
 }
 
-const Element* Document::element(int i) const
+const Element* Document::element(int ix) const
 {
-    return m_element_ptr[i];
+    if (m_elements == 0) { // Return this instead of null pointer
+        return &m_dummy;
+    }
+    int index = std::min(ix, m_elements -1);
+    return m_element_ptr[index];
 }
 
 void Document::add_element(Element* e)
@@ -39,7 +41,7 @@ void Document::add_element(Element* e)
     }
     m_element_ptr[m_elements] = e;
     ++m_elements;
-    m_is_dirty = true;
+    m_last_model_valid = false;
 }
 
 void Document::add_element(Element* e, int ix)
@@ -47,21 +49,26 @@ void Document::add_element(Element* e, int ix)
     if (m_elements >= m_max_elements) {
         double_the_storage();
     }
-    for (int i = ix; i < m_elements; i++) {
-        m_element_ptr[m_elements - i + ix] = m_element_ptr[m_elements - i + ix - 1];
+    int index = std::min(ix, m_elements);
+    for (int i = index; i < m_elements; i++) {
+        m_element_ptr[m_elements - i + index] = m_element_ptr[m_elements - i + index - 1];
     }
-    m_element_ptr[ix] = e;
-    m_is_dirty = true;
+    m_element_ptr[index] = e;
+    m_last_model_valid = false;
 }
 
 Element* Document::remove_element(int ix)
 {
-    Element* e = m_element_ptr[ix];
-    --m_elements;
-    for (int i = ix; i < m_elements; i++) {
-        m_element_ptr[ix] = m_element_ptr[ix + 1];
+    if (m_elements == 0) { // Return this instead of null pointer
+        return &m_dummy;
     }
-    m_is_dirty = true;
+    int index = std::min(ix, m_elements - 1);
+    Element* e = m_element_ptr[index];
+    --m_elements;
+    for (int i = index; i < m_elements; i++) {
+        m_element_ptr[index] = m_element_ptr[index + 1];
+    }
+    m_last_model_valid = false;
     return e;
 }
 
@@ -182,17 +189,12 @@ bool Document::save(const QString& file_name, QString& error_message) const
     return true;
 }
 
-bool Document::is_dirty() const
+bool Document::last_model_valid() const
 {
-    return m_is_dirty;
+    return m_last_model_valid;
 }
 
-void Document::clean()
-{
-    m_is_dirty = false;
-}
-
-void Document::build_model(CadModel* model) const
+void Document::build_model(CadModel* model)
 {
     for (int i = 0; i < m_elements; i++) {
         Element* e = m_element_ptr[i];
@@ -200,6 +202,7 @@ void Document::build_model(CadModel* model) const
         CadModel cm(e->model());
         model->add(cm, pos.v1, pos.v2 * Element::dimh, pos.v3);
     }
+    m_last_model_valid = true;
 }
 
 void Document::double_the_storage()

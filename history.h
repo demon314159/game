@@ -9,11 +9,11 @@ class History
 public:
     History();
     ~History();
-    bool can_undo() const;
-    bool can_redo() const;
-    void execute(Command* c);
-    void undo();
-    void redo();
+    void do_command(Command* c);
+    void undo_command();
+    void redo_command();
+    bool end_of_undo() const;
+    bool end_of_redo() const;
 
 private:
     int m_max_commands;

@@ -170,17 +170,17 @@ void Table::keyPressEvent(QKeyEvent* e)
         resize_calc();
         update();
     } else if (a == 0x1e) { // u or U
-        if (m_history.can_undo())
-            m_history.undo();
+        if (!m_history.end_of_undo())
+            m_history.undo_command();
         else
             printf("At first command\n");
     } else if (a == 0x1b) { // r or R
-        if (m_history.can_redo())
-            m_history.redo();
+        if (m_history.end_of_redo())
+            m_history.redo_command();
         else
             printf("At last command\n");
     } else if (a == 0x36) { // c or C
-        m_history.execute(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), &m_doc));
+        m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), &m_doc));
     }
     QOpenGLWidget::keyPressEvent(e);
 }

@@ -20,17 +20,7 @@ History::~History()
     delete [] m_command_ptr;
 }
 
-bool History::can_undo() const
-{
-    return m_current > 0;
-}
-
-bool History::can_redo() const
-{
-    return m_current < m_commands;
-}
-
-void History::execute(Command* c)
+void History::do_command(Command* c)
 {
     if (m_commands >= m_max_commands) {
         double_the_storage();
@@ -42,6 +32,32 @@ void History::execute(Command* c)
     ++m_current;
     m_commands = m_current;
     c->execute();
+}
+
+void History::undo_command()
+{
+    if (!end_of_undo()) {
+        --m_current;
+        m_command_ptr[m_current]->unexecute();
+    }
+}
+
+void History::redo_command()
+{
+    if (!end_of_redo()) {
+        m_command_ptr[m_current]->execute();
+        ++m_current;
+    }
+}
+
+bool History::end_of_undo() const
+{
+    return m_current == 0;
+}
+
+bool History::end_of_redo() const
+{
+    return m_current == m_commands;
 }
 
 void History::double_the_storage()
@@ -58,18 +74,3 @@ void History::double_the_storage()
     m_command_ptr = temp;
 }
 
-void History::undo()
-{
-    if (can_undo()) {
-        --m_current;
-        m_command_ptr[m_current]->unexecute();
-    }
-}
-
-void History::redo()
-{
-    if (can_redo()) {
-        m_command_ptr[m_current]->execute();
-        ++m_current;
-    }
-}

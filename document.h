@@ -5,7 +5,6 @@
 #include "element.h"
 #include "token_interface.h"
 #include "cad_model.h"
-#include "cad_model.h"
 #include <QString>
 
 class Document
@@ -14,30 +13,27 @@ public:
     Document();
     ~Document();
     int elements() const;
-    void add_element(Element* e, int ix);
+    const Element* element(int i) const;
     void add_element(Element* e);
+    void add_element(Element* e, int ix);
     Element* remove_element(int ix);
-    Element* get_element(int i) const;
-    void save(QString& file_name) const;
-    bool load(QString& file_name);
-    bool error_flag() const;
-    QString error_message() const;
-    bool model_obsolete() const;
-    void build_model(CadModel* model);
+    bool load(const QString& file_name, QString& error_message);
+    bool save(const QString& file_name, QString& error_message) const;
+    bool is_dirty() const;
+    void clean();
+    void build_model(CadModel* model) const;
 
 private:
-    bool m_model_obsolete;
+    bool m_is_dirty;
     int m_max_elements;
     int m_elements;
     Element** m_element_ptr;
-    bool m_error_flag;
-    QString m_error_message;
 
     void double_the_storage();
-    bool expect(TokenInterface& ti, const QString& pattern);
-    bool parse_float3(TokenInterface& ti, float& x, float& y, float& z);
-    bool parse_integer(TokenInterface& ti, int &v);
-    bool parse_float(TokenInterface& ti, float& v);
+    bool expect(TokenInterface& ti, const QString& pattern, QString& error_message);
+    bool parse_float3(TokenInterface& ti, float& x, float& y, float& z, QString& error_message);
+    bool parse_integer(TokenInterface& ti, int &v, QString& error_message);
+    bool parse_float(TokenInterface& ti, float& v, QString& error_message);
 };
 
 #endif // _DOCUMENT_H_

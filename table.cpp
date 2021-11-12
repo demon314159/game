@@ -32,8 +32,9 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
     QString file_name = "house.txt";
-    if (!m_doc.load(file_name)) {
-        printf("Error loading doc: '%s'\n", m_doc.error_message().toLatin1().data());
+    QString error_message;
+    if (!m_doc.load(file_name, error_message)) {
+        printf("Error loading doc: '%s'\n", error_message.toLatin1().data());
     } else {
         printf("Loaded doc\n");
     }
@@ -233,7 +234,7 @@ void Table::select_brick(int x, int y)
     float max_level = -1.0;
     float3 sel_pos = {0.0, 0.0, 0.0};
     for (int i = 0; i < m_doc.elements(); i++) {
-        Element* e = m_doc.get_element(i);
+        const Element* e = m_doc.element(i);
         Face tf = e->top_face();
         if (inside_face(tf, x, y)) {
 //            printf("   Inside Element #%d  level = %f\n", i, e->top_level());
@@ -256,7 +257,7 @@ void Table::select_brick(int x, int y)
         sel_pos.v2 += 0.5;
 //        printf("Position Selected: (%f, %f, %f)\n", sel_pos.v1, sel_pos.v2, sel_pos.v3);
         for (int i = 0; i < m_doc.elements(); i++) {
-            Element* e = m_doc.get_element(i);
+            const Element* e = m_doc.element(i);
             if (e->contains(sel_pos)) {
                 occupied = true;
             }

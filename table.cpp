@@ -57,7 +57,7 @@ void Table::initializeGL()
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus(m_doc);
     resize_calc();
-    timer.start(33, this);
+//    timer.start(33, this);
 }
 
 void Table::resize_calc()

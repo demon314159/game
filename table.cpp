@@ -11,6 +11,7 @@
 
 Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidget *parent)
     : QOpenGLWidget(parent)
+    , m_view(m_doc)
     , m_ms_at_start(QTime::currentTime().msecsSinceStartOfDay())
     , m_xrot(0.0)
     , m_yrot(0.0)
@@ -49,6 +50,12 @@ Table::~Table()
 
 void Table::initializeGL()
 {
+    m_view.initialize();
+
+
+
+
+
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
     glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
@@ -71,6 +78,9 @@ void Table::resize_calc()
 
 void Table::resizeGL(int w, int h)
 {
+    m_view.resize(w, h);
+
+
     m_width = w;
     m_height = h;
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
@@ -83,6 +93,10 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
+    m_view.paint();
+
+
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -139,31 +153,63 @@ void Table::keyPressEvent(QKeyEvent* e)
     unsigned int a = e->nativeScanCode();
     bool shifted = (e->modifiers() & Qt::ShiftModifier) ? true : false;
     if (a == 0x6f) { // up
+        m_view.rotate_ax(-shifted ? 1.0 : 10.0);
+
+
+
         m_xrot -= shifted ? 1.0 : 10.0;
         update();
     } else if (a == 0x74) { // down
+        m_view.rotate_ax(shifted ? 1.0 : 10.0);
+
+
         m_xrot += shifted ? 1.0 : 10.0;
         update();
     } else if (a == 0x71) { // left
+        m_view.rotate_ay(-shifted ? 1.0 : 10.0);
+
+
+
         m_yrot -= shifted ? 1.0 : 10.0;
         update();
     } else if (a == 0x72) { // right
+        m_view.rotate_ay(shifted ? 1.0 : 10.0);
+
+
         m_yrot += shifted ? 1.0 : 10.0;
         update();
     } else if (a == 0x1f) { // i or I
+        m_view.zoom(shifted ? (29.0 / 30.0) : (2.0 / 3.0));
+
+
+
+
         m_camz *= shifted ? (29.0 / 30.0) : (2.0 / 3.0);
         resize_calc();
         update();
     } else if (a == 0x20) { // o or O
+        m_view.zoom(shifted ? (30.0 / 29.0) : (3.0 / 2.0));
+
+
+
         m_camz *= shifted ? (30.0 / 29.0) : (3.0 / 2.0);
         resize_calc();
         update();
     } else if (a == 0x2b) { // h or H
+        m_view.zoom_home();
+
+
+
+
         float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
         m_camz = (m_thingy == NULL) ? 2.0 / q : m_thingy->radius() / q;
         m_camz -= (m_thingy == NULL) ? 2.0 : m_thingy->radius();
         m_camz = 2.0 * m_camz / 3.0;
         if (shifted) {
+            m_view.rotate_home();
+
+
+
             m_xrot = 0.0;
             m_yrot = 0.0;
         }
@@ -197,7 +243,9 @@ void Table::keyReleaseEvent(QKeyEvent* e)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
+#ifdef NEVERMORE
         select_brick(e->pos().x(), e->pos().y());
+#endif
     } else if (e->button() == Qt::RightButton) {
     }
     QOpenGLWidget::mousePressEvent(e);
@@ -211,6 +259,7 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
     QOpenGLWidget::mouseReleaseEvent(e);
 }
 
+#ifdef NEVERMORE
 QPoint Table::w2s(const QVector3D point) const
 {
     QVector4D sp = m_mvp_matrix * QVector4D(point, 1.0);
@@ -308,3 +357,5 @@ int Table::zcross(const QPoint& a, const QPoint& b, int sx, int sy) const
     int by = b.y() - sy;
     return ax * by - bx * ay;
 }
+
+#endif

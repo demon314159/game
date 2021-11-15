@@ -28,7 +28,8 @@ HEADERS      += game.h \
                 cad_model.h \
                 frame_model.h \
                 window_model.h \
-                thingus.h
+                thingus.h \
+                view.h
 
 SOURCES      += main.cpp \
                 game.cpp \
@@ -48,7 +49,8 @@ SOURCES      += main.cpp \
                 cad_model.cpp \
                 frame_model.cpp \
                 window_model.cpp \
-                thingus.cpp
+                thingus.cpp \
+                view.cpp
 
 RESOURCES    += shaders.qrc
 

@@ -7,6 +7,7 @@
 #include "thingus.h"
 #include "float3.h"
 #include "document.h"
+#include "view.h"
 #include "history.h"
 
 #include <QOpenGLWidget>
@@ -38,13 +39,16 @@ protected:
     void resize_calc();
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+#ifdef NEVERMORE
     QPoint w2s(const QVector3D point) const;
     void select_brick(int x, int y);
     bool inside_face(const Face& f, int sx, int sy);
     int zcross(const QPoint& a, const QPoint& b, int sx, int sy) const;
     float distance(float3 pos1, float3 pos2) const;
+#endif
 private:
     Document m_doc;
+    View m_view;
     History m_history;
 
     int m_ms_at_start;
@@ -68,7 +72,6 @@ private:
 
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
-    qreal angularSpeed = 0;
     QQuaternion rotation;
 };
 

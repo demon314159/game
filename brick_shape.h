@@ -12,7 +12,7 @@ public:
     BrickShape(float dimx, float dimy, float dimz, float dimb);
     virtual ~BrickShape();
     int facets() const override;
-    facet get_facet(int facet_ix) const override;
+    Facet facet(int facet_ix) const override;
 
 private:
     float m_dimx;
@@ -21,7 +21,7 @@ private:
     float m_dimb;
     bool m_count_mode;
     int m_facet_count;
-    facet *m_facet;
+    Facet *m_facet;
 
     void define_shape();
     void add_face(int v1, int v2, int v3, bool flip = false);

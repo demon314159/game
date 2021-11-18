@@ -28,7 +28,7 @@ public:
     virtual ~Element();
     float3 get_pos() const;
     virtual void save_to_file(QDataStream& ds) const;
-    virtual CadModel& model();
+    virtual const CadModel& model() const;
     virtual float top_level() const;
     virtual Face top_face() const;
     virtual int sub_face_count() const;
@@ -57,7 +57,7 @@ public:
     BrickElement(float xpos, float ypos, float zpos, int orientation);
     BrickElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& model() override;
+    const CadModel& model() const override;
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
@@ -76,7 +76,7 @@ public:
                   int width, int height, int hgrilles, int vgrilles);
     WindowElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& model() override;
+    const CadModel& model() const override;
     float top_level() const override;
     Face top_face() const override;
     int sub_face_count() const override;
@@ -98,7 +98,7 @@ public:
     LedgeElement(float xpos, float ypos, float zpos, int orientation, int width);
     LedgeElement() = delete;
     void save_to_file(QDataStream& ds) const override;
-    CadModel& model() override;
+    const CadModel& model() const override;
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;

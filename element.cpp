@@ -28,7 +28,7 @@ float3 Element::get_pos() const
     return pos;
 }
 
-CadModel& Element::model()
+const CadModel& Element::model() const
 {
     return m_default_model;
 }
@@ -140,7 +140,7 @@ BrickElement::BrickElement(float xpos, float ypos, float zpos, int orientation)
 
 }
 
-CadModel& BrickElement::model()
+const CadModel& BrickElement::model() const
 {
     if (m_orientation == 0 || m_orientation == 2)
         return m_model_ns;
@@ -214,7 +214,7 @@ void WindowElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-CadModel& WindowElement::model()
+const CadModel& WindowElement::model() const
 {
     return m_model;
 }
@@ -279,7 +279,7 @@ void LedgeElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-CadModel& LedgeElement::model()
+const CadModel& LedgeElement::model() const
 {
     return m_model;
 }

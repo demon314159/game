@@ -5,10 +5,6 @@
 
 int main(int argv, char **args)
 {
-    int view_ix = 0;
-    if (argv > 1) {
-        view_ix = atoi(args[1]);
-    }
     QApplication app(argv, args);
     app.setApplicationName("Bricks");
 
@@ -16,7 +12,7 @@ int main(int argv, char **args)
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
 
-    Game game(view_ix);
+    Game game(1);
     game.showMaximized();
 
     return app.exec();

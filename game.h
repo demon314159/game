@@ -1,7 +1,7 @@
 //
 // game.h
 //
-#ifndef _GAME_H_
+#if !defined(_GAME_H_)
 #define _GAME_H_
 
 #include <QMainWindow>
@@ -27,12 +27,9 @@ private slots:
     void pb1();
 
 private:
-    // Owned by layout
     int m_view_ix;
-    QMatrix4x4 m_mvp_matrix;
-    QMatrix4x4 m_rot_matrix;
     Table* m_table = nullptr;
     QPushButton* m_pb1 = nullptr;
 };
 
-#endif // _GAME_H
+#endif // _GAME_H_

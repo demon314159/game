@@ -4,7 +4,7 @@
 
 #include "float3.h"
 
-struct facet {
+struct Facet {
     float animation_id;
     float3 v1;
     float3 v2;

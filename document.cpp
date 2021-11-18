@@ -4,12 +4,23 @@
 #include <QDataStream>
 
 Document::Document()
-    : m_last_model_valid(false)
+    : m_clean(false)
     , m_max_elements(16384)
     , m_elements(0)
     , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
 {
     m_element_ptr = new Element*[m_max_elements];
+}
+
+Document::Document(const QString& file_name)
+    : m_clean(false)
+    , m_max_elements(16384)
+    , m_elements(0)
+    , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
+{
+    QString error_message;
+    m_element_ptr = new Element*[m_max_elements];
+    load(file_name, error_message);
 }
 
 Document::~Document()
@@ -23,6 +34,16 @@ Document::~Document()
 int Document::elements() const
 {
     return m_elements;
+}
+
+int Document::facets() const
+{
+    int total = 0;
+    for (int i = 0; i < m_elements; i++) {
+        Element* e = m_element_ptr[i];
+        total += e->model().facets();
+    }
+    return total;
 }
 
 const Element* Document::element(int ix) const
@@ -41,7 +62,7 @@ void Document::add_element(Element* e)
     }
     m_element_ptr[m_elements] = e;
     ++m_elements;
-    m_last_model_valid = false;
+    m_clean = false;
 }
 
 void Document::add_element(Element* e, int ix)
@@ -54,7 +75,7 @@ void Document::add_element(Element* e, int ix)
         m_element_ptr[m_elements - i + index] = m_element_ptr[m_elements - i + index - 1];
     }
     m_element_ptr[index] = e;
-    m_last_model_valid = false;
+    m_clean = false;
 }
 
 Element* Document::remove_element(int ix)
@@ -68,7 +89,7 @@ Element* Document::remove_element(int ix)
     for (int i = index; i < m_elements; i++) {
         m_element_ptr[index] = m_element_ptr[index + 1];
     }
-    m_last_model_valid = false;
+    m_clean = false;
     return e;
 }
 
@@ -187,22 +208,6 @@ bool Document::save(const QString& file_name, QString& error_message) const
     }
     ffi.close();
     return true;
-}
-
-bool Document::last_model_valid() const
-{
-    return m_last_model_valid;
-}
-
-void Document::build_model(CadModel* model)
-{
-    for (int i = 0; i < m_elements; i++) {
-        Element* e = m_element_ptr[i];
-        float3 pos = e->get_pos();
-        CadModel cm(e->model());
-        model->add(cm, pos.v1, pos.v2 * Element::dimh, pos.v3);
-    }
-    m_last_model_valid = true;
 }
 
 void Document::double_the_storage()

@@ -16,10 +16,13 @@
 #include "shape.h"
 #include "face.h"
 
+class Document;
+
 class CadModel
 {
 public:
     CadModel();
+    CadModel(Document* doc);
     CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
@@ -33,6 +36,7 @@ public:
     void rotate_ay(float angle);
     void magnify(float factor);
     int facets() const;
+    Facet facet(int ix) const;
     float facet_animation_id(int facet_ix) const;
     float3 facet_v1(int facet_ix) const;
     float3 facet_v2(int facet_ix) const;
@@ -46,8 +50,9 @@ protected:
 
 private:
     int m_facet_count;
-    facet* m_facet;
+    Facet* m_facet;
     float3 translate(const float3& v, const float3& offset) const;
+    Facet translate(const Facet& f, const float3& offset) const;
 };
 
 #endif // _CAD_MODEL_H_

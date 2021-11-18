@@ -13,7 +13,7 @@ CubeShape::CubeShape(float dimx, float dimy, float dimz)
     define_shape();
     m_count_mode = false;
     if (m_facet_count > 0) {
-        m_facet = new facet[m_facet_count];
+        m_facet = new Facet[m_facet_count];
         m_facet_count = 0;
         define_shape();
     }
@@ -30,7 +30,7 @@ int CubeShape::facets() const
     return m_facet_count;
 }
 
-facet CubeShape::get_facet(int facet_ix) const
+Facet CubeShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }

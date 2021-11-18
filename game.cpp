@@ -8,7 +8,6 @@
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QInputDialog>
-#include "table.h"
 
 Game::Game(int view_ix)
     : m_view_ix(view_ix)
@@ -31,7 +30,7 @@ void Game::initializeWindow()
 
     m_pb1->setText(tr("button"));
 
-    m_table = new Table(m_view_ix, m_mvp_matrix, m_rot_matrix, this);
+    m_table = new Table(this);
     layout->addWidget(m_table, 1, 0, 1, 5);
 
     layout->setRowStretch(1, 1);

@@ -9,8 +9,7 @@
 #include <QVBoxLayout>
 #include <QInputDialog>
 
-Game::Game(int view_ix)
-    : m_view_ix(view_ix)
+Game::Game()
 {
     initializeWindow();
 }

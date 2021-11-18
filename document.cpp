@@ -86,7 +86,6 @@ Element* Document::remove_element(int ix)
     }
     int index = std::min(ix, m_elements - 1);
     Element* e = m_element_ptr[index];
-    printf("e = %p\n", e);
     --m_elements;
     for (int i = index; i < m_elements; i++) {
         m_element_ptr[i] = m_element_ptr[i + 1];

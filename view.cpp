@@ -84,6 +84,7 @@ bool View::initialize()
     resize_calc();
     m_vertex_buf.create();
     m_vertex_buf.bind();
+    m_max_vertices = std::max(m_max_vertices, 6 * m_model->facets());
     m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
     copy_facets();
     return true;
@@ -147,6 +148,14 @@ void View::resize_calc()
     m_projection.perspective(m_fov, m_aspect, znear, zfar);
 }
 
+void View::check_storage()
+{
+    if (m_max_vertices > (3 * m_model->facets()))
+        return;
+    m_max_vertices = std::max(2 * m_max_vertices, 6 * m_model->facets());
+    m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
+}
+
 void View::paint()
 {
 #ifdef VERBOSE
@@ -157,6 +166,7 @@ void View::paint()
         m_model = new CadModel(m_doc);
         decorate_model();
         resize_calc();
+        check_storage();
         copy_facets();
         m_doc->make_clean();
     }

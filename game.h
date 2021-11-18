@@ -17,7 +17,7 @@ class Game: public QMainWindow
     Q_OBJECT
 
 public:
-    Game(int view_ix);
+    Game();
     ~Game();
 
 private:
@@ -27,7 +27,6 @@ private slots:
     void pb1();
 
 private:
-    int m_view_ix;
     Table* m_table = nullptr;
     QPushButton* m_pb1 = nullptr;
 };

@@ -12,7 +12,7 @@ int main(int argv, char **args)
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
 
-    Game game(1);
+    Game game;
     game.showMaximized();
 
     return app.exec();

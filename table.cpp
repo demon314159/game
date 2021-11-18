@@ -36,7 +36,7 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
-    m_view->paint();
+    m_view->paint(m_doc);
 }
 
 void Table::keyPressEvent(QKeyEvent* e)
@@ -84,6 +84,8 @@ void Table::keyPressEvent(QKeyEvent* e)
         else
           m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_doc));
         update();
+    } else if (a == 0x2e) { // l or L
+//          m_history.do_command(new LoadCommand(const QString& file_name, m_doc));
     }
     QOpenGLWidget::keyPressEvent(e);
 }

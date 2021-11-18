@@ -16,7 +16,7 @@ public:
     virtual ~View();
     bool initialize();
     void resize(int w, int h);
-    void paint();
+    void paint(Document* doc);
     void rotate_ax(float degrees);
     void rotate_ay(float degrees);
     void rotate_home();
@@ -34,7 +34,6 @@ protected:
 private:
     int m_max_vertices;
     int m_vertices;
-    Document* m_doc;
     CadModel* m_model;
     QOpenGLBuffer m_vertex_buf;
     float m_radius;

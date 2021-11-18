@@ -20,7 +20,6 @@ struct VertexData
 View::View(Document* doc)
     : m_max_vertices(1024 * 1024)
     , m_vertices(0)
-    , m_doc(doc)
     , m_model(new CadModel(doc))
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -38,6 +37,7 @@ View::View(Document* doc)
     printf("View::View(doc)\n");
 #endif
     decorate_model();
+    doc->make_clean();
 }
 
 void View::decorate_model()
@@ -156,19 +156,19 @@ void View::check_storage()
     m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
 }
 
-void View::paint()
+void View::paint(Document* doc)
 {
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty()) {
+    if (doc->is_dirty()) {
         delete m_model;
-        m_model = new CadModel(m_doc);
+        m_model = new CadModel(doc);
         decorate_model();
         resize_calc();
         check_storage();
         copy_facets();
-        m_doc->make_clean();
+        doc->make_clean();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};

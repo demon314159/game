@@ -4,7 +4,7 @@
 #include <QDataStream>
 
 Document::Document()
-    : m_is_dirty(false)
+    : m_is_dirty(true)
     , m_max_elements(16384)
     , m_elements(0)
     , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))

@@ -85,10 +85,15 @@ bool View::initialize()
     m_vertex_buf.create();
     m_vertex_buf.bind();
     m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
+    copy_facets();
+    return true;
+}
 
+void View::copy_facets()
+{
     m_vertices = 3 * m_model->facets();
     if (m_vertices == 0) {
-        return true;
+        return;
     }
     VertexData* vertices = new VertexData[m_vertices];
     float an_id;
@@ -117,7 +122,6 @@ bool View::initialize()
     // Transfer vertex data to VBO 0
     m_vertex_buf.write(0, vertices, m_vertices * sizeof(VertexData));
     delete [] vertices;
-    return true;
 }
 
 void View::resize(int w, int h)
@@ -148,6 +152,14 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
+    if (m_doc->is_dirty()) {
+        delete m_model;
+        m_model = new CadModel(m_doc);
+        decorate_model();
+        resize_calc();
+        copy_facets();
+        m_doc->make_clean();
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);

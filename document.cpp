@@ -4,7 +4,7 @@
 #include <QDataStream>
 
 Document::Document()
-    : m_clean(false)
+    : m_is_dirty(false)
     , m_max_elements(16384)
     , m_elements(0)
     , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
@@ -13,7 +13,7 @@ Document::Document()
 }
 
 Document::Document(const QString& file_name)
-    : m_clean(false)
+    : m_is_dirty(false)
     , m_max_elements(16384)
     , m_elements(0)
     , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
@@ -62,7 +62,7 @@ void Document::add_element(Element* e)
     }
     m_element_ptr[m_elements] = e;
     ++m_elements;
-    m_clean = false;
+    m_is_dirty = true;
 }
 
 void Document::add_element(Element* e, int ix)
@@ -75,7 +75,8 @@ void Document::add_element(Element* e, int ix)
         m_element_ptr[m_elements - i + index] = m_element_ptr[m_elements - i + index - 1];
     }
     m_element_ptr[index] = e;
-    m_clean = false;
+    ++m_elements;
+    m_is_dirty = true;
 }
 
 Element* Document::remove_element(int ix)
@@ -85,11 +86,12 @@ Element* Document::remove_element(int ix)
     }
     int index = std::min(ix, m_elements - 1);
     Element* e = m_element_ptr[index];
+    printf("e = %p\n", e);
     --m_elements;
     for (int i = index; i < m_elements; i++) {
-        m_element_ptr[index] = m_element_ptr[index + 1];
+        m_element_ptr[i] = m_element_ptr[i + 1];
     }
-    m_clean = false;
+    m_is_dirty = true;
     return e;
 }
 
@@ -301,4 +303,12 @@ bool Document::parse_float(TokenInterface& ti, float& v, QString& error_message)
     return true;
 }
 
+bool Document::is_dirty() const
+{
+    return m_is_dirty;
+}
 
+void Document::make_clean()
+{
+    m_is_dirty = false;
+}

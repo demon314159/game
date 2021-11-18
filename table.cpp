@@ -67,17 +67,23 @@ void Table::keyPressEvent(QKeyEvent* e)
             m_view->rotate_home();
         update();
     } else if (a == 0x1e) { // u or U
-        if (!m_history.end_of_undo())
+        if (!m_history.end_of_undo()) {
             m_history.undo_command();
-        else
+            update();
+        } else
             printf("At first command\n");
     } else if (a == 0x1b) { // r or R
-        if (m_history.end_of_redo())
+        if (!m_history.end_of_redo()) {
             m_history.redo_command();
-        else
+            update();
+        } else
             printf("At last command\n");
     } else if (a == 0x36) { // c or C
-        m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_doc));
+        if (shifted)
+            m_history.do_command(new RemoveElementCommand(8, m_doc));
+        else
+          m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_doc));
+        update();
     }
     QOpenGLWidget::keyPressEvent(e);
 }

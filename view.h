@@ -27,6 +27,7 @@ protected:
     bool init_shaders();
     void resize_calc();
     void decorate_model();
+    void copy_facets();
     void render_facets();
 
 private:

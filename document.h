@@ -22,9 +22,11 @@ public:
     Element* remove_element(int ix);
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;
+    bool is_dirty() const;
+    void make_clean();
 
 private:
-    bool m_clean;
+    bool m_is_dirty;
     int m_max_elements;
     int m_elements;
     Element m_dummy;

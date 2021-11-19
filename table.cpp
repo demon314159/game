@@ -101,9 +101,7 @@ void Table::keyReleaseEvent(QKeyEvent* e)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-#ifdef NEVERMORE
-        select_brick(e->pos().x(), e->pos().y());
-#endif
+        m_view->mouse_select(e->pos().x(), e->pos().y());
     } else if (e->button() == Qt::RightButton) {
     }
     QOpenGLWidget::mousePressEvent(e);

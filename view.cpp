@@ -33,12 +33,18 @@ View::View(Document* doc)
     , m_yrot(0.0)
     , m_marker_flag(false)
     , m_marker_pos({0.0, 0.0, 0.0})
+    , m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
     decorate_model();
     doc->make_clean();
+}
+
+void View::mouse_select(int sx, int sy)
+{
+    printf("mouse select(%d, %d)\n", sx, sy);
 }
 
 void View::decorate_model()
@@ -81,10 +87,6 @@ Document* View::replace_doc(Document* doc)
     Document* t;
     t = m_doc;
     m_doc = doc;
-
-
-
-
     return t;
 }
 

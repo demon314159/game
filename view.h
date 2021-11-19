@@ -24,6 +24,7 @@ public:
     void rotate_home();
     void zoom(float factor);
     void zoom_home();
+    void mouse_select(int sx, int sy);
 
 protected:
     bool init_shaders();
@@ -50,6 +51,7 @@ private:
     float m_yrot;
     bool m_marker_flag;
     float3 m_marker_pos;
+    CadModel m_marker_model;
     QOpenGLShaderProgram m_program;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;

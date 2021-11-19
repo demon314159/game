@@ -81,6 +81,10 @@ Document* View::replace_doc(Document* doc)
     Document* t;
     t = m_doc;
     m_doc = doc;
+
+
+
+
     return t;
 }
 

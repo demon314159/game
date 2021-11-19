@@ -40,4 +40,18 @@ private:
     Document* m_doc;
 };
 
+class LoadCommand: public Command
+{
+public:
+    LoadCommand(const QString& file_name, View* view);
+    ~LoadCommand();
+    void execute() override;
+    void unexecute() override;
+private:
+    QString m_file_name;
+    View* m_view;
+    Document* m_new_doc;
+    Document* m_replaced_doc;
+};
+
 #endif // _COMMAND_H_

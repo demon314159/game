@@ -24,6 +24,7 @@ public:
     bool save(const QString& file_name, QString& error_message) const;
     bool is_dirty() const;
     void make_clean();
+    void make_dirty();
 
 private:
     bool m_is_dirty;

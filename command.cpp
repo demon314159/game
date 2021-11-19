@@ -63,4 +63,36 @@ void RemoveElementCommand::unexecute()
     m_removed_element = NULL;
 }
 
+LoadCommand::LoadCommand(const QString& file_name, View* view)
+    : m_file_name(file_name)
+    , m_view(view)
+    , m_new_doc(new Document(file_name))
+    , m_replaced_doc(NULL)
+{
+    printf("Construct LoadCommand('%s')\n", m_file_name.toLatin1().data());
+}
 
+LoadCommand::~LoadCommand()
+{
+    printf("Destroy LoadCommand('%s')\n", m_file_name.toLatin1().data());
+    if (m_new_doc != NULL)
+        delete m_new_doc;
+    if (m_replaced_doc != NULL)
+        delete m_replaced_doc;
+}
+
+void LoadCommand::execute()
+{
+    printf("Execute LoadCommand('%s')\n", m_file_name.toLatin1().data());
+    m_new_doc->make_dirty();
+    m_replaced_doc = m_view->replace_doc(m_new_doc);
+    m_new_doc = NULL;
+}
+
+void LoadCommand::unexecute()
+{
+    printf("Unexecute LoadCommand('%s')\n", m_file_name.toLatin1().data());
+    m_replaced_doc->make_dirty();
+    m_new_doc = m_view->replace_doc(m_replaced_doc);
+    m_replaced_doc = NULL;
+}

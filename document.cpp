@@ -13,7 +13,7 @@ Document::Document()
 }
 
 Document::Document(const QString& file_name)
-    : m_is_dirty(false)
+    : m_is_dirty(true)
     , m_max_elements(16384)
     , m_elements(0)
     , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
@@ -311,3 +311,9 @@ void Document::make_clean()
 {
     m_is_dirty = false;
 }
+
+void Document::make_dirty()
+{
+    m_is_dirty = true;
+}
+

@@ -83,7 +83,8 @@ void Table::keyPressEvent(QKeyEvent* e)
           m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
         update();
     } else if (a == 0x2e) { // l or L
-//          m_history.do_command(new LoadCommand(const QString& file_name, m_view));
+          m_history.do_command(new LoadCommand(QString("other_house.txt"), m_view));
+          update();
     }
     QOpenGLWidget::keyPressEvent(e);
 }

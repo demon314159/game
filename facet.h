@@ -6,10 +6,10 @@
 
 struct Facet {
     float animation_id;
-    float3 v1;
-    float3 v2;
-    float3 v3;
-    float3 color;
+    Float3 v1;
+    Float3 v2;
+    Float3 v3;
+    Float3 color;
 };
 
 #endif // _FACET_H_

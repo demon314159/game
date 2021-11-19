@@ -38,21 +38,21 @@ public:
     int facets() const;
     Facet facet(int ix) const;
     float facet_animation_id(int facet_ix) const;
-    float3 facet_v1(int facet_ix) const;
-    float3 facet_v2(int facet_ix) const;
-    float3 facet_v3(int facet_ix) const;
-    float3 facet_color(int facet_ix) const;
-    float3 facet_normal(int facet_ix) const;
+    Float3 facet_v1(int facet_ix) const;
+    Float3 facet_v2(int facet_ix) const;
+    Float3 facet_v3(int facet_ix) const;
+    Float3 facet_color(int facet_ix) const;
+    Float3 facet_normal(int facet_ix) const;
     BoundingBox bounding_box() const;
 
 protected:
-    void rotate_vertex(float3& vertex, const QMatrix4x4& matrix);
+    void rotate_vertex(Float3& vertex, const QMatrix4x4& matrix);
 
 private:
     int m_facet_count;
     Facet* m_facet;
-    float3 translate(const float3& v, const float3& offset) const;
-    Facet translate(const Facet& f, const float3& offset) const;
+    Float3 translate(const Float3& v, const Float3& offset) const;
+    Facet translate(const Facet& f, const Float3& offset) const;
 };
 
 #endif // _CAD_MODEL_H_

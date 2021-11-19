@@ -70,9 +70,9 @@ void CubeShape::add_face(int v1, int v2, int v3, bool flip)
     ++m_facet_count;
 }
 
-float3 CubeShape::decode_vertex(int v)
+Float3 CubeShape::decode_vertex(int v)
 {
-    float3 r;
+    Float3 r;
 
     if (v & 0x4) {
         r.v1 = m_dimx / 2.0;

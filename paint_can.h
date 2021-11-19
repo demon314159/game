@@ -10,18 +10,18 @@ public:
     PaintCan(float r, float g, float b, float diffuse = 1.0, float specular = 0.5, float shiny = 0.5);
     ~PaintCan();
 
-    float3 ambient_color() const;
-    float3 diffuse_color() const;
-    float3 specular_color() const;
-    float3 emissive_color() const;
+    Float3 ambient_color() const;
+    Float3 diffuse_color() const;
+    Float3 specular_color() const;
+    Float3 emissive_color() const;
     float shininess() const;
     float transparency() const;
 
 private:
-    float3 m_ambient;
-    float3 m_diffuse;
-    float3 m_specular;
-    float3 m_emissive;
+    Float3 m_ambient;
+    Float3 m_diffuse;
+    Float3 m_specular;
+    Float3 m_emissive;
     float m_shininess;
     float m_transparency;
 };

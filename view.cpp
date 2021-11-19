@@ -46,12 +46,12 @@ void View::mouse_select(int sx, int sy)
 {
     printf("mouse select(%d, %d)\n", sx, sy);
 //    float max_level = -1.0;
-//    float3 sel_pos = {0.0, 0.0, 0.0};
+//    Float3 sel_pos = {0.0, 0.0, 0.0};
 }
 
 void View::decorate_model()
 {
-    printf("%d facets\n", m_model->facets());
+//    printf("%d facets\n", m_model->facets());
     BoundingBox bb = m_model->bounding_box();
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
@@ -122,7 +122,7 @@ void View::copy_facets()
     }
     VertexData* vertices = new VertexData[m_vertices];
     float an_id;
-    float3 vp, vc, vn;
+    Float3 vp, vc, vn;
     int vix = 0;
     for (int i = 0; i < m_model->facets(); i++) {
         an_id = m_model->facet_animation_id(i);

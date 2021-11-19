@@ -25,6 +25,7 @@ public:
     void zoom(float factor);
     void zoom_home();
     void mouse_select(int sx, int sy);
+    Float2 world2screen(Float3 point) const;
 
 protected:
     bool init_shaders();
@@ -42,7 +43,7 @@ private:
     CadModel* m_model;
     QOpenGLBuffer m_vertex_buf;
     float m_radius;
-    float3 m_center;
+    Float3 m_center;
     int m_width;
     int m_height;
     float m_aspect;
@@ -51,7 +52,7 @@ private:
     float m_xrot;
     float m_yrot;
     bool m_marker_flag;
-    float3 m_marker_pos;
+    Float3 m_marker_pos;
     CadModel m_marker_model;
     QOpenGLShaderProgram m_program;
     QMatrix4x4 m_mvp_matrix;

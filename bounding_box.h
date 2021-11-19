@@ -5,8 +5,8 @@
 #include "float3.h"
 
 struct BoundingBox {
-    float3 vmin;
-    float3 vmax;
+    Float3 vmin;
+    Float3 vmax;
 };
 
 #endif // _BOUNDING_BOX_H_

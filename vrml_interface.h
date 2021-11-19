@@ -17,14 +17,14 @@ public:
     int materials() const;
     int points() const;
     int facets() const;
-    float3 ambient_color(int material_ix) const;
-    float3 diffuse_color(int material_ix) const;
-    float3 emissive_color(int material_ix) const;
-    float3 specular_color(int material_ix) const;
+    Float3 ambient_color(int material_ix) const;
+    Float3 diffuse_color(int material_ix) const;
+    Float3 emissive_color(int material_ix) const;
+    Float3 specular_color(int material_ix) const;
     float shininess(int material_ix) const;
     float transparency(int material_ix) const;
-    float3 point(int point_ix) const;
-    int3 facet_points(int facet_ix) const;
+    Float3 point(int point_ix) const;
+    Int3 facet_points(int facet_ix) const;
     int facet_material(int facet_ix) const;
 
 private:
@@ -34,21 +34,21 @@ private:
     QString m_error_message;
     bool m_per_face_indexed;
     int m_ambient_color_count;
-    float3* m_ambient_color;
+    Float3* m_ambient_color;
     int m_diffuse_color_count;
-    float3* m_diffuse_color;
+    Float3* m_diffuse_color;
     int m_emissive_color_count;
-    float3* m_emissive_color;
+    Float3* m_emissive_color;
     int m_specular_color_count;
-    float3* m_specular_color;
+    Float3* m_specular_color;
     int m_shininess_count;
     float* m_shininess;
     int m_transparency_count;
     float* m_transparency;
     int m_point_count;
-    float3* m_point;
+    Float3* m_point;
     int m_coord_index_count;
-    int3* m_coord_index;
+    Int3* m_coord_index;
     int m_material_index_count;
     int* m_material_index;
     bool sanity_check();
@@ -63,12 +63,12 @@ private:
     bool parse_indexed_face_set_block();
     bool expect(const QString& pattern);
     bool parse_float_array(int& count, float* ptr);
-    bool parse_float3_array(int& count, float3* ptr);
+    bool parse_float3_array(int& count, Float3* ptr);
     bool parse_float(float& v);
-    bool parse_float3(float3& v);
-    bool parse_integer3_array(int& count, int3* ptr);
+    bool parse_float3(Float3& v);
+    bool parse_integer3_array(int& count, Int3* ptr);
     bool parse_integer_array(int& count, int* ptr);
-    bool parse_integer3(int3& v);
+    bool parse_integer3(Int3& v);
     bool parse_integer(int& v);
 };
 

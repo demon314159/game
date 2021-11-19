@@ -23,23 +23,23 @@ public:
     static PaintCan red_paint;
     static PaintCan white_paint;
     static PaintCan gray_paint;
-    Element(float3 pos);
+    Element(Float3 pos);
     Element() = delete;
     virtual ~Element();
-    float3 get_pos() const;
+    Float3 get_pos() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
     virtual float top_level() const;
     virtual Face top_face() const;
     virtual int sub_face_count() const;
     virtual Face top_sub_face(int ix) const;
-    virtual bool contains(float3 pos) const;
+    virtual bool contains(Float3 pos) const;
     Face gen_face(float xf, float yf, float zf) const;
     Face gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
-    bool gen_contains(float3 pos, float xf, float yf, float zf) const;
+    bool gen_contains(Float3 pos, float xf, float yf, float zf) const;
 
 private:
-    float3 m_pos;
+    Float3 m_pos;
     static CadModel m_default_model;
 };
 
@@ -61,7 +61,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
-    bool contains(float3 pos) const override;
+    bool contains(Float3 pos) const override;
 
 private:
     int m_orientation;
@@ -81,7 +81,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
-    bool contains(float3 pos) const override;
+    bool contains(Float3 pos) const override;
 
 private:
     int m_orientation;
@@ -102,7 +102,7 @@ public:
     Face top_face() const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
-    bool contains(float3 pos) const override;
+    bool contains(Float3 pos) const override;
 
 private:
     int m_orientation;

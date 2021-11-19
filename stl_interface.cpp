@@ -39,32 +39,32 @@ int StlInterface::facets() const
     return m_facet_count;
 }
 
-float3 StlInterface::facet_v1(int facet_ix) const
+Float3 StlInterface::facet_v1(int facet_ix) const
 {
     if (facet_ix < m_facet_count) {
         return m_v1[facet_ix];
     } else {
-        float3 v = {0.0, 0.0, 0.0};
+        Float3 v = {0.0, 0.0, 0.0};
         return v;
     }
 }
 
-float3 StlInterface::facet_v2(int facet_ix) const
+Float3 StlInterface::facet_v2(int facet_ix) const
 {
     if (facet_ix < m_facet_count) {
         return m_v2[facet_ix];
     } else {
-        float3 v = {0.0, 0.0, 0.0};
+        Float3 v = {0.0, 0.0, 0.0};
         return v;
     }
 }
 
-float3 StlInterface::facet_v3(int facet_ix) const
+Float3 StlInterface::facet_v3(int facet_ix) const
 {
     if (facet_ix < m_facet_count) {
         return m_v3[facet_ix];
     } else {
-        float3 v = {0.0, 0.0, 0.0};
+        Float3 v = {0.0, 0.0, 0.0};
         return v;
     }
 }
@@ -96,9 +96,9 @@ bool StlInterface::parse()
         m_error_message = "No faces found";
         return false;
     }
-    m_v1 = new float3[n];
-    m_v2 = new float3[n];
-    m_v3 = new float3[n];
+    m_v1 = new Float3[n];
+    m_v2 = new Float3[n];
+    m_v3 = new Float3[n];
     float mag = 1.0;
     for (int i = 0; i < n; i++) {
         if (m_bi.is_eof()) {

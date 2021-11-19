@@ -95,9 +95,9 @@ void BrickShape::add_face(int v1, int v2, int v3, bool flip)
     ++m_facet_count;
 }
 
-float3 BrickShape::decode_vertex(int v)
+Float3 BrickShape::decode_vertex(int v)
 {
-    float3 r;
+    Float3 r;
 
     if (v & 0x40) {
         r.v1 = (v & 4) ? m_dimx / 2.0 : m_dimx / 2.0 - m_dimb;

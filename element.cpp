@@ -4,7 +4,7 @@
 #include "window_model.h"
 #include <stdio.h>
 
-Element::Element(float3 pos)
+Element::Element(Float3 pos)
     : m_pos(pos)
 {
 }
@@ -19,9 +19,9 @@ void Element::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-float3 Element::get_pos() const
+Float3 Element::get_pos() const
 {
-    float3 pos;
+    Float3 pos;
     pos.v1 = m_pos.v1;
     pos.v2 = m_pos.v2;
     pos.v3 = m_pos.v3;
@@ -69,7 +69,7 @@ Face Element::gen_sub_face(float xf, float yf, float zf, float xoff, float zoff)
     return f;
 }
 
-bool Element::gen_contains(float3 pos, float xf, float yf, float zf) const
+bool Element::gen_contains(Float3 pos, float xf, float yf, float zf) const
 {
     if (pos.v1 < (m_pos.v1 - xf))
         return false;
@@ -107,7 +107,7 @@ Face Element::top_sub_face(int ix) const
     return top_face();
 }
 
-bool Element::contains(float3 pos) const
+bool Element::contains(Float3 pos) const
 {
     return gen_contains(pos, 0.5, 0.5, 0.5);
 }
@@ -170,7 +170,7 @@ Face BrickElement::top_sub_face(int ix) const
     return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
-bool BrickElement::contains(float3 pos) const
+bool BrickElement::contains(Float3 pos) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
     float yf = 0.5;
@@ -221,7 +221,7 @@ const CadModel& WindowElement::model() const
 
 float WindowElement::top_level() const
 {
-    float3 pos = get_pos();
+    Float3 pos = get_pos();
     return pos.v2 + m_height / 2.0;
 }
 
@@ -248,7 +248,7 @@ Face WindowElement::top_sub_face(int ix) const
     return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
-bool WindowElement::contains(float3 pos) const
+bool WindowElement::contains(Float3 pos) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = m_height / 2.0;
@@ -307,7 +307,7 @@ Face LedgeElement::top_sub_face(int ix) const
     return gen_sub_face(xf, yf, zf, xoff, zoff);
 }
 
-bool LedgeElement::contains(float3 pos) const
+bool LedgeElement::contains(Float3 pos) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;

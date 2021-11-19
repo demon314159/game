@@ -74,22 +74,22 @@ int VrmlInterface::facets() const
     return m_coord_index_count;
 }
 
-float3 VrmlInterface::ambient_color(int material_ix) const
+Float3 VrmlInterface::ambient_color(int material_ix) const
 {
     return m_ambient_color[material_ix];
 }
 
-float3 VrmlInterface::diffuse_color(int material_ix) const
+Float3 VrmlInterface::diffuse_color(int material_ix) const
 {
     return m_diffuse_color[material_ix];
 }
 
-float3 VrmlInterface::emissive_color(int material_ix) const
+Float3 VrmlInterface::emissive_color(int material_ix) const
 {
     return m_emissive_color[material_ix];
 }
 
-float3 VrmlInterface::specular_color(int material_ix) const
+Float3 VrmlInterface::specular_color(int material_ix) const
 {
     return m_specular_color[material_ix];
 }
@@ -104,12 +104,12 @@ float VrmlInterface::transparency(int material_ix) const
     return m_transparency[material_ix];
 }
 
-float3 VrmlInterface::point(int point_ix) const
+Float3 VrmlInterface::point(int point_ix) const
 {
     return m_point[point_ix];
 }
 
-int3 VrmlInterface::facet_points(int facet_ix) const
+Int3 VrmlInterface::facet_points(int facet_ix) const
 {
     return m_coord_index[facet_ix];
 }
@@ -146,14 +146,14 @@ bool VrmlInterface::parse()
     printf("coord_index_count = %d\n", m_coord_index_count);
     printf("material_index_count = %d\n", m_material_index_count);
 #endif
-    m_ambient_color = new float3[m_ambient_color_count];
-    m_diffuse_color = new float3[m_diffuse_color_count];
-    m_emissive_color = new float3[m_emissive_color_count];
-    m_specular_color = new float3[m_specular_color_count];
+    m_ambient_color = new Float3[m_ambient_color_count];
+    m_diffuse_color = new Float3[m_diffuse_color_count];
+    m_emissive_color = new Float3[m_emissive_color_count];
+    m_specular_color = new Float3[m_specular_color_count];
     m_shininess = new float[m_shininess_count];
     m_transparency = new float[m_transparency_count];
-    m_point = new float3[m_point_count];
-    m_coord_index = new int3[m_coord_index_count];
+    m_point = new Float3[m_point_count];
+    m_coord_index = new Int3[m_coord_index_count];
     if (m_per_face_indexed) {
         m_material_index = new int[m_material_index_count];
     }
@@ -377,9 +377,9 @@ bool VrmlInterface::parse_float_array(int& count, float* ptr)
     return expect("]");
 }
 
-bool VrmlInterface::parse_float3_array(int& count, float3* ptr)
+bool VrmlInterface::parse_float3_array(int& count, Float3* ptr)
 {
-    float3 v;
+    Float3 v;
 
     m_ti.advance();
     if (!expect("["))
@@ -443,7 +443,7 @@ bool VrmlInterface::parse_float(float& v)
     return true;
 }
 
-bool VrmlInterface::parse_float3(float3& v)
+bool VrmlInterface::parse_float3(Float3& v)
 {
     if (!parse_float(v.v1))
         return false;
@@ -452,9 +452,9 @@ bool VrmlInterface::parse_float3(float3& v)
     return parse_float(v.v3);
 }
 
-bool VrmlInterface::parse_integer3_array(int& count, int3* ptr)
+bool VrmlInterface::parse_integer3_array(int& count, Int3* ptr)
 {
-    int3 v;
+    Int3 v;
     m_ti.advance();
     if (!expect("["))
         return false;
@@ -505,7 +505,7 @@ bool VrmlInterface::parse_integer_array(int& count, int* ptr)
     return expect("]");
 }
 
-bool VrmlInterface::parse_integer3(int3& v)
+bool VrmlInterface::parse_integer3(Int3& v)
 {
     if (!parse_integer(v.v1))
         return false;

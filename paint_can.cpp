@@ -15,22 +15,22 @@ PaintCan::~PaintCan()
 {
 }
 
-float3 PaintCan::ambient_color() const
+Float3 PaintCan::ambient_color() const
 {
     return m_ambient;
 }
 
-float3 PaintCan::diffuse_color() const
+Float3 PaintCan::diffuse_color() const
 {
     return m_diffuse;
 }
 
-float3 PaintCan::specular_color() const
+Float3 PaintCan::specular_color() const
 {
     return m_specular;
 }
 
-float3 PaintCan::emissive_color() const
+Float3 PaintCan::emissive_color() const
 {
     return m_emissive;
 }

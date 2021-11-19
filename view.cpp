@@ -328,3 +328,12 @@ bool View::init_shaders()
         return false;
     return true;
 }
+
+Float2 View::world2screen(Float3 point) const
+{
+    Float2 res;
+    QVector4D sp = m_mvp_matrix * QVector4D(point.v1, point.v2, point.v3, 1.0);
+    res.v1 = m_width / 2 + round((sp.x() * (float) m_width) / (2.0 * sp.w()));
+    res.v2 = m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w()));
+    return res;
+}

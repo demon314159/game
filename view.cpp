@@ -361,3 +361,20 @@ int View::screen_cross_product(Float2 a, Float2 b, int sx, int sy) const
     int by = b.v2 - sy;
     return ax * by - bx * ay;
 }
+
+int View::selected_element_ix(int sx, int sy)
+{
+    float max_level = -1.0;
+    int max_ix = -1;
+
+    for (int i = 0; i < m_doc->elements(); i++) {
+        const Element* e = m_doc->element(i);
+        if (screen_point_inside_face(e->top_face(), sx, sy)) {
+            if (e->top_level() > max_level) {
+                max_level = e->top_level();
+                max_ix = i;
+            }
+        }
+    }
+    return max_ix;
+}

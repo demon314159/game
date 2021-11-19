@@ -33,6 +33,7 @@ protected:
     void check_storage();
     void copy_facets();
     void render_facets();
+    void clear_marker();
 
 private:
     int m_max_vertices;

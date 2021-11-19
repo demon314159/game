@@ -45,6 +45,8 @@ View::View(Document* doc)
 void View::mouse_select(int sx, int sy)
 {
     printf("mouse select(%d, %d)\n", sx, sy);
+//    float max_level = -1.0;
+//    float3 sel_pos = {0.0, 0.0, 0.0};
 }
 
 void View::decorate_model()
@@ -56,8 +58,9 @@ void View::decorate_model()
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 2.0;
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
-    m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2 - 1.0);
+    m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
+    m_model->add(m_marker_model, 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
     m_radius = fmax(m_radius, 2.0);
@@ -177,6 +180,11 @@ void View::check_storage()
     m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
 }
 
+void View::clear_marker()
+{
+    m_marker_flag = false;
+}
+
 void View::paint()
 {
 #ifdef VERBOSE
@@ -190,6 +198,7 @@ void View::paint()
         check_storage();
         copy_facets();
         m_doc->make_clean();
+        clear_marker();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -211,7 +220,7 @@ void View::paint()
     if (m_marker_flag) {
         marker_matrix.translate(m_marker_pos.v1, (m_marker_pos.v2 - 0.5) * 2.0 / 3.0, m_marker_pos.v3);
     } else {
-        marker_matrix.translate(0.0, 0.0, 0.0);
+        marker_matrix.translate(m_center.v1, -0.04, m_center.v3);
     }
     m_program.setUniformValue("marker_matrix", marker_matrix);
     // Draw the model

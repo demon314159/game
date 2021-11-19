@@ -337,3 +337,27 @@ Float2 View::world2screen(Float3 point) const
     res.v2 = m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w()));
     return res;
 }
+
+bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
+{
+    // transform the four vertices of f
+    // perform the four cross products in counter clockwise order
+    Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3});
+    Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3});
+    Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
+    Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
+    int cp1 = screen_cross_product(a, b, sx, sy);
+    int cp2 = screen_cross_product(b, c, sx, sy);
+    int cp3 = screen_cross_product(c, d, sx, sy);
+    int cp4 = screen_cross_product(d, a, sx, sy);
+    return (cp1 < 0 && cp2 < 0 && cp3 < 0 && cp4 < 0);
+}
+
+int View::screen_cross_product(Float2 a, Float2 b, int sx, int sy) const
+{
+    int ax = a.v1 - sx;
+    int ay = a.v2 - sy;
+    int bx = b.v1 - sx;
+    int by = b.v2 - sy;
+    return ax * by - bx * ay;
+}

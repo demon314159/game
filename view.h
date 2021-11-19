@@ -25,7 +25,6 @@ public:
     void zoom(float factor);
     void zoom_home();
     void mouse_select(int sx, int sy);
-    Float2 world2screen(Float3 point) const;
 
 protected:
     bool init_shaders();
@@ -35,6 +34,9 @@ protected:
     void copy_facets();
     void render_facets();
     void clear_marker();
+    Float2 world2screen(Float3 point) const;
+    bool screen_point_inside_face(const Face& f, int sx, int sy) const;
+    int screen_cross_product(Float2 a, Float2 b, int sx, int sy) const;
 
 private:
     int m_max_vertices;

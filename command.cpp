@@ -6,10 +6,10 @@ Command::~Command()
 {
 }
 
-AddElementCommand::AddElementCommand(Element* e, Document* doc)
+AddElementCommand::AddElementCommand(Element* e, View* view)
     : m_ix(0)
     , m_element_to_add(e)
-    , m_doc(doc)
+    , m_doc(view->get_doc())
 {
     printf("Construct AddElementCommand\n");
 }
@@ -35,10 +35,10 @@ void AddElementCommand::unexecute()
     m_element_to_add = m_doc->remove_element(m_ix);
 }
 
-RemoveElementCommand::RemoveElementCommand(int ix, Document* doc)
+RemoveElementCommand::RemoveElementCommand(int ix, View* view)
     : m_ix(ix)
     , m_removed_element(NULL)
-    , m_doc(doc)
+    , m_doc(view->get_doc())
 {
     printf("Construct RemoveElementCommand\n");
 }

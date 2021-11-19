@@ -3,7 +3,7 @@
 #define _COMMAND_H
 
 #include "element.h"
-#include "document.h"
+#include "view.h"
 #include <QString>
 
 class Command
@@ -17,7 +17,7 @@ public:
 class AddElementCommand: public Command
 {
 public:
-    AddElementCommand(Element* e, Document* doc);
+    AddElementCommand(Element* e, View* view);
     ~AddElementCommand();
     void execute() override;
     void unexecute() override;
@@ -30,7 +30,7 @@ private:
 class RemoveElementCommand: public Command
 {
 public:
-    RemoveElementCommand(int ix, Document* doc);
+    RemoveElementCommand(int ix, View* view);
     ~RemoveElementCommand();
     void execute() override;
     void unexecute() override;

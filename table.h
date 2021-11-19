@@ -27,7 +27,6 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 private:
-    Document* m_doc;
     View* m_view;
     History m_history;
 };

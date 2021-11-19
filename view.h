@@ -14,9 +14,11 @@ class View: protected QOpenGLFunctions
 public:
     View(Document* doc);
     virtual ~View();
+    Document* get_doc() const;
+    Document* replace_doc(Document* doc);
     bool initialize();
     void resize(int w, int h);
-    void paint(Document* doc);
+    void paint();
     void rotate_ax(float degrees);
     void rotate_ay(float degrees);
     void rotate_home();
@@ -34,6 +36,7 @@ protected:
 private:
     int m_max_vertices;
     int m_vertices;
+    Document* m_doc;
     CadModel* m_model;
     QOpenGLBuffer m_vertex_buf;
     float m_radius;

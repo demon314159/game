@@ -6,8 +6,7 @@
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_doc(new Document(QString("house.txt")))
-    , m_view(new View(m_doc))
+    , m_view(new View(new Document(QString("house.txt"))))
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
@@ -20,7 +19,6 @@ Table::~Table()
     makeCurrent();
     delete m_view;
     doneCurrent();
-    delete m_doc;
 }
 
 void Table::initializeGL()
@@ -36,7 +34,7 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
-    m_view->paint(m_doc);
+    m_view->paint();
 }
 
 void Table::keyPressEvent(QKeyEvent* e)
@@ -80,12 +78,12 @@ void Table::keyPressEvent(QKeyEvent* e)
             printf("At last command\n");
     } else if (a == 0x36) { // c or C
         if (shifted)
-            m_history.do_command(new RemoveElementCommand(8, m_doc));
+            m_history.do_command(new RemoveElementCommand(8, m_view));
         else
-          m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_doc));
+          m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
         update();
     } else if (a == 0x2e) { // l or L
-//          m_history.do_command(new LoadCommand(const QString& file_name, m_doc));
+//          m_history.do_command(new LoadCommand(const QString& file_name, m_view));
     }
     QOpenGLWidget::keyPressEvent(e);
 }

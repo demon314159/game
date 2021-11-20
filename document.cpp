@@ -7,7 +7,6 @@ Document::Document()
     : m_is_dirty(true)
     , m_max_elements(16384)
     , m_elements(0)
-    , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
 {
     m_element_ptr = new Element*[m_max_elements];
 }
@@ -16,7 +15,6 @@ Document::Document(const QString& file_name)
     : m_is_dirty(true)
     , m_max_elements(16384)
     , m_elements(0)
-    , m_dummy(HalfBrickElement(0.0, 0.0, 0.0))
 {
     QString error_message;
     m_element_ptr = new Element*[m_max_elements];
@@ -48,15 +46,16 @@ int Document::facets() const
 
 const Element* Document::element(int ix) const
 {
-    if (m_elements == 0) { // Return this instead of null pointer
-        return &m_dummy;
-    }
+    if (m_elements == 0)
+        return NULL;
     int index = std::min(ix, m_elements -1);
     return m_element_ptr[index];
 }
 
 void Document::add_element(Element* e)
 {
+    if (e == NULL)
+        return;
     if (m_elements >= m_max_elements) {
         double_the_storage();
     }
@@ -67,6 +66,8 @@ void Document::add_element(Element* e)
 
 void Document::add_element(Element* e, int ix)
 {
+    if (e == NULL)
+        return;
     if (m_elements >= m_max_elements) {
         double_the_storage();
     }
@@ -81,9 +82,8 @@ void Document::add_element(Element* e, int ix)
 
 Element* Document::remove_element(int ix)
 {
-    if (m_elements == 0) { // Return this instead of null pointer
-        return &m_dummy;
-    }
+    if (m_elements == 0)
+        return NULL;
     int index = std::min(ix, m_elements - 1);
     Element* e = m_element_ptr[index];
     --m_elements;

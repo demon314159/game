@@ -46,8 +46,18 @@ void View::mouse_select(int sx, int sy)
 {
 //    printf("mouse select(%d, %d)\n", sx, sy);
     int ix = selected_element_ix(sx, sy);
-    if (ix >= 0)
-        printf("selected element %d, subface %d\n", ix, selected_subface(m_doc->element(ix), sx, sy));
+    if (ix >= 0) {
+        int sf = selected_subface(m_doc->element(ix), sx, sy);
+        printf("selected element %d, subface %d\n", ix, sf);
+        const Element* e = m_doc->element(ix);
+        Face f = e->top_sub_face(sf);
+        m_marker_pos.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
+        m_marker_pos.v2 = e->top_level() + 0.5;
+        m_marker_pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
+        m_marker_flag = true;
+    } else {
+        m_marker_flag = false;
+    }
 }
 
 void View::decorate_model()

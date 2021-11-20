@@ -30,7 +30,6 @@ private:
     bool m_is_dirty;
     int m_max_elements;
     int m_elements;
-    Element m_dummy;
     Element** m_element_ptr;
 
     void double_the_storage();

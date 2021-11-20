@@ -78,8 +78,9 @@ void Table::keyPressEvent(QKeyEvent* e)
             printf("At last command\n");
     } else if (a == 0x36) { // c or C
         if (shifted) {
-            if (m_view->get_doc()->elements() > 0) {
-                m_history.do_command(new RemoveElementCommand(0, m_view));
+            int n = m_view->get_doc()->elements();
+            if (n > 0) {
+                m_history.do_command(new RemoveElementCommand(n - 1, m_view));
             } else {
                 printf("no more elements\n");
             }

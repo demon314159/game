@@ -44,9 +44,10 @@ View::View(Document* doc)
 
 void View::mouse_select(int sx, int sy)
 {
-    printf("mouse select(%d, %d)\n", sx, sy);
-//    float max_level = -1.0;
-//    Float3 sel_pos = {0.0, 0.0, 0.0};
+//    printf("mouse select(%d, %d)\n", sx, sy);
+    int ix = selected_element_ix(sx, sy);
+    if (ix >= 0)
+        printf("selected element %d, subface %d\n", ix, selected_subface(m_doc->element(ix), sx, sy));
 }
 
 void View::decorate_model()
@@ -362,10 +363,11 @@ int View::screen_cross_product(Float2 a, Float2 b, int sx, int sy) const
     return ax * by - bx * ay;
 }
 
-const Element* View::selected_element(int sx, int sy) const
+int View::selected_element_ix(int sx, int sy) const
 {
     float max_level = -1000000.0;
     const Element* max_e = NULL;
+    int max_ix = -1;
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
@@ -373,10 +375,14 @@ const Element* View::selected_element(int sx, int sy) const
             if (e->top_level() > max_level) {
                 max_level = e->top_level();
                 max_e = e;
+                max_ix = i;
             }
         }
     }
-    return max_e;
+    if (max_e == NULL)
+        return -1;
+    int sf = selected_subface(max_e, sx, sy);
+    return top_subface_covered(max_e, sf) ? -1 : max_ix;
 }
 
 int View::selected_subface(const Element* e, int sx, int sy) const
@@ -415,3 +421,9 @@ bool View::top_subface_covered(const Element* e, int ix) const
     return false;
 }
 
+float View::distance(Float3 pos1, Float3 pos2) const
+{
+    return sqrt((pos1.v1 - pos2.v1) * (pos1.v1 - pos2.v1)
+              + (pos1.v2 - pos2.v2) * (pos1.v2 - pos2.v2)
+              + (pos1.v3 - pos2.v3) * (pos1.v3 - pos2.v3));
+}

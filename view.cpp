@@ -362,19 +362,56 @@ int View::screen_cross_product(Float2 a, Float2 b, int sx, int sy) const
     return ax * by - bx * ay;
 }
 
-int View::selected_element_ix(int sx, int sy)
+const Element* View::selected_element(int sx, int sy) const
 {
-    float max_level = -1.0;
-    int max_ix = -1;
+    float max_level = -1000000.0;
+    const Element* max_e = NULL;
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (screen_point_inside_face(e->top_face(), sx, sy)) {
             if (e->top_level() > max_level) {
                 max_level = e->top_level();
-                max_ix = i;
+                max_e = e;
             }
         }
     }
-    return max_ix;
+    return max_e;
 }
+
+int View::selected_subface(const Element* e, int sx, int sy) const
+{
+    if (e == NULL)
+        return 0;
+    for (int i = 0; i < e->sub_face_count(); i++)
+        if (screen_point_inside_face(e->top_sub_face(i), sx, sy))
+            return i;
+    return 0;
+}
+
+bool View::top_face_covered(const Element* e) const
+{
+    if (e == NULL)
+        return true;
+    for (int i = 0; i < e->sub_face_count(); i++)
+        if (top_subface_covered(e, i))
+            return true;
+    return false;
+}
+
+bool View::top_subface_covered(const Element* e, int ix) const
+{
+    if (e == NULL)
+        return true;
+    Face sf = e->top_sub_face(ix);
+    Float3 pos;
+    pos.v1 = (sf.v1.v1 + sf.v3.v1) / 2.0;
+    pos.v2 = e->top_level() + 0.5;
+    pos.v3 = (sf.v1.v3 + sf.v3.v3) / 2.0;
+    for (int i = 0; i < m_doc->elements(); i++) {
+        if (m_doc->element(i)->contains(pos))
+            return true;
+    }
+    return false;
+}
+

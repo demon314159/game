@@ -65,17 +65,9 @@ void Table::keyPressEvent(QKeyEvent* e)
             m_view->rotate_home();
         update();
     } else if (a == 0x1e) { // u or U
-        if (!m_history.end_of_undo()) {
-            m_history.undo_command();
-            update();
-        } else
-            printf("At first command\n");
+        undo();
     } else if (a == 0x1b) { // r or R
-        if (!m_history.end_of_redo()) {
-            m_history.redo_command();
-            update();
-        } else
-            printf("At last command\n");
+        redo();
     } else if (a == 0x36) { // c or C
         if (shifted) {
             int n = m_view->get_doc()->elements();
@@ -122,3 +114,20 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
     QOpenGLWidget::mouseReleaseEvent(e);
 }
 
+void Table::undo()
+{
+    if (!m_history.end_of_undo()) {
+        m_history.undo_command();
+        update();
+    } else
+        printf("At first command\n");
+}
+
+void Table::redo()
+{
+    if (!m_history.end_of_redo()) {
+        m_history.redo_command();
+        update();
+    } else
+        printf("At last command\n");
+}

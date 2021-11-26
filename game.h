@@ -25,10 +25,18 @@ private:
 
 private slots:
     void pb1();
+    void pb2();
+    void pb3();
+    void pb4();
+    void pb5();
 
 private:
     Table* m_table = nullptr;
     QPushButton* m_pb1 = nullptr;
+    QPushButton* m_pb2 = nullptr;
+    QPushButton* m_pb3 = nullptr;
+    QPushButton* m_pb4 = nullptr;
+    QPushButton* m_pb5 = nullptr;
 };
 
 #endif // _GAME_H_

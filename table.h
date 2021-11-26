@@ -17,6 +17,8 @@ class Table: public QOpenGLWidget
 public:
     Table(QWidget *parent = nullptr);
     ~Table();
+    void undo();
+    void redo();
 
 protected:
     void initializeGL() override;

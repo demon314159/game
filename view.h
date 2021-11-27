@@ -8,6 +8,7 @@
 #include "document.h"
 #include "cad_model.h"
 #include "document.h"
+#include "choose.h"
 
 class View: protected QOpenGLFunctions
 {
@@ -33,7 +34,6 @@ protected:
     void check_storage();
     void copy_facets();
     void render_facets();
-    void clear_marker();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
     int selected_element_ix(int sx, int sy) const;
@@ -44,6 +44,7 @@ protected:
     float distance(Float3 pos1, Float3 pos2) const;
 
 private:
+    Choose m_choose;
     int m_max_vertices;
     int m_vertices;
     Document* m_doc;
@@ -58,9 +59,6 @@ private:
     float m_camz;
     float m_xrot;
     float m_yrot;
-    bool m_marker_flag;
-    Float3 m_marker_pos;
-    CadModel m_marker_model;
     QOpenGLShaderProgram m_program;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;

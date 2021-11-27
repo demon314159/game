@@ -18,7 +18,8 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_max_vertices(1024 * 1024)
+    : m_choose()
+    , m_max_vertices(1024 * 1024)
     , m_vertices(0)
     , m_doc(doc)
     , m_model(new CadModel(doc))
@@ -31,9 +32,6 @@ View::View(Document* doc)
     , m_camz(8.0)
     , m_xrot(0.0)
     , m_yrot(0.0)
-    , m_marker_flag(false)
-    , m_marker_pos({0.0, 0.0, 0.0})
-    , m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
@@ -51,12 +49,13 @@ void View::mouse_select(int sx, int sy)
         printf("selected element %d, subface %d\n", ix, sf);
         const Element* e = m_doc->element(ix);
         Face f = e->top_sub_face(sf);
-        m_marker_pos.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
-        m_marker_pos.v2 = e->top_level() + 0.5;
-        m_marker_pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
-        m_marker_flag = true;
+        Float3 pos;
+        pos.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
+        pos.v2 = e->top_level();
+        pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
+        m_choose.select_location(pos);
     } else {
-        m_marker_flag = false;
+        m_choose.select_no_location();
     }
 }
 
@@ -71,7 +70,7 @@ void View::decorate_model()
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
-    m_model->add(m_marker_model, 0.0, 0.0, 0.0);
+    m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
     m_radius = fmax(m_radius, 2.0);
@@ -191,11 +190,6 @@ void View::check_storage()
     m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
 }
 
-void View::clear_marker()
-{
-    m_marker_flag = false;
-}
-
 void View::paint()
 {
 #ifdef VERBOSE
@@ -209,7 +203,7 @@ void View::paint()
         check_storage();
         copy_facets();
         m_doc->make_clean();
-        clear_marker();
+        m_choose.select_no_location();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -228,8 +222,9 @@ void View::paint()
     m_program.setUniformValue("rot_matrix", matrix);
     // Animate marker
     QMatrix4x4 marker_matrix;
-    if (m_marker_flag) {
-        marker_matrix.translate(m_marker_pos.v1, (m_marker_pos.v2 - 0.5) * 2.0 / 3.0, m_marker_pos.v3);
+    if (m_choose.marker_visible()) {
+        Float3 mp = m_choose.marker_position();
+        marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
     } else {
         marker_matrix.translate(m_center.v1, -0.04, m_center.v3);
     }

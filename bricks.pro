@@ -19,6 +19,7 @@ HEADERS      += game.h \
                 element.h \
                 command.h \
                 history.h \
+                choose.h \
                 document.h \
                 bin_interface.h \
                 char_interface.h \
@@ -39,6 +40,7 @@ SOURCES      += main.cpp \
                 element.cpp \
                 command.cpp \
                 history.cpp \
+                choose.cpp \
                 document.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

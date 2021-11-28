@@ -432,3 +432,8 @@ float View::distance(Float3 pos1, Float3 pos2) const
               + (pos1.v2 - pos2.v2) * (pos1.v2 - pos2.v2)
               + (pos1.v3 - pos2.v3) * (pos1.v3 - pos2.v3));
 }
+
+bool View::new_element_chosen(Float3& pos, int& span, int& orientation)
+{
+    return m_choose.new_element_chosen(pos, span, orientation);
+}

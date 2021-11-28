@@ -28,6 +28,7 @@ protected:
     void keyReleaseEvent(QKeyEvent* e) override;
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void spawn_add_element_command();
 private:
     View* m_view;
     History m_history;

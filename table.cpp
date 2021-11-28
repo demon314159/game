@@ -96,11 +96,28 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
+void Table::spawn_add_element_command()
+{
+        Float3 pos;
+        int span;
+        int orientation;
+        if (m_view->new_element_chosen(pos, span, orientation)) {
+            if (span == 0) {
+                m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+            } else if (span == 1) {
+                m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+            } else {
+                printf("Adding element of span %d ?\n", span);
+            }
+        }
+}
+
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
         m_view->mouse_select(e->pos().x(), e->pos().y());
-       update();
+        spawn_add_element_command();
+        update();
     } else if (e->button() == Qt::RightButton) {
     }
     QOpenGLWidget::mousePressEvent(e);

@@ -1,6 +1,7 @@
 
 #include "choose.h"
 #include "paint_can.h"
+#include "math.h"
 
 Choose::Choose()
     : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
@@ -57,3 +58,21 @@ const CadModel& Choose::marker_model() const
     return m_marker_model;
 }
 
+bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)
+{
+    if (m_first_selected && m_second_selected && (m_first_pos.v2 == m_second_pos.v2)) {
+        pos.v1 = (m_first_pos.v1 + m_second_pos.v1) / 2.0;
+        pos.v2 = (m_first_pos.v2 + m_second_pos.v2) / 2.0;
+        pos.v3 = (m_first_pos.v3 + m_second_pos.v3) / 2.0;
+        if (m_first_pos.v1 == m_second_pos.v1) {
+            orientation = 1;
+            span = round(fabs(m_first_pos.v3 - m_second_pos.v3));
+        } else {
+            orientation = 0;
+            span = round(fabs(m_first_pos.v1 - m_second_pos.v1));
+        }
+        return true;
+    } else {
+        return false;
+    }
+}

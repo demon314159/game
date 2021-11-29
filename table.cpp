@@ -157,6 +157,8 @@ void Table::redo_command()
 
 void Table::new_command()
 {
+    m_history.do_command(new NewCommand(m_view));
+    update();
 }
 
 void Table::load_command()

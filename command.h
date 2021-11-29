@@ -54,4 +54,17 @@ private:
     Document* m_replaced_doc;
 };
 
+class NewCommand: public Command
+{
+public:
+    NewCommand(View* view);
+    ~NewCommand();
+    void execute() override;
+    void unexecute() override;
+private:
+    View* m_view;
+    Document* m_new_doc;
+    Document* m_replaced_doc;
+};
+
 #endif // _COMMAND_H_

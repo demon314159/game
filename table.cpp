@@ -161,7 +161,13 @@ void Table::new_command()
 
 void Table::load_command()
 {
-    m_history.do_command(new LoadCommand(QString("other_house.brk"), m_view));
+    QString file_name = QFileDialog::getOpenFileName(NULL,
+        tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
+    if (file_name.length() == 0) {
+        printf("No file selected\n");
+        return;
+    }
+    m_history.do_command(new LoadCommand(file_name, m_view));
     update();
 }
 
@@ -173,13 +179,10 @@ void Table::save_command()
         printf("No file selected\n");
         return;
     }
-    printf("Saving file '%s' ...\n", file_name.toLatin1().data());
     Document* doc = m_view->get_doc();
     QString error_msg;
-    if (doc->save(file_name, error_msg)) {
-        printf("   done\n");
-    } else {
-        printf("   <<< error: %s >>>\n", error_msg.toLatin1().data());
+    if (!doc->save(file_name, error_msg)) {
+        printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
     }
 }
 

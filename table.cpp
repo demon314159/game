@@ -3,10 +3,11 @@
 //
 #include "table.h"
 #include <QMouseEvent>
+#include <QFileDialog>
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_view(new View(new Document(QString("house.txt"))))
+    , m_view(new View(new Document(QString("house.brk"))))
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
@@ -65,9 +66,9 @@ void Table::keyPressEvent(QKeyEvent* e)
             m_view->rotate_home();
         update();
     } else if (a == 0x1e) { // u or U
-        undo();
+        undo_command();
     } else if (a == 0x1b) { // r or R
-        redo();
+        redo_command();
     } else if (a == 0x36) { // c or C
         if (shifted) {
             int n = m_view->get_doc()->elements();
@@ -80,9 +81,14 @@ void Table::keyPressEvent(QKeyEvent* e)
         else
           m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
         update();
+    } else if (a == 0x39) { // n or N
+        new_command();
     } else if (a == 0x2e) { // l or L
-          m_history.do_command(new LoadCommand(QString("other_house.txt"), m_view));
-          update();
+        load_command();
+    } else if (a == 0x27) { // s or S
+        save_command();
+    } else {
+        printf("unknown key %02x\n", a);
     }
     QOpenGLWidget::keyPressEvent(e);
 }
@@ -131,7 +137,7 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
     QOpenGLWidget::mouseReleaseEvent(e);
 }
 
-void Table::undo()
+void Table::undo_command()
 {
     if (!m_history.end_of_undo()) {
         m_history.undo_command();
@@ -140,7 +146,7 @@ void Table::undo()
         printf("At first command\n");
 }
 
-void Table::redo()
+void Table::redo_command()
 {
     if (!m_history.end_of_redo()) {
         m_history.redo_command();
@@ -148,3 +154,32 @@ void Table::redo()
     } else
         printf("At last command\n");
 }
+
+void Table::new_command()
+{
+}
+
+void Table::load_command()
+{
+    m_history.do_command(new LoadCommand(QString("other_house.brk"), m_view));
+    update();
+}
+
+void Table::save_command()
+{
+    QString file_name = QFileDialog::getSaveFileName(NULL,
+            tr("Save Brick File"), "", tr("BRK Files (*.brk)"));
+    if (file_name.length() == 0) {
+        printf("No file selected\n");
+        return;
+    }
+    printf("Saving file '%s' ...\n", file_name.toLatin1().data());
+    Document* doc = m_view->get_doc();
+    QString error_msg;
+    if (doc->save(file_name, error_msg)) {
+        printf("   done\n");
+    } else {
+        printf("   <<< error: %s >>>\n", error_msg.toLatin1().data());
+    }
+}
+

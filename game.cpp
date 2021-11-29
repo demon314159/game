@@ -57,24 +57,27 @@ void Game::initializeWindow()
 
 void Game::pb1()
 {
+    m_table->new_command();
 }
 
 void Game::pb2()
 {
+    m_table->load_command();
 }
 
 void Game::pb3()
 {
+    m_table->save_command();
 }
 
 void Game::pb4()
 {
-    m_table->undo();
+    m_table->undo_command();
 }
 
 void Game::pb5()
 {
-    m_table->redo();
+    m_table->redo_command();
 }
 
 

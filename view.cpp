@@ -59,10 +59,11 @@ void View::mouse_select(int sx, int sy)
         BoundingBox bb = m_model->bounding_box();
 
         Face plane;
-        float xlo = bb.vmin.v1 - 1.0;
-        float xhi = bb.vmax.v1 + 1.0;
-        float zlo = bb.vmin.v3 - 1.0;
-        float zhi = bb.vmax.v3 + 1.0;
+        float rim = 0.0;
+        float xlo = bb.vmin.v1 - rim;
+        float xhi = bb.vmax.v1 + rim;
+        float zlo = bb.vmin.v3 - rim;
+        float zhi = bb.vmax.v3 + rim;
 
         plane.v1.v1 = xlo;
         plane.v1.v2 = 0.0;
@@ -411,25 +412,42 @@ Float2 View::world2screen(Float3 point) const
 bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
 {
     // transform the four vertices of f
-    // perform the four cross products in counter clockwise order
     Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3});
     Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3});
     Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
     Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
-    int cp1 = screen_cross_product(a, b, sx, sy);
-    int cp2 = screen_cross_product(b, c, sx, sy);
-    int cp3 = screen_cross_product(c, d, sx, sy);
-    int cp4 = screen_cross_product(d, a, sx, sy);
-    return (cp1 < 0 && cp2 < 0 && cp3 < 0 && cp4 < 0);
+    Float2 pt = {(float) sx, (float) sy};
+    float area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
+    float area2 = quad_area(a, b, c, d);
+    return area1 <= (area2 + 1.0);
 }
 
-int View::screen_cross_product(Float2 a, Float2 b, int sx, int sy) const
+float View::len(Float2 v1, Float2 v2) const
 {
-    int ax = a.v1 - sx;
-    int ay = a.v2 - sy;
-    int bx = b.v1 - sx;
-    int by = b.v2 - sy;
-    return ax * by - bx * ay;
+    float a = v1.v1 - v2.v1;
+    float b = v1.v2 - v2.v2;
+    return sqrt(a * a + b * b);
+}
+
+float View::tri_area(Float2 v1, Float2 v2, Float2 v3) const
+{
+    float a = len(v1, v2);
+    float b = len(v2, v3);
+    float c = len(v3, v1);
+    float s = (a + b + c) / 2.0;
+    return sqrt(s * (s - a) * (s - b) * (s - c));
+}
+
+float View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
+{
+    float a = len(v1, v2);
+    float b = len(v2, v3);
+    float c = len(v3, v4);
+    float d = len(v4, v1);
+    float p = len(v1, v3);
+    float q = len(v2, v4);
+    float k = b * b + d * d - a * a - c * c;
+    return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
 int View::selected_element_ix(int sx, int sy) const

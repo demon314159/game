@@ -26,7 +26,7 @@ void Choose::select_no_location()
 
 void Choose::select_location(Float3 pos)
 {
-    printf("choose location (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
+//    printf("choose location (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
     if (m_first_selected && !m_second_selected) {
         m_second_selected = true;
         m_second_pos = pos;

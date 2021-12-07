@@ -87,6 +87,9 @@ void Table::keyPressEvent(QKeyEvent* e)
         load_command();
     } else if (a == 0x27) { // s or S
         save_command();
+    } else if (a == 0x09) {
+        m_view->mouse_unselect();
+        update();
     } else {
         printf("unknown key %02x\n", a);
     }
@@ -142,8 +145,9 @@ void Table::undo_command()
     if (!m_history.end_of_undo()) {
         m_history.undo_command();
         update();
-    } else
-        printf("At first command\n");
+    } else {
+//        printf("At first command\n");
+    }
 }
 
 void Table::redo_command()
@@ -151,8 +155,9 @@ void Table::redo_command()
     if (!m_history.end_of_redo()) {
         m_history.redo_command();
         update();
-    } else
-        printf("At last command\n");
+    } else {
+//        printf("At last command\n");
+    }
 }
 
 void Table::new_command()

@@ -55,7 +55,71 @@ void View::mouse_select(int sx, int sy)
         pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_location(pos);
     } else {
-        m_choose.select_no_location();
+
+        BoundingBox bb = m_model->bounding_box();
+
+        Face plane;
+        float xlo = bb.vmin.v1 - 1.0;
+        float xhi = bb.vmax.v1 + 1.0;
+        float zlo = bb.vmin.v3 - 1.0;
+        float zhi = bb.vmax.v3 + 1.0;
+
+        plane.v1.v1 = xlo;
+        plane.v1.v2 = 0.0;
+        plane.v1.v3 = zlo;
+        plane.v2.v1 = xlo;
+        plane.v2.v2 = 0.0;
+        plane.v2.v3 = zhi;
+        plane.v3.v1 = xhi;
+        plane.v3.v2 = 0.0;
+        plane.v3.v3 = zhi;
+        plane.v4.v1 = xhi;
+        plane.v4.v2 = 0.0;
+        plane.v4.v3 = zlo;
+        if (screen_point_inside_face(plane, sx, sy)) {
+            printf("Inside table\n");
+            Float3 pos = screen_point_on_floor(plane, sx, sy);
+            printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
+            m_choose.select_location(pos);
+
+
+        } else {
+            printf("Outside table\n");
+            m_choose.select_no_location();
+        }
+    }
+}
+
+Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
+{
+    printf("screen_point_on_floor((%f, %f) (%f, %f))\n", f.v1.v1, f.v1.v3, f.v3.v1, f.v3.v3);
+    Face box1 = f;
+    Face box2 = f;
+    if (fabs(f.v2.v3 - f.v1.v3) >= 1.0) { // zsplit possible
+        printf("z split\n");
+        box1.v2.v3 = (f.v2.v3 + f.v1.v3) / 2.0;
+        box1.v3.v3 = (f.v3.v3 + f.v4.v3) / 2.0;
+        box2.v1.v3 = (f.v1.v3 + f.v2.v3) / 2.0;
+        box2.v4.v3 = (f.v3.v3 + f.v4.v3) / 2.0;
+        if (screen_point_inside_face(box1, sx, sy)) {
+            return screen_point_on_floor(box1, sx, sy);
+        } else {
+            return screen_point_on_floor(box2, sx, sy);
+        }
+    } else if (fabs(f.v4.v1 - f.v1.v1) >= 1.0) { // xsplit possible
+        printf("x split\n");
+        box1.v4.v1 = (f.v4.v1 + f.v1.v1) / 2.0;
+        box1.v3.v1 = (f.v3.v1 + f.v2.v1) / 2.0;
+        box2.v1.v1 = (f.v1.v1 + f.v4.v1) / 2.0;
+        box2.v2.v1 = (f.v2.v1 + f.v3.v1) / 2.0;
+        if (screen_point_inside_face(box1, sx, sy)) {
+            return screen_point_on_floor(box1, sx, sy);
+        } else {
+            return screen_point_on_floor(box2, sx, sy);
+        }
+    } else {
+        printf("Splitting done\n");
+        return {(float) round((f.v1.v1 + f.v4.v1) / 2.0), 0.0, (float) round((f.v1.v3 + f.v2.v3) / 2.0)};
     }
 }
 

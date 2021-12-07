@@ -41,6 +41,7 @@ protected:
     int selected_subface(const Element* e, int sx, int sy) const;
     Float2 world2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy) const;
+    Float3 screen_point_on_floor(const Face& f, int sx, int sy) const;
     int screen_cross_product(Float2 a, Float2 b, int sx, int sy) const;
     float distance(Float3 pos1, Float3 pos2) const;
 

@@ -383,12 +383,12 @@ BoundingBox CadModel::bounding_box() const
 {
     BoundingBox bb;
     if (m_facet_count == 0) {
-        bb.vmin.v1 = -1.0;
+        bb.vmin.v1 = -0.5;
         bb.vmin.v2 = 0.0;
-        bb.vmin.v3 = -1.0;
-        bb.vmax.v1 = 1.0;
+        bb.vmin.v3 = -0.5;
+        bb.vmax.v1 = 0.5;
         bb.vmax.v2 = 1.0;
-        bb.vmax.v3 = 1.0;
+        bb.vmax.v3 = 0.5;
         return bb;
     }
     bb.vmin = facet_v1(0);

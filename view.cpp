@@ -19,6 +19,7 @@ struct VertexData
 
 View::View(Document* doc)
     : m_choose()
+    , m_diagnostic(false)
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
     , m_doc(doc)
@@ -106,15 +107,18 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
         float midz = (float) round((f.v2.v3 - f.v1.v3) / 2.0);
         box1.v2.v3 = f.v1.v3 + midz;
         box1.v3.v3 = f.v4.v3 + midz;
-        box2.v1.v3 = f.v2.v3 - midz;
-        box2.v4.v3 = f.v3.v3 - midz;
+        box2.v1.v3 = f.v1.v3 + midz;
+        box2.v4.v3 = f.v4.v3 + midz;
         if (screen_point_inside_face(box1, sx, sy)) {
             return screen_point_on_floor(box1, sx, sy);
-        } else {
+        } else if (screen_point_inside_face(box2, sx, sy)) {
             return screen_point_on_floor(box2, sx, sy);
+        } else {
+            printf("<<< Can't zsplit because the point is in neither box. >>>\n");
+            return {0.0, 0.0, 0.0};
         }
     } else if (fabs(f.v4.v1 - f.v1.v1) > 1.1) { // xsplit possible
-  //      printf("x split\n");
+//        printf("x split\n");
         float midx = (float) round((f.v4.v1 - f.v1.v1) / 2.0);
         box1.v4.v1 = f.v1.v1 + midx;
         box1.v3.v1 = f.v2.v1 + midx;
@@ -122,8 +126,11 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
         box2.v2.v1 = f.v3.v1 - midx;
         if (screen_point_inside_face(box1, sx, sy)) {
             return screen_point_on_floor(box1, sx, sy);
-        } else {
+        } else if (screen_point_inside_face(box2, sx, sy)) {
             return screen_point_on_floor(box2, sx, sy);
+        } else {
+            printf("<<< Can't xsplit because the point is in neither box. >>>\n");
+            return {0.0, 0.0, 0.0};
         }
     } else {
 //        printf("Splitting done\n");
@@ -424,36 +431,36 @@ bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
     Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
     Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
     Float2 pt = {(float) sx, (float) sy};
-    float area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
-    float area2 = quad_area(a, b, c, d);
-    return area1 <= (area2 + 1.0);
+    double area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
+    double area2 = quad_area(a, b, c, d);
+    return area1 <= (area2 + 1.00);
 }
 
-float View::len(Float2 v1, Float2 v2) const
+double View::len(Float2 v1, Float2 v2) const
 {
-    float a = v1.v1 - v2.v1;
-    float b = v1.v2 - v2.v2;
+    double a = v1.v1 - v2.v1;
+    double b = v1.v2 - v2.v2;
     return sqrt(a * a + b * b);
 }
 
-float View::tri_area(Float2 v1, Float2 v2, Float2 v3) const
+double View::tri_area(Float2 v1, Float2 v2, Float2 v3) const
 {
-    float a = len(v1, v2);
-    float b = len(v2, v3);
-    float c = len(v3, v1);
-    float s = (a + b + c) / 2.0;
+    double a = len(v1, v2);
+    double b = len(v2, v3);
+    double c = len(v3, v1);
+    double s = (a + b + c) / 2.0;
     return sqrt(s * (s - a) * (s - b) * (s - c));
 }
 
-float View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
+double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
 {
-    float a = len(v1, v2);
-    float b = len(v2, v3);
-    float c = len(v3, v4);
-    float d = len(v4, v1);
-    float p = len(v1, v3);
-    float q = len(v2, v4);
-    float k = b * b + d * d - a * a - c * c;
+    double a = len(v1, v2);
+    double b = len(v2, v3);
+    double c = len(v3, v4);
+    double d = len(v4, v1);
+    double p = len(v1, v3);
+    double q = len(v2, v4);
+    double k = b * b + d * d - a * a - c * c;
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 

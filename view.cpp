@@ -433,6 +433,20 @@ Float2 View::world2screen(Float3 point) const
     return res;
 }
 
+float View::min4(float a, float b, float c, float d) const
+{
+    float u = std::min(a, b);
+    float v = std::min(c, d);
+    return std::min(u, v);
+}
+
+float View::max4(float a, float b, float c, float d) const
+{
+    float u = std::max(a, b);
+    float v = std::max(c, d);
+    return std::max(u, v);
+}
+
 bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
 {
     // transform the four vertices of f
@@ -441,6 +455,16 @@ bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
     Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
     Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
     Float2 pt = {(float) sx, (float) sy};
+
+    float xmin = min4(a.v1, b.v1, c.v1, d.v1);
+    float xmax = max4(a.v1, b.v1, c.v1, d.v1);
+    float ymin = min4(a.v2, b.v2, c.v2, d.v2);
+    float ymax = max4(a.v2, b.v2, c.v2, d.v2);
+    if (pt.v1 < xmin || pt.v1 > xmax)
+        return false;
+    if (pt.v2 < ymin || pt.v2 > ymax)
+        return false;
+
     double area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
     double area2 = quad_area(a, b, c, d);
     return area1 <= (area2 + 1.00);
@@ -479,12 +503,10 @@ bool View::no_part_of_any_element_selected(int sx, int sy) const
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (e->top_level() > 0.5) {
-            for (int j = 0; j < 6; j++) {
-                Face f = e->face(j);
-                if (screen_point_inside_face(f, sx, sy))
-                    return false;
-            }
+        for (int j = 0; j < 6; j++) {
+            Face f = e->face(j);
+            if (screen_point_inside_face(f, sx, sy))
+                return false;
         }
     }
     return true;
@@ -546,13 +568,6 @@ bool View::top_subface_covered(const Element* e, int ix) const
             return true;
     }
     return false;
-}
-
-float View::distance(Float3 pos1, Float3 pos2) const
-{
-    return sqrt((pos1.v1 - pos2.v1) * (pos1.v1 - pos2.v1)
-              + (pos1.v2 - pos2.v2) * (pos1.v2 - pos2.v2)
-              + (pos1.v3 - pos2.v3) * (pos1.v3 - pos2.v3));
 }
 
 bool View::new_element_chosen(Float3& pos, int& span, int& orientation)

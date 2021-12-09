@@ -45,7 +45,8 @@ protected:
     Float2 world2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy) const;
     Float3 screen_point_on_floor(const Face& f, int sx, int sy) const;
-    float distance(Float3 pos1, Float3 pos2) const;
+    float min4(float a, float b, float c, float d) const;
+    float max4(float a, float b, float c, float d) const;
     double len(Float2 v1, Float2 v2) const;
     double tri_area(Float2 v1, Float2 v2, Float2 v3) const;
     double quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const;

@@ -102,9 +102,16 @@ void View::mouse_select(int sx, int sy)
 int View::mouse_delete(int sx, int sy)
 {
 //    printf("mouse delete(%d, %d)\n", sx, sy);
-
     m_choose.select_no_location();
-    return selected_element_ix(sx, sy);
+    int ix = selected_element_ix(sx, sy);
+    if (ix < 0)
+        return -1;
+    const Element* e = m_doc->element(ix);
+    if (e == NULL)
+        return -1;
+    if (top_face_covered(e))
+        return -1;
+    return ix;
 }
 
 Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
@@ -464,7 +471,6 @@ bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
         return false;
     if (pt.v2 < ymin || pt.v2 > ymax)
         return false;
-
     double area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
     double area2 = quad_area(a, b, c, d);
     return area1 <= (area2 + 1.00);

@@ -32,6 +32,7 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void spawn_add_element_command();
+    void spawn_delete_element_command(int ix);
 private:
     View* m_view;
     History m_history;

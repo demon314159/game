@@ -99,6 +99,14 @@ void View::mouse_select(int sx, int sy)
     }
 }
 
+int View::mouse_delete(int sx, int sy)
+{
+//    printf("mouse delete(%d, %d)\n", sx, sy);
+
+    m_choose.select_no_location();
+    return selected_element_ix(sx, sy);
+}
+
 Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
 {
 //    printf("screen_point_on_floor((%f, %f) (%f, %f))\n", f.v1.v1, f.v1.v3, f.v3.v1, f.v3.v3);

@@ -121,6 +121,13 @@ void Table::spawn_add_element_command()
         }
 }
 
+void Table::spawn_delete_element_command(int ix)
+{
+    if (ix >= 0) {
+        m_history.do_command(new RemoveElementCommand(ix, m_view));
+    }
+}
+
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
@@ -128,6 +135,9 @@ void Table::mousePressEvent(QMouseEvent* e)
         spawn_add_element_command();
         update();
     } else if (e->button() == Qt::RightButton) {
+        int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());
+        spawn_delete_element_command(ix);
+        update();
     }
     QOpenGLWidget::mousePressEvent(e);
 }

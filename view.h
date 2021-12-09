@@ -26,6 +26,7 @@ public:
     void zoom(float factor);
     void zoom_home();
     void mouse_select(int sx, int sy);
+    int mouse_delete(int sx, int sy);
     void mouse_unselect();
     bool new_element_chosen(Float3& pos, int& span, int& orientation);
 

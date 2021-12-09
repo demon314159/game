@@ -15,6 +15,13 @@
 #define SOUTH 2
 #define EAST  3
 
+#define BOTTOM_FACE 0
+#define TOP_FACE    1
+#define LEFT_FACE   2
+#define RIGHT_FACE  3
+#define FRONT_FACE  4
+#define BACK_FACE   5
+
 class Element
 {
 public:
@@ -30,14 +37,15 @@ public:
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
     virtual float top_level() const;
-    virtual Face top_face() const;
+    virtual Face face(int ix) const;
     virtual int sub_face_count() const;
     virtual Face top_sub_face(int ix) const;
     virtual bool contains(Float3 pos) const;
-    Face gen_face(float xf, float yf, float zf) const;
-    Face gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
+    Face gen_face(int ix, float xf, float yf, float zf) const;
+    Face gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
     bool gen_contains(Float3 pos, float xf, float yf, float zf) const;
-
+protected:
+    Float3 face_vertex(float xf, float yf, float zf) const;
 private:
     Float3 m_pos;
     static CadModel m_default_model;
@@ -58,7 +66,7 @@ public:
     BrickElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
-    Face top_face() const override;
+    Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
@@ -78,7 +86,7 @@ public:
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
     float top_level() const override;
-    Face top_face() const override;
+    Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
@@ -99,7 +107,7 @@ public:
     LedgeElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
-    Face top_face() const override;
+    Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;

@@ -38,6 +38,7 @@ protected:
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
+    bool no_part_of_any_element_selected(int sx, int sy) const;
     int selected_element_ix(int sx, int sy) const;
     int selected_subface(const Element* e, int sx, int sy) const;
     Float2 world2screen(Float3 point) const;
@@ -50,7 +51,6 @@ protected:
 
 private:
     Choose m_choose;
-    bool m_diagnostic;
     int m_max_vertices;
     int m_vertices;
     Document* m_doc;

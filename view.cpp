@@ -19,7 +19,6 @@ struct VertexData
 
 View::View(Document* doc)
     : m_choose()
-    , m_diagnostic(false)
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
     , m_doc(doc)
@@ -84,11 +83,14 @@ void View::mouse_select(int sx, int sy)
         plane.v4.v2 = 0.0;
         plane.v4.v3 = zlo;
         if (screen_point_inside_face(plane, sx, sy)) {
-//            printf("Inside table\n");
-            Float3 pos = screen_point_on_floor(plane, sx, sy);
-//            printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
-            m_choose.select_location(pos);
-
+            if (no_part_of_any_element_selected(sx, sy)) {
+    //            printf("Inside table\n");
+                Float3 pos = screen_point_on_floor(plane, sx, sy);
+    //            printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
+                m_choose.select_location(pos);
+            } else {
+                m_choose.select_no_location();
+            }
 
         } else {
 //            printf("Outside table\n");
@@ -464,6 +466,22 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
+bool View::no_part_of_any_element_selected(int sx, int sy) const
+{
+
+    for (int i = 0; i < m_doc->elements(); i++) {
+        const Element* e = m_doc->element(i);
+        if (e->top_level() > 0.5) {
+            for (int j = 0; j < 6; j++) {
+                Face f = e->face(j);
+                if (screen_point_inside_face(f, sx, sy))
+                    return false;
+            }
+        }
+    }
+    return true;
+}
+
 int View::selected_element_ix(int sx, int sy) const
 {
     float max_level = -1000000.0;
@@ -472,7 +490,7 @@ int View::selected_element_ix(int sx, int sy) const
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (screen_point_inside_face(e->top_face(), sx, sy)) {
+        if (screen_point_inside_face(e->face(TOP_FACE), sx, sy)) {
             if (e->top_level() > max_level) {
                 max_level = e->top_level();
                 max_e = e;

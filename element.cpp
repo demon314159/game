@@ -33,25 +33,41 @@ const CadModel& Element::model() const
     return m_default_model;
 }
 
-Face Element::gen_face(float xf, float yf, float zf) const
+Float3 Element::face_vertex(float xf, float yf, float zf) const
+{
+    Float3 v;
+    v.v1 = (m_pos.v1 - xf);
+    v.v2 = (m_pos.v2 + yf) * dimh;
+    v.v3 = (m_pos.v3 - zf);
+    return v;
+}
+
+Face Element::gen_face(int ix, float xf, float yf, float zf) const
 {
     Face f;
-    f.v1.v1 = (m_pos.v1 - xf);
-    f.v1.v2 = (m_pos.v2 + yf) * dimh;
-    f.v1.v3 = (m_pos.v3 - zf);
-    f.v2.v1 = (m_pos.v1 - xf);
-    f.v2.v2 = (m_pos.v2 + yf) * dimh;
-    f.v2.v3 = (m_pos.v3 + zf);
-    f.v3.v1 = (m_pos.v1 + xf);
-    f.v3.v2 = (m_pos.v2 + yf) * dimh;
-    f.v3.v3 = (m_pos.v3 + zf);
-    f.v4.v1 = (m_pos.v1 + xf);
-    f.v4.v2 = (m_pos.v2 + yf) * dimh;
-    f.v4.v3 = (m_pos.v3 - zf);
+    if (ix == TOP_FACE || ix == BOTTOM_FACE) {
+        float yy = ix == TOP_FACE ? yf : -yf;
+        f.v1 = face_vertex(-xf, yy, -zf);
+        f.v2 = face_vertex(-xf, yy, zf);
+        f.v3 = face_vertex(xf, yy, zf);
+        f.v4 = face_vertex(xf, yy, -zf);
+    } else if (ix == LEFT_FACE || ix == RIGHT_FACE) {
+        float xx = ix == RIGHT_FACE ? xf : -xf;
+        f.v1 = face_vertex(xx, yf, -zf);
+        f.v2 = face_vertex(xx, -yf, -zf);
+        f.v3 = face_vertex(xx, -yf, zf);
+        f.v4 = face_vertex(xx, yf, zf);
+    } else { // FRONT_FACE or BACK_FACE
+        float zz = ix == FRONT_FACE ? zf : -zf;
+        f.v1 = face_vertex(-xf, yf, zz);
+        f.v2 = face_vertex(-xf, -yf, zz);
+        f.v3 = face_vertex(xf, -yf, zz);
+        f.v4 = face_vertex(xf, yf, zz);
+    }
     return f;
 }
 
-Face Element::gen_sub_face(float xf, float yf, float zf, float xoff, float zoff) const
+Face Element::gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const
 {
     Face f;
     f.v1.v1 = (m_pos.v1 - xf + xoff);
@@ -91,9 +107,9 @@ float Element::top_level() const
     return m_pos.v2 + 0.5;
 }
 
-Face Element::top_face() const
+Face Element::face(int ix) const
 {
-    return gen_face(0.5, 0.5, 0.5);
+    return gen_face(ix, 0.5, 0.5, 0.5);
 }
 
 int Element::sub_face_count() const
@@ -104,7 +120,7 @@ int Element::sub_face_count() const
 Face Element::top_sub_face(int ix) const
 {
     (void) ix;
-    return top_face();
+    return face(TOP_FACE);
 }
 
 bool Element::contains(Float3 pos) const
@@ -147,12 +163,12 @@ const CadModel& BrickElement::model() const
     return m_model_ew;
 }
 
-Face BrickElement::top_face() const
+Face BrickElement::face(int ix) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
-    return gen_face(xf, yf, zf);
+    return gen_face(ix, xf, yf, zf);
 }
 
 int BrickElement::sub_face_count() const
@@ -167,7 +183,7 @@ Face BrickElement::top_sub_face(int ix) const
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-    return gen_sub_face(xf, yf, zf, xoff, zoff);
+    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 bool BrickElement::contains(Float3 pos) const
@@ -225,12 +241,12 @@ float WindowElement::top_level() const
     return pos.v2 + m_height / 2.0;
 }
 
-Face WindowElement::top_face() const
+Face WindowElement::face(int ix) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = m_height / 2.0;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    return gen_face(xf, yf, zf);
+    return gen_face(ix, xf, yf, zf);
 }
 
 int WindowElement::sub_face_count() const
@@ -245,7 +261,7 @@ Face WindowElement::top_sub_face(int ix) const
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-    return gen_sub_face(xf, yf, zf, xoff, zoff);
+    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 bool WindowElement::contains(Float3 pos) const
@@ -284,12 +300,12 @@ const CadModel& LedgeElement::model() const
     return m_model;
 }
 
-Face LedgeElement::top_face() const
+Face LedgeElement::face(int ix) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    return gen_face(xf, yf, zf);
+    return gen_face(ix, xf, yf, zf);
 }
 
 int LedgeElement::sub_face_count() const
@@ -304,7 +320,7 @@ Face LedgeElement::top_sub_face(int ix) const
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
     float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
     float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-    return gen_sub_face(xf, yf, zf, xoff, zoff);
+    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 bool LedgeElement::contains(Float3 pos) const

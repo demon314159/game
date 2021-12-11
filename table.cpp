@@ -116,7 +116,8 @@ void Table::spawn_add_element_command()
             } else if (span == 1) {
                 m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
             } else {
-                printf("Adding element of span %d ?\n", span);
+                m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+//                printf("Adding element of span %d ?\n", span);
             }
         }
 }

@@ -60,7 +60,7 @@ void View::mouse_select(int sx, int sy)
         pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_location(pos);
     } else {
-
+//        printf("mouse not in structure\n");
         BoundingBox bb = m_model->bounding_box();
 
         Face plane;
@@ -69,6 +69,7 @@ void View::mouse_select(int sx, int sy)
         float xhi = bb.vmax.v1 + rim;
         float zlo = bb.vmin.v3 - rim;
         float zhi = bb.vmax.v3 + rim;
+
 
         plane.v1.v1 = xlo;
         plane.v1.v2 = 0.0;
@@ -83,12 +84,14 @@ void View::mouse_select(int sx, int sy)
         plane.v4.v2 = 0.0;
         plane.v4.v3 = zlo;
         if (screen_point_inside_face(plane, sx, sy)) {
+//            printf("Inside table\n");
             if (no_part_of_any_element_selected(sx, sy)) {
-    //            printf("Inside table\n");
+//                printf("Not obstructed\n");
                 Float3 pos = screen_point_on_floor(plane, sx, sy);
     //            printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
                 m_choose.select_location(pos);
             } else {
+//                printf("Obstructed\n");
                 m_choose.select_no_location();
             }
 
@@ -295,6 +298,7 @@ void View::paint()
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();
+        zoom_home();
         resize_calc();
         check_storage();
         copy_facets();

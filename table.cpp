@@ -4,14 +4,20 @@
 #include "table.h"
 #include <QMouseEvent>
 #include <QFileDialog>
+#include <QAction>
+#include <QMenu>
+#include <QtGui>
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_view(new View(new Document(QString("house.brk"))))
+    , m_le_pos({0.0, 0.0, 0.0})
+    , m_le_span(0)
+    , m_le_orientation(0)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
-    setFocusPolicy(Qt::StrongFocus);
+//    setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
 }
 
@@ -105,7 +111,34 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
-void Table::spawn_add_element_command()
+void Table::handle_ledge()
+{
+    m_history.do_command(new AddElementCommand(new LedgeElement(m_le_pos.v1, m_le_pos.v2 + 0.5, m_le_pos.v3, m_le_orientation, m_le_span + 1), m_view));
+}
+
+void Table::handle_window()
+{
+    printf("create window of width %d, orientation %d at (%f, %f, %f)\n", m_le_span + 1, m_le_orientation,
+           m_le_pos.v1, m_le_pos.v2, m_le_pos.v3);
+
+    float height = (m_le_span + 1.0) * 2.0;
+    Command* p_cmd = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, height, 2, 1), m_view);
+    m_history.do_command(p_cmd);
+}
+
+void Table::handle_large_element(QMouseEvent* e)
+{
+    QAction* p_ledge_action = new QAction("Ledge", this);
+    connect(p_ledge_action, SIGNAL(triggered()), this, SLOT(handle_ledge()));
+    QAction* p_window_action = new QAction("Window", this);
+    connect(p_window_action, SIGNAL(triggered()), this, SLOT(handle_window()));
+    QMenu menu(this);
+    menu.addAction(p_ledge_action);
+    menu.addAction(p_window_action);
+    menu.exec(e->globalPos());
+}
+
+void Table::spawn_add_element_command(QMouseEvent* e)
 {
         Float3 pos;
         int span;
@@ -115,9 +148,11 @@ void Table::spawn_add_element_command()
                 m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
             } else if (span == 1) {
                 m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
-            } else {
-                m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
-//                printf("Adding element of span %d ?\n", span);
+            } else { // Span is greater than one brick, so pop up a menu
+                m_le_pos = pos;
+                m_le_span = span;
+                m_le_orientation = orientation;
+                handle_large_element(e);
             }
         }
 }
@@ -133,7 +168,7 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
         m_view->mouse_select(e->pos().x(), e->pos().y());
-        spawn_add_element_command();
+        spawn_add_element_command(e);
         update();
     } else if (e->button() == Qt::RightButton) {
         int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());
@@ -179,8 +214,10 @@ void Table::new_command()
 
 void Table::load_command()
 {
-    QString file_name = QFileDialog::getOpenFileName(NULL,
+    releaseKeyboard();
+    QString file_name = QFileDialog::getOpenFileName(this,
         tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
+    grabKeyboard();
     if (file_name.length() == 0) {
         printf("No file selected\n");
         return;
@@ -191,8 +228,10 @@ void Table::load_command()
 
 void Table::save_command()
 {
-    QString file_name = QFileDialog::getSaveFileName(NULL,
-            tr("Save Brick File"), "", tr("BRK Files (*.brk)"));
+    releaseKeyboard();
+    QString file_name = QFileDialog::getSaveFileName(this,
+        tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
+    grabKeyboard();
     if (file_name.length() == 0) {
         printf("No file selected\n");
         return;

@@ -23,6 +23,10 @@ public:
     void load_command();
     void save_command();
 
+public slots:
+    void handle_ledge();
+    void handle_window();
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -31,11 +35,15 @@ protected:
     void keyReleaseEvent(QKeyEvent* e) override;
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-    void spawn_add_element_command();
+    void spawn_add_element_command(QMouseEvent* e);
     void spawn_delete_element_command(int ix);
+    void handle_large_element(QMouseEvent* e);
 private:
     View* m_view;
     History m_history;
+    Float3 m_le_pos;
+    int m_le_span;
+    int m_le_orientation;
 };
 
 #endif // _TABLE_H_

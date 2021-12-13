@@ -13,7 +13,9 @@ Table::Table(QWidget *parent)
     , m_view(new View(new Document(QString("house.brk"))))
     , m_le_pos({0.0, 0.0, 0.0})
     , m_le_span(0)
+    , m_le_height(0)
     , m_le_orientation(0)
+    , m_le_command(NULL)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
@@ -111,31 +113,80 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
-void Table::handle_ledge()
+void Table::add_ledge_element()
 {
     m_history.do_command(new AddElementCommand(new LedgeElement(m_le_pos.v1, m_le_pos.v2 + 0.5, m_le_pos.v3, m_le_orientation, m_le_span + 1), m_view));
 }
 
-void Table::handle_window()
+void Table::add_window_element()
 {
-    printf("create window of width %d, orientation %d at (%f, %f, %f)\n", m_le_span + 1, m_le_orientation,
-           m_le_pos.v1, m_le_pos.v2, m_le_pos.v3);
+//    printf("create window of width %d, orientation %d at (%f, %f, %f)\n", m_le_span + 1, m_le_orientation,
+//           m_le_pos.v1, m_le_pos.v2, m_le_pos.v3);
 
-    float height = (m_le_span + 1.0) * 2.0;
-    Command* p_cmd = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, height, 2, 1), m_view);
-    m_history.do_command(p_cmd);
+    m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, 2, 1), m_view);
+    m_history.do_command(m_le_command);
+    update();
+
+    QAction* p_bigger_action = new QAction("Bigger", this);
+    connect(p_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
+    QAction* p_smaller_action = new QAction("Smaller", this);
+    connect(p_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
+    QAction* p_done_action = new QAction("Done", this);
+    connect(p_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
+    QAction* p_cancel_action = new QAction("Cancel", this);
+    connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
+    QMenu menu(this);
+    menu.addAction(p_bigger_action);
+    menu.addAction(p_smaller_action);
+    menu.addAction(p_cancel_action);
+    menu.addAction(p_done_action);
+    menu.exec(m_le_global_pos);
 }
 
-void Table::handle_large_element(QMouseEvent* e)
+void Table::add_no_element()
 {
-    QAction* p_ledge_action = new QAction("Ledge", this);
-    connect(p_ledge_action, SIGNAL(triggered()), this, SLOT(handle_ledge()));
-    QAction* p_window_action = new QAction("Window", this);
-    connect(p_window_action, SIGNAL(triggered()), this, SLOT(handle_window()));
+}
+
+
+void Table::edit_element_bigger()
+{
+    m_history.undo_command();
+    ++m_le_height;
+    add_window_element();
+}
+
+void Table::edit_element_smaller()
+{
+    m_history.undo_command();
+    if (m_le_height > 3.0) {
+        --m_le_height;
+    }
+    add_window_element();
+}
+
+void Table::edit_element_cancel()
+{
+    m_history.undo_command();
+    update();
+}
+
+void Table::edit_element_done()
+{
+}
+
+void Table::handle_large_element()
+{
+    QAction* p_ledge_action = new QAction("Add Ledge", this);
+    connect(p_ledge_action, SIGNAL(triggered()), this, SLOT(add_ledge_element()));
+    QAction* p_window_action = new QAction("Add Window", this);
+    connect(p_window_action, SIGNAL(triggered()), this, SLOT(add_window_element()));
+    QAction* p_cancel_action = new QAction("Cancel", this);
+    connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(add_no_element()));
     QMenu menu(this);
     menu.addAction(p_ledge_action);
     menu.addAction(p_window_action);
-    menu.exec(e->globalPos());
+    menu.addAction(p_cancel_action);
+    menu.exec(m_le_global_pos);
 }
 
 void Table::spawn_add_element_command(QMouseEvent* e)
@@ -151,8 +202,10 @@ void Table::spawn_add_element_command(QMouseEvent* e)
             } else { // Span is greater than one brick, so pop up a menu
                 m_le_pos = pos;
                 m_le_span = span;
+                m_le_height = (float) round((m_le_span + 1.0) * 4.0 / 3.0);
                 m_le_orientation = orientation;
-                handle_large_element(e);
+                m_le_global_pos = e->globalPos();
+                handle_large_element();
             }
         }
 }

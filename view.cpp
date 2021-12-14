@@ -169,7 +169,8 @@ void View::decorate_model()
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
-    m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
+    m_model->add(m_choose.marker1_model(), 0.0, 0.0, 0.0);
+    m_model->add(m_choose.marker2_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
     m_radius = fmax(m_radius, 2.0);
@@ -321,14 +322,22 @@ void View::paint()
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
     // Animate marker
-    QMatrix4x4 marker_matrix;
-    if (m_choose.marker_visible()) {
-        Float3 mp = m_choose.marker_position();
-        marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
+    QMatrix4x4 marker1_matrix;
+    if (m_choose.marker1_visible()) {
+        Float3 mp = m_choose.marker1_position();
+        marker1_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
     } else {
-        marker_matrix.translate(m_center.v1, -0.04, m_center.v3);
+        marker1_matrix.translate(m_center.v1, -0.04, m_center.v3);
     }
-    m_program.setUniformValue("marker_matrix", marker_matrix);
+    QMatrix4x4 marker2_matrix;
+    if (m_choose.marker2_visible()) {
+        Float3 mp = m_choose.marker2_position();
+        marker2_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
+    } else {
+        marker2_matrix.translate(m_center.v1, -0.04, m_center.v3);
+    }
+    m_program.setUniformValue("marker1_matrix", marker1_matrix);
+    m_program.setUniformValue("marker2_matrix", marker2_matrix);
     // Draw the model
     render_facets();
 }

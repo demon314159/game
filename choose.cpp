@@ -4,7 +4,8 @@
 #include "math.h"
 
 Choose::Choose()
-    : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
+    : m_marker1_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
+    , m_marker2_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 3.0))
     , m_first_selected(false)
     , m_second_selected(false)
     , m_first_pos({0.0, 0.0, 0.0})
@@ -38,24 +39,34 @@ void Choose::select_location(Float3 pos)
     }
 }
 
-bool Choose::marker_visible() const
+bool Choose::marker1_visible() const
 {
-    return m_first_selected && !m_second_selected;
+    return m_first_selected || m_second_selected;
 }
 
-Float3 Choose::marker_position() const
+bool Choose::marker2_visible() const
 {
-    Float3 pos;
-    if (m_first_selected && !m_second_selected)
-        pos = m_first_pos;
-    else
-        pos = {0.0, 0.0, 0.0};
-    return pos;
+    return m_first_selected && m_second_selected;
 }
 
-const CadModel& Choose::marker_model() const
+Float3 Choose::marker1_position() const
 {
-    return m_marker_model;
+    return m_first_pos;
+}
+
+Float3 Choose::marker2_position() const
+{
+    return m_second_pos;
+}
+
+const CadModel& Choose::marker1_model() const
+{
+    return m_marker1_model;
+}
+
+const CadModel& Choose::marker2_model() const
+{
+    return m_marker2_model;
 }
 
 bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)

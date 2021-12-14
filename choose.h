@@ -12,13 +12,17 @@ public:
     ~Choose();
     void select_no_location();
     void select_location(Float3 pos);
-    bool marker_visible() const;
-    Float3 marker_position() const;
-    const CadModel& marker_model() const;
+    bool marker1_visible() const;
+    bool marker2_visible() const;
+    Float3 marker1_position() const;
+    Float3 marker2_position() const;
+    const CadModel& marker1_model() const;
+    const CadModel& marker2_model() const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation);
 
 private:
-    CadModel m_marker_model;
+    CadModel m_marker1_model;
+    CadModel m_marker2_model;
     bool m_first_selected;
     bool m_second_selected;
     Float3 m_first_pos;

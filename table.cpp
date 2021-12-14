@@ -276,6 +276,7 @@ void Table::spawn_add_element_command(QMouseEvent* e)
         } else if (span == 1) {
             m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
         } else { // Span is greater than one brick, so pop up a menu
+            update();
             m_le_pos = pos;
             m_le_span = span;
             m_le_height = (float) round((m_le_span + 1.0) * 4.0 / 3.0);

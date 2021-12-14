@@ -15,6 +15,8 @@ Table::Table(QWidget *parent)
     , m_le_span(0)
     , m_le_height(0)
     , m_le_orientation(0)
+    , m_le_v(0)
+    , m_le_h(0)
     , m_le_command(NULL)
 {
     setMinimumWidth(600);
@@ -123,23 +125,50 @@ void Table::add_window_element()
 //    printf("create window of width %d, orientation %d at (%f, %f, %f)\n", m_le_span + 1, m_le_orientation,
 //           m_le_pos.v1, m_le_pos.v2, m_le_pos.v3);
 
-    m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, 2, 1), m_view);
+    m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
     m_history.do_command(m_le_command);
     update();
 
-    QAction* p_bigger_action = new QAction("Bigger", this);
+    QMenu menu(this);
+
+    QAction* p_bigger_action = new QAction("Taller", this);
     connect(p_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
-    QAction* p_smaller_action = new QAction("Smaller", this);
-    connect(p_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
-    QAction* p_done_action = new QAction("Done", this);
-    connect(p_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
+    menu.addAction(p_bigger_action);
+
+    if (m_le_height > 3.0) {
+        QAction* p_smaller_action = new QAction("Shorter", this);
+        connect(p_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
+        menu.addAction(p_smaller_action);
+    }
+
+    QAction* p_more_v_action = new QAction("Add vertical grille", this);
+    connect(p_more_v_action, SIGNAL(triggered()), this, SLOT(edit_element_more_v()));
+    menu.addAction(p_more_v_action);
+
+    if (m_le_v > 0) {
+        QAction* p_less_v_action = new QAction("Remove vertical grille", this);
+        connect(p_less_v_action, SIGNAL(triggered()), this, SLOT(edit_element_less_v()));
+        menu.addAction(p_less_v_action);
+    }
+
+    QAction* p_more_h_action = new QAction("Add horizontal grille", this);
+    connect(p_more_h_action, SIGNAL(triggered()), this, SLOT(edit_element_more_h()));
+    menu.addAction(p_more_h_action);
+
+    if (m_le_h > 0) {
+        QAction* p_less_h_action = new QAction("Remove horizontal grille", this);
+        connect(p_less_h_action, SIGNAL(triggered()), this, SLOT(edit_element_less_h()));
+        menu.addAction(p_less_h_action);
+    }
+
     QAction* p_cancel_action = new QAction("Cancel", this);
     connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
-    QMenu menu(this);
-    menu.addAction(p_bigger_action);
-    menu.addAction(p_smaller_action);
     menu.addAction(p_cancel_action);
+
+    QAction* p_done_action = new QAction("Done", this);
+    connect(p_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
     menu.addAction(p_done_action);
+
     menu.exec(m_le_global_pos);
 }
 
@@ -160,6 +189,38 @@ void Table::edit_element_smaller()
     m_history.undo_command();
     if (m_le_height > 3.0) {
         --m_le_height;
+    }
+    add_window_element();
+}
+
+void Table::edit_element_more_v()
+{
+    m_history.undo_command();
+    ++m_le_v;
+    add_window_element();
+}
+
+void Table::edit_element_less_v()
+{
+    m_history.undo_command();
+    if (m_le_v > 0) {
+        --m_le_v;
+    }
+    add_window_element();
+}
+
+void Table::edit_element_more_h()
+{
+    m_history.undo_command();
+    ++m_le_h;
+    add_window_element();
+}
+
+void Table::edit_element_less_h()
+{
+    m_history.undo_command();
+    if (m_le_h > 0) {
+        --m_le_h;
     }
     add_window_element();
 }
@@ -191,23 +252,25 @@ void Table::handle_large_element()
 
 void Table::spawn_add_element_command(QMouseEvent* e)
 {
-        Float3 pos;
-        int span;
-        int orientation;
-        if (m_view->new_element_chosen(pos, span, orientation)) {
-            if (span == 0) {
-                m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
-            } else if (span == 1) {
-                m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
-            } else { // Span is greater than one brick, so pop up a menu
-                m_le_pos = pos;
-                m_le_span = span;
-                m_le_height = (float) round((m_le_span + 1.0) * 4.0 / 3.0);
-                m_le_orientation = orientation;
-                m_le_global_pos = e->globalPos();
-                handle_large_element();
-            }
+    Float3 pos;
+    int span;
+    int orientation;
+    if (m_view->new_element_chosen(pos, span, orientation)) {
+        if (span == 0) {
+            m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+        } else if (span == 1) {
+            m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+        } else { // Span is greater than one brick, so pop up a menu
+            m_le_pos = pos;
+            m_le_span = span;
+            m_le_height = (float) round((m_le_span + 1.0) * 4.0 / 3.0);
+            m_le_orientation = orientation;
+            m_le_v = 1;
+            m_le_h = 2;
+            m_le_global_pos = e->globalPos();
+            handle_large_element();
         }
+    }
 }
 
 void Table::spawn_delete_element_command(int ix)

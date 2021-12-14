@@ -29,6 +29,10 @@ public slots:
     void add_no_element();
     void edit_element_bigger();
     void edit_element_smaller();
+    void edit_element_more_v();
+    void edit_element_less_v();
+    void edit_element_more_h();
+    void edit_element_less_h();
     void edit_element_cancel();
     void edit_element_done();
 
@@ -50,6 +54,8 @@ private:
     int m_le_span;
     int m_le_height;
     int m_le_orientation;
+    int m_le_v;
+    int m_le_h;
     QPoint m_le_global_pos;
     Command* m_le_command;
 };

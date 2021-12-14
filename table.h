@@ -9,6 +9,7 @@
 #include "history.h"
 #include <QOpenGLWidget>
 #include <QMouseEvent>
+#include <QAction>
 
 class Table: public QOpenGLWidget
 {
@@ -38,6 +39,7 @@ public slots:
     void edit_element_done();
 
 protected:
+    void set_up_actions();
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
@@ -59,6 +61,18 @@ private:
     int m_le_h;
     QPoint m_le_global_pos;
     Command* m_le_command;
+    QAction* m_ledge_action;
+    QAction* m_window_action;
+    QAction* m_no_action;
+    QAction* m_bigger_action;
+    QAction* m_smaller_action;
+    QAction* m_more_v_action;
+    QAction* m_less_v_action;
+    QAction* m_more_h_action;
+    QAction* m_less_h_action;
+    QAction* m_flip_action;
+    QAction* m_cancel_action;
+    QAction* m_done_action;
 };
 
 #endif // _TABLE_H_

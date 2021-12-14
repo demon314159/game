@@ -65,11 +65,11 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)
         pos.v2 = (m_first_pos.v2 + m_second_pos.v2) / 2.0;
         pos.v3 = (m_first_pos.v3 + m_second_pos.v3) / 2.0;
         if (m_first_pos.v1 == m_second_pos.v1) {
-            orientation = 1;
+            orientation = m_first_pos.v3 < m_second_pos.v3 ? 3 : 1;
             span = round(fabs(m_first_pos.v3 - m_second_pos.v3));
             return true;
         } else if (m_first_pos.v3 == m_second_pos.v3) {
-            orientation = 0;
+            orientation = m_first_pos.v1 < m_second_pos.v1 ? 0 : 2;
             span = round(fabs(m_first_pos.v1 - m_second_pos.v1));
             return true;
         }

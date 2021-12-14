@@ -4,7 +4,6 @@
 #include "table.h"
 #include <QMouseEvent>
 #include <QFileDialog>
-#include <QAction>
 #include <QMenu>
 #include <QtGui>
 
@@ -18,11 +17,24 @@ Table::Table(QWidget *parent)
     , m_le_v(0)
     , m_le_h(0)
     , m_le_command(NULL)
+    , m_ledge_action(NULL)
+    , m_window_action(NULL)
+    , m_no_action(NULL)
+    , m_bigger_action(NULL)
+    , m_smaller_action(NULL)
+    , m_more_v_action(NULL)
+    , m_less_v_action(NULL)
+    , m_more_h_action(NULL)
+    , m_less_h_action(NULL)
+    , m_flip_action(NULL)
+    , m_cancel_action(NULL)
+    , m_done_action(NULL)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
 //    setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
+    set_up_actions();
 }
 
 Table::~Table()
@@ -30,6 +42,34 @@ Table::~Table()
     makeCurrent();
     delete m_view;
     doneCurrent();
+}
+
+void Table::set_up_actions()
+{
+    m_ledge_action = new QAction("Add Ledge", this);
+    connect(m_ledge_action, SIGNAL(triggered()), this, SLOT(add_ledge_element()));
+    m_window_action = new QAction("Add Window", this);
+    connect(m_window_action, SIGNAL(triggered()), this, SLOT(add_window_element()));
+    m_no_action = new QAction("Cancel", this);
+    connect(m_no_action, SIGNAL(triggered()), this, SLOT(add_no_element()));
+    m_bigger_action = new QAction("Taller", this);
+    connect(m_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
+    m_smaller_action = new QAction("Shorter", this);
+    connect(m_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
+    m_more_v_action = new QAction("Add vertical grille", this);
+    connect(m_more_v_action, SIGNAL(triggered()), this, SLOT(edit_element_more_v()));
+    m_less_v_action = new QAction("Remove vertical grille", this);
+    connect(m_less_v_action, SIGNAL(triggered()), this, SLOT(edit_element_less_v()));
+    m_more_h_action = new QAction("Add horizontal grille", this);
+    connect(m_more_h_action, SIGNAL(triggered()), this, SLOT(edit_element_more_h()));
+    m_less_h_action = new QAction("Remove horizontal grille", this);
+    connect(m_less_h_action, SIGNAL(triggered()), this, SLOT(edit_element_less_h()));
+    m_flip_action = new QAction("Flip", this);
+    connect(m_flip_action, SIGNAL(triggered()), this, SLOT(edit_element_flip()));
+    m_cancel_action = new QAction("Cancel", this);
+    connect(m_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
+    m_done_action = new QAction("Done", this);
+    connect(m_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
 }
 
 void Table::initializeGL()
@@ -131,48 +171,18 @@ void Table::add_window_element()
 
     QMenu menu(this);
 
-    QAction* p_bigger_action = new QAction("Taller", this);
-    connect(p_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
-    menu.addAction(p_bigger_action);
-
-    if (m_le_height > 3.0) {
-        QAction* p_smaller_action = new QAction("Shorter", this);
-        connect(p_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
-        menu.addAction(p_smaller_action);
-    }
-
-    QAction* p_more_v_action = new QAction("Add vertical grille", this);
-    connect(p_more_v_action, SIGNAL(triggered()), this, SLOT(edit_element_more_v()));
-    menu.addAction(p_more_v_action);
-
-    if (m_le_v > 0) {
-        QAction* p_less_v_action = new QAction("Remove vertical grille", this);
-        connect(p_less_v_action, SIGNAL(triggered()), this, SLOT(edit_element_less_v()));
-        menu.addAction(p_less_v_action);
-    }
-
-    QAction* p_more_h_action = new QAction("Add horizontal grille", this);
-    connect(p_more_h_action, SIGNAL(triggered()), this, SLOT(edit_element_more_h()));
-    menu.addAction(p_more_h_action);
-
-    if (m_le_h > 0) {
-        QAction* p_less_h_action = new QAction("Remove horizontal grille", this);
-        connect(p_less_h_action, SIGNAL(triggered()), this, SLOT(edit_element_less_h()));
-        menu.addAction(p_less_h_action);
-    }
-
-    QAction* p_cancel_action = new QAction("Cancel", this);
-    connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
-    menu.addAction(p_cancel_action);
-
-    QAction* p_flip_action = new QAction("Flip", this);
-    connect(p_flip_action, SIGNAL(triggered()), this, SLOT(edit_element_flip()));
-    menu.addAction(p_flip_action);
-
-    QAction* p_done_action = new QAction("Done", this);
-    connect(p_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
-    menu.addAction(p_done_action);
-
+    menu.addAction(m_bigger_action);
+    if (m_le_height > 3.0)
+        menu.addAction(m_smaller_action);
+    menu.addAction(m_more_v_action);
+    if (m_le_v > 0)
+        menu.addAction(m_less_v_action);
+    menu.addAction(m_more_h_action);
+    if (m_le_h > 0)
+        menu.addAction(m_less_h_action);
+    menu.addAction(m_flip_action);
+    menu.addAction(m_cancel_action);
+    menu.addAction(m_done_action);
     menu.exec(m_le_global_pos);
 }
 
@@ -248,16 +258,10 @@ void Table::edit_element_done()
 
 void Table::handle_large_element()
 {
-    QAction* p_ledge_action = new QAction("Add Ledge", this);
-    connect(p_ledge_action, SIGNAL(triggered()), this, SLOT(add_ledge_element()));
-    QAction* p_window_action = new QAction("Add Window", this);
-    connect(p_window_action, SIGNAL(triggered()), this, SLOT(add_window_element()));
-    QAction* p_cancel_action = new QAction("Cancel", this);
-    connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(add_no_element()));
     QMenu menu(this);
-    menu.addAction(p_ledge_action);
-    menu.addAction(p_window_action);
-    menu.addAction(p_cancel_action);
+    menu.addAction(m_ledge_action);
+    menu.addAction(m_window_action);
+    menu.addAction(m_no_action);
     menu.exec(m_le_global_pos);
 }
 

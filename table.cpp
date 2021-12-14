@@ -165,6 +165,10 @@ void Table::add_window_element()
     connect(p_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
     menu.addAction(p_cancel_action);
 
+    QAction* p_flip_action = new QAction("Flip", this);
+    connect(p_flip_action, SIGNAL(triggered()), this, SLOT(edit_element_flip()));
+    menu.addAction(p_flip_action);
+
     QAction* p_done_action = new QAction("Done", this);
     connect(p_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
     menu.addAction(p_done_action);
@@ -222,6 +226,13 @@ void Table::edit_element_less_h()
     if (m_le_h > 0) {
         --m_le_h;
     }
+    add_window_element();
+}
+
+void Table::edit_element_flip()
+{
+    m_history.undo_command();
+    m_le_orientation = (m_le_orientation + 2) & 3;
     add_window_element();
 }
 

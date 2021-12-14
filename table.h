@@ -33,6 +33,7 @@ public slots:
     void edit_element_less_v();
     void edit_element_more_h();
     void edit_element_less_h();
+    void edit_element_flip();
     void edit_element_cancel();
     void edit_element_done();
 

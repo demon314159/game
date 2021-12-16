@@ -131,6 +131,7 @@ bool Element::contains(Float3 pos) const
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
+PaintCan Element::door_paint(0.2, 1.0, 0.2);
 PaintCan Element::gray_paint(0.8, 0.8, 0.8);
 CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
 
@@ -212,7 +213,7 @@ DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,
     , m_height(height)
     , m_hgrilles(hgrilles)
     , m_vgrilles(vgrilles)
-    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, white_paint, 0.0))
+    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, door_paint, 0.0))
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);

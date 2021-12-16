@@ -77,6 +77,30 @@ private:
     static CadModel m_model_ew;
 };
 
+class DoorElement: public Element
+{
+public:
+    DoorElement(float xpos, float ypos, float zpos, int orientation,
+                  int width, int height, int hgrilles, int vgrilles);
+    DoorElement() = delete;
+    void save_to_file(QDataStream& ds) const override;
+    const CadModel& model() const override;
+    float top_level() const override;
+    Face face(int ix) const override;
+    int sub_face_count() const override;
+    Face top_sub_face(int ix) const override;
+    bool contains(Float3 pos) const override;
+
+private:
+    int m_orientation;
+    int m_width;
+    int m_height;
+    int m_hgrilles;
+    int m_vgrilles;
+    CadModel m_model;
+};
+
+
 class WindowElement: public Element
 {
 public:

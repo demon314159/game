@@ -27,7 +27,9 @@ public:
 public slots:
     void add_ledge_element();
     void add_window_element();
+    void add_door_element();
     void add_no_element();
+    void add_generic_element();
     void edit_element_bigger();
     void edit_element_smaller();
     void edit_element_more_v();
@@ -59,10 +61,12 @@ private:
     int m_le_orientation;
     int m_le_v;
     int m_le_h;
+    bool m_le_door;
     QPoint m_le_global_pos;
     Command* m_le_command;
     QAction* m_ledge_action;
     QAction* m_window_action;
+    QAction* m_door_action;
     QAction* m_no_action;
     QAction* m_bigger_action;
     QAction* m_smaller_action;

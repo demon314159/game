@@ -138,6 +138,36 @@ bool Document::load(const QString& file_name, QString& error_message)
             if (!expect(ti, ")", error_message))
                 return false;
             add_element(new BrickElement(x, y, z, o));
+        } else if (ename == "Door") {
+            float x, y, z;
+            int o, w, h, hg, vg;
+            if (!expect(ti, "(", error_message))
+                return false;
+            if (!parse_float3(ti, x, y, z, error_message))
+                return false;
+            if (!expect(ti, ",", error_message))
+                return false;
+            if (!parse_integer(ti, o, error_message))
+                return false;
+            if (!expect(ti, ",", error_message))
+                return false;
+            if (!parse_integer(ti, w, error_message))
+                return false;
+            if (!expect(ti, ",", error_message))
+                return false;
+            if (!parse_integer(ti, h, error_message))
+                return false;
+            if (!expect(ti, ",", error_message))
+                return false;
+            if (!parse_integer(ti, hg, error_message))
+                return false;
+            if (!expect(ti, ",", error_message))
+                return false;
+            if (!parse_integer(ti, vg, error_message))
+                return false;
+            if (!expect(ti, ")", error_message))
+                return false;
+            add_element(new DoorElement(x, y, z, o, w, h, hg, vg));
         } else if (ename == "Window") {
             float x, y, z;
             int o, w, h, hg, vg;
@@ -168,6 +198,9 @@ bool Document::load(const QString& file_name, QString& error_message)
             if (!expect(ti, ")", error_message))
                 return false;
             add_element(new WindowElement(x, y, z, o, w, h, hg, vg));
+
+
+
         } else if (ename == "Ledge") {
             float x, y, z;
             int o, w;

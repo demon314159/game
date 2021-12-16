@@ -16,9 +16,11 @@ Table::Table(QWidget *parent)
     , m_le_orientation(0)
     , m_le_v(0)
     , m_le_h(0)
+    , m_le_door(false)
     , m_le_command(NULL)
     , m_ledge_action(NULL)
     , m_window_action(NULL)
+    , m_door_action(NULL)
     , m_no_action(NULL)
     , m_bigger_action(NULL)
     , m_smaller_action(NULL)
@@ -50,6 +52,8 @@ void Table::set_up_actions()
     connect(m_ledge_action, SIGNAL(triggered()), this, SLOT(add_ledge_element()));
     m_window_action = new QAction("Add Window", this);
     connect(m_window_action, SIGNAL(triggered()), this, SLOT(add_window_element()));
+    m_door_action = new QAction("Add Door", this);
+    connect(m_door_action, SIGNAL(triggered()), this, SLOT(add_door_element()));
     m_no_action = new QAction("Cancel", this);
     connect(m_no_action, SIGNAL(triggered()), this, SLOT(add_no_element()));
     m_bigger_action = new QAction("Taller", this);
@@ -160,12 +164,12 @@ void Table::add_ledge_element()
     m_history.do_command(new AddElementCommand(new LedgeElement(m_le_pos.v1, m_le_pos.v2 + 0.5, m_le_pos.v3, m_le_orientation, m_le_span + 1), m_view));
 }
 
-void Table::add_window_element()
+void Table::add_generic_element()
 {
-//    printf("create window of width %d, orientation %d at (%f, %f, %f)\n", m_le_span + 1, m_le_orientation,
-//           m_le_pos.v1, m_le_pos.v2, m_le_pos.v3);
-
-    m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
+    if (m_le_door)
+        m_le_command = new AddElementCommand(new DoorElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
+    else
+        m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
     m_history.do_command(m_le_command);
     update();
 
@@ -186,6 +190,18 @@ void Table::add_window_element()
     menu.exec(m_le_global_pos);
 }
 
+void Table::add_window_element()
+{
+    m_le_door = false;
+    add_generic_element();
+}
+
+void Table::add_door_element()
+{
+    m_le_door = true;
+    add_generic_element();
+}
+
 void Table::add_no_element()
 {
 }
@@ -195,7 +211,7 @@ void Table::edit_element_bigger()
 {
     m_history.undo_command();
     ++m_le_height;
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_smaller()
@@ -204,14 +220,14 @@ void Table::edit_element_smaller()
     if (m_le_height > 3.0) {
         --m_le_height;
     }
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_more_v()
 {
     m_history.undo_command();
     ++m_le_v;
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_less_v()
@@ -220,14 +236,14 @@ void Table::edit_element_less_v()
     if (m_le_v > 0) {
         --m_le_v;
     }
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_more_h()
 {
     m_history.undo_command();
     ++m_le_h;
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_less_h()
@@ -236,14 +252,14 @@ void Table::edit_element_less_h()
     if (m_le_h > 0) {
         --m_le_h;
     }
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_flip()
 {
     m_history.undo_command();
     m_le_orientation = (m_le_orientation + 2) & 3;
-    add_window_element();
+    add_generic_element();
 }
 
 void Table::edit_element_cancel()
@@ -261,6 +277,7 @@ void Table::handle_large_element()
     QMenu menu(this);
     menu.addAction(m_ledge_action);
     menu.addAction(m_window_action);
+    menu.addAction(m_door_action);
     menu.addAction(m_no_action);
     menu.exec(m_le_global_pos);
 }
@@ -279,7 +296,8 @@ void Table::spawn_add_element_command(QMouseEvent* e)
             update();
             m_le_pos = pos;
             m_le_span = span;
-            m_le_height = (float) round((m_le_span + 1.0) * 4.0 / 3.0);
+            m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
+
             m_le_orientation = orientation;
             m_le_v = 1;
             m_le_h = 2;

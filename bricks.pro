@@ -29,6 +29,7 @@ HEADERS      += game.h \
                 cad_model.h \
                 frame_model.h \
                 window_model.h \
+                door_model.h \
                 view.h
 
 SOURCES      += main.cpp \
@@ -50,6 +51,7 @@ SOURCES      += main.cpp \
                 cad_model.cpp \
                 frame_model.cpp \
                 window_model.cpp \
+                door_model.cpp \
                 view.cpp
 
 RESOURCES    += shaders.qrc

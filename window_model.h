@@ -3,7 +3,6 @@
 #define _WINDOW_MODEL_H_
 
 #include "cad_model.h"
-#include "frame_model.h"
 
 class WindowModel: public CadModel
 {

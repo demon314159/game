@@ -128,22 +128,4 @@ private:
     CadModel m_model;
 };
 
-class LedgeElement: public Element
-{
-public:
-    LedgeElement(float xpos, float ypos, float zpos, int orientation, int width);
-    LedgeElement() = delete;
-    void save_to_file(QDataStream& ds) const override;
-    const CadModel& model() const override;
-    Face face(int ix) const override;
-    int sub_face_count() const override;
-    Face top_sub_face(int ix) const override;
-    bool contains(Float3 pos) const override;
-
-private:
-    int m_orientation;
-    int m_width;
-    CadModel m_model;
-};
-
 #endif // _ELEMENT_H_

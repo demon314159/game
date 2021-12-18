@@ -19,7 +19,6 @@ Table::Table(QWidget *parent)
     , m_le_h(0)
     , m_le_door(false)
     , m_le_command(NULL)
-    , m_ledge_action(NULL)
     , m_window_action(NULL)
     , m_door_action(NULL)
     , m_no_action(NULL)
@@ -152,11 +151,6 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
-void Table::add_ledge_element()
-{
-    m_history.do_command(new AddElementCommand(new LedgeElement(m_le_pos.v1, m_le_pos.v2 + 0.5, m_le_pos.v3, m_le_orientation, m_le_span + 1), m_view));
-}
-
 void Table::add_window_element()
 {
     m_le_door = false;
@@ -264,10 +258,10 @@ void Table::handle_large_element()
 {
     if (m_le_pos.v2 < 1.0)
         add_door_element();
-    else if (m_le_gap)
-        add_ledge_element();
-    else
+    else if (!m_le_gap)
         add_window_element();
+    else
+        m_view->mouse_unselect();
 }
 
 void Table::spawn_add_element_command(QMouseEvent* e)

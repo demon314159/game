@@ -47,7 +47,6 @@ protected:
     void spawn_add_element_command(QMouseEvent* e);
     void spawn_delete_element_command(int ix);
     void handle_large_element();
-    void add_ledge_element();
     void add_window_element();
     void add_door_element();
     void add_generic_element();
@@ -64,7 +63,6 @@ private:
     bool m_le_door;
     QPoint m_le_global_pos;
     Command* m_le_command;
-    QAction* m_ledge_action;
     QAction* m_window_action;
     QAction* m_door_action;
     QAction* m_no_action;

@@ -38,6 +38,7 @@ public:
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
     virtual float top_level() const;
+    virtual float bottom_level() const;
     virtual Face face(int ix) const;
     virtual int sub_face_count() const;
     virtual Face top_sub_face(int ix) const;
@@ -87,6 +88,7 @@ public:
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
     float top_level() const override;
+    float bottom_level() const override;
     Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
@@ -111,6 +113,7 @@ public:
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
     float top_level() const override;
+    float bottom_level() const override;
     Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;

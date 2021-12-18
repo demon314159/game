@@ -350,3 +350,13 @@ void Document::make_dirty()
     m_is_dirty = true;
 }
 
+bool Document::contains(Float3 pos) const
+{
+    if (m_elements < 1)
+        return false;
+    for (int i = 0; i < m_elements; i++) {
+        if (m_element_ptr[i]->contains(pos))
+            return true;
+    }
+    return false;
+}

@@ -108,6 +108,11 @@ float Element::top_level() const
     return m_pos.v2 + 0.5;
 }
 
+float Element::bottom_level() const
+{
+    return m_pos.v2 - 0.5;
+}
+
 Face Element::face(int ix) const
 {
     return gen_face(ix, 0.5, 0.5, 0.5);
@@ -243,6 +248,12 @@ float DoorElement::top_level() const
     return pos.v2 + m_height / 2.0;
 }
 
+float DoorElement::bottom_level() const
+{
+    Float3 pos = get_pos();
+    return pos.v2 - m_height / 2.0;
+}
+
 Face DoorElement::face(int ix) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
@@ -310,6 +321,12 @@ float WindowElement::top_level() const
 {
     Float3 pos = get_pos();
     return pos.v2 + m_height / 2.0;
+}
+
+float WindowElement::bottom_level() const
+{
+    Float3 pos = get_pos();
+    return pos.v2 - m_height / 2.0;
 }
 
 Face WindowElement::face(int ix) const

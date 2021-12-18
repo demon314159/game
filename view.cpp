@@ -582,9 +582,29 @@ bool View::top_subface_covered(const Element* e, int ix) const
     pos.v1 = (sf.v1.v1 + sf.v3.v1) / 2.0;
     pos.v2 = e->top_level() + 0.5;
     pos.v3 = (sf.v1.v3 + sf.v3.v3) / 2.0;
-    for (int i = 0; i < m_doc->elements(); i++) {
-        if (m_doc->element(i)->contains(pos))
-            return true;
+    return m_doc->contains(pos);
+}
+
+bool View::gap_below_span()
+{
+    Float3 pos;
+    int span;
+    int orientation;
+
+    if (!m_choose.new_element_chosen(pos, span, orientation))
+        return false;
+    if (span < 2)
+        return false;
+    float half_width = ((float) span + 1.0) / 2.0;
+    for (int i = 1; i < span; i++) {
+        Float3 tpos = pos;
+        if (orientation & 1)
+            tpos.v3 = 0.5 + pos.v3 - half_width + (float) i;
+        else
+            tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
+        tpos.v2 -= 0.5;
+        if (!m_doc->contains(tpos))
+            return true; // At least one gap
     }
     return false;
 }

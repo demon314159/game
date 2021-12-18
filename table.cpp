@@ -14,6 +14,7 @@ Table::Table(QWidget *parent)
     , m_le_span(0)
     , m_le_height(0)
     , m_le_orientation(0)
+    , m_le_gap(false)
     , m_le_v(0)
     , m_le_h(0)
     , m_le_door(false)
@@ -48,14 +49,6 @@ Table::~Table()
 
 void Table::set_up_actions()
 {
-    m_ledge_action = new QAction("Add Ledge", this);
-    connect(m_ledge_action, SIGNAL(triggered()), this, SLOT(add_ledge_element()));
-    m_window_action = new QAction("Add Window", this);
-    connect(m_window_action, SIGNAL(triggered()), this, SLOT(add_window_element()));
-    m_door_action = new QAction("Add Door", this);
-    connect(m_door_action, SIGNAL(triggered()), this, SLOT(add_door_element()));
-    m_no_action = new QAction("Cancel", this);
-    connect(m_no_action, SIGNAL(triggered()), this, SLOT(add_no_element()));
     m_bigger_action = new QAction("Taller", this);
     connect(m_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
     m_smaller_action = new QAction("Shorter", this);
@@ -164,6 +157,18 @@ void Table::add_ledge_element()
     m_history.do_command(new AddElementCommand(new LedgeElement(m_le_pos.v1, m_le_pos.v2 + 0.5, m_le_pos.v3, m_le_orientation, m_le_span + 1), m_view));
 }
 
+void Table::add_window_element()
+{
+    m_le_door = false;
+    add_generic_element();
+}
+
+void Table::add_door_element()
+{
+    m_le_door = true;
+    add_generic_element();
+}
+
 void Table::add_generic_element()
 {
     if (m_le_door)
@@ -189,23 +194,6 @@ void Table::add_generic_element()
     menu.addAction(m_done_action);
     menu.exec(m_le_global_pos);
 }
-
-void Table::add_window_element()
-{
-    m_le_door = false;
-    add_generic_element();
-}
-
-void Table::add_door_element()
-{
-    m_le_door = true;
-    add_generic_element();
-}
-
-void Table::add_no_element()
-{
-}
-
 
 void Table::edit_element_bigger()
 {
@@ -274,12 +262,12 @@ void Table::edit_element_done()
 
 void Table::handle_large_element()
 {
-    QMenu menu(this);
-    menu.addAction(m_ledge_action);
-    menu.addAction(m_window_action);
-    menu.addAction(m_door_action);
-    menu.addAction(m_no_action);
-    menu.exec(m_le_global_pos);
+    if (m_le_pos.v2 < 1.0)
+        add_door_element();
+    else if (m_le_gap)
+        add_ledge_element();
+    else
+        add_window_element();
 }
 
 void Table::spawn_add_element_command(QMouseEvent* e)
@@ -297,8 +285,8 @@ void Table::spawn_add_element_command(QMouseEvent* e)
             m_le_pos = pos;
             m_le_span = span;
             m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
-
             m_le_orientation = orientation;
+            m_le_gap = m_view->gap_below_span();
             m_le_v = 1;
             m_le_h = 2;
             m_le_global_pos = e->globalPos();

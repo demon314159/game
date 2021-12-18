@@ -25,6 +25,7 @@ public:
     bool is_dirty() const;
     void make_clean();
     void make_dirty();
+    bool contains(Float3 pos) const;
 
 private:
     bool m_is_dirty;

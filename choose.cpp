@@ -5,7 +5,6 @@
 
 Choose::Choose()
     : m_marker1_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
-    , m_marker2_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 3.0))
     , m_first_selected(false)
     , m_second_selected(false)
     , m_first_pos({0.0, 0.0, 0.0})
@@ -44,29 +43,14 @@ bool Choose::marker1_visible() const
     return m_first_selected || m_second_selected;
 }
 
-bool Choose::marker2_visible() const
-{
-    return m_first_selected && m_second_selected;
-}
-
 Float3 Choose::marker1_position() const
 {
     return m_first_pos;
 }
 
-Float3 Choose::marker2_position() const
-{
-    return m_second_pos;
-}
-
 const CadModel& Choose::marker1_model() const
 {
     return m_marker1_model;
-}
-
-const CadModel& Choose::marker2_model() const
-{
-    return m_marker2_model;
 }
 
 bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)

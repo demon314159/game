@@ -256,9 +256,10 @@ void Table::edit_element_done()
 
 void Table::handle_large_element()
 {
-    if (m_le_pos.v2 < 1.0)
+    if (m_le_pos.v2 < 1.0) {
+        m_le_height = (float) round((m_le_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
         add_door_element();
-    else if (!m_le_gap)
+    } else if (!m_le_gap)
         add_window_element();
     else
         m_view->mouse_unselect();

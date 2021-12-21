@@ -218,7 +218,7 @@ DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,
     , m_height(height)
     , m_hgrilles(hgrilles)
     , m_vgrilles(vgrilles)
-    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, door_paint, 0.0))
+    , m_model(DoorModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, door_paint, 0.0))
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);

@@ -16,6 +16,7 @@ HEADERS      += game.h \
                 paint_can.h \
                 cube_shape.h \
                 brick_shape.h \
+                gable_shape.h \
                 element.h \
                 command.h \
                 history.h \
@@ -38,6 +39,7 @@ SOURCES      += main.cpp \
                 paint_can.cpp \
                 cube_shape.cpp \
                 brick_shape.cpp \
+                gable_shape.cpp \
                 element.cpp \
                 command.cpp \
                 history.cpp \

@@ -1,6 +1,7 @@
 
 #include "element.h"
 #include "brick_shape.h"
+#include "quarter_brick_shape.h"
 #include "window_model.h"
 #include "door_model.h"
 #include <stdio.h>
@@ -142,6 +143,12 @@ CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::d
 
 CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
 CadModel BrickElement::m_model_ew = CadModel(BrickShape(1.0, Element::dimh, 2.0, Element::dimb), Element::red_paint, 0.0);
+
+CadModel QuarterBrickElement::m_model_qns = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 0), Element::red_paint, 0.0);
+CadModel QuarterBrickElement::m_model_qew = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 1), Element::red_paint, 0.0);
+CadModel QuarterBrickElement::m_model_qsn = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 2), Element::red_paint, 0.0);
+CadModel QuarterBrickElement::m_model_qwe = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 3), Element::red_paint, 0.0);
+
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
 {
@@ -204,6 +211,33 @@ bool BrickElement::contains(Float3 pos) const
 void BrickElement::save_to_file(QDataStream& ds) const
 {
     QString msg = "Brick(";
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+    Element::save_to_file(ds);
+    msg = QString(", %1)\n").arg(m_orientation);
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+QuarterBrickElement::QuarterBrickElement(float xpos, float ypos, float zpos, int orientation)
+    : Element({xpos, ypos, zpos})
+    , m_orientation(orientation)
+{
+
+}
+
+const CadModel& QuarterBrickElement::model() const
+{
+    if (m_orientation == 0)
+        return m_model_qns;
+    if (m_orientation == 1)
+        return m_model_qew;
+    if (m_orientation == 2)
+        return m_model_qsn;
+    return m_model_qwe;
+}
+
+void QuarterBrickElement::save_to_file(QDataStream& ds) const
+{
+    QString msg = "QuarterBrick(";
     ds.writeRawData(msg.toLatin1().data(), msg.length());
     Element::save_to_file(ds);
     msg = QString(", %1)\n").arg(m_orientation);

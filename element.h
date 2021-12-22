@@ -79,6 +79,22 @@ private:
     static CadModel m_model_ew;
 };
 
+class QuarterBrickElement: public Element
+{
+public:
+    QuarterBrickElement(float xpos, float ypos, float zpos, int orientation);
+    QuarterBrickElement() = delete;
+    void save_to_file(QDataStream& ds) const override;
+    const CadModel& model() const override;
+
+private:
+    int m_orientation;
+    static CadModel m_model_qns;
+    static CadModel m_model_qew;
+    static CadModel m_model_qsn;
+    static CadModel m_model_qwe;
+};
+
 class DoorElement: public Element
 {
 public:

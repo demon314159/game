@@ -15,7 +15,7 @@ public:
     bool marker1_visible() const;
     Float3 marker1_position() const;
     const CadModel& marker1_model() const;
-    bool new_element_chosen(Float3& pos, int& span, int& orientation);
+    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level);
 
 private:
     CadModel m_marker1_model;

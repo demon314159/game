@@ -270,22 +270,29 @@ void Table::spawn_add_element_command(QMouseEvent* e)
     Float3 pos;
     int span;
     int orientation;
-    if (m_view->new_element_chosen(pos, span, orientation)) {
+    bool same_level;
+    if (m_view->new_element_chosen(pos, span, orientation, same_level)) {
         if (span == 0) {
-            m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+            if (same_level)
+                m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
         } else if (span == 1) {
-            m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+            if (same_level)
+                m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+            else
+                m_history.do_command(new AddElementCommand(new QuarterBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
         } else { // Span is greater than one brick, so pop up a menu
-            update();
-            m_le_pos = pos;
-            m_le_span = span;
-            m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
-            m_le_orientation = orientation;
-            m_le_gap = m_view->gap_below_span();
-            m_le_v = 1;
-            m_le_h = 2;
-            m_le_global_pos = e->globalPos();
-            handle_large_element();
+            if (same_level) {
+                update();
+                m_le_pos = pos;
+                m_le_span = span;
+                m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
+                m_le_orientation = orientation;
+                m_le_gap = m_view->gap_below_span();
+                m_le_v = 1;
+                m_le_h = 2;
+                m_le_global_pos = e->globalPos();
+                handle_large_element();
+            }
         }
     }
 }

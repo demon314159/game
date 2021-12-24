@@ -53,10 +53,11 @@ const CadModel& Choose::marker1_model() const
     return m_marker1_model;
 }
 
-bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)
+bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level)
 {
     if (m_first_selected && m_second_selected) {
-        if (m_first_pos.v2 == m_second_pos.v2) {
+        same_level = m_first_pos.v2 == m_second_pos.v2;
+        if (same_level) {
             pos.v1 = (m_first_pos.v1 + m_second_pos.v1) / 2.0;
             pos.v2 = (m_first_pos.v2 + m_second_pos.v2) / 2.0;
             pos.v3 = (m_first_pos.v3 + m_second_pos.v3) / 2.0;
@@ -71,11 +72,26 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation)
             }
             select_no_location();
             return false;
-        } else {
+        } else { // Different levels
+            pos = m_first_pos;
+            if (m_first_pos.v1 == m_second_pos.v1) {
+                orientation = m_first_pos.v3 < m_second_pos.v3 ? 3 : 1;
+                span = round(fabs(m_first_pos.v3 - m_second_pos.v3));
+            } else if (m_first_pos.v3 == m_second_pos.v3) {
+                orientation = m_first_pos.v1 < m_second_pos.v1 ? 0 : 2;
+                span = round(fabs(m_first_pos.v1 - m_second_pos.v1));
+            } else {
+                select_no_location();
+                return false;
+            }
+            if (span == 1) {
+                if (m_second_pos.v2 < m_first_pos.v2)
+                    orientation = (orientation + 2) & 3;
+                return true;
+            }
             select_no_location();
             return false;
         }
-
     } else {
         return false;
     }

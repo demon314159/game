@@ -47,20 +47,29 @@ void View::mouse_unselect()
 
 void View::mouse_select(int sx, int sy)
 {
-//    printf("mouse select(%d, %d)\n", sx, sy);
+    printf("\n");
+    printf("mouse select(%d, %d)\n", sx, sy);
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
-        int sf = selected_subface(m_doc->element(ix), sx, sy);
-//        printf("selected element %d, subface %d\n", ix, sf);
+        int sf = selected_top_subface(m_doc->element(ix), sx, sy);
+        printf("selected element %d, subface %d\n", ix, sf);
         const Element* e = m_doc->element(ix);
         Face f = e->top_sub_face(sf);
+
+        Float3 p = e->get_pos();
+        printf("Element position (%f, %f, %f\n", p.v1, p.v2, p.v3);
+        printf("Face = (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)\n",
+               f.v1.v1, f.v1.v2, f.v1.v3,
+               f.v2.v1, f.v2.v2, f.v2.v3,
+               f.v3.v1, f.v3.v2, f.v3.v3,
+               f.v4.v1, f.v4.v2, f.v4.v3);
         Float3 pos;
         pos.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
         pos.v2 = e->top_level();
         pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_location(pos);
     } else {
-//        printf("mouse not in structure\n");
+        printf("mouse not in structure\n");
         BoundingBox bb = m_model->bounding_box();
 
         Face plane;
@@ -84,19 +93,19 @@ void View::mouse_select(int sx, int sy)
         plane.v4.v2 = 0.0;
         plane.v4.v3 = zlo;
         if (screen_point_inside_face(plane, sx, sy)) {
-//            printf("Inside table\n");
+            printf("Inside table\n");
             if (no_part_of_any_element_selected(sx, sy)) {
-//                printf("Not obstructed\n");
+                printf("Not obstructed\n");
                 Float3 pos = screen_point_on_floor(plane, sx, sy);
-    //            printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
+                printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
                 m_choose.select_location(pos);
             } else {
-//                printf("Obstructed\n");
+                printf("Obstructed\n");
                 m_choose.select_no_location();
             }
 
         } else {
-//            printf("Outside table\n");
+            printf("Outside table\n");
             m_choose.select_no_location();
         }
     }
@@ -540,11 +549,11 @@ int View::selected_element_ix(int sx, int sy) const
     }
     if (max_e == NULL)
         return -1;
-    int sf = selected_subface(max_e, sx, sy);
+    int sf = selected_top_subface(max_e, sx, sy);
     return top_subface_covered(max_e, sf) ? -1 : max_ix;
 }
 
-int View::selected_subface(const Element* e, int sx, int sy) const
+int View::selected_top_subface(const Element* e, int sx, int sy) const
 {
     if (e == NULL)
         return 0;

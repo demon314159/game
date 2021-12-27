@@ -279,7 +279,7 @@ void Table::spawn_add_element_command(QMouseEvent* e)
             if (same_level)
                 m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
             else
-                m_history.do_command(new AddElementCommand(new QuarterBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
         } else { // Span is greater than one brick, so pop up a menu
             if (same_level) {
                 update();

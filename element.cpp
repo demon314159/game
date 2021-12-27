@@ -1,7 +1,7 @@
 
 #include "element.h"
 #include "brick_shape.h"
-#include "quarter_brick_shape.h"
+#include "gable_brick_shape.h"
 #include "window_model.h"
 #include "door_model.h"
 #include <stdio.h>
@@ -38,35 +38,10 @@ const CadModel& Element::model() const
 Float3 Element::face_vertex(float xf, float yf, float zf) const
 {
     Float3 v;
-    v.v1 = (m_pos.v1 - xf);
+    v.v1 = (m_pos.v1 + xf);
     v.v2 = (m_pos.v2 + yf) * dimh;
-    v.v3 = (m_pos.v3 - zf);
+    v.v3 = (m_pos.v3 + zf);
     return v;
-}
-
-Face Element::gen_face(int ix, float xf, float yf, float zf) const
-{
-    Face f;
-    if (ix == TOP_FACE || ix == BOTTOM_FACE) {
-        float yy = ix == TOP_FACE ? yf : -yf;
-        f.v1 = face_vertex(-xf, yy, -zf);
-        f.v2 = face_vertex(-xf, yy, zf);
-        f.v3 = face_vertex(xf, yy, zf);
-        f.v4 = face_vertex(xf, yy, -zf);
-    } else if (ix == LEFT_FACE || ix == RIGHT_FACE) {
-        float xx = ix == RIGHT_FACE ? xf : -xf;
-        f.v1 = face_vertex(xx, yf, -zf);
-        f.v2 = face_vertex(xx, -yf, -zf);
-        f.v3 = face_vertex(xx, -yf, zf);
-        f.v4 = face_vertex(xx, yf, zf);
-    } else { // FRONT_FACE or BACK_FACE
-        float zz = ix == FRONT_FACE ? zf : -zf;
-        f.v1 = face_vertex(-xf, yf, zz);
-        f.v2 = face_vertex(-xf, -yf, zz);
-        f.v3 = face_vertex(xf, -yf, zz);
-        f.v4 = face_vertex(xf, yf, zz);
-    }
-    return f;
 }
 
 Face Element::gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const
@@ -102,6 +77,80 @@ bool Element::gen_contains(Float3 pos, float xf, float yf, float zf) const
     if (pos.v3 > (m_pos.v3 + zf))
         return false;
     return true;
+}
+
+Face Element::gen_face(int ix, float xf, float yf, float zf) const
+{
+    return common_gen_face(ix, xf, yf, zf, false, 0);
+}
+
+Face Element::gen_gable_face(int ix, float xf, float yf, float zf, int orientation) const
+{
+    return common_gen_face(ix, xf, yf, zf, true, orientation);
+}
+
+Face Element::common_gen_face(int ix, float xf, float yf, float zf, bool gable_flag, int orientation) const
+{
+    Face f;
+    Float3 v_lbl = face_vertex(-xf, -yf, -zf);
+    Float3 v_lfl = face_vertex(-xf, -yf, zf);
+    Float3 v_lfr = face_vertex(xf, -yf, zf);
+    Float3 v_lbr = face_vertex(xf, -yf, -zf);
+    Float3 v_ubl = face_vertex(-xf, yf, -zf);
+    Float3 v_ufl = face_vertex(-xf, yf, zf);
+    Float3 v_ufr = face_vertex(xf, yf, zf);
+    Float3 v_ubr = face_vertex(xf, yf, -zf);
+
+    if (gable_flag) {
+        if (orientation == 0) {
+            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
+            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
+        };
+        if (orientation == 1) {
+            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
+            v_ufr.v2 = v_lfr.v2 + dimb * dimh;
+        };
+        if (orientation == 2) {
+           v_ufr.v2 = v_lfr.v2 + dimb * dimh;
+           v_ubr.v2 = v_lbr.v2 + dimb * dimh;
+        };
+        if (orientation == 3) {
+            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
+            v_ubr.v2 = v_lbr.v2 + dimb * dimh;
+        };
+    }
+    if (ix == TOP_FACE) {
+        f.v1 = v_ubl;
+        f.v2 = v_ufl;
+        f.v3 = v_ufr;
+        f.v4 = v_ubr;
+    } else if (ix == BOTTOM_FACE) {
+        f.v1 = v_lbl;
+        f.v2 = v_lfl;
+        f.v3 = v_lfr;
+        f.v4 = v_lbr;
+    } else if (ix == LEFT_FACE) {
+        f.v1 = v_lbl;
+        f.v2 = v_lfl;
+        f.v3 = v_ufl;
+        f.v4 = v_ubl;
+    } else if (ix == RIGHT_FACE) {
+        f.v1 = v_lbr;
+        f.v2 = v_lfr;
+        f.v3 = v_ufr;
+        f.v4 = v_ubr;
+    } else if (ix == FRONT_FACE) {
+        f.v1 = v_lfl;
+        f.v2 = v_lfr;
+        f.v3 = v_ufr;
+        f.v4 = v_ufl;
+    } else { // BACK_FACE
+        f.v1 = v_lbl;
+        f.v2 = v_lbr;
+        f.v3 = v_ubr;
+        f.v4 = v_ubl;
+    }
+    return f;
 }
 
 float Element::top_level() const
@@ -144,10 +193,10 @@ CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::d
 CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
 CadModel BrickElement::m_model_ew = CadModel(BrickShape(1.0, Element::dimh, 2.0, Element::dimb), Element::red_paint, 0.0);
 
-CadModel QuarterBrickElement::m_model_qns = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 0), Element::red_paint, 0.0);
-CadModel QuarterBrickElement::m_model_qew = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 1), Element::red_paint, 0.0);
-CadModel QuarterBrickElement::m_model_qsn = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 2), Element::red_paint, 0.0);
-CadModel QuarterBrickElement::m_model_qwe = CadModel(QuarterBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 3), Element::red_paint, 0.0);
+CadModel GableBrickElement::m_model_qns = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 0), Element::red_paint, 0.0);
+CadModel GableBrickElement::m_model_qew = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 1), Element::red_paint, 0.0);
+CadModel GableBrickElement::m_model_qsn = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 2), Element::red_paint, 0.0);
+CadModel GableBrickElement::m_model_qwe = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 3), Element::red_paint, 0.0);
 
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
@@ -217,14 +266,14 @@ void BrickElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-QuarterBrickElement::QuarterBrickElement(float xpos, float ypos, float zpos, int orientation)
+GableBrickElement::GableBrickElement(float xpos, float ypos, float zpos, int orientation)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
 {
 
 }
 
-const CadModel& QuarterBrickElement::model() const
+const CadModel& GableBrickElement::model() const
 {
     if (m_orientation == 0)
         return m_model_qns;
@@ -235,13 +284,31 @@ const CadModel& QuarterBrickElement::model() const
     return m_model_qwe;
 }
 
-void QuarterBrickElement::save_to_file(QDataStream& ds) const
+void GableBrickElement::save_to_file(QDataStream& ds) const
 {
-    QString msg = "QuarterBrick(";
+    QString msg = "GableBrick(";
     ds.writeRawData(msg.toLatin1().data(), msg.length());
     Element::save_to_file(ds);
     msg = QString(", %1)\n").arg(m_orientation);
     ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+Face GableBrickElement::face(int ix) const
+{
+    float xf = 0.5;
+    float yf = 0.5;
+    float zf = 0.5;
+    return gen_gable_face(ix, xf, yf, zf, m_orientation);
+}
+
+Face GableBrickElement::top_sub_face(int ix) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
+    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
+    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
+    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
 }
 
 DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,

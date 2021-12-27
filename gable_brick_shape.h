@@ -1,17 +1,17 @@
 
-#ifndef _QUARTER_BRICK_SHAPE_H_
-#define _QUARTER_BRICK_SHAPE_H_
+#ifndef _GABLE_BRICK_SHAPE_H_
+#define _GABLE_BRICK_SHAPE_H_
 
 #include "shape.h"
 #include "float3.h"
 #include "facet.h"
 #include <QMatrix4x4>
 
-class QuarterBrickShape: public Shape
+class GableBrickShape: public Shape
 {
 public:
-    QuarterBrickShape(float dimx, float dimy, float dimz, float dimb, int orientation);
-    virtual ~QuarterBrickShape();
+    GableBrickShape(float dimx, float dimy, float dimz, float dimb, int orientation);
+    virtual ~GableBrickShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
@@ -33,4 +33,4 @@ private:
     void rotate_vertex(Float3& vertex, const QMatrix4x4& matrix);
 };
 
-#endif // _QUARTER_BRICK_SHAPE_
+#endif // _GABLE_BRICK_SHAPE_

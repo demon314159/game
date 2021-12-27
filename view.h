@@ -41,7 +41,7 @@ protected:
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
     int selected_element_ix(int sx, int sy) const;
-    int selected_subface(const Element* e, int sx, int sy) const;
+    int selected_top_subface(const Element* e, int sx, int sy) const;
     bool no_part_of_any_element_selected(int sx, int sy) const;
     Float2 world2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy) const;

@@ -44,10 +44,12 @@ public:
     virtual Face top_sub_face(int ix) const;
     virtual bool contains(Float3 pos) const;
     Face gen_face(int ix, float xf, float yf, float zf) const;
+    Face gen_gable_face(int ix, float xf, float yf, float zf, int orientation) const;
     Face gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
     bool gen_contains(Float3 pos, float xf, float yf, float zf) const;
 protected:
     Float3 face_vertex(float xf, float yf, float zf) const;
+    Face common_gen_face(int ix, float xf, float yf, float zf, bool gable_flag, int orientation) const;
 private:
     Float3 m_pos;
     static CadModel m_default_model;
@@ -79,13 +81,15 @@ private:
     static CadModel m_model_ew;
 };
 
-class QuarterBrickElement: public Element
+class GableBrickElement: public Element
 {
 public:
-    QuarterBrickElement(float xpos, float ypos, float zpos, int orientation);
-    QuarterBrickElement() = delete;
+    GableBrickElement(float xpos, float ypos, float zpos, int orientation);
+    GableBrickElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
+    Face face(int ix) const override;
+    Face top_sub_face(int ix) const override;
 
 private:
     int m_orientation;

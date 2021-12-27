@@ -1,11 +1,11 @@
 
-#include "quarter_brick_shape.h"
+#include "gable_brick_shape.h"
 #include <QVector3D>
 #include <QVector4D>
 #include <QQuaternion>
 #include <cstddef>
 
-QuarterBrickShape::QuarterBrickShape(float dimx, float dimy, float dimz, float dimb, int orientation)
+GableBrickShape::GableBrickShape(float dimx, float dimy, float dimz, float dimb, int orientation)
     : m_dimx(dimx)
     , m_dimy(dimy)
     , m_dimz(dimz)
@@ -29,23 +29,23 @@ QuarterBrickShape::QuarterBrickShape(float dimx, float dimy, float dimz, float d
     }
 }
 
-QuarterBrickShape::~QuarterBrickShape()
+GableBrickShape::~GableBrickShape()
 {
     if (m_facet != NULL)
         delete [] m_facet;
 }
 
-int QuarterBrickShape::facets() const
+int GableBrickShape::facets() const
 {
     return m_facet_count;
 }
 
-Facet QuarterBrickShape::facet(int facet_ix) const
+Facet GableBrickShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }
 
-void QuarterBrickShape::define_shape()
+void GableBrickShape::define_shape()
 {
     // faces
     add_face(0x44, 0x54, 0x74, 0x64, true);
@@ -77,13 +77,13 @@ void QuarterBrickShape::define_shape()
     add_face(0x71, 0x72, 0x74, true);
 }
 
-void QuarterBrickShape::add_face(int v1, int v2, int v3, int v4, bool flip)
+void GableBrickShape::add_face(int v1, int v2, int v3, int v4, bool flip)
 {
     add_face(v1, v2, v3, flip);
     add_face(v1, v3, v4, flip);
 }
 
-void QuarterBrickShape::add_face(int v1, int v2, int v3, bool flip)
+void GableBrickShape::add_face(int v1, int v2, int v3, bool flip)
 {
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = 0.0;
@@ -101,7 +101,7 @@ void QuarterBrickShape::add_face(int v1, int v2, int v3, bool flip)
     ++m_facet_count;
 }
 
-Float3 QuarterBrickShape::decode_vertex(int v)
+Float3 GableBrickShape::decode_vertex(int v)
 {
     Float3 r;
 
@@ -123,7 +123,7 @@ Float3 QuarterBrickShape::decode_vertex(int v)
     return r;
 }
 
-void QuarterBrickShape::rotate_vertex(Float3& vertex, const QMatrix4x4& matrix)
+void GableBrickShape::rotate_vertex(Float3& vertex, const QMatrix4x4& matrix)
 {
     QVector4D r = matrix * QVector4D(vertex.v1, vertex.v2, vertex.v3, 1.0);
     vertex.v1 = r.x();
@@ -131,7 +131,7 @@ void QuarterBrickShape::rotate_vertex(Float3& vertex, const QMatrix4x4& matrix)
     vertex.v3 = r.z();
 }
 
-void QuarterBrickShape::rotate_ay(float angle)
+void GableBrickShape::rotate_ay(float angle)
 {
     QVector3D my_axis = {0.0, 1.0, 0.0};
     QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);

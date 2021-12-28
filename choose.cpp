@@ -4,11 +4,11 @@
 #include "math.h"
 
 Choose::Choose()
-    : m_marker1_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
+    : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
     , m_first_selected(false)
     , m_second_selected(false)
-    , m_first_pos({0.0, 0.0, 0.0})
-    , m_second_pos({0.0, 0.0, 0.0})
+    , m_first_choice({{0.0, 0.0, 0.0}, 0.0})
+    , m_second_choice({{0.0, 0.0, 0.0}, 0.0})
 {
 }
 
@@ -16,80 +16,84 @@ Choose::~Choose()
 {
 }
 
-void Choose::select_no_location()
+void Choose::select_no_choice()
 {
     m_first_selected = false;
     m_second_selected = false;
-    m_first_pos = {0.0, 0.0, 0.0};
-    m_second_pos = {0.0, 0.0, 0.0};
+    m_first_choice = {{0.0, 0.0, 0.0}, 0.0};
+    m_second_choice ={ {0.0, 0.0, 0.0}, 0.0};
 }
 
-void Choose::select_location(Float3 pos)
+void Choose::select_choice(Choice c)
 {
-//    printf("choose location (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
     if (m_first_selected && !m_second_selected) {
         m_second_selected = true;
-        m_second_pos = pos;
+        m_second_choice = c;
     } else {
         m_first_selected = true;
         m_second_selected = false;
-        m_first_pos = pos;
-        m_second_pos = {0.0, 0.0, 0.0};
+        m_first_choice = c;
+        m_second_choice = {{0.0, 0.0, 0.0}, 0.0};
     }
 }
 
-bool Choose::marker1_visible() const
+bool Choose::marker_visible() const
 {
     return m_first_selected || m_second_selected;
 }
 
-Float3 Choose::marker1_position() const
+Float3 Choose::marker_position() const
 {
-    return m_first_pos;
+    return m_first_choice.position;
 }
 
-const CadModel& Choose::marker1_model() const
+float Choose::marker_angle() const
 {
-    return m_marker1_model;
+    return m_first_choice.angle;
+}
+
+const CadModel& Choose::marker_model() const
+{
+    return m_marker_model;
 }
 
 bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level)
 {
     if (m_first_selected && m_second_selected) {
-        same_level = m_first_pos.v2 == m_second_pos.v2;
+        same_level = m_first_choice.position.v2 == m_second_choice.position.v2;
         if (same_level) {
-            pos.v1 = (m_first_pos.v1 + m_second_pos.v1) / 2.0;
-            pos.v2 = (m_first_pos.v2 + m_second_pos.v2) / 2.0;
-            pos.v3 = (m_first_pos.v3 + m_second_pos.v3) / 2.0;
-            if (m_first_pos.v1 == m_second_pos.v1) {
-                orientation = m_first_pos.v3 < m_second_pos.v3 ? 3 : 1;
-                span = round(fabs(m_first_pos.v3 - m_second_pos.v3));
+            pos.v1 = (m_first_choice.position.v1 + m_second_choice.position.v1) / 2.0;
+            pos.v2 = (m_first_choice.position.v2 + m_second_choice.position.v2) / 2.0;
+            pos.v3 = (m_first_choice.position.v3 + m_second_choice.position.v3) / 2.0;
+            if (m_first_choice.position.v1 == m_second_choice.position.v1) {
+                orientation = m_first_choice.position.v3 < m_second_choice.position.v3 ? 3 : 1;
+                span = round(fabs(m_first_choice.position.v3 - m_second_choice.position.v3));
                 return true;
-            } else if (m_first_pos.v3 == m_second_pos.v3) {
-                orientation = m_first_pos.v1 < m_second_pos.v1 ? 0 : 2;
-                span = round(fabs(m_first_pos.v1 - m_second_pos.v1));
+            } else if (m_first_choice.position.v3 == m_second_choice.position.v3) {
+                orientation = m_first_choice.position.v1 < m_second_choice.position.v1 ? 0 : 2;
+                span = round(fabs(m_first_choice.position.v1 - m_second_choice.position.v1));
                 return true;
             }
-            select_no_location();
+            select_no_choice();
             return false;
         } else { // Different levels
-            pos = m_first_pos;
-            if (m_first_pos.v1 == m_second_pos.v1) {
-                orientation = m_first_pos.v3 < m_second_pos.v3 ? 3 : 1;
-                span = round(fabs(m_first_pos.v3 - m_second_pos.v3));
-            } else if (m_first_pos.v3 == m_second_pos.v3) {
-                orientation = m_first_pos.v1 < m_second_pos.v1 ? 0 : 2;
-                span = round(fabs(m_first_pos.v1 - m_second_pos.v1));
+            pos = m_first_choice.position;
+            if (m_first_choice.position.v1 == m_second_choice.position.v1) {
+                orientation = m_first_choice.position.v3 < m_second_choice.position.v3 ? 3 : 1;
+                span = round(fabs(m_first_choice.position.v3 - m_second_choice.position.v3));
+            } else if (m_first_choice.position.v3 == m_second_choice.position.v3) {
+                orientation = m_first_choice.position.v1 < m_second_choice.position.v1 ? 0 : 2;
+                span = round(fabs(m_first_choice.position.v1 - m_second_choice.position.v1));
             } else {
-                select_no_location();
+                select_no_choice();
                 return false;
             }
             if (span == 1) {
-                if (m_second_pos.v2 < m_first_pos.v2)
+                if (m_second_choice.position.v2 < m_first_choice.position.v2)
                     orientation = (orientation + 2) & 3;
                 return true;
             }
-            select_no_location();
+            select_no_choice();
             return false;
         }
     } else {

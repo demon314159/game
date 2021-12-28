@@ -42,7 +42,7 @@ View::View(Document* doc)
 
 void View::mouse_unselect()
 {
-    m_choose.select_no_location();
+    m_choose.select_no_choice();
 }
 
 void View::mouse_select(int sx, int sy)
@@ -63,11 +63,17 @@ void View::mouse_select(int sx, int sy)
                f.v2.v1, f.v2.v2, f.v2.v3,
                f.v3.v1, f.v3.v2, f.v3.v3,
                f.v4.v1, f.v4.v2, f.v4.v3);
-        Float3 pos;
-        pos.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
-        pos.v2 = e->top_level();
-        pos.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
-        m_choose.select_location(pos);
+        Choice c;
+        c.position.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
+        if (f.v1.v2 == f.v2.v2 && f.v3.v2 == f.v4.v2 && f.v1.v2 == f.v3.v2) {  // All on same level
+            c.position.v2 = e->top_level();
+            c.angle = 0.0;
+        } else {
+            c.position.v2 = e->top_level() - 0.5;
+            c.angle = 33.69;
+        }
+        c.position.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
+        m_choose.select_choice(c);
     } else {
         printf("mouse not in structure\n");
         BoundingBox bb = m_model->bounding_box();
@@ -96,17 +102,18 @@ void View::mouse_select(int sx, int sy)
             printf("Inside table\n");
             if (no_part_of_any_element_selected(sx, sy)) {
                 printf("Not obstructed\n");
-                Float3 pos = screen_point_on_floor(plane, sx, sy);
-                printf("Floor point = (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
-                m_choose.select_location(pos);
+                Choice c;
+                c.position = screen_point_on_floor(plane, sx, sy);
+                c.angle = 0.0;
+                m_choose.select_choice(c);
             } else {
                 printf("Obstructed\n");
-                m_choose.select_no_location();
+                m_choose.select_no_choice();
             }
 
         } else {
             printf("Outside table\n");
-            m_choose.select_no_location();
+            m_choose.select_no_choice();
         }
     }
 }
@@ -114,7 +121,7 @@ void View::mouse_select(int sx, int sy)
 int View::mouse_delete(int sx, int sy)
 {
 //    printf("mouse delete(%d, %d)\n", sx, sy);
-    m_choose.select_no_location();
+    m_choose.select_no_choice();
     int ix = selected_element_ix(sx, sy);
     if (ix < 0)
         return -1;
@@ -178,7 +185,7 @@ void View::decorate_model()
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
-    m_model->add(m_choose.marker1_model(), 0.0, 0.0, 0.0);
+    m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
     m_radius = fmax(m_radius, 2.0);
@@ -312,7 +319,7 @@ void View::paint()
         check_storage();
         copy_facets();
         m_doc->make_clean();
-        m_choose.select_no_location();
+        m_choose.select_no_choice();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -330,14 +337,24 @@ void View::paint()
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
     // Animate marker
-    QMatrix4x4 marker1_matrix;
-    if (m_choose.marker1_visible()) {
-        Float3 mp = m_choose.marker1_position();
-        marker1_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
+    QMatrix4x4 marker_matrix;
+    if (m_choose.marker_visible()) {
+
+
+        Float3 mp = m_choose.marker_position();
+        marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
+
+
+        QVector3D axis3 = {0.0, 0.0, 1.0};
+        QQuaternion rot3 = QQuaternion::fromAxisAndAngle(axis3, m_choose.marker_angle());
+        marker_matrix.rotate(rot3);
+
+
+
     } else {
-        marker1_matrix.translate(m_center.v1, -0.04, m_center.v3);
+        marker_matrix.translate(m_center.v1, -0.04, m_center.v3);
     }
-    m_program.setUniformValue("marker1_matrix", marker1_matrix);
+    m_program.setUniformValue("marker_matrix", marker_matrix);
     // Draw the model
     render_facets();
 }

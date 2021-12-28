@@ -10,6 +10,7 @@ HEADERS      += game.h \
                 float3.h \
                 facet.h \
                 face.h \
+                choice.h \
                 bounding_box.h \
                 shape.h \
                 table.h \

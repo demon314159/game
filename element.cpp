@@ -303,12 +303,8 @@ Face GableBrickElement::face(int ix) const
 
 Face GableBrickElement::top_sub_face(int ix) const
 {
-    float xf = (m_orientation == 0 || m_orientation == 2) ? 1.0 : 0.5;
-    float yf = 0.5;
-    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : 1.0;
-    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
-    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
-    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
+    (void) ix;
+    return face(TOP_FACE);
 }
 
 DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,

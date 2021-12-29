@@ -67,7 +67,7 @@ Face Element::gen_top_sub_face(float xf, float yf, float zf, float xoff, float z
     return f;
 }
 
-bool Element::gen_contains(Float3 pos, float xf, float yf, float zf) const
+bool Element::gen_contains(Float3 pos, float xf, float yf, float zf, bool gable) const
 {
     if (pos.v1 < (m_pos.v1 - xf))
         return false;
@@ -75,8 +75,13 @@ bool Element::gen_contains(Float3 pos, float xf, float yf, float zf) const
         return false;
     if (pos.v2 < (m_pos.v2 - yf))
         return false;
-    if (pos.v2 > (m_pos.v2 + yf))
-        return false;
+    if (gable) {
+        if (pos.v2 > (m_pos.v2))
+            return false;
+    } else {
+        if (pos.v2 > (m_pos.v2 + yf))
+            return false;
+    }
     if (pos.v3 < (m_pos.v3 - zf))
         return false;
     if (pos.v3 > (m_pos.v3 + zf))
@@ -315,6 +320,14 @@ Face GableBrickElement::top_sub_face(int ix) const
 {
     (void) ix;
     return face(TOP_FACE);
+}
+
+bool GableBrickElement::contains(Float3 pos) const
+{
+    float xf = 0.5;
+    float yf = 0.5;
+    float zf = 0.5;
+    return gen_contains(pos, xf, yf, zf, true);
 }
 
 int GableBrickElement::orientation() const

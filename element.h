@@ -47,7 +47,7 @@ public:
     Face gen_face(int ix, float xf, float yf, float zf) const;
     Face gen_gable_face(int ix, float xf, float yf, float zf, int orientation) const;
     Face gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
-    bool gen_contains(Float3 pos, float xf, float yf, float zf) const;
+    bool gen_contains(Float3 pos, float xf, float yf, float zf, bool gable = false) const;
 protected:
     Float3 face_vertex(float xf, float yf, float zf) const;
     Face common_gen_face(int ix, float xf, float yf, float zf, bool gable_flag, int orientation) const;
@@ -92,6 +92,7 @@ public:
     const CadModel& model() const override;
     Face face(int ix) const override;
     Face top_sub_face(int ix) const override;
+    bool contains(Float3 pos) const override;
     int orientation() const override;
 
 private:

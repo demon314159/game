@@ -65,8 +65,14 @@ const CadModel& Choose::marker_model() const
 bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level)
 {
     if (m_first_selected && m_second_selected) {
+        printf("1st height = %f, 2nd height = %f\n", m_first_choice.position.v2, m_second_choice.position.v2);
         same_level = m_first_choice.position.v2 == m_second_choice.position.v2;
         if (same_level) {
+            if (m_first_choice.gable || m_second_choice.gable) {
+                printf("Rejected because of same level gable activity\n");
+                select_no_choice();
+                return false;
+            }
             pos.v1 = (m_first_choice.position.v1 + m_second_choice.position.v1) / 2.0;
             pos.v2 = (m_first_choice.position.v2 + m_second_choice.position.v2) / 2.0;
             pos.v3 = (m_first_choice.position.v3 + m_second_choice.position.v3) / 2.0;
@@ -82,6 +88,13 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& 
             select_no_choice();
             return false;
         } else { // Different levels
+
+            if (m_first_choice.gable) {
+                printf("Rejected because of different level first gable activity\n");
+                select_no_choice();
+                return false;
+            }
+
             pos = m_first_choice.position;
             if (m_first_choice.position.v1 == m_second_choice.position.v1) {
                 orientation = m_first_choice.position.v3 < m_second_choice.position.v3 ? 3 : 1;

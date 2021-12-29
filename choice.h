@@ -6,7 +6,8 @@
 
 struct Choice {
     Float3 position;
-    float angle;
+    bool gable;
+    int orientation;
 };
 
 #endif // _CHOICE_H_

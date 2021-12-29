@@ -35,6 +35,7 @@ public:
     Element() = delete;
     virtual ~Element();
     Float3 get_pos() const;
+    virtual int orientation() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
     virtual float top_level() const;
@@ -74,6 +75,7 @@ public:
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
+    int orientation() const override;
 
 private:
     int m_orientation;
@@ -90,6 +92,7 @@ public:
     const CadModel& model() const override;
     Face face(int ix) const override;
     Face top_sub_face(int ix) const override;
+    int orientation() const override;
 
 private:
     int m_orientation;
@@ -113,6 +116,7 @@ public:
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
+    int orientation() const override;
 
 private:
     int m_orientation;
@@ -138,6 +142,7 @@ public:
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
+    int orientation() const override;
 
 private:
     int m_orientation;

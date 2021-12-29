@@ -30,6 +30,11 @@ Float3 Element::get_pos() const
     return pos;
 }
 
+int Element::orientation() const
+{
+    return 0;
+}
+
 const CadModel& Element::model() const
 {
     return m_default_model;
@@ -266,6 +271,11 @@ void BrickElement::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
+int BrickElement::orientation() const
+{
+    return m_orientation;
+}
+
 GableBrickElement::GableBrickElement(float xpos, float ypos, float zpos, int orientation)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
@@ -305,6 +315,11 @@ Face GableBrickElement::top_sub_face(int ix) const
 {
     (void) ix;
     return face(TOP_FACE);
+}
+
+int GableBrickElement::orientation() const
+{
+    return m_orientation;
 }
 
 DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,
@@ -382,6 +397,11 @@ bool DoorElement::contains(Float3 pos) const
     return gen_contains(pos, xf, yf, zf);
 }
 
+int DoorElement::orientation() const
+{
+    return m_orientation;
+}
+
 WindowElement::WindowElement(float xpos, float ypos, float zpos, int orientation,
                              int width, int height, int hgrilles, int vgrilles)
     : Element({xpos, ypos, zpos})
@@ -455,6 +475,11 @@ bool WindowElement::contains(Float3 pos) const
     float yf = m_height / 2.0;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
     return gen_contains(pos, xf, yf, zf);
+}
+
+int WindowElement::orientation() const
+{
+    return m_orientation;
 }
 
 

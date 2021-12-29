@@ -7,8 +7,8 @@ Choose::Choose()
     : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
     , m_first_selected(false)
     , m_second_selected(false)
-    , m_first_choice({{0.0, 0.0, 0.0}, 0.0})
-    , m_second_choice({{0.0, 0.0, 0.0}, 0.0})
+    , m_first_choice({{0.0, 0.0, 0.0}, false, 0})
+    , m_second_choice({{0.0, 0.0, 0.0}, false, 0})
 {
 }
 
@@ -20,8 +20,8 @@ void Choose::select_no_choice()
 {
     m_first_selected = false;
     m_second_selected = false;
-    m_first_choice = {{0.0, 0.0, 0.0}, 0.0};
-    m_second_choice ={ {0.0, 0.0, 0.0}, 0.0};
+    m_first_choice = {{0.0, 0.0, 0.0}, false, 0};
+    m_second_choice = {{0.0, 0.0, 0.0}, false, 0};
 }
 
 void Choose::select_choice(Choice c)
@@ -33,7 +33,7 @@ void Choose::select_choice(Choice c)
         m_first_selected = true;
         m_second_selected = false;
         m_first_choice = c;
-        m_second_choice = {{0.0, 0.0, 0.0}, 0.0};
+        m_second_choice = {{0.0, 0.0, 0.0}, false, 0};
     }
 }
 
@@ -49,7 +49,12 @@ Float3 Choose::marker_position() const
 
 float Choose::marker_angle() const
 {
-    return m_first_choice.angle;
+    return m_first_choice.gable ? 33.69 : 0.0;
+}
+
+int Choose::marker_orientation() const
+{
+    return m_first_choice.orientation;
 }
 
 const CadModel& Choose::marker_model() const

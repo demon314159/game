@@ -15,6 +15,7 @@ public:
     bool marker_visible() const;
     Float3 marker_position() const;
     float marker_angle() const;
+    int marker_orientation() const;
     const CadModel& marker_model() const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level);
 

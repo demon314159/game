@@ -67,10 +67,12 @@ void View::mouse_select(int sx, int sy)
         c.position.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
         if (f.v1.v2 == f.v2.v2 && f.v3.v2 == f.v4.v2 && f.v1.v2 == f.v3.v2) {  // All on same level
             c.position.v2 = e->top_level();
-            c.angle = 0.0;
+            c.gable = false;
+            c.orientation = 0;
         } else {
             c.position.v2 = e->top_level() - 0.5;
-            c.angle = 33.69;
+            c.gable = true;
+            c.orientation = e->orientation();
         }
         c.position.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_choice(c);
@@ -104,7 +106,8 @@ void View::mouse_select(int sx, int sy)
                 printf("Not obstructed\n");
                 Choice c;
                 c.position = screen_point_on_floor(plane, sx, sy);
-                c.angle = 0.0;
+                c.gable = false;
+                c.orientation = 0;
                 m_choose.select_choice(c);
             } else {
                 printf("Obstructed\n");
@@ -343,11 +346,19 @@ void View::paint()
 
         Float3 mp = m_choose.marker_position();
         marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
-
-
-        QVector3D axis3 = {0.0, 0.0, 1.0};
-        QQuaternion rot3 = QQuaternion::fromAxisAndAngle(axis3, m_choose.marker_angle());
-        marker_matrix.rotate(rot3);
+        float angle = m_choose.marker_angle();
+        int orientation = m_choose.marker_orientation();
+        if (angle > 0.0) {
+            QVector3D axis3;
+            if (orientation & 1)
+                axis3 = {1.0, 0.0, 0.0};
+            else
+                axis3 = {0.0, 0.0, 1.0};
+            if (orientation & 2)
+                angle = -angle;
+            QQuaternion rot3 = QQuaternion::fromAxisAndAngle(axis3, angle);
+            marker_matrix.rotate(rot3);
+        }
 
 
 

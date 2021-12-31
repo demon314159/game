@@ -619,10 +619,13 @@ bool View::gap_below_span()
     int span;
     int orientation;
     bool same_level;
+    bool roof;
 
-    if (!m_choose.new_element_chosen(pos, span, orientation, same_level))
+    if (!m_choose.new_element_chosen(pos, span, orientation, same_level, roof))
         return false;
     if (!same_level)
+        return false;
+    if (roof)
         return false;
     if (span < 2)
         return false;
@@ -640,7 +643,7 @@ bool View::gap_below_span()
     return false;
 }
 
-bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level)
+bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
 {
-    return m_choose.new_element_chosen(pos, span, orientation, same_level);
+    return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
 }

@@ -28,7 +28,7 @@ public:
     void mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
-    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level);
+    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof);
     bool gap_below_span();
 
 protected:

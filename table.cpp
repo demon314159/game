@@ -271,27 +271,36 @@ void Table::spawn_add_element_command(QMouseEvent* e)
     int span;
     int orientation;
     bool same_level;
-    if (m_view->new_element_chosen(pos, span, orientation, same_level)) {
+    bool roof;
+    if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
         if (span == 0) {
-            if (same_level)
-                m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+            if (same_level) {
+                if (roof)
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                else
+                    m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+            }
         } else if (span == 1) {
             if (same_level)
-                m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
-            else
-                m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                else
+                    m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
         } else { // Span is greater than one brick, so pop up a menu
             if (same_level) {
-                update();
-                m_le_pos = pos;
-                m_le_span = span;
-                m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
-                m_le_orientation = orientation;
-                m_le_gap = m_view->gap_below_span();
-                m_le_v = 1;
-                m_le_h = 2;
-                m_le_global_pos = e->globalPos();
-                handle_large_element();
+                if (roof) {
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                } else {
+                    update();
+                    m_le_pos = pos;
+                    m_le_span = span;
+                    m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
+                    m_le_orientation = orientation;
+                    m_le_gap = m_view->gap_below_span();
+                    m_le_v = 1;
+                    m_le_h = 2;
+                    m_le_global_pos = e->globalPos();
+                    handle_large_element();
+                }
             }
         }
     }

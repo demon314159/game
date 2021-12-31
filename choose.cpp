@@ -62,17 +62,29 @@ const CadModel& Choose::marker_model() const
     return m_marker_model;
 }
 
-bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level)
+bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
 {
+    roof = false;
     if (m_first_selected && m_second_selected) {
         printf("1st height = %f, 2nd height = %f\n", m_first_choice.position.v2, m_second_choice.position.v2);
         same_level = m_first_choice.position.v2 == m_second_choice.position.v2;
         if (same_level) {
+
             if (m_first_choice.gable || m_second_choice.gable) {
-                printf("Rejected because of same level gable activity\n");
-                select_no_choice();
-                return false;
+                if (m_first_choice.gable && m_second_choice.gable) {
+                    roof = true;
+                    printf("Roof element selected\n");
+                } else {
+                    printf("Roof elemwnt Rejected because of same level mixed gable activity\n");
+                    select_no_choice();
+                    return false;
+                }
             }
+
+
+
+
+
             pos.v1 = (m_first_choice.position.v1 + m_second_choice.position.v1) / 2.0;
             pos.v2 = (m_first_choice.position.v2 + m_second_choice.position.v2) / 2.0;
             pos.v3 = (m_first_choice.position.v3 + m_second_choice.position.v3) / 2.0;

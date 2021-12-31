@@ -17,7 +17,7 @@ public:
     float marker_angle() const;
     int marker_orientation() const;
     const CadModel& marker_model() const;
-    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level);
+    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof);
 
 private:
     CadModel m_marker_model;

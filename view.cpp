@@ -643,6 +643,36 @@ bool View::gap_below_span()
     return false;
 }
 
+bool View::span_blocked()
+{
+    Float3 pos;
+    int span;
+    int orientation;
+    bool same_level;
+    bool roof;
+
+    if (!m_choose.new_element_chosen(pos, span, orientation, same_level, roof))
+        return true;
+    if (!same_level)
+        return true;
+    if (roof)
+        return false;
+    if (span < 2)
+        return false;
+    float half_width = ((float) span + 1.0) / 2.0;
+    for (int i = 1; i < span; i++) {
+        Float3 tpos = pos;
+        if (orientation & 1)
+            tpos.v3 = 0.5 + pos.v3 - half_width + (float) i;
+        else
+            tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
+        tpos.v2 -= 0.25;
+        if (m_doc->contains(tpos))
+            return true; // At least one element
+    }
+    return false;
+}
+
 bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
 {
     return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);

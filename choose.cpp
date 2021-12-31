@@ -71,7 +71,7 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& 
         if (same_level) {
 
             if (m_first_choice.gable || m_second_choice.gable) {
-                if (m_first_choice.gable && m_second_choice.gable) {
+                if (m_first_choice.gable && m_second_choice.gable && m_first_choice.orientation == m_second_choice.orientation) {
                     roof = true;
                     printf("Roof element selected\n");
                 } else {

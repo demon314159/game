@@ -30,6 +30,7 @@ public:
     void mouse_unselect();
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof);
     bool gap_below_span();
+    bool span_blocked();
 
 protected:
     bool init_shaders();

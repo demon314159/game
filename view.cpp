@@ -195,7 +195,21 @@ void View::decorate_model()
 
 
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
+
     m_model->add(roofy, 0.0, 1.0 / 3.0, 0.0);
+    m_model->add(roofy, -1.0, 1.0 / 3.0, 0.0);
+    m_model->add(roofy, 1.0, 1.0 / 3.0, 0.0);
+
+    m_model->add(roofy, 0.0, 1.0 / 3.0 + 2.0 / 3.0, -1.0);
+    m_model->add(roofy, -1.0, 1.0 / 3.0 + 2.0 / 3.0, -1.0);
+    m_model->add(roofy, 1.0, 1.0 / 3.0 + 2.0 / 3.0, -1.0);
+
+    m_model->add(roofy, 0.0, 1.0 / 3.0 + 4.0 / 3.0, -2.0);
+    m_model->add(roofy, -1.0, 1.0 / 3.0 + 4.0 / 3.0, -2.0);
+    m_model->add(roofy, 1.0, 1.0 / 3.0 + 4.0 / 3.0, -2.0);
+
+
+
     bb = m_model->bounding_box();
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);

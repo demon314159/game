@@ -40,39 +40,49 @@ void RoofShape::define_shape()
 {
     // faces
     float x0 = -m_dimx / 2.0;
-    float x1 = x0 + m_dimx / 3.0;
-    float x2 = x0 + 2 * m_dimx / 3.0;
-    float x3 = x0 + m_dimx;
+    float x1 = x0 + 1 * m_dimx / 6.0;
+    float x2 = x0 + 2 * m_dimx / 6.0;
+    float x4 = x0 + 4 * m_dimx / 6.0;
+    float x5 = x0 + 5 * m_dimx / 6.0;
+    float x6 = x0 + m_dimx;
     float z0 = -m_dimz / 2.0;
-    float z1 = 0.0;
-    float z2 = m_dimz / 2.0;
+    float z3 = z0 + m_dimz / 2.0;
+    float z6 = m_dimz / 2.0;
     float y0 = -m_dimy / 3.0;
-    float y1 = 0.0;
-    float y2 = m_dimy / 3.0;
+    float y3 = 0.0;
+    float y6 = m_dimy / 3.0;
 
-    // top and bottom
-    add_face({x0, y2 + m_dimb, z0}, {x0, y0 + 2 * m_dimb, z2}, {x1, y0 + 2 * m_dimb, z2}, {x1, y2 + m_dimb, z0});
-    add_face({x0, y2, z0}, {x0, y0, z2}, {x1, y0, z2}, {x1, y2, z0}, true);
+    // shape 1 top and bottom
+    add_face({x0 + m_dimb, y6 + m_dimb, z0}, {x0 + m_dimb, y0 + 2 * m_dimb, z6}, {x2 - m_dimb, y0 + 2 * m_dimb, z6}, {x2 - m_dimb, y6 + m_dimb, z0});
+    add_face({x0, y6, z0}, {x0, y0, z6}, {x2, y0, z6}, {x2, y6, z0}, true);
     // left and right
-    add_face({x0, y2 + m_dimb, z0}, {x0, y0 + 2 * m_dimb, z2}, {x0, y0, z2}, {x0, y2, z0}, true);
-    add_face({x1, y2 + m_dimb, z0}, {x1, y0 + 2 * m_dimb, z2}, {x1, y0, z2}, {x1, y2, z0});
+    add_face({x0 + m_dimb, y6 + m_dimb, z0}, {x0 + m_dimb, y0 + 2 * m_dimb, z6}, {x0, y0, z6}, {x0, y6, z0}, true);
+    add_face({x2 - m_dimb, y6 + m_dimb, z0}, {x2 - m_dimb, y0 + 2 * m_dimb, z6}, {x2, y0, z6}, {x2, y6, z0});
     // front and back
-    add_face({x0, y0 + 2 * m_dimb, z2}, {x1, y0 + 2 * m_dimb, z2}, {x1, y0, z2}, {x0, y0, z2}, true);
-    add_face({x0, y2 + m_dimb, z0}, {x1, y2 + m_dimb, z0}, {x1, y2, z0}, {x0, y2, z0});
+    add_face({x0 + m_dimb, y0 + 2 * m_dimb, z6}, {x2 - m_dimb, y0 + 2 * m_dimb, z6}, {x2, y0, z6}, {x0, y0, z6}, true);
+    add_face({x0 + m_dimb, y6 + m_dimb, z0}, {x2 - m_dimb, y6 + m_dimb, z0}, {x2, y6, z0}, {x0, y6, z0});
 
-    // top and bottom
-    add_face({x2, y2 + m_dimb, z0}, {x2, y0 + 2 * m_dimb, z2}, {x3, y0 + 2 * m_dimb, z2}, {x3, y2 + m_dimb, z0});
-    add_face({x2, y2, z0}, {x2, y0, z2}, {x3, y0, z2}, {x3, y2, z0}, true);
+    // shape 2 top and bottom
+    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x6 - m_dimb, y0 + 2 * m_dimb, z6}, {x6 - m_dimb, y6 + m_dimb, z0});
+    add_face({x4, y6, z0}, {x4, y0, z6}, {x6, y0, z6}, {x6, y6, z0}, true);
     // left and right
-    add_face({x2, y2 + m_dimb, z0}, {x2, y0 + 2 * m_dimb, z2}, {x2, y0, z2}, {x2, y2, z0}, true);
-    add_face({x3, y2 + m_dimb, z0}, {x3, y0 + 2 * m_dimb, z2}, {x3, y0, z2}, {x3, y2, z0});
+    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x4, y0, z6}, {x4, y6, z0}, true);
+    add_face({x6 - m_dimb, y6 + m_dimb, z0}, {x6 - m_dimb, y0 + 2 * m_dimb, z6}, {x6, y0, z6}, {x6, y6, z0});
     // front and back
-    add_face({x2, y0 + 2 * m_dimb, z2}, {x3, y0 + 2 * m_dimb, z2}, {x3, y0, z2}, {x2, y0, z2}, true);
-    add_face({x2, y2 + m_dimb, z0}, {x3, y2 + m_dimb, z0}, {x3, y2, z0}, {x2, y2, z0});
+    add_face({x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x6 - m_dimb, y0 + 2 * m_dimb, z6}, {x6, y0, z6}, {x4, y0, z6}, true);
+    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x6 - m_dimb, y6 + m_dimb, z0}, {x6, y6, z0}, {x4, y6, z0});
 
-
-//    add_face({x0, y2 + m_dimb, z0}, {x0, y0 + 2 * m_dimb, z2}, {x1, y0 + 2 * m_dimb, z2}, {x1, y2 + m_dimb, z0});
+    // shape 3 top and bottom
+//    add_face({x1, y6 + 3 * m_dimb / 2, z0}, {x1, y3 + 5 * m_dimb / 2, z3}, {x5, y3 + 5 * m_dimb / 2, z3}, {x5, y6 + 3 * m_dimb / 2, z0});
 //    add_face({x0, y2, z0}, {x0, y0, z2}, {x1, y0, z2}, {x1, y2, z0}, true);
+    // left and right
+//    add_face({x0, y2 + m_dimb, z0}, {x0, y0 + 2 * m_dimb, z2}, {x0, y0, z2}, {x0, y2, z0}, true);
+//    add_face({x1, y2 + m_dimb, z0}, {x1, y0 + 2 * m_dimb, z2}, {x1, y0, z2}, {x1, y2, z0});
+    // front and back
+//    add_face({x0, y0 + 2 * m_dimb, z2}, {x1, y0 + 2 * m_dimb, z2}, {x1, y0, z2}, {x0, y0, z2}, true);
+//    add_face({x0, y2 + m_dimb, z0}, {x1, y2 + m_dimb, z0}, {x1, y2, z0}, {x0, y2, z0});
+
+
 }
 
 void RoofShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)

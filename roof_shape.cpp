@@ -83,14 +83,14 @@ void RoofShape::define_shape()
     add_face({x1 + m_dimb, y6 + 3 * m_dimb / 2, z0}, {x5 - m_dimb, y6 + 3 * m_dimb / 2, z0}, {x5, y6, z0}, {x1, y6, z0});
 
     // shape 4 top and bottom
-    add_face({x2 + m_dimb, y3 + m_dimb, z3}, {x2 + m_dimb, y0 + 3 * m_dimb / 2, z6}, {x4 - m_dimb, y0 + 3 * m_dimb / 2, z6}, {x4 - m_dimb, y3 + m_dimb, z3});
-    add_face({x2, y3, z3}, {x2, y0, z6}, {x4, y0, z6}, {x4, y3, z3}, true);
+    add_face({x1, y3 + m_dimb, z3}, {x1, y0 + 3 * m_dimb / 2, z6}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y3 + m_dimb, z3});
+    add_face({x1, y3, z3}, {x1, y0, z6}, {x5, y0, z6}, {x5, y3, z3}, true);
     // left and right
-    add_face({x2 + m_dimb, y3 + m_dimb, z3}, {x2 + m_dimb, y0 + 3 * m_dimb / 2, z6}, {x2, y0, z6}, {x2, y3, z3}, true);
-    add_face({x4 - m_dimb, y3 + m_dimb, z3}, {x4 - m_dimb, y0 + 3 * m_dimb / 2, z6}, {x4, y0, z6}, {x4, y3, z3});
+    add_face({x1, y3 + m_dimb, z3}, {x1, y0 + 3 * m_dimb / 2, z6}, {x1, y0, z6}, {x1, y3, z3}, true);
+    add_face({x5, y3 + m_dimb, z3}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y0, z6}, {x1, y3, z3});
     // front and back
-    add_face({x2 + m_dimb, y0 + 3 * m_dimb /2, z6}, {x4 - m_dimb, y0 + 3 * m_dimb / 2, z6}, {x4, y0, z6}, {x2, y0, z6}, true);
-    add_face({x2 + m_dimb, y3 + m_dimb, z3}, {x4 - m_dimb, y3 + m_dimb, z3}, {x4, y3, z3}, {x2, y3, z3});
+    add_face({x1, y0 + 3 * m_dimb /2, z6}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y0, z6}, {x1, y0, z6}, true);
+    add_face({x1, y3 + m_dimb, z3}, {x5, y3 + m_dimb, z3}, {x5, y3, z3}, {x1, y3, z3});
 }
 
 void RoofShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)

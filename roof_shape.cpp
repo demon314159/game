@@ -48,22 +48,18 @@ void RoofShape::define_shape()
 
     float y0 = -m_dimy / 3;
     float y1_5 = -m_dimy / 6;
-    float y3 = 0.0;
     float y4_5 = m_dimy / 6;
     float y6 = m_dimy / 3.0;
 
     float z0 = -m_dimz / 2;
     float z1_5 = -m_dimz / 4;
-    float z3 = 0.0;
     float z4_5 = m_dimz / 4;
     float z6 = m_dimz / 2;
 
     float t0 =   4 * m_dimb / 4;
     float t1_5 = 5 * m_dimb / 4;
-    float t3 =   6 * m_dimb / 4;
     float t4_5 = 7 * m_dimb / 4;
     float t6 =   8 * m_dimb /4;
-
     // partial shape 1 top and bottom
     add_face({x0, y6 + t1_5, z0}, {x0, y1_5 + t6, z4_5}, {x2 - m_dimb, y1_5 + t6, z4_5}, {x2 - m_dimb, y6 + t1_5, z0});
     add_face({x0, y6, z0}, {x0, y1_5, z4_5}, {x2, y1_5, z4_5}, {x2, y6, z0}, true);
@@ -104,37 +100,26 @@ void RoofShape::define_shape()
     add_face({x4 + m_dimb, y0 + t1_5, z6}, {x6, y0 + t1_5, z6}, {x6, y0, z6}, {x4, y0, z6}, true);
     // The back face is always hidden
 
-#ifdef NEVERMORE
-    // shape 2 top and bottom
-    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x6, y0 + 2 * m_dimb, z6}, {x6, y6 + m_dimb, z0});
-    add_face({x4, y6, z0}, {x4, y0, z6}, {x6, y0, z6}, {x6, y6, z0}, true);
+    // partial shape 3 top and bottom
+    add_face({x1 + m_dimb, y6 + t4_5, z0}, {x1 + m_dimb, y4_5 + t6, z1_5}, {x5 - m_dimb, y4_5 + t6, z1_5}, {x5 - m_dimb, y6 + t4_5, z0});
+    add_face({x1, y6, z0}, {x1, y4_5, z1_5}, {x5, y4_5, z1_5}, {x5, y6, z0}, true);
     // left and right
-    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x4, y0, z6}, {x4, y6, z0}, true);
-    add_face({x6, y6 + m_dimb, z0}, {x6, y0 + 2 * m_dimb, z6}, {x6, y0, z6}, {x6, y6, z0});
+    add_face({x1 + m_dimb, y6 + t4_5, z0}, {x1 + m_dimb, y4_5 + t6, z1_5}, {x1, y4_5, z1_5}, {x1, y6, z0}, true);
+    add_face({x5 - m_dimb, y6 + t4_5, z0}, {x5 - m_dimb, y4_5 + t6, z1_5}, {x5, y4_5, z1_5}, {x5, y6, z0});
     // front and back
-    add_face({x4 + m_dimb, y0 + 2 * m_dimb, z6}, {x6, y0 + 2 * m_dimb, z6}, {x6, y0, z6}, {x4, y0, z6}, true);
-    add_face({x4 + m_dimb, y6 + m_dimb, z0}, {x6, y6 + m_dimb, z0}, {x6, y6, z0}, {x4, y6, z0});
+    add_face({x1 + m_dimb, y4_5 + t6, z1_5}, {x5 - m_dimb, y4_5 + t6, z1_5}, {x5, y4_5, z1_5}, {x1, y4_5, z1_5}, true);
+    add_face({x1 + m_dimb, y6 + t4_5, z0}, {x5 - m_dimb, y6 + t4_5, z0}, {x5, y6, z0}, {x1, y6, z0});
 
-    // shape 3 top and bottom
-    add_face({x1 + m_dimb, y6 + 3 * m_dimb / 2, z0}, {x1 + m_dimb, y3 + 2 * m_dimb, z3}, {x5 - m_dimb, y3 + 2 * m_dimb, z3}, {x5 - m_dimb, y6 + 3 * m_dimb / 2, z0});
-    add_face({x1, y6, z0}, {x1, y3, z3}, {x5, y3, z3}, {x5, y6, z0}, true);
+    // partial shape 3 top and bottom
+    add_face({x1 + m_dimb, y4_5 + t0, z1_5}, {x1 + m_dimb, y0 + t4_5, z6}, {x5 - m_dimb, y0 + t4_5, z6}, {x5 - m_dimb, y4_5 + t0, z1_5});
+    add_face({x1, y4_5, z1_5}, {x1, y0, z6}, {x5, y0, z6}, {x5, y4_5, z1_5}, true);
     // left and right
-    add_face({x1 + m_dimb, y6 + 3 * m_dimb / 2, z0}, {x1 + m_dimb, y3 + 2 * m_dimb, z3}, {x1, y3, z3}, {x1, y6, z0}, true);
-    add_face({x5 - m_dimb, y6 + 3 * m_dimb / 2, z0}, {x5 - m_dimb, y3 + 2 * m_dimb, z3}, {x5, y3, z3}, {x5, y6, z0});
+    add_face({x1 + m_dimb, y4_5 + t0, z1_5}, {x1 + m_dimb, y0 + t4_5, z6}, {x1, y0, z6}, {x1, y6, z0}, true);
+    add_face({x5 - m_dimb, y4_5 + t0, z1_5}, {x5 - m_dimb, y0 + t4_5, z6}, {x5, y0, z6}, {x5, y6, z0});
     // front and back
-    add_face({x1 + m_dimb, y3 + 2 * m_dimb, z3}, {x5 - m_dimb, y3 + 2 * m_dimb, z3}, {x5, y3, z3}, {x1, y3, z3}, true);
-    add_face({x1 + m_dimb, y6 + 3 * m_dimb / 2, z0}, {x5 - m_dimb, y6 + 3 * m_dimb / 2, z0}, {x5, y6, z0}, {x1, y6, z0});
-
-    // shape 4 top and bottom
-    add_face({x1, y3 + m_dimb, z3}, {x1, y0 + 3 * m_dimb / 2, z6}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y3 + m_dimb, z3});
-    add_face({x1, y3, z3}, {x1, y0, z6}, {x5, y0, z6}, {x5, y3, z3}, true);
-    // left and right
-    add_face({x1, y3 + m_dimb, z3}, {x1, y0 + 3 * m_dimb / 2, z6}, {x1, y0, z6}, {x1, y3, z3}, true);
-    add_face({x5, y3 + m_dimb, z3}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y0, z6}, {x1, y3, z3});
-    // front and back
-    add_face({x1, y0 + 3 * m_dimb /2, z6}, {x5, y0 + 3 * m_dimb / 2, z6}, {x5, y0, z6}, {x1, y0, z6}, true);
-    add_face({x1, y3 + m_dimb, z3}, {x5, y3 + m_dimb, z3}, {x5, y3, z3}, {x1, y3, z3});
-#endif
+    add_face({x1 + m_dimb, y0 + t4_5, z6}, {x5 - m_dimb, y0 + t4_5, z6}, {x5, y0, z6}, {x1, y0, z6}, true);
+    // The back face is always hidden
+    add_face({x1 + m_dimb, y6 + t4_5, z0}, {x5 - m_dimb, y6 + t4_5, z0}, {x5, y6, z0}, {x1, y6, z0});
 }
 
 void RoofShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)

@@ -9,7 +9,7 @@
 class RoofShape: public Shape
 {
 public:
-    RoofShape(float dimx, float dimy, float dimz, float dimb);
+    RoofShape(float dimx, float dimy, float dimz, float dimb, bool part1);
     virtual ~RoofShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
@@ -19,6 +19,7 @@ private:
     float m_dimy;
     float m_dimz;
     float m_dimb;
+    bool m_part1;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;

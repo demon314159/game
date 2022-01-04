@@ -2,6 +2,7 @@
 #include "element.h"
 #include "brick_shape.h"
 #include "gable_brick_shape.h"
+#include "roof_shape.h"
 #include "window_model.h"
 #include "door_model.h"
 #include <stdio.h>
@@ -195,6 +196,7 @@ bool Element::contains(Float3 pos) const
 }
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
+PaintCan Element::roof_paint(0.5, 0.5, 0.5);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
 PaintCan Element::door_paint(0.2, 1.0, 0.2);
 PaintCan Element::gray_paint(0.8, 0.8, 0.8);
@@ -495,13 +497,16 @@ int WindowElement::orientation() const
     return m_orientation;
 }
 
-
 RoofElement::RoofElement(float xpos, float ypos, float zpos, int orientation, int width)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
     , m_width(width)
-    , m_model(BrickShape(width, dimh, 1.0, dimb), gray_paint, 0.0)
 {
+    CadModel rm(RoofShape(dimx, dimx, dimx, dimb), roof_paint, 0.0);
+    for (int i = 0; i < width; i++) {
+        float hw = 0.5 * (float) width;
+        m_model.add(rm, 0.5 - hw + (float) i);
+    }
     if (orientation == 1)
         m_model.rotate_ay(90.0);
     else if (orientation == 2)

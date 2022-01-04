@@ -288,7 +288,9 @@ void Table::spawn_add_element_command(QMouseEvent* e)
         } else {
             if (same_level) {
                 if (roof) {
-                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+
+                    printf("add roof at (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 } else {
                     if (m_view->span_blocked()) {
                         m_view->mouse_unselect();

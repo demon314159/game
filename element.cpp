@@ -196,8 +196,8 @@ bool Element::contains(Float3 pos) const
 }
 
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
-PaintCan Element::roof_paint1(0.0, 0.6, 0.2);
-PaintCan Element::roof_paint2(0.0, 0.6, 0.0);
+PaintCan Element::roof1_paint(0.0, 0.9, 0.0);
+PaintCan Element::roof2_paint(0.0, 0.8, 0.2);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
 PaintCan Element::door_paint(0.2, 1.0, 0.2);
 PaintCan Element::gray_paint(0.8, 0.8, 0.8);
@@ -503,8 +503,12 @@ RoofElement::RoofElement(float xpos, float ypos, float zpos, int orientation, in
     , m_orientation(orientation)
     , m_width(width)
 {
-    CadModel rm1(RoofShape(dimx, dimx, dimx, dimb, true), roof_paint1, 0.0);
-    CadModel rm2(RoofShape(dimx, dimx, dimx, dimb, false), roof_paint2, 0.0);
+//    float dimb = 0.1;
+//    float dimt = 0.02;
+    float dimb = 0.05;
+    float dimt = 0.05;
+    CadModel rm1(RoofShape(dimx, dimx, dimx, dimb, dimt, true), roof1_paint, 0.0);
+    CadModel rm2(RoofShape(dimx, dimx, dimx, dimb, dimt, false), roof2_paint, 0.0);
     for (int i = 0; i < width; i++) {
         float hw = 0.5 * (float) width;
         m_model.add(rm1, 0.5 - hw + (float) i);

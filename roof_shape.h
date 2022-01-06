@@ -9,7 +9,7 @@
 class RoofShape: public Shape
 {
 public:
-    RoofShape(float dimx, float dimy, float dimz, float dimb, float thickness, bool top_faces);
+    RoofShape(float dimx, float dimy, float dimz, float dimb, float thickness);
     virtual ~RoofShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
@@ -19,12 +19,16 @@ private:
     float m_dimy;
     float m_dimz;
     float m_dimb;
-    float m_thickness;
-    bool m_top_faces;
+    float m_dimt;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;
     void define_shape();
+    void define_lower_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2);
+    void define_upper_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2);
+    void define_left_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2);
+    void define_right_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2);
+    void define_full(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2);
     void add_face(Float3 v1, Float3 v2, Float3 v3, bool flip = false);
     void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };

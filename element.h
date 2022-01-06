@@ -29,8 +29,7 @@ public:
     static constexpr float dimh = 2.0 / 3.0;
     static constexpr float dimb = 0.025;
     static PaintCan red_paint;
-    static PaintCan roof1_paint;
-    static PaintCan roof2_paint;
+    static PaintCan roof_paint;
     static PaintCan white_paint;
     static PaintCan door_paint;
     static PaintCan gray_paint;

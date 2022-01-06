@@ -191,13 +191,11 @@ void View::decorate_model()
 
 
 
-    CadModel roofy1(RoofShape(1.0, 1.0, 1.0, 0.05, 0.05, true), PaintCan(0.0, 0.9, 0.0), 0.0);
-    CadModel roofy2(RoofShape(1.0, 1.0, 1.0, 0.05, 0.05, false), PaintCan(0.0, 1.0, 0.0), 0.0);
+    CadModel roofy(RoofShape(1.0, 1.0, 1.0, 0.025, 0.05), PaintCan(0.0, 1.0, 0.0), 0.0);
 
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
 
-    m_model->add(roofy1, 0.0, 1.0 / 3.0, 0.0);
-    m_model->add(roofy2, 0.0, 1.0 / 3.0, 0.0);
+    m_model->add(roofy, 0.0, 1.0 / 3.0, 0.0);
 //    m_model->add(roofy, -1.0, 1.0 / 3.0, 0.0);
 //    m_model->add(roofy, 1.0, 1.0 / 3.0, 0.0);
 

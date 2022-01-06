@@ -64,7 +64,7 @@ void RoofShape::define_shape()
     define_lower_half(x0, x3, y6, y4_5, z0, z1_5, t3, t6);
     define_lower_half(x3, x6, y6, y4_5, z0, z1_5, t3, t6);
     define_right_half(x0, x1_5, y4_5, y1_5, z1_5, z4_5, t0, t6);
-    define_full(x1_5, x4_5, y4_5, y1_5, z1_5, z4_5, t0, t6);
+    define_lower_half(x1_5, x4_5, y4_5, y1_5, z1_5, z4_5, t0, t6);
     define_left_half(x4_5, x6, y4_5, y1_5, z1_5, z4_5, t0, t6);
     define_upper_half(x0, x3, y1_5, y0, z4_5, z6, t0, t3);
     define_upper_half(x3, x6, y1_5, y0, z4_5, z6, t0, t3);
@@ -200,7 +200,7 @@ void RoofShape::define_upper_half(float x1, float x2, float y1, float y2, float 
     add_face({x2, y1 + t1 - m_dimb, z1}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x2, y1, z1});
     // front and back
     add_face({x1, y2 + t2 - m_dimb, z2}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x1, y2, z2}, true);
-    add_face({x1, y1 + t1 - m_dimb, z1}, {x2, y1 + t1 - m_dimb, z1}, {x2, y1, z1}, {x1, y1, z1});
+    // The back face is always hidden
     // left and right bevels
     add_face({x1 + m_dimb, y1 + t1, z1}, {x1 + m_dimb, y2 + t2, z2}, {x1, y2 + t2 - m_dimb, z2}, {x1, y1 + t1 - m_dimb, z1}, true);
     add_face({x2 - m_dimb, y1 + t1, z1}, {x2 - m_dimb, y2 + t2, z2}, {x2, y2 + t2 - m_dimb, z2}, {x2, y1 + t1 - m_dimb, z1});
@@ -211,12 +211,43 @@ void RoofShape::define_upper_half(float x1, float x2, float y1, float y2, float 
 
 void RoofShape::define_left_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2)
 {
+    // top and bottom
+    add_face({x1 + m_dimb, y1 + t1, z1}, {x1 + m_dimb, y2 + t2, z2 - m_dimb}, {x2, y2 + t2, z2 - m_dimb}, {x2, y1 + t1, z1});
+    add_face({x1, y1, z1}, {x1, y2, z2}, {x2, y2, z2}, {x2, y1, z1}, true);
+    // left and right
+    add_face({x1, y1 + t1 - m_dimb, z1}, {x1, y2 + t2 - m_dimb, z2}, {x1, y2, z2}, {x1, y1, z1}, true);
+    add_face({x2, y1 + t1 - m_dimb, z1}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x2, y1, z1});
+    // front and back
+    add_face({x1, y2 + t2 - m_dimb, z2}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x1, y2, z2}, true);
+    // The back face is always hidden
+    // left and right bevels
+    add_face({x1 + m_dimb, y1 + t1, z1}, {x1 + m_dimb, y2 + t2, z2 - m_dimb}, {x1, y2 + t2 - m_dimb, z2}, {x1, y1 + t1 - m_dimb, z1}, true);
+    add_face({x2, y1 + t1, z1}, {x2, y2 + t2, z2 - m_dimb}, {x2, y2 + t2 - m_dimb, z2}, {x2, y1 + t1 - m_dimb, z1});
+    // front and back bevels
+    add_face({x1 + m_dimb, y2 + t2, z2 - m_dimb}, {x2, y2 + t2, z2 - m_dimb}, {x2, y2 + t2 - m_dimb, z2}, {x1, y2 + t2 - m_dimb, z2}, true);
+    // The back face is always hidden
 }
 
 void RoofShape::define_right_half(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2)
 {
+    // top and bottom
+    add_face({x1, y1 + t1, z1}, {x1, y2 + t2, z2 - m_dimb}, {x2 - m_dimb, y2 + t2, z2 - m_dimb}, {x2 - m_dimb, y1 + t1, z1});
+    add_face({x1, y1, z1}, {x1, y2, z2}, {x2, y2, z2}, {x2, y1, z1}, true);
+    // left and right
+    add_face({x1, y1 + t1 - m_dimb, z1}, {x1, y2 + t2 - m_dimb, z2}, {x1, y2, z2}, {x1, y1, z1}, true);
+    add_face({x2, y1 + t1 - m_dimb, z1}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x2, y1, z1});
+    // front and back
+    add_face({x1, y2 + t2 - m_dimb, z2}, {x2, y2 + t2 - m_dimb, z2}, {x2, y2, z2}, {x1, y2, z2}, true);
+    // The back face is always hidden
+    // left and right bevels
+    add_face({x1, y1 + t1, z1}, {x1, y2 + t2, z2 - m_dimb}, {x1, y2 + t2 - m_dimb, z2}, {x1, y1 + t1 - m_dimb, z1}, true);
+    add_face({x2 - m_dimb, y1 + t1, z1}, {x2 - m_dimb, y2 + t2, z2 - m_dimb}, {x2, y2 + t2 - m_dimb, z2}, {x2, y1 + t1 - m_dimb, z1});
+    // front and back bevels
+    add_face({x1, y2 + t2, z2 - m_dimb}, {x2 - m_dimb, y2 + t2, z2 - m_dimb}, {x2, y2 + t2 - m_dimb, z2}, {x1, y2 + t2 - m_dimb, z2}, true);
+    // The back face is always hidden
 }
 
 void RoofShape::define_full(float x1, float x2, float y1, float y2, float z1, float z2, float t1, float t2)
 {
+
 }

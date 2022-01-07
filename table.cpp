@@ -283,8 +283,10 @@ void Table::spawn_add_element_command(QMouseEvent* e)
         } else if (span == 1) {
             if (same_level)
                     m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
-                else
+                else {
+                    orientation = (orientation + 3) & 3;
                     m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                }
         } else {
             if (same_level) {
                 if (roof) {

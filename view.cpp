@@ -52,10 +52,10 @@ void View::mouse_select(int sx, int sy)
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
-        printf("selected element %d, subface %d\n", ix, sf);
         const Element* e = m_doc->element(ix);
         Face f = e->top_sub_face(sf);
 
+        printf("selected element %d type %d, subface %d\n", ix, e->kind(), sf);
         Float3 p = e->get_pos();
         printf("Element position (%f, %f, %f\n", p.v1, p.v2, p.v3);
         printf("Face = (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)\n",
@@ -352,10 +352,10 @@ void View::paint()
         if (angle > 0.0) {
             QVector3D axis3;
             if (orientation & 1)
-                axis3 = {1.0, 0.0, 0.0};
-            else
                 axis3 = {0.0, 0.0, 1.0};
-            if (orientation & 2)
+            else
+                axis3 = {1.0, 0.0, 0.0};
+            if (orientation == 1 || orientation == 2)
                 angle = -angle;
             QQuaternion rot3 = QQuaternion::fromAxisAndAngle(axis3, angle);
             marker_matrix.rotate(rot3);
@@ -548,7 +548,6 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
 
 bool View::no_part_of_any_element_selected(int sx, int sy) const
 {
-
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         for (int j = 0; j < 6; j++) {
@@ -568,7 +567,27 @@ int View::selected_element_ix(int sx, int sy) const
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
+
+
         if (screen_point_inside_face(e->face(TOP_FACE), sx, sy)) {
+
+            if (e->kind() == ELEMENT_ROOF) {
+                printf("Just found a point in roof\n");
+                Face f = e->face(TOP_FACE);
+                printf("    (%f, %f, %f) (%f, %f, %f) (%f, %f, %f) (%f, %f, %f)\n",
+                       f.v1.v1, f.v1.v2, f.v1.v3,
+                       f.v2.v1, f.v2.v2, f.v2.v3,
+                       f.v3.v1, f.v3.v2, f.v3.v3,
+                       f.v4.v1, f.v4.v2, f.v4.v3);
+            }
+
+
+
+            int k = e->kind();
+            printf("Element type %d selected, orientation = %d,  level %f\n", k, e->orientation(), e->top_level());
+//            if back_side of roof element, skip it
+
+
             if (e->top_level() > max_level) {
                 max_level = e->top_level();
                 max_e = e;

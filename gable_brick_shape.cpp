@@ -20,11 +20,11 @@ GableBrickShape::GableBrickShape(float dimx, float dimy, float dimz, float dimb,
         m_facet = new Facet[m_facet_count];
         m_facet_count = 0;
         define_shape();
-        if (orientation == 1)
-            rotate_ay(90.0);
-        if (orientation == 2)
-            rotate_ay(180.0);
         if (orientation == 3)
+            rotate_ay(90.0);
+        if (orientation == 0)
+            rotate_ay(180.0);
+        if (orientation == 1)
             rotate_ay(270.0);
     }
 }

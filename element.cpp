@@ -36,6 +36,11 @@ int Element::orientation() const
     return 0;
 }
 
+int Element::kind() const
+{
+    return ELEMENT_HALF_BRICK;
+}
+
 const CadModel& Element::model() const
 {
     return m_default_model;
@@ -114,20 +119,20 @@ Face Element::common_gen_face(int ix, float xf, float yf, float zf, bool gable_f
 
     if (gable_flag) {
         if (orientation == 0) {
-            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
-            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
-        };
-        if (orientation == 1) {
             v_ufl.v2 = v_lfl.v2 + dimb * dimh;
             v_ufr.v2 = v_lfr.v2 + dimb * dimh;
         };
-        if (orientation == 2) {
+        if (orientation == 1) {
            v_ufr.v2 = v_lfr.v2 + dimb * dimh;
            v_ubr.v2 = v_lbr.v2 + dimb * dimh;
         };
-        if (orientation == 3) {
+        if (orientation == 2) {
             v_ubl.v2 = v_lbl.v2 + dimb * dimh;
             v_ubr.v2 = v_lbr.v2 + dimb * dimh;
+        };
+        if (orientation == 3) {
+            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
+            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
         };
     }
     if (ix == TOP_FACE) {
@@ -283,6 +288,11 @@ int BrickElement::orientation() const
     return m_orientation;
 }
 
+int BrickElement::kind() const
+{
+    return ELEMENT_BRICK;
+}
+
 GableBrickElement::GableBrickElement(float xpos, float ypos, float zpos, int orientation)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
@@ -292,11 +302,11 @@ GableBrickElement::GableBrickElement(float xpos, float ypos, float zpos, int ori
 
 const CadModel& GableBrickElement::model() const
 {
-    if (m_orientation == 0)
-        return m_model_qns;
     if (m_orientation == 1)
-        return m_model_qew;
+        return m_model_qns;
     if (m_orientation == 2)
+        return m_model_qew;
+    if (m_orientation == 3)
         return m_model_qsn;
     return m_model_qwe;
 }
@@ -335,6 +345,11 @@ bool GableBrickElement::contains(Float3 pos) const
 int GableBrickElement::orientation() const
 {
     return m_orientation;
+}
+
+int GableBrickElement::kind() const
+{
+    return ELEMENT_GABLE_BRICK;
 }
 
 DoorElement::DoorElement(float xpos, float ypos, float zpos, int orientation,
@@ -417,6 +432,11 @@ int DoorElement::orientation() const
     return m_orientation;
 }
 
+int DoorElement::kind() const
+{
+    return ELEMENT_DOOR;
+}
+
 WindowElement::WindowElement(float xpos, float ypos, float zpos, int orientation,
                              int width, int height, int hgrilles, int vgrilles)
     : Element({xpos, ypos, zpos})
@@ -497,6 +517,11 @@ int WindowElement::orientation() const
     return m_orientation;
 }
 
+int WindowElement::kind() const
+{
+    return ELEMENT_WINDOW;
+}
+
 RoofElement::RoofElement(float xpos, float ypos, float zpos, int orientation, int width)
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
@@ -531,12 +556,18 @@ const CadModel& RoofElement::model() const
     return m_model;
 }
 
+float RoofElement::top_level() const
+{
+    Float3 pos = get_pos();
+    return pos.v2 + 1.0;
+}
+
 Face RoofElement::face(int ix) const
 {
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    return gen_face(ix, xf, yf, zf);
+    return gen_gable_face(ix, xf, yf, zf, m_orientation);
 }
 
 int RoofElement::sub_face_count() const
@@ -565,5 +596,10 @@ bool RoofElement::contains(Float3 pos) const
 int RoofElement::orientation() const
 {
     return m_orientation;
+}
+
+int RoofElement::kind() const
+{
+    return ELEMENT_ROOF;
 }
 

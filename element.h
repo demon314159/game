@@ -22,6 +22,14 @@
 #define FRONT_FACE  4
 #define BACK_FACE   5
 
+#define ELEMENT_HALF_BRICK  0
+#define ELEMENT_BRICK       1
+#define ELEMENT_GABLE_BRICK 2
+#define ELEMENT_DOOR        3
+#define ELEMENT_WINDOW      4
+#define ELEMENT_ROOF        5
+
+
 class Element
 {
 public:
@@ -37,6 +45,7 @@ public:
     Element() = delete;
     virtual ~Element();
     Float3 get_pos() const;
+    virtual int kind() const;
     virtual int orientation() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
@@ -78,6 +87,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int kind() const override;
 
 private:
     int m_orientation;
@@ -96,6 +106,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int kind() const override;
 
 private:
     int m_orientation;
@@ -120,6 +131,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int kind() const override;
 
 private:
     int m_orientation;
@@ -146,6 +158,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int kind() const override;
 
 private:
     int m_orientation;
@@ -164,11 +177,13 @@ public:
     RoofElement() = delete;
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
+    float top_level() const override;
     Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int kind() const override;
 
 private:
     int m_orientation;

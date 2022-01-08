@@ -694,16 +694,20 @@ bool View::span_blocked()
     if (span < 2)
         return false;
     float half_width = ((float) span + 1.0) / 2.0;
+    printf("     in span_blocked()\n");
     for (int i = 1; i < span; i++) {
         Float3 tpos = pos;
         if (orientation & 1)
             tpos.v3 = 0.5 + pos.v3 - half_width + (float) i;
         else
             tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
-        tpos.v2 -= 0.25;
-        if (m_doc->contains(tpos))
+        tpos.v2 += 0.25;
+        if (m_doc->contains(tpos)) {
+            printf("     blocked because doc contains (%f, %f, %f)\n", tpos.v1, tpos.v2, tpos.v3);
             return true; // At least one element
+        }
     }
+    printf("     not blocked\n");
     return false;
 }
 

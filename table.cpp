@@ -272,7 +272,9 @@ void Table::spawn_add_element_command(QMouseEvent* e)
     int orientation;
     bool same_level;
     bool roof;
+    printf("in spawn\n");
     if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
+        printf("  new element chosen\n");
         if (span == 0) {
             if (same_level) {
                 if (roof)
@@ -296,16 +298,20 @@ void Table::spawn_add_element_command(QMouseEvent* e)
                     printf("add roof at (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 } else {
+                    printf("   at large element\n");
                     if (m_view->span_blocked()) {
+                        printf("   blocked\n");
                         m_view->mouse_unselect();
                         update();
                     } else {
+                        printf("   not blocked\n");
                         update();
                         m_le_pos = pos;
                         m_le_span = span;
                         m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
                         m_le_orientation = orientation;
                         m_le_gap = m_view->gap_below_span();
+                        printf("gap flag = %d\n", m_le_gap ? 1 : 0);
                         m_le_v = 1;
                         m_le_h = 2;
                         m_le_global_pos = e->globalPos();

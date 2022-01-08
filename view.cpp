@@ -559,6 +559,16 @@ bool View::no_part_of_any_element_selected(int sx, int sy) const
     return true;
 }
 
+float View::normalize_angle(float angle) const
+{
+    float a = angle;
+    while (a < 0.0)
+        a += 360.0;
+    while (a >= 360.0)
+        a -= 360.0;
+    return a;
+}
+
 int View::selected_element_ix(int sx, int sy) const
 {
     float max_level = -1000000.0;
@@ -567,31 +577,35 @@ int View::selected_element_ix(int sx, int sy) const
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-
-
         if (screen_point_inside_face(e->face(TOP_FACE), sx, sy)) {
-
+            bool visible = true;
             if (e->kind() == ELEMENT_ROOF) {
-                printf("Just found a point in roof\n");
-                Face f = e->face(TOP_FACE);
-                printf("    (%f, %f, %f) (%f, %f, %f) (%f, %f, %f) (%f, %f, %f)\n",
-                       f.v1.v1, f.v1.v2, f.v1.v3,
-                       f.v2.v1, f.v2.v2, f.v2.v3,
-                       f.v3.v1, f.v3.v2, f.v3.v3,
-                       f.v4.v1, f.v4.v2, f.v4.v3);
+                float yangle = normalize_angle(m_yrot); // puts angle in the range 0 to 360
+                float xangle = normalize_angle(m_xrot); // puts angle in the range 0 to 360
+                printf("Element roof xangle = %f, yangle = %f\n", xangle, yangle);
+                if (xangle >= (360 - 34) || xangle <= (180 + 34)) {
+                    if (xangle < 56 || xangle > 124) {
+                        int orientation = e->orientation();
+                        if (yangle <= 90 ) {
+                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 0 || orientation == 1) : (orientation == 2 || orientation == 3);
+                        } else if (yangle < 180) {
+                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 1 || orientation == 2) : (orientation == 3 || orientation == 0);
+                        } else if (yangle < 270) {
+                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 2 || orientation == 3) : (orientation == 0 || orientation == 1);
+                        } else {
+                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 3 || orientation == 0) : (orientation == 1 || orientation == 2);
+                        }
+                    }
+                } else {
+                    visible = false;
+                }
             }
-
-
-
-            int k = e->kind();
-            printf("Element type %d selected, orientation = %d,  level %f\n", k, e->orientation(), e->top_level());
-//            if back_side of roof element, skip it
-
-
-            if (e->top_level() > max_level) {
-                max_level = e->top_level();
-                max_e = e;
-                max_ix = i;
+            if (visible) {
+                if (e->top_level() > max_level) {
+                    max_level = e->top_level();
+                    max_e = e;
+                    max_ix = i;
+                }
             }
         }
     }

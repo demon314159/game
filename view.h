@@ -52,6 +52,7 @@ protected:
     double len(Float2 v1, Float2 v2) const;
     double tri_area(Float2 v1, Float2 v2, Float2 v3) const;
     double quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const;
+    float normalize_angle(float angle) const;
 
 private:
     Choose m_choose;

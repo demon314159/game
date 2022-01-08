@@ -69,6 +69,9 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& 
         printf("1st height = %f, 2nd height = %f\n", m_first_choice.position.v2, m_second_choice.position.v2);
         same_level = m_first_choice.position.v2 == m_second_choice.position.v2;
         if (same_level) {
+            pos.v1 = (m_first_choice.position.v1 + m_second_choice.position.v1) / 2.0;
+            pos.v2 = (m_first_choice.position.v2 + m_second_choice.position.v2) / 2.0;
+            pos.v3 = (m_first_choice.position.v3 + m_second_choice.position.v3) / 2.0;
 
             if (m_first_choice.gable || m_second_choice.gable) {
                 if (m_first_choice.gable && m_second_choice.gable && m_first_choice.orientation == m_second_choice.orientation) {
@@ -82,18 +85,18 @@ bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& 
             }
 
 
-
-
-
-            pos.v1 = (m_first_choice.position.v1 + m_second_choice.position.v1) / 2.0;
-            pos.v2 = (m_first_choice.position.v2 + m_second_choice.position.v2) / 2.0;
-            pos.v3 = (m_first_choice.position.v3 + m_second_choice.position.v3) / 2.0;
             if (m_first_choice.position.v1 == m_second_choice.position.v1) {
-                orientation = m_first_choice.position.v3 < m_second_choice.position.v3 ? 3 : 1;
+                if (roof)
+                    orientation = m_first_choice.orientation;
+                else
+                    orientation = m_first_choice.position.v3 < m_second_choice.position.v3 ? 3 : 1;
                 span = round(fabs(m_first_choice.position.v3 - m_second_choice.position.v3));
                 return true;
             } else if (m_first_choice.position.v3 == m_second_choice.position.v3) {
-                orientation = m_first_choice.position.v1 < m_second_choice.position.v1 ? 0 : 2;
+                if (roof)
+                    orientation = m_first_choice.orientation;
+                else
+                    orientation = m_first_choice.position.v1 < m_second_choice.position.v1 ? 0 : 2;
                 span = round(fabs(m_first_choice.position.v1 - m_second_choice.position.v1));
                 return true;
             }

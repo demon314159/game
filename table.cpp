@@ -276,12 +276,15 @@ void Table::spawn_add_element_command(QMouseEvent* e)
         if (span == 0) {
             if (same_level) {
                 if (roof)
-                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else
                     m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
             }
         } else if (span == 1) {
             if (same_level)
+                if (roof)
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                else
                     m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 else {
                     orientation = (orientation + 3) & 3;
@@ -290,7 +293,6 @@ void Table::spawn_add_element_command(QMouseEvent* e)
         } else {
             if (same_level) {
                 if (roof) {
-
                     printf("add roof at (%f, %f, %f)\n", pos.v1, pos.v2, pos.v3);
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 } else {

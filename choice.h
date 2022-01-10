@@ -6,7 +6,7 @@
 
 struct Choice {
     Float3 position;
-    bool gable;
+    int kind;
     int orientation;
 };
 

@@ -28,9 +28,9 @@ public:
     void mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
-    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof);
-    bool gap_below_span();
-    bool span_blocked();
+    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
+    bool gap_below_span(Float3 pos, int span, int orientation);
+    bool span_blocked(Float3 pos, int span, int orientation);
 
 protected:
     bool init_shaders();

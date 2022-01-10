@@ -47,37 +47,26 @@ void View::mouse_unselect()
 
 void View::mouse_select(int sx, int sy)
 {
-    printf("\n");
-    printf("mouse select(%d, %d)\n", sx, sy);
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
         Face f = e->top_sub_face(sf);
-
-        printf("selected element %d type %d, subface %d\n", ix, e->kind(), sf);
         Float3 p = e->get_pos();
-        printf("Element position (%f, %f, %f\n", p.v1, p.v2, p.v3);
-        printf("Face = (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)  (%f, %f, %f)\n",
-               f.v1.v1, f.v1.v2, f.v1.v3,
-               f.v2.v1, f.v2.v2, f.v2.v3,
-               f.v3.v1, f.v3.v2, f.v3.v3,
-               f.v4.v1, f.v4.v2, f.v4.v3);
         Choice c;
         c.position.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
         if (f.v1.v2 == f.v2.v2 && f.v3.v2 == f.v4.v2 && f.v1.v2 == f.v3.v2) {  // All on same level
             c.position.v2 = e->top_level();
-            c.gable = false;
+            c.kind = e->kind();
             c.orientation = 0;
         } else {
             c.position.v2 = e->top_level() - 0.5;
-            c.gable = true;
+            c.kind = e->kind();
             c.orientation = e->orientation();
         }
         c.position.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_choice(c);
     } else {
-        printf("mouse not in structure\n");
         BoundingBox bb = m_model->bounding_box();
 
         Face plane;
@@ -101,21 +90,17 @@ void View::mouse_select(int sx, int sy)
         plane.v4.v2 = 0.0;
         plane.v4.v3 = zlo;
         if (screen_point_inside_face(plane, sx, sy)) {
-            printf("Inside table\n");
             if (no_part_of_any_element_selected(sx, sy)) {
-                printf("Not obstructed\n");
                 Choice c;
                 c.position = screen_point_on_floor(plane, sx, sy);
-                c.gable = false;
+                c.kind = 0;
                 c.orientation = 0;
                 m_choose.select_choice(c);
             } else {
-                printf("Obstructed\n");
                 m_choose.select_no_choice();
             }
 
         } else {
-            printf("Outside table\n");
             m_choose.select_no_choice();
         }
     }
@@ -647,20 +632,8 @@ bool View::top_subface_covered(const Element* e, int ix) const
     return m_doc->contains(pos);
 }
 
-bool View::gap_below_span()
+bool View::gap_below_span(Float3 pos, int span, int orientation)
 {
-    Float3 pos;
-    int span;
-    int orientation;
-    bool same_level;
-    bool roof;
-
-    if (!m_choose.new_element_chosen(pos, span, orientation, same_level, roof))
-        return false;
-    if (!same_level)
-        return false;
-    if (roof)
-        return false;
     if (span < 2)
         return false;
     float half_width = ((float) span + 1.0) / 2.0;
@@ -677,20 +650,8 @@ bool View::gap_below_span()
     return false;
 }
 
-bool View::span_blocked()
+bool View::span_blocked(Float3 pos, int span, int orientation)
 {
-    Float3 pos;
-    int span;
-    int orientation;
-    bool same_level;
-    bool roof;
-
-    if (!m_choose.new_element_chosen(pos, span, orientation, same_level, roof))
-        return true;
-    if (!same_level)
-        return true;
-    if (roof)
-        return false;
     if (span < 2)
         return false;
     float half_width = ((float) span + 1.0) / 2.0;

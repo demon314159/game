@@ -203,7 +203,8 @@ bool Element::contains(Float3 pos) const
 PaintCan Element::red_paint(1.0, 0.0, 0.0);
 PaintCan Element::roof_paint(0.0, 1.0, 0.0);
 PaintCan Element::white_paint(1.0, 1.0, 1.0);
-PaintCan Element::door_paint(0.2, 1.0, 0.2);
+//PaintCan Element::door_paint(0.2, 1.0, 0.2);
+PaintCan Element::door_paint(1.0, 1.0, 1.0);
 PaintCan Element::gray_paint(0.8, 0.8, 0.8);
 CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
 

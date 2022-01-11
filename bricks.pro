@@ -11,6 +11,7 @@ HEADERS      += game.h \
                 facet.h \
                 face.h \
                 choice.h \
+                item.h \
                 bounding_box.h \
                 shape.h \
                 table.h \
@@ -23,6 +24,7 @@ HEADERS      += game.h \
                 command.h \
                 history.h \
                 choose.h \
+                vmenu.h \
                 document.h \
                 bin_interface.h \
                 char_interface.h \
@@ -47,6 +49,7 @@ SOURCES      += main.cpp \
                 command.cpp \
                 history.cpp \
                 choose.cpp \
+                vmenu.cpp \
                 document.cpp \
                 bin_interface.cpp \
                 char_interface.cpp \

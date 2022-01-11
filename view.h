@@ -9,6 +9,7 @@
 #include "cad_model.h"
 #include "document.h"
 #include "choose.h"
+#include "vmenu.h"
 
 class View: protected QOpenGLFunctions
 {
@@ -55,6 +56,7 @@ protected:
     float normalize_angle(float angle) const;
 
 private:
+    Vmenu m_vmenu;
     Choose m_choose;
     int m_max_vertices;
     int m_vertices;

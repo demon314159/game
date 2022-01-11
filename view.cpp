@@ -18,7 +18,8 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_choose()
+    : m_vmenu(25)
+    , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
     , m_doc(doc)

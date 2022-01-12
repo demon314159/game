@@ -312,7 +312,10 @@ void View::paint()
         resize_calc();
         check_storage();
         copy_facets();
-        m_doc->make_clean();
+        if (m_doc->is_dirty())
+            m_doc->make_clean();
+        if (m_vmenu.is_dirty())
+            m_vmenu.make_clean();
         m_choose.select_no_choice();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -660,7 +663,6 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
     if (span < 2)
         return false;
     float half_width = ((float) span + 1.0) / 2.0;
-    printf("     in span_blocked()\n");
     for (int i = 1; i < span; i++) {
         Float3 tpos = pos;
         if (orientation & 1)
@@ -673,7 +675,6 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
             return true; // At least one element
         }
     }
-    printf("     not blocked\n");
     return false;
 }
 

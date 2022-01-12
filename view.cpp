@@ -18,7 +18,7 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_vmenu(25)
+    : m_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
@@ -37,6 +37,9 @@ View::View(Document* doc)
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
+    m_vmenu.add_force_brick({-0.5, 1.0, 0.0});
+    m_vmenu.add_force_window({0.0, 1.0, 0.0});
+    m_vmenu.add_force_door({0.5, 1.0, 0.0});
     decorate_model();
     doc->make_clean();
 }
@@ -166,6 +169,7 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
 void View::decorate_model()
 {
 //    printf("%d facets\n", m_model->facets());
+    m_vmenu.add_to(m_model);
     BoundingBox bb = m_model->bounding_box();
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
@@ -300,7 +304,7 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty()) {
+    if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();

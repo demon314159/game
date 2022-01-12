@@ -11,7 +11,6 @@ HEADERS      += game.h \
                 facet.h \
                 face.h \
                 choice.h \
-                item.h \
                 bounding_box.h \
                 shape.h \
                 table.h \

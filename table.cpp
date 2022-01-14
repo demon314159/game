@@ -10,14 +10,6 @@
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_view(new View(new Document(QString("house.brk"))))
-    , m_le_pos({0.0, 0.0, 0.0})
-    , m_le_span(0)
-    , m_le_height(0)
-    , m_le_orientation(0)
-    , m_le_gap(false)
-    , m_le_v(0)
-    , m_le_h(0)
-    , m_le_door(false)
     , m_le_command(NULL)
     , m_window_action(NULL)
     , m_door_action(NULL)
@@ -151,37 +143,25 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
-void Table::add_window_element()
-{
-    m_le_door = false;
-    add_generic_element();
-}
-
-void Table::add_door_element()
-{
-    m_le_door = true;
-    add_generic_element();
-}
-
 void Table::add_generic_element()
 {
-    if (m_le_door)
-        m_le_command = new AddElementCommand(new DoorElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
+    if (m_le.is_door())
+        m_le_command = new AddElementCommand(new DoorElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     else
-        m_le_command = new AddElementCommand(new WindowElement(m_le_pos.v1, m_le_pos.v2 + m_le_height / 2.0, m_le_pos.v3, m_le_orientation, m_le_span + 1, m_le_height, m_le_h, m_le_v), m_view);
+        m_le_command = new AddElementCommand(new WindowElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     m_history.do_command(m_le_command);
     update();
 
     QMenu menu(this);
 
     menu.addAction(m_bigger_action);
-    if (m_le_height > 3.0)
+    if (m_le.height() > 3.0)
         menu.addAction(m_smaller_action);
     menu.addAction(m_more_v_action);
-    if (m_le_v > 0)
+    if (m_le.vgrilles() > 0)
         menu.addAction(m_less_v_action);
     menu.addAction(m_more_h_action);
-    if (m_le_h > 0)
+    if (m_le.hgrilles() > 0)
         menu.addAction(m_less_h_action);
     menu.addAction(m_flip_action);
     menu.addAction(m_cancel_action);
@@ -192,55 +172,49 @@ void Table::add_generic_element()
 void Table::edit_element_bigger()
 {
     m_history.undo_command();
-    ++m_le_height;
+    m_le.bigger();
     add_generic_element();
 }
 
 void Table::edit_element_smaller()
 {
     m_history.undo_command();
-    if (m_le_height > 3.0) {
-        --m_le_height;
-    }
+    m_le.smaller();
     add_generic_element();
 }
 
 void Table::edit_element_more_v()
 {
     m_history.undo_command();
-    ++m_le_v;
+    m_le.increase_vgrilles();
     add_generic_element();
 }
 
 void Table::edit_element_less_v()
 {
     m_history.undo_command();
-    if (m_le_v > 0) {
-        --m_le_v;
-    }
+    m_le.decrease_vgrilles();
     add_generic_element();
 }
 
 void Table::edit_element_more_h()
 {
     m_history.undo_command();
-    ++m_le_h;
+    m_le.increase_hgrilles();
     add_generic_element();
 }
 
 void Table::edit_element_less_h()
 {
     m_history.undo_command();
-    if (m_le_h > 0) {
-        --m_le_h;
-    }
+    m_le.decrease_hgrilles();
     add_generic_element();
 }
 
 void Table::edit_element_flip()
 {
     m_history.undo_command();
-    m_le_orientation = (m_le_orientation + 2) & 3;
+    m_le.flip();
     add_generic_element();
 }
 
@@ -252,17 +226,6 @@ void Table::edit_element_cancel()
 
 void Table::edit_element_done()
 {
-}
-
-void Table::handle_large_element()
-{
-    if (m_le_pos.v2 < 1.0) {
-        m_le_height = (float) round((m_le_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
-        add_door_element();
-    } else if (!m_le_gap)
-        add_window_element();
-    else
-        m_view->mouse_unselect();
 }
 
 void Table::spawn_add_element_command(QMouseEvent* e)
@@ -300,15 +263,14 @@ void Table::spawn_add_element_command(QMouseEvent* e)
                         update();
                     } else {
                         update();
-                        m_le_pos = pos;
-                        m_le_span = span;
-                        m_le_height = (float) round((m_le_span + 1.0) * 2.0); // 4/3 * 3/2
-                        m_le_orientation = orientation;
-                        m_le_gap = m_view->gap_below_span(pos, span, orientation);
-                        m_le_v = 1;
-                        m_le_h = 2;
-                        m_le_global_pos = e->globalPos();
-                        handle_large_element();
+                        m_le.constrain(pos, span, orientation);
+                        if (pos.v2 < 1.0 || !m_view->gap_below_span(pos, span, orientation)) {
+                            m_le_global_pos = e->globalPos();
+                            add_generic_element();
+                        } else {
+                            m_view->mouse_unselect();
+                            update();
+                        }
                     }
                 }
             }

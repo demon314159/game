@@ -20,6 +20,7 @@ HEADERS      += game.h \
                 roof_shape.h \
                 gable_brick_shape.h \
                 element.h \
+                large_element.h \
                 command.h \
                 history.h \
                 choose.h \
@@ -45,6 +46,7 @@ SOURCES      += main.cpp \
                 roof_shape.cpp \
                 gable_brick_shape.cpp \
                 element.cpp \
+                large_element.cpp \
                 command.cpp \
                 history.cpp \
                 choose.cpp \

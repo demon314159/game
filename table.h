@@ -7,6 +7,7 @@
 #include "document.h"
 #include "view.h"
 #include "history.h"
+#include "large_element.h"
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include <QAction>
@@ -46,21 +47,11 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void spawn_add_element_command(QMouseEvent* e);
     void spawn_delete_element_command(int ix);
-    void handle_large_element();
-    void add_window_element();
-    void add_door_element();
     void add_generic_element();
 private:
     View* m_view;
     History m_history;
-    Float3 m_le_pos;
-    int m_le_span;
-    int m_le_height;
-    int m_le_orientation;
-    bool m_le_gap;
-    int m_le_v;
-    int m_le_h;
-    bool m_le_door;
+    LargeElement m_le;
     QPoint m_le_global_pos;
     Command* m_le_command;
     QAction* m_window_action;

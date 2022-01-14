@@ -3,6 +3,7 @@
 #include "element.h"
 #include "window_model.h"
 #include "door_model.h"
+#include "arrow_shape.h"
 
 #include <stdio.h>
 
@@ -19,9 +20,13 @@ Vmenu::~Vmenu()
 #define MAG2 0.33 * 0.75 * 0.5
 #define MAG3 0.33 * 0.75 * 0.5
 
-CadModel Vmenu::m_model_brick = CadModel(BrickShape(MAG1 * 2.0, MAG1 * Element::dimh, MAG1 * 1.0, MAG1 * Element::dimb), Element::red_paint, 0.0);
-CadModel Vmenu::m_model_window = WindowModel(MAG2 * 3, MAG2 * 6 * Element::dimh, MAG2 * 1.0, MAG2 * Element::dimb, 1, 1, Element::white_paint, 0.0);
-CadModel Vmenu::m_model_door = DoorModel(MAG3 * 3, MAG3 * 8 * Element::dimh, MAG3 * 1.0, MAG3 * Element::dimb, 0, 0, Element::door_paint, 0.0);
+CadModel Vmenu::m_model_brick = CadModel(ArrowShape(1.0, 0.5, ArrowShape::ARROW_LEFT), Element::red_paint, 0.0);
+CadModel Vmenu::m_model_window = CadModel(ArrowShape(1.0, 0.5, ArrowShape::ARROW_UP), Element::red_paint, 0.0);
+CadModel Vmenu::m_model_door = CadModel(ArrowShape(1.0, 0.5, ArrowShape::ARROW_RIGHT), Element::red_paint, 0.0);
+
+//CadModel Vmenu::m_model_brick = CadModel(BrickShape(MAG1 * 2.0, MAG1 * Element::dimh, MAG1 * 1.0, MAG1 * Element::dimb), Element::red_paint, 0.0);
+//CadModel Vmenu::m_model_window = WindowModel(MAG2 * 3, MAG2 * 6 * Element::dimh, MAG2 * 1.0, MAG2 * Element::dimb, 1, 1, Element::white_paint, 0.0);
+//CadModel Vmenu::m_model_door = DoorModel(MAG3 * 3, MAG3 * 8 * Element::dimh, MAG3 * 1.0, MAG3 * Element::dimb, 0, 0, Element::door_paint, 0.0);
 
 void Vmenu::clear()
 {

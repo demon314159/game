@@ -56,8 +56,23 @@ void View::mouse_unselect()
     m_choose.select_no_choice();
 }
 
+bool View::vmenu_item_chosen(int sx, int sy)
+{
+    for (int i = 0; i < m_vmenu.items(); i++) {
+        Face f = m_vmenu.face(i);
+        if (screen_point_inside_face(f, sx, sy)) {
+            int action_id = m_vmenu.action_id(i);
+            printf("Cause visual menu action %d\n", action_id);
+            return true;
+        }
+    }
+    return false;
+}
+
 void View::mouse_select(int sx, int sy)
 {
+    if (vmenu_item_chosen(sx, sy))
+        return;
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);

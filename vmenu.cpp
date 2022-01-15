@@ -5,6 +5,7 @@
 #include "arrow_shape.h"
 #include "look.h"
 #include "element.h"
+#include "bounding_box.h"
 
 #include <stdio.h>
 
@@ -150,3 +151,50 @@ void Vmenu::make_dirty()
     m_is_dirty = true;
 }
 
+Face Vmenu::face(int ix) const
+{
+    Float3 pos = m_position[ix];
+    BoundingBox bb;
+    switch (m_action[ix]) {
+        case ACTION_FORCE_BRICK:
+            bb = m_model_brick.bounding_box();
+            break;
+        case ACTION_FORCE_WINDOW:
+            bb = m_model_window.bounding_box();
+            break;
+        case ACTION_FORCE_DOOR:
+            bb = m_model_door.bounding_box();
+            break;
+        case ACTION_INCREASE_HEIGHT:
+            bb = m_model_increase_height.bounding_box();
+            break;
+        case ACTION_DECREASE_HEIGHT:
+            bb = m_model_decrease_height.bounding_box();
+            break;
+        case ACTION_INCREASE_VGRILLES:
+            bb = m_model_increase_vgrilles.bounding_box();
+            break;
+        case ACTION_DECREASE_VGRILLES:
+            bb = m_model_decrease_vgrilles.bounding_box();
+            break;
+        case ACTION_INCREASE_HGRILLES:
+            bb = m_model_increase_hgrilles.bounding_box();
+            break;
+        case ACTION_DECREASE_HGRILLES:
+            bb = m_model_decrease_hgrilles.bounding_box();
+            break;
+        default:
+            return {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    }
+    float xlo = bb.vmin.v1 + pos.v1;
+    float xhi = bb.vmax.v1 + pos.v1;
+    float ylo = bb.vmin.v2 + pos.v2;
+    float yhi = bb.vmax.v2 + pos.v2;
+    float z = (bb.vmin.v3 + bb.vmax.v3) / 2;
+    return {{xlo, ylo, z}, {xlo, yhi, z}, {xhi, yhi, z}, {xhi, ylo, z}};
+}
+
+int Vmenu::action_id(int ix) const
+{
+    return m_action[ix];
+}

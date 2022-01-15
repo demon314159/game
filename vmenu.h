@@ -3,6 +3,7 @@
 #define _VMENU_H_
 
 #include "float3.h"
+#include "face.h"
 #include "cad_model.h"
 
 class Vmenu
@@ -28,6 +29,8 @@ public:
     bool is_dirty() const;
     void make_clean();
     void make_dirty();
+    Face face(int ix) const;
+    int action_id(int ix) const;
 
     void add_force_brick(Float3 position);
     void add_force_window(Float3 position);

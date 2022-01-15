@@ -1,6 +1,5 @@
 
 #include "arrow_shape.h"
-#include "element.h"
 #include <cstddef>
 
 ArrowShape::ArrowShape(float length, float width, int orientation)
@@ -43,8 +42,8 @@ void ArrowShape::define_shape()
         float x1 = -m_width / 4;
         float x2 = m_width / 4;
         float x3 = m_width / 2;
-        float y0 = -Element::dimh * m_length / 2;
-        float y1 = Element::dimh * m_length / 2;
+        float y0 = -m_length / 2;
+        float y1 = m_length / 2;
         if (m_orientation == ARROW_UP) {  // Up arrow
             add_face({x0, 0.0, 0.0}, {x3, 0.0, 0.0}, {0.0, y1, 0.0});
             add_face({x1, 0.0, 0.0}, {x1, y0, 0.0}, {x2, y0, 0.0}, {x2, 0.0, 0.0});
@@ -53,10 +52,10 @@ void ArrowShape::define_shape()
             add_face({x1, y1, 0.0}, {x1, 0.0, 0.0}, {x2, 0.0, 0.0}, {x2, y1, 0.0});
         }
     } else {
-        float y0 = -Element::dimh * m_width / 2;
-        float y1 = -Element::dimh * m_width / 4;
-        float y2 = Element::dimh * m_width / 4;
-        float y3 = Element::dimh * m_width / 2;
+        float y0 = -m_width / 2;
+        float y1 = -m_width / 4;
+        float y2 = m_width / 4;
+        float y3 = m_width / 2;
         float x0 = -m_length / 2;
         float x1 = m_length / 2;
         if (m_orientation == ARROW_LEFT) { // Left arrow

@@ -37,9 +37,16 @@ View::View(Document* doc)
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-    m_vmenu.add_force_brick({-0.5, 1.0, 0.0});
-    m_vmenu.add_force_window({0.0, 1.0, 0.0});
-    m_vmenu.add_force_door({0.5, 1.0, 0.0});
+    m_vmenu.add_force_brick({-2.0, 4.0, 0.0});
+    m_vmenu.add_force_window({0.0, 4.0, 0.0});
+    m_vmenu.add_force_door({2.0, 4.0, 0.0});
+    m_vmenu.add_increase_height({-1.0, 1.0, 0.0});
+    m_vmenu.add_decrease_height({0.0, 1.0, 0.0});
+    m_vmenu.add_increase_vgrilles({3, 1.0, 0.0});
+    m_vmenu.add_decrease_vgrilles({2, 1.0, 0.0});
+    m_vmenu.add_increase_hgrilles({2.5, 1.5, 0.0});
+    m_vmenu.add_decrease_hgrilles({2.5, 0.5, 0.0});
+
     decorate_model();
     doc->make_clean();
 }

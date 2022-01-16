@@ -19,7 +19,8 @@ public:
     static const int ACTION_DECREASE_VGRILLES = 7;
     static const int ACTION_INCREASE_HGRILLES = 8;
     static const int ACTION_DECREASE_HGRILLES = 9;
-    static const int MAX_ITEMS = 10;
+    static const int ACTION_DONE = 10;
+    static const int MAX_ITEMS = 11;
 
     Vmenu();
     ~Vmenu();
@@ -41,6 +42,7 @@ public:
     void add_decrease_vgrilles(Float3 position, int orientation);
     void add_increase_hgrilles(Float3 position, int orientation);
     void add_decrease_hgrilles(Float3 position, int orientation);
+    void add_done(Float3 position, int orientation);
 private:
     bool m_is_dirty;
     int m_items;
@@ -56,6 +58,7 @@ private:
     static CadModel m_model_decrease_vgrilles;
     static CadModel m_model_increase_hgrilles;
     static CadModel m_model_decrease_hgrilles;
+    static CadModel m_model_done;
 
     void add_item(int action_id, Float3 position, int orientation);
 };

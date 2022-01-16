@@ -3,6 +3,7 @@
 #include "window_model.h"
 #include "door_model.h"
 #include "arrow_shape.h"
+#include "done_shape.h"
 #include "look.h"
 #include "element.h"
 #include "bounding_box.h"
@@ -31,6 +32,7 @@ CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, Arrow
 CadModel Vmenu::m_model_decrease_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_LEFT), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_hgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_hgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
+CadModel Vmenu::m_model_done = CadModel(DoneShape(0.5), Look::blue_paint, 0.0);
 
 void Vmenu::clear()
 {
@@ -83,6 +85,11 @@ void Vmenu::add_decrease_hgrilles(Float3 position, int orientation)
     add_item(ACTION_DECREASE_HGRILLES, position, orientation);
 }
 
+void Vmenu::add_done(Float3 position, int orientation)
+{
+    add_item(ACTION_DONE, position, orientation);
+}
+
 void Vmenu::add_item(int action_id, Float3 position, int orientation)
 {
     if (m_items < MAX_ITEMS) {
@@ -131,6 +138,9 @@ void Vmenu::add_to(CadModel* model) const
                 break;
             case ACTION_DECREASE_HGRILLES:
                 cm.add(m_model_decrease_hgrilles);
+                break;
+            case ACTION_DONE:
+                cm.add(m_model_done);
                 break;
             default:
                 break;
@@ -188,6 +198,9 @@ Face Vmenu::face(int ix) const
             break;
         case ACTION_DECREASE_HGRILLES:
             bb = m_model_decrease_hgrilles.bounding_box();
+            break;
+        case ACTION_DONE:
+            bb = m_model_done.bounding_box();
             break;
         default:
             return {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};

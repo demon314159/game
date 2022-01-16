@@ -107,6 +107,21 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
+Float3 Table::corrected_pos(Float3 pos, float dx, int orientation) const
+{
+    Float3 p = pos;
+    if (orientation == 0)
+        p.v1 += dx;
+    else if (orientation == 1)
+        p.v3 -= dx;
+    else if (orientation == 2)
+        p.v1 -= dx;
+    else if (orientation == 3)
+        p.v3 += dx;
+    p.v2 += (Look::dimh * m_le.height() + Look::dimh);
+    return p;
+}
+
 void Table::add_generic_element()
 {
     if (m_le.is_door())
@@ -116,34 +131,14 @@ void Table::add_generic_element()
     m_history.do_command(m_le_command);
     update();
 
-//    QMenu menu(this);
 
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
-    Float3 pos = m_le.pos();
-    if (m_le.orientation() == 0)
-        pos.v1 -= (Look::dimx / 2);
-    else if (m_le.orientation() == 1)
-        pos.v3 += (Look::dimx / 2);
-    else if (m_le.orientation() == 2)
-        pos.v1 += (Look::dimx / 2);
-    else if (m_le.orientation() == 3)
-        pos.v3 -= (Look::dimx / 2);
-    pos.v2 += (Look::dimh * m_le.height() + Look::dimh);
-    vmenu.add_increase_height(pos, m_le.orientation());
 
-    pos = m_le.pos();
-    if (m_le.orientation() == 0)
-        pos.v1 += (Look::dimx / 2);
-    else if (m_le.orientation() == 1)
-        pos.v3 -= (Look::dimx / 2);
-    else if (m_le.orientation() == 2)
-        pos.v1 -= (Look::dimx / 2);
-    else if (m_le.orientation() == 3)
-        pos.v3 += (Look::dimx / 2);
-    pos.v2 += (Look::dimh * m_le.height() + Look::dimh);
-    vmenu.add_decrease_height(pos, m_le.orientation());
-
+    float dx = Look::dimx / 2;
+    vmenu.add_increase_height(corrected_pos(m_le.pos(), -dx, m_le.orientation()), m_le.orientation());
+    vmenu.add_decrease_height(corrected_pos(m_le.pos(), dx, m_le.orientation()), m_le.orientation());
+    vmenu.add_done(corrected_pos(m_le.pos(), dx + Look::dimx, m_le.orientation()), m_le.orientation());
 //    menu.addAction(m_bigger_action);
 //    if (m_le.height() > 3.0)
 //        menu.addAction(m_smaller_action);

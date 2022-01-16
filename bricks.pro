@@ -21,6 +21,7 @@ HEADERS      += game.h \
                 roof_shape.h \
                 gable_brick_shape.h \
                 arrow_shape.h \
+                done_shape.h \
                 element.h \
                 large_element.h \
                 command.h \
@@ -49,6 +50,7 @@ SOURCES      += main.cpp \
                 roof_shape.cpp \
                 gable_brick_shape.cpp \
                 arrow_shape.cpp \
+                done_shape.cpp \
                 element.cpp \
                 large_element.cpp \
                 command.cpp \

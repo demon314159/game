@@ -36,6 +36,7 @@ protected:
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
     void add_generic_element();
+    Float3 corrected_pos(Float3 pos, float dx, int orientation) const;
 private:
     View* m_view;
     History m_history;

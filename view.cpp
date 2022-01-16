@@ -37,16 +37,6 @@ View::View(Document* doc)
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-    m_vmenu.add_force_brick({-2.0, 4.0, 0.0});
-    m_vmenu.add_force_window({0.0, 4.0, 0.0});
-    m_vmenu.add_force_door({2.0, 4.0, 0.0});
-    m_vmenu.add_increase_height({-1.0, 1.0, 0.0});
-    m_vmenu.add_decrease_height({0.0, 1.0, 0.0});
-    m_vmenu.add_increase_vgrilles({3, 1.0, 0.0});
-    m_vmenu.add_decrease_vgrilles({2, 1.0, 0.0});
-    m_vmenu.add_increase_hgrilles({2.5, 1.5, 0.0});
-    m_vmenu.add_decrease_hgrilles({2.5, 0.5, 0.0});
-
     decorate_model();
     doc->make_clean();
 }
@@ -56,23 +46,18 @@ void View::mouse_unselect()
     m_choose.select_no_choice();
 }
 
-bool View::vmenu_item_chosen(int sx, int sy)
+int View::vmenu_item_chosen(int sx, int sy)
 {
     for (int i = 0; i < m_vmenu.items(); i++) {
         Face f = m_vmenu.face(i);
-        if (screen_point_inside_face(f, sx, sy)) {
-            int action_id = m_vmenu.action_id(i);
-            printf("Cause visual menu action %d\n", action_id);
-            return true;
-        }
+        if (screen_point_inside_face(f, sx, sy))
+            return m_vmenu.action_id(i);
     }
-    return false;
+    return Vmenu::ACTION_NONE;
 }
 
 void View::mouse_select(int sx, int sy)
 {
-    if (vmenu_item_chosen(sx, sy))
-        return;
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
@@ -191,7 +176,6 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
 void View::decorate_model()
 {
 //    printf("%d facets\n", m_model->facets());
-    m_vmenu.add_to(m_model);
     BoundingBox bb = m_model->bounding_box();
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
@@ -329,6 +313,7 @@ void View::paint()
     if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
+        m_vmenu.add_to(m_model);
         decorate_model();
         zoom_home();
         resize_calc();
@@ -703,4 +688,9 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
 bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
 {
     return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
+}
+
+Vmenu& View::get_vmenu()
+{
+    return m_vmenu;
 }

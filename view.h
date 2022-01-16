@@ -32,7 +32,8 @@ public:
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation);
     bool span_blocked(Float3 pos, int span, int orientation);
-    bool vmenu_item_chosen(int sx, int sy);
+    int vmenu_item_chosen(int sx, int sy);
+    Vmenu& get_vmenu();
 
 protected:
     bool init_shaders();

@@ -2,33 +2,19 @@
 // table.cpp
 //
 #include "table.h"
+#include "look.h"
 #include <QMouseEvent>
 #include <QFileDialog>
-#include <QMenu>
-#include <QtGui>
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_view(new View(new Document(QString("house.brk"))))
     , m_le_command(NULL)
-    , m_window_action(NULL)
-    , m_door_action(NULL)
-    , m_no_action(NULL)
-    , m_bigger_action(NULL)
-    , m_smaller_action(NULL)
-    , m_more_v_action(NULL)
-    , m_less_v_action(NULL)
-    , m_more_h_action(NULL)
-    , m_less_h_action(NULL)
-    , m_flip_action(NULL)
-    , m_cancel_action(NULL)
-    , m_done_action(NULL)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
 //    setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
-    set_up_actions();
 }
 
 Table::~Table()
@@ -36,28 +22,6 @@ Table::~Table()
     makeCurrent();
     delete m_view;
     doneCurrent();
-}
-
-void Table::set_up_actions()
-{
-    m_bigger_action = new QAction("Taller", this);
-    connect(m_bigger_action, SIGNAL(triggered()), this, SLOT(edit_element_bigger()));
-    m_smaller_action = new QAction("Shorter", this);
-    connect(m_smaller_action, SIGNAL(triggered()), this, SLOT(edit_element_smaller()));
-    m_more_v_action = new QAction("Add vertical grille", this);
-    connect(m_more_v_action, SIGNAL(triggered()), this, SLOT(edit_element_more_v()));
-    m_less_v_action = new QAction("Remove vertical grille", this);
-    connect(m_less_v_action, SIGNAL(triggered()), this, SLOT(edit_element_less_v()));
-    m_more_h_action = new QAction("Add horizontal grille", this);
-    connect(m_more_h_action, SIGNAL(triggered()), this, SLOT(edit_element_more_h()));
-    m_less_h_action = new QAction("Remove horizontal grille", this);
-    connect(m_less_h_action, SIGNAL(triggered()), this, SLOT(edit_element_less_h()));
-    m_flip_action = new QAction("Flip", this);
-    connect(m_flip_action, SIGNAL(triggered()), this, SLOT(edit_element_flip()));
-    m_cancel_action = new QAction("Cancel", this);
-    connect(m_cancel_action, SIGNAL(triggered()), this, SLOT(edit_element_cancel()));
-    m_done_action = new QAction("Done", this);
-    connect(m_done_action, SIGNAL(triggered()), this, SLOT(edit_element_done()));
 }
 
 void Table::initializeGL()
@@ -152,37 +116,33 @@ void Table::add_generic_element()
     m_history.do_command(m_le_command);
     update();
 
-    QMenu menu(this);
+//    QMenu menu(this);
 
-    menu.addAction(m_bigger_action);
-    if (m_le.height() > 3.0)
-        menu.addAction(m_smaller_action);
-    menu.addAction(m_more_v_action);
-    if (m_le.vgrilles() > 0)
-        menu.addAction(m_less_v_action);
-    menu.addAction(m_more_h_action);
-    if (m_le.hgrilles() > 0)
-        menu.addAction(m_less_h_action);
-    menu.addAction(m_flip_action);
-    menu.addAction(m_cancel_action);
-    menu.addAction(m_done_action);
-    menu.exec(m_le_global_pos);
+    Vmenu& vmenu = m_view->get_vmenu();
+    vmenu.clear();
+    Float3 pos = m_le.pos();
+    pos.v1 -= (Look::dimx / 2);
+    pos.v2 += (Look::dimh * m_le.height() + Look::dimh);
+    vmenu.add_increase_height(pos);
+    pos.v1 += Look::dimx;
+    vmenu.add_decrease_height(pos);
+
+//    menu.addAction(m_bigger_action);
+//    if (m_le.height() > 3.0)
+//        menu.addAction(m_smaller_action);
+//    menu.addAction(m_more_v_action);
+//    if (m_le.vgrilles() > 0)
+//        menu.addAction(m_less_v_action);
+//    menu.addAction(m_more_h_action);
+//    if (m_le.hgrilles() > 0)
+//        menu.addAction(m_less_h_action);
+//    menu.addAction(m_flip_action);
+//    menu.addAction(m_cancel_action);
+//    menu.addAction(m_done_action);
+//    menu.exec(m_le_global_pos);
 }
 
-void Table::edit_element_bigger()
-{
-    m_history.undo_command();
-    m_le.bigger();
-    add_generic_element();
-}
-
-void Table::edit_element_smaller()
-{
-    m_history.undo_command();
-    m_le.smaller();
-    add_generic_element();
-}
-
+#ifdef NEVERMORE
 void Table::edit_element_more_v()
 {
     m_history.undo_command();
@@ -227,8 +187,9 @@ void Table::edit_element_cancel()
 void Table::edit_element_done()
 {
 }
+#endif
 
-void Table::spawn_add_element_command(QMouseEvent* e)
+void Table::spawn_add_element_command()
 {
     Float3 pos;
     int span;
@@ -265,7 +226,6 @@ void Table::spawn_add_element_command(QMouseEvent* e)
                         update();
                         m_le.constrain(pos, span, orientation);
                         if (pos.v2 < 1.0 || !m_view->gap_below_span(pos, span, orientation)) {
-                            m_le_global_pos = e->globalPos();
                             add_generic_element();
                         } else {
                             m_view->mouse_unselect();
@@ -288,8 +248,44 @@ void Table::spawn_delete_element_command(int ix)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        m_view->mouse_select(e->pos().x(), e->pos().y());
-        spawn_add_element_command(e);
+        int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
+        if (action_id == Vmenu::ACTION_NONE) {
+            m_view->get_vmenu().clear();
+            m_view->mouse_select(e->pos().x(), e->pos().y());
+            spawn_add_element_command();
+        } else {
+            printf("in table, cause visual menu action %d\n", action_id);
+
+            switch (action_id) {
+//                case Vmenu::ACTION_FORCE_BRICK:
+//                    break;
+//                case Vmenu::ACTION_FORCE_WINDOW:
+//                    break;
+//                case Vmenu::ACTION_FORCE_DOOR:
+//                    break;
+                case Vmenu::ACTION_INCREASE_HEIGHT:
+                    m_history.undo_command();
+                    m_le.increase_height();
+                    add_generic_element();
+                    break;
+                case Vmenu::ACTION_DECREASE_HEIGHT:
+                    m_history.undo_command();
+                    m_le.decrease_height();
+                    add_generic_element();
+                    break;
+//                case Vmenu::ACTION_INCREASE_VGRILLES:
+//                    break;
+//                case Vmenu::ACTION_DECREASE_VGRILLES:
+//                    break;
+//                case Vmenu::ACTION_INCREASE_HGRILLES:
+//                    break;
+//                case Vmenu::ACTION_DECREASE_HGRILLES:
+//                    break;
+                default:
+                    break;
+            }
+
+        }
         update();
     } else if (e->button() == Qt::RightButton) {
         int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());

@@ -1,2 +1,2 @@
 Bricks Document v0.1.0
-Brick(0, 0.5, -2, 0)
+HalfBrick(0, 0.5, 0)

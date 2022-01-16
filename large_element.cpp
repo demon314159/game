@@ -66,12 +66,12 @@ bool LargeElement::is_door() const
     return m_door_flag;
 }
 
-void LargeElement::bigger()
+void LargeElement::increase_height()
 {
     ++m_height;
 }
 
-void LargeElement::smaller()
+void LargeElement::decrease_height()
 {
     if (m_height > 3.0) {
         --m_height;

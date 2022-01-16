@@ -7,6 +7,8 @@
 class Look
 {
 public:
+    static float dimx;
+    static float dimh;
     static PaintCan red_paint;
     static PaintCan green_paint;
     static PaintCan blue_paint;

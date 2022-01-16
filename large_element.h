@@ -17,8 +17,8 @@ public:
     int hgrilles() const;
     int vgrilles() const;
     bool is_door() const;
-    void bigger();
-    void smaller();
+    void increase_height();
+    void decrease_height();
     void increase_vgrilles();
     void decrease_vgrilles();
     void increase_hgrilles();

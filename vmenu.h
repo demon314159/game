@@ -8,6 +8,7 @@
 
 class Vmenu
 {
+public:
     static const int ACTION_NONE = 0;
     static const int ACTION_FORCE_BRICK = 1;
     static const int ACTION_FORCE_WINDOW = 2;
@@ -20,7 +21,6 @@ class Vmenu
     static const int ACTION_DECREASE_HGRILLES = 9;
     static const int MAX_ITEMS = 10;
 
-public:
     Vmenu();
     ~Vmenu();
     void clear();

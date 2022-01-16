@@ -34,60 +34,61 @@ CadModel Vmenu::m_model_decrease_hgrilles = CadModel(ArrowShape(0.5, 0.25, Arrow
 
 void Vmenu::clear()
 {
-    m_is_dirty = (m_items > 0);
+    m_is_dirty = m_is_dirty || (m_items > 0);
     m_items = 0;
 }
 
-void Vmenu::add_force_brick(Float3 position)
+void Vmenu::add_force_brick(Float3 position, int orientation)
 {
-    add_item(ACTION_FORCE_BRICK, position);
+    add_item(ACTION_FORCE_BRICK, position, orientation);
 }
 
-void Vmenu::add_force_window(Float3 position)
+void Vmenu::add_force_window(Float3 position, int orientation)
 {
-    add_item(ACTION_FORCE_WINDOW, position);
+    add_item(ACTION_FORCE_WINDOW, position, orientation);
 }
 
-void Vmenu::add_force_door(Float3 position)
+void Vmenu::add_force_door(Float3 position, int orientation)
 {
-    add_item(ACTION_FORCE_DOOR, position);
+    add_item(ACTION_FORCE_DOOR, position, orientation);
 }
 
-void Vmenu::add_increase_height(Float3 position)
+void Vmenu::add_increase_height(Float3 position, int orientation)
 {
-    add_item(ACTION_INCREASE_HEIGHT, position);
+    add_item(ACTION_INCREASE_HEIGHT, position, orientation);
 }
 
-void Vmenu::add_decrease_height(Float3 position)
+void Vmenu::add_decrease_height(Float3 position, int orientation)
 {
-    add_item(ACTION_DECREASE_HEIGHT, position);
+    add_item(ACTION_DECREASE_HEIGHT, position, orientation);
 }
 
-void Vmenu::add_increase_vgrilles(Float3 position)
+void Vmenu::add_increase_vgrilles(Float3 position, int orientation)
 {
-    add_item(ACTION_INCREASE_VGRILLES, position);
+    add_item(ACTION_INCREASE_VGRILLES, position, orientation);
 }
 
-void Vmenu::add_decrease_vgrilles(Float3 position)
+void Vmenu::add_decrease_vgrilles(Float3 position, int orientation)
 {
-    add_item(ACTION_DECREASE_VGRILLES, position);
+    add_item(ACTION_DECREASE_VGRILLES, position, orientation);
 }
 
-void Vmenu::add_increase_hgrilles(Float3 position)
+void Vmenu::add_increase_hgrilles(Float3 position, int orientation)
 {
-    add_item(ACTION_INCREASE_HGRILLES, position);
+    add_item(ACTION_INCREASE_HGRILLES, position, orientation);
 }
 
-void Vmenu::add_decrease_hgrilles(Float3 position)
+void Vmenu::add_decrease_hgrilles(Float3 position, int orientation)
 {
-    add_item(ACTION_DECREASE_HGRILLES, position);
+    add_item(ACTION_DECREASE_HGRILLES, position, orientation);
 }
 
-void Vmenu::add_item(int action_id, Float3 position)
+void Vmenu::add_item(int action_id, Float3 position, int orientation)
 {
     if (m_items < MAX_ITEMS) {
         m_action[m_items] = action_id;
         m_position[m_items] = position;
+        m_orientation[m_items] = orientation;
         ++m_items;
         m_is_dirty = true;
     }
@@ -102,37 +103,42 @@ void Vmenu::add_to(CadModel* model) const
 {
     for (int ix = 0; ix < m_items; ix++) {
         Float3 p = m_position[ix];
+        CadModel cm;
         switch (m_action[ix]) {
             case ACTION_FORCE_BRICK:
-                model->add(m_model_brick, p.v1, p.v2, p.v3);
+                cm.add(m_model_brick);
                 break;
             case ACTION_FORCE_WINDOW:
-                model->add(m_model_window, p.v1, p.v2, p.v3);
+                cm.add(m_model_window);
                 break;
             case ACTION_FORCE_DOOR:
-                model->add(m_model_door, p.v1, p.v2, p.v3);
+                cm.add(m_model_door);
                 break;
             case ACTION_INCREASE_HEIGHT:
-                model->add(m_model_increase_height, p.v1, p.v2, p.v3);
+                cm.add(m_model_increase_height);
                 break;
             case ACTION_DECREASE_HEIGHT:
-                model->add(m_model_decrease_height, p.v1, p.v2, p.v3);
+                cm.add(m_model_decrease_height);
                 break;
             case ACTION_INCREASE_VGRILLES:
-                model->add(m_model_increase_vgrilles, p.v1, p.v2, p.v3);
+                cm.add(m_model_increase_vgrilles);
                 break;
             case ACTION_DECREASE_VGRILLES:
-                model->add(m_model_decrease_vgrilles, p.v1, p.v2, p.v3);
+                cm.add(m_model_decrease_vgrilles);
                 break;
             case ACTION_INCREASE_HGRILLES:
-                model->add(m_model_increase_hgrilles, p.v1, p.v2, p.v3);
+                cm.add(m_model_increase_hgrilles);
                 break;
             case ACTION_DECREASE_HGRILLES:
-                model->add(m_model_decrease_hgrilles, p.v1, p.v2, p.v3);
+                cm.add(m_model_decrease_hgrilles);
                 break;
             default:
                 break;
         }
+        if (m_orientation[ix] == 1 || m_orientation[ix] == 3) {
+            cm.rotate_ay(90);
+        }
+        model->add(cm, p.v1, p.v2, p.v3);
     }
 }
 
@@ -186,12 +192,21 @@ Face Vmenu::face(int ix) const
         default:
             return {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     }
-    float xlo = bb.vmin.v1 + pos.v1;
-    float xhi = bb.vmax.v1 + pos.v1;
-    float ylo = bb.vmin.v2 + pos.v2;
-    float yhi = bb.vmax.v2 + pos.v2;
-    float z = (bb.vmin.v3 + bb.vmax.v3) / 2;
-    return {{xlo, ylo, z}, {xlo, yhi, z}, {xhi, yhi, z}, {xhi, ylo, z}};
+    if (m_orientation[ix] == 0 || m_orientation[ix] == 2) {
+        float xlo = bb.vmin.v1 + pos.v1;
+        float xhi = bb.vmax.v1 + pos.v1;
+        float ylo = bb.vmin.v2 + pos.v2;
+        float yhi = bb.vmax.v2 + pos.v2;
+        float z = (bb.vmin.v3 + bb.vmax.v3) / 2 + pos.v3;
+        return {{xlo, ylo, z}, {xlo, yhi, z}, {xhi, yhi, z}, {xhi, ylo, z}};
+    } else {
+        float zlo = bb.vmin.v1 + pos.v3;
+        float zhi = bb.vmax.v1 + pos.v3;
+        float ylo = bb.vmin.v2 + pos.v2;
+        float yhi = bb.vmax.v2 + pos.v2;
+        float x = (bb.vmin.v1 + bb.vmax.v1) / 2 + pos.v1;
+        return {{x, ylo, zlo}, {x, yhi, zlo}, {x, yhi, zhi}, {x, ylo, zhi}};
+    }
 }
 
 int Vmenu::action_id(int ix) const

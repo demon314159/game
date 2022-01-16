@@ -32,20 +32,21 @@ public:
     Face face(int ix) const;
     int action_id(int ix) const;
 
-    void add_force_brick(Float3 position);
-    void add_force_window(Float3 position);
-    void add_force_door(Float3 position);
-    void add_increase_height(Float3 position);
-    void add_decrease_height(Float3 position);
-    void add_increase_vgrilles(Float3 position);
-    void add_decrease_vgrilles(Float3 position);
-    void add_increase_hgrilles(Float3 position);
-    void add_decrease_hgrilles(Float3 position);
+    void add_force_brick(Float3 position, int orientation);
+    void add_force_window(Float3 position, int orientation);
+    void add_force_door(Float3 position, int orientation);
+    void add_increase_height(Float3 position, int orientation);
+    void add_decrease_height(Float3 position, int orientation);
+    void add_increase_vgrilles(Float3 position, int orientation);
+    void add_decrease_vgrilles(Float3 position, int orientation);
+    void add_increase_hgrilles(Float3 position, int orientation);
+    void add_decrease_hgrilles(Float3 position, int orientation);
 private:
     bool m_is_dirty;
     int m_items;
     int m_action[MAX_ITEMS];
     Float3 m_position[MAX_ITEMS];
+    int m_orientation[MAX_ITEMS];
     static CadModel m_model_brick;
     static CadModel m_model_window;
     static CadModel m_model_door;
@@ -56,7 +57,7 @@ private:
     static CadModel m_model_increase_hgrilles;
     static CadModel m_model_decrease_hgrilles;
 
-    void add_item(int action_id, Float3 position);
+    void add_item(int action_id, Float3 position, int orientation);
 };
 
 #endif // _VMENU_H_

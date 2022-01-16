@@ -121,11 +121,28 @@ void Table::add_generic_element()
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
     Float3 pos = m_le.pos();
-    pos.v1 -= (Look::dimx / 2);
+    if (m_le.orientation() == 0)
+        pos.v1 -= (Look::dimx / 2);
+    else if (m_le.orientation() == 1)
+        pos.v3 += (Look::dimx / 2);
+    else if (m_le.orientation() == 2)
+        pos.v1 += (Look::dimx / 2);
+    else if (m_le.orientation() == 3)
+        pos.v3 -= (Look::dimx / 2);
     pos.v2 += (Look::dimh * m_le.height() + Look::dimh);
-    vmenu.add_increase_height(pos);
-    pos.v1 += Look::dimx;
-    vmenu.add_decrease_height(pos);
+    vmenu.add_increase_height(pos, m_le.orientation());
+
+    pos = m_le.pos();
+    if (m_le.orientation() == 0)
+        pos.v1 += (Look::dimx / 2);
+    else if (m_le.orientation() == 1)
+        pos.v3 -= (Look::dimx / 2);
+    else if (m_le.orientation() == 2)
+        pos.v1 -= (Look::dimx / 2);
+    else if (m_le.orientation() == 3)
+        pos.v3 += (Look::dimx / 2);
+    pos.v2 += (Look::dimh * m_le.height() + Look::dimh);
+    vmenu.add_decrease_height(pos, m_le.orientation());
 
 //    menu.addAction(m_bigger_action);
 //    if (m_le.height() > 3.0)
@@ -254,8 +271,6 @@ void Table::mousePressEvent(QMouseEvent* e)
             m_view->mouse_select(e->pos().x(), e->pos().y());
             spawn_add_element_command();
         } else {
-            printf("in table, cause visual menu action %d\n", action_id);
-
             switch (action_id) {
 //                case Vmenu::ACTION_FORCE_BRICK:
 //                    break;

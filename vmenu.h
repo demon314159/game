@@ -33,6 +33,7 @@ public:
     void make_dirty();
     Face face(int ix) const;
     int action_id(int ix) const;
+    bool menu_active() const;
 
     void add_force_brick(Float3 position, int orientation);
     void add_force_window(Float3 position, int orientation);

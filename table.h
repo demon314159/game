@@ -8,7 +8,6 @@
 #include "view.h"
 #include "history.h"
 #include "large_element.h"
-#include "vmenu.h"
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 
@@ -41,7 +40,6 @@ private:
     View* m_view;
     History m_history;
     LargeElement m_le;
-    Vmenu m_vmenu;
     Command* m_le_command;
 };
 

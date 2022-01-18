@@ -155,9 +155,12 @@ void Vmenu::add_to(CadModel* model) const
             default:
                 break;
         }
-        if (m_orientation[ix] == 1 || m_orientation[ix] == 3) {
+        if (m_orientation[ix] == 1)
             cm.rotate_ay(90);
-        }
+        else if (m_orientation[ix] == 2)
+            cm.rotate_ay(180);
+        else if (m_orientation[ix] == 3)
+            cm.rotate_ay(270);
         model->add(cm, p.v1, p.v2, p.v3);
     }
 }
@@ -238,4 +241,13 @@ Face Vmenu::face(int ix) const
 int Vmenu::action_id(int ix) const
 {
     return m_action[ix];
+}
+
+bool Vmenu::menu_active() const
+{
+    for (int i = 0; i < m_items; i++) {
+        if (m_action[i] == ACTION_DONE || m_action[i] == ACTION_CANCEL)
+            return true;
+    }
+    return false;
 }

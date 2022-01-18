@@ -139,6 +139,7 @@ void Table::add_generic_element()
     vmenu.add_increase_height(corrected_pos(m_le.pos(), -dx, m_le.orientation()), m_le.orientation());
     vmenu.add_decrease_height(corrected_pos(m_le.pos(), dx, m_le.orientation()), m_le.orientation());
     vmenu.add_done(corrected_pos(m_le.pos(), dx + Look::dimx, m_le.orientation()), m_le.orientation());
+    vmenu.add_cancel(corrected_pos(m_le.pos(), - dx - Look::dimx, m_le.orientation()), m_le.orientation());
 //    menu.addAction(m_bigger_action);
 //    if (m_le.height() > 3.0)
 //        menu.addAction(m_smaller_action);

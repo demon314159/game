@@ -1,8 +1,8 @@
 
-#include "done_shape.h"
+#include "cancel_shape.h"
 #include <cstddef>
 
-DoneShape::DoneShape(float width)
+CancelShape::CancelShape(float width)
     : m_width(width)
     , m_count_mode(true)
     , m_facet_count(0)
@@ -17,41 +17,39 @@ DoneShape::DoneShape(float width)
     }
 }
 
-DoneShape::~DoneShape()
+CancelShape::~CancelShape()
 {
     if (m_facet != NULL)
         delete [] m_facet;
 }
 
-int DoneShape::facets() const
+int CancelShape::facets() const
 {
     return m_facet_count;
 }
 
-Facet DoneShape::facet(int facet_ix) const
+Facet CancelShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }
 
-void DoneShape::define_shape()
+void CancelShape::define_shape()
 {
     float x0 = -m_width / 2;
     float x1 = -m_width / 2 + m_width / 6;
-    float x2 = -m_width / 2 + 2 * m_width / 6;
-    float x3 = 0.0;
     float x5 = m_width / 2 - m_width / 6;
     float x6 = m_width / 2;
-    add_face({x0, x2, 0.0}, {x1, x3, 0.0}, {x3, x1, 0.0}, {x2, x0, 0.0});
-    add_face({x1, x1, 0.0}, {x5, x6, 0.0}, {x6, x5, 0.0}, {x2, x0, 0.0});
+    add_face({x0, x5, 0.0}, {x1, x6, 0.0}, {x6, x1, 0.0}, {x5, x0, 0.0});
+    add_face({x0, x1, 0.0}, {x1, x0, 0.0}, {x6, x5, 0.0}, {x5, x6, 0.0});
 }
 
-void DoneShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4)
+void CancelShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4)
 {
     add_face(v1, v2, v3);
     add_face(v1, v3, v4);
 }
 
-void DoneShape::add_face(Float3 v1, Float3 v2, Float3 v3)
+void CancelShape::add_face(Float3 v1, Float3 v2, Float3 v3)
 {
     if (!m_count_mode) {
         // Do one side of face

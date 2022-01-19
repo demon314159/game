@@ -150,6 +150,13 @@ void Table::add_generic_element()
     vmenu.add_cancel(corrected_pos(m_le.pos(), - dx - Look::dimx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
     vmenu.add_increase_vgrilles(corrected_pos(m_le.pos(), + 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
     vmenu.add_decrease_vgrilles(corrected_pos(m_le.pos(), - 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
+    if (m_le.is_door()) {
+        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -0.18 * m_le.height() + 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -0.18 * m_le.height() - 0.5, 0.45, m_le.orientation()), m_le.orientation());
+    } else {
+        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -m_le.height() / 2 + 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -m_le.height() / 2 - 0.5, 0.45, m_le.orientation()), m_le.orientation());
+    }
 //    menu.addAction(m_bigger_action);
 //    if (m_le.height() > 3.0)
 //        menu.addAction(m_smaller_action);
@@ -304,10 +311,16 @@ void Table::mousePressEvent(QMouseEvent* e)
                     m_le.decrease_vgrilles();
                     add_generic_element();
                     break;
-//                case Vmenu::ACTION_INCREASE_HGRILLES:
-//                    break;
-//                case Vmenu::ACTION_DECREASE_HGRILLES:
-//                    break;
+                case Vmenu::ACTION_INCREASE_HGRILLES:
+                    m_history.undo_command();
+                    m_le.increase_hgrilles();
+                    add_generic_element();
+                    break;
+                case Vmenu::ACTION_DECREASE_HGRILLES:
+                    m_history.undo_command();
+                    m_le.decrease_hgrilles();
+                    add_generic_element();
+                    break;
                 case Vmenu::ACTION_DONE:
                     m_view->get_vmenu().clear();
                     break;

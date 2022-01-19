@@ -110,24 +110,23 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QOpenGLWidget::keyReleaseEvent(e);
 }
 
-Float3 Table::corrected_pos(Float3 pos, float dx, int orientation) const
+Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const
 {
     Float3 p = pos;
-    float dd = 0.6;
     if (orientation == 0) {
         p.v1 += dx;
-        p.v3 += dd;
+        p.v3 += dz;
     } else if (orientation == 1) {
-        p.v1 += dd;
+        p.v1 += dz;
         p.v3 -= dx;
     } else if (orientation == 2) {
         p.v1 -= dx;
-        p.v3 -= dd;
+        p.v3 -= dz;
     } else if (orientation == 3) {
-        p.v1 -= dd;
+        p.v1 -= dz;
         p.v3 += dx;
     }
-    p.v2 += (Look::dimh * m_le.height() + Look::dimh / 4);
+    p.v2 = Look::dimh * p.v2 + (Look::dimh * m_le.height() + Look::dimh * dy);
     return p;
 }
 
@@ -145,10 +144,12 @@ void Table::add_generic_element()
     vmenu.clear();
 
     float dx = Look::dimx / 2;
-    vmenu.add_increase_height(corrected_pos(m_le.pos(), -dx, m_le.orientation()), m_le.orientation());
-    vmenu.add_decrease_height(corrected_pos(m_le.pos(), dx, m_le.orientation()), m_le.orientation());
-    vmenu.add_done(corrected_pos(m_le.pos(), dx + Look::dimx, m_le.orientation()), m_le.orientation());
-    vmenu.add_cancel(corrected_pos(m_le.pos(), - dx - Look::dimx, m_le.orientation()), m_le.orientation());
+    vmenu.add_increase_height(corrected_pos(m_le.pos(), -dx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
+    vmenu.add_decrease_height(corrected_pos(m_le.pos(), dx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
+    vmenu.add_done(corrected_pos(m_le.pos(), dx + Look::dimx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
+    vmenu.add_cancel(corrected_pos(m_le.pos(), - dx - Look::dimx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
+    vmenu.add_increase_vgrilles(corrected_pos(m_le.pos(), + 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
+    vmenu.add_decrease_vgrilles(corrected_pos(m_le.pos(), - 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
 //    menu.addAction(m_bigger_action);
 //    if (m_le.height() > 3.0)
 //        menu.addAction(m_smaller_action);
@@ -293,10 +294,16 @@ void Table::mousePressEvent(QMouseEvent* e)
                     m_le.decrease_height();
                     add_generic_element();
                     break;
-//                case Vmenu::ACTION_INCREASE_VGRILLES:
-//                    break;
-//                case Vmenu::ACTION_DECREASE_VGRILLES:
-//                    break;
+                case Vmenu::ACTION_INCREASE_VGRILLES:
+                    m_history.undo_command();
+                    m_le.increase_vgrilles();
+                    add_generic_element();
+                    break;
+                case Vmenu::ACTION_DECREASE_VGRILLES:
+                    m_history.undo_command();
+                    m_le.decrease_vgrilles();
+                    add_generic_element();
+                    break;
 //                case Vmenu::ACTION_INCREASE_HGRILLES:
 //                    break;
 //                case Vmenu::ACTION_DECREASE_HGRILLES:

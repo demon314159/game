@@ -28,7 +28,7 @@
 #define ELEMENT_DOOR        3
 #define ELEMENT_WINDOW      4
 #define ELEMENT_ROOF        5
-
+#define ELEMENT_LEDGE       6
 
 class Element
 {
@@ -178,6 +178,26 @@ public:
     void save_to_file(QDataStream& ds) const override;
     const CadModel& model() const override;
     float top_level() const override;
+    Face face(int ix) const override;
+    int sub_face_count() const override;
+    Face top_sub_face(int ix) const override;
+    bool contains(Float3 pos) const override;
+    int orientation() const override;
+    int kind() const override;
+
+private:
+    int m_orientation;
+    int m_width;
+    CadModel m_model;
+};
+
+class LedgeElement: public Element
+{
+public:
+    LedgeElement(float xpos, float ypos, float zpos, int orientation, int width);
+    LedgeElement() = delete;
+    void save_to_file(QDataStream& ds) const override;
+    const CadModel& model() const override;
     Face face(int ix) const override;
     int sub_face_count() const override;
     Face top_sub_face(int ix) const override;

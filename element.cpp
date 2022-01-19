@@ -604,3 +604,71 @@ int RoofElement::kind() const
     return ELEMENT_ROOF;
 }
 
+LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, int width)
+    : Element({xpos, ypos, zpos})
+    , m_orientation(orientation)
+    , m_width(width)
+    , m_model(BrickShape(width, dimh, 1.0, dimb), gray_paint, 0.0)
+{
+    if (orientation == 1)
+        m_model.rotate_ay(90.0);
+    else if (orientation == 2)
+        m_model.rotate_ay(180.0);
+    else if (orientation == 3)
+        m_model.rotate_ay(270.0);
+}
+
+void LedgeElement::save_to_file(QDataStream& ds) const
+{
+    QString msg = "Ledge(";
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+    Element::save_to_file(ds);
+    msg = QString(", %1, %2)\n").arg(m_orientation).arg(m_width);
+    ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+const CadModel& LedgeElement::model() const
+{
+    return m_model;
+}
+
+Face LedgeElement::face(int ix) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    return gen_face(ix, xf, yf, zf);
+}
+
+int LedgeElement::sub_face_count() const
+{
+    return m_width;
+}
+
+Face LedgeElement::top_sub_face(int ix) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    float xoff = (m_orientation == 0 || m_orientation == 2) ? (float) ix : 0.0;
+    float zoff = (m_orientation == 0 || m_orientation == 2) ? 0.0 : (float) ix;
+    return gen_top_sub_face(xf, yf, zf, xoff, zoff);
+}
+
+bool LedgeElement::contains(Float3 pos) const
+{
+    float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
+    float yf = 0.5;
+    float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
+    return gen_contains(pos, xf, yf, zf);
+}
+
+int LedgeElement::orientation() const
+{
+    return m_orientation;
+}
+
+int LedgeElement::kind() const
+{
+    return ELEMENT_LEDGE;
+}

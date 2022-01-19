@@ -9,7 +9,7 @@ class LargeElement
 public:
     LargeElement();
     ~LargeElement();
-    void constrain(Float3 position, int span, int orientation);
+    void constrain(Float3 position, int span, int orientation, bool gap_below);
     Float3 pos() const;
     int span() const;
     int height() const;
@@ -17,6 +17,7 @@ public:
     int hgrilles() const;
     int vgrilles() const;
     bool is_door() const;
+    bool is_gap_below() const;
     void increase_height();
     void decrease_height();
     void increase_vgrilles();
@@ -33,6 +34,7 @@ private:
     int m_hgrilles;
     int m_vgrilles;
     bool m_door_flag;
+    bool m_gap_below;
 };
 
 #endif // _LARGE_ELEMENT_H_

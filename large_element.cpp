@@ -10,6 +10,7 @@ LargeElement::LargeElement()
     , m_hgrilles(0)
     , m_vgrilles(0)
     , m_door_flag(false)
+    , m_gap_below(false)
 {
 }
 
@@ -17,7 +18,7 @@ LargeElement::~LargeElement()
 {
 }
 
-void LargeElement::constrain(Float3 position, int span, int orientation)
+void LargeElement::constrain(Float3 position, int span, int orientation, bool gap_below)
 {
     m_position = position;
     m_span = span;
@@ -27,6 +28,7 @@ void LargeElement::constrain(Float3 position, int span, int orientation)
     else
         m_height = (float) round((m_span + 1.0) * 2.0); // 4/3 * 3/2
     m_orientation = orientation;
+    m_gap_below = gap_below;
     m_vgrilles = 1;
     m_hgrilles = 2;
 }
@@ -64,6 +66,11 @@ int LargeElement::vgrilles() const
 bool LargeElement::is_door() const
 {
     return m_door_flag;
+}
+
+bool LargeElement::is_gap_below() const
+{
+    return m_gap_below;
 }
 
 void LargeElement::increase_height()

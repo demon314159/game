@@ -132,13 +132,14 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
 
 void Table::add_generic_element()
 {
-    if (m_le.is_door())
+    if (m_le.is_gap_below() && m_le.pos().v2 > 0.5) {
+        m_le_command = new AddElementCommand(new LedgeElement(m_le.pos().v1, m_le.pos().v2 + 0.5, m_le.pos().v3, m_le.orientation(), m_le.span() + 1), m_view);
+    } else if (m_le.is_door())
         m_le_command = new AddElementCommand(new DoorElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     else
         m_le_command = new AddElementCommand(new WindowElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     m_history.do_command(m_le_command);
     update();
-
 
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
@@ -254,13 +255,8 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         update();
-                        m_le.constrain(pos, span, orientation);
-                        if (pos.v2 < 1.0 || !m_view->gap_below_span(pos, span, orientation)) {
-                            add_generic_element();
-                        } else {
-                            m_view->mouse_unselect();
-                            update();
-                        }
+                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation));
+                        add_generic_element();
                     }
                 }
             }

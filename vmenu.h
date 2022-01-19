@@ -63,6 +63,7 @@ private:
     static CadModel m_model_decrease_hgrilles;
     static CadModel m_model_done;
     static CadModel m_model_cancel;
+    static CadModel m_model_background;
 
     void add_item(int action_id, Float3 position, int orientation);
 };

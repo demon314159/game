@@ -20,8 +20,8 @@ private:
     int m_facet_count;
     Facet *m_facet;
     void define_shape();
-    void add_face(Float3 v1, Float3 v2, Float3 v3);
-    void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4);
+    void add_face(Float3 v1, Float3 v2, Float3 v3, bool flip = false);
+    void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };
 
 #endif // _CANCEL_SHAPE_

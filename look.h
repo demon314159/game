@@ -12,6 +12,7 @@ public:
     static PaintCan red_paint;
     static PaintCan green_paint;
     static PaintCan blue_paint;
+    static PaintCan white_paint;
 };
 
 #endif // _LOOK_H_

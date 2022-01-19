@@ -38,6 +38,7 @@ Facet ArrowShape::facet(int facet_ix) const
 void ArrowShape::define_shape()
 {
     if (m_orientation == ARROW_UP || m_orientation == ARROW_DOWN) {
+        float dz = 0.01;
         float x0 = -m_width / 2;
         float x1 = -m_width / 4;
         float x2 = m_width / 4;
@@ -45,13 +46,22 @@ void ArrowShape::define_shape()
         float y0 = -m_length / 2;
         float y1 = m_length / 2;
         if (m_orientation == ARROW_UP) {  // Up arrow
-            add_face({x0, 0.0, 0.0}, {x3, 0.0, 0.0}, {0.0, y1, 0.0});
-            add_face({x1, 0.0, 0.0}, {x1, y0, 0.0}, {x2, y0, 0.0}, {x2, 0.0, 0.0});
+            // Front face
+            add_face({x0, 0.0, dz}, {x3, 0.0, dz}, {0.0, y1, dz});
+            add_face({x1, 0.0, dz}, {x1, y0, dz}, {x2, y0, dz}, {x2, 0.0, dz});
+            // Back face
+            add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y1, -dz}, true);
+            add_face({x1, 0.0, -dz}, {x1, y0, -dz}, {x2, y0, -dz}, {x2, 0.0, -dz}, true);
         } else { // Down arrow
-            add_face({x0, 0.0, 0.0}, {x3, 0.0, 0.0}, {0.0, y0, 0.0});
-            add_face({x1, y1, 0.0}, {x1, 0.0, 0.0}, {x2, 0.0, 0.0}, {x2, y1, 0.0});
+            // Front face
+            add_face({x0, 0.0, dz}, {x3, 0.0, dz}, {0.0, y0, dz}, true);
+            add_face({x1, y1, dz}, {x1, 0.0, dz}, {x2, 0.0, dz}, {x2, y1, dz});
+            // Back face
+            add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y0, -dz});
+            add_face({x1, y1, -dz}, {x1, 0.0, -dz}, {x2, 0.0, -dz}, {x2, y1, -dz}, true);
         }
     } else {
+        float dz = 0.01;
         float y0 = -m_width / 2;
         float y1 = -m_width / 4;
         float y2 = m_width / 4;
@@ -59,41 +69,45 @@ void ArrowShape::define_shape()
         float x0 = -m_length / 2;
         float x1 = m_length / 2;
         if (m_orientation == ARROW_LEFT) { // Left arrow
-            add_face({0.0, y0, 0.0}, {0.0, y3, 0.0}, {x0, 0.0, 0.0});
-            add_face({0.0, y1, 0.0}, {x1, y1, 0.0}, {x1, y2, 0.0}, {0.0, y2, 0.0});
+            // Front face
+            add_face({0.0, y0, dz}, {0.0, y3, dz}, {x0, 0.0, dz});
+            add_face({0.0, y1, dz}, {x1, y1, dz}, {x1, y2, dz}, {0.0, y2, dz});
+            // Back face
+            add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x0, 0.0, -dz}, true);
+            add_face({0.0, y1, -dz}, {x1, y1, -dz}, {x1, y2, -dz}, {0.0, y2, -dz}, true);
         } else {  // Right arrow
-            add_face({0.0, y0, 0.0}, {0.0, y3, 0.0}, {x1, 0.0, 0.0});
-            add_face({x0, y1, 0.0}, {0.0, y1, 0.0}, {0.0, y2, 0.0}, {x0, y2, 0.0});
+            // front face
+            add_face({0.0, y0, dz}, {0.0, y3, dz}, {x1, 0.0, dz}, true);
+            add_face({x0, y1, dz}, {0.0, y1, dz}, {0.0, y2, dz}, {x0, y2, dz});
+            // Back face
+            add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x1, 0.0, -dz});
+            add_face({x0, y1, -dz}, {0.0, y1, -dz}, {0.0, y2, -dz}, {x0, y2, -dz}, true);
         }
     }
 }
 
-void ArrowShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4)
+void ArrowShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
 {
-    add_face(v1, v2, v3);
-    add_face(v1, v3, v4);
+    add_face(v1, v2, v3, flip);
+    add_face(v1, v3, v4, flip);
 }
 
-void ArrowShape::add_face(Float3 v1, Float3 v2, Float3 v3)
+void ArrowShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
 {
     if (!m_count_mode) {
-        // Do one side of face
         m_facet[m_facet_count].animation_id = 0.0;
         m_facet[m_facet_count].color = {1.0, 1.0, 1.0};
-        m_facet[m_facet_count].v1 = v1;
-        m_facet[m_facet_count].v2 = v3;
-        m_facet[m_facet_count].v3 = v2;
-        ++m_facet_count;
-        // Do the other side of face
-        m_facet[m_facet_count].animation_id = 0.0;
-        m_facet[m_facet_count].color = {1.0, 1.0, 1.0};
-        m_facet[m_facet_count].v1 = v1;
-        m_facet[m_facet_count].v2 = v2;
-        m_facet[m_facet_count].v3 = v3;
-        ++m_facet_count;
-    } else {
-        m_facet_count += 2;
+        if (flip) {
+            m_facet[m_facet_count].v1 = v1;
+            m_facet[m_facet_count].v2 = v3;
+            m_facet[m_facet_count].v3 = v2;
+        } else {
+            m_facet[m_facet_count].v1 = v1;
+            m_facet[m_facet_count].v2 = v2;
+            m_facet[m_facet_count].v3 = v3;
+        }
     }
+    ++m_facet_count;
 }
 
 

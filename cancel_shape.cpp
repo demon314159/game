@@ -35,7 +35,7 @@ Facet CancelShape::facet(int facet_ix) const
 
 void CancelShape::define_shape()
 {
-    float dz = 0.1;
+    float dz = 0.01;
     float x0 = -m_width / 2;
     float x1 = -m_width / 2 + m_width / 6;
     float x5 = m_width / 2 - m_width / 6;

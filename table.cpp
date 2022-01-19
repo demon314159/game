@@ -127,7 +127,7 @@ Float3 Table::corrected_pos(Float3 pos, float dx, int orientation) const
         p.v1 -= dd;
         p.v3 += dx;
     }
-    p.v2 += (Look::dimh * m_le.height() + Look::dimh);
+    p.v2 += (Look::dimh * m_le.height() + Look::dimh / 4);
     return p;
 }
 

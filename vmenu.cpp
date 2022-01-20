@@ -133,10 +133,12 @@ void Vmenu::add_to(CadModel* model) const
             case ACTION_INCREASE_HEIGHT:
                 cm.add(m_model_increase_height);
                 cm.add(m_model_background);
+                cm.add(m_model_background, 0.5);
                 break;
             case ACTION_DECREASE_HEIGHT:
                 cm.add(m_model_decrease_height);
                 cm.add(m_model_background);
+                cm.add(m_model_background, -0.5);
                 break;
             case ACTION_INCREASE_VGRILLES:
                 cm.add(m_model_increase_vgrilles);
@@ -153,10 +155,12 @@ void Vmenu::add_to(CadModel* model) const
             case ACTION_DONE:
                 cm.add(m_model_done);
                 cm.add(m_model_background);
+                cm.add(m_model_background, -0.5);
                 break;
             case ACTION_CANCEL:
                 cm.add(m_model_cancel);
                 cm.add(m_model_background);
+                cm.add(m_model_background, 0.5);
                 break;
             default:
                 break;

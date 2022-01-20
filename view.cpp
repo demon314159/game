@@ -685,9 +685,9 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
     return false;
 }
 
-bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
+bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof, int& clearance)
 {
-    return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
+    return m_choose.new_element_chosen(pos, span, orientation, same_level, roof, clearance);
 }
 
 Vmenu& View::get_vmenu()

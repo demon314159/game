@@ -1,6 +1,7 @@
 
 #include "large_element.h"
 #include <math.h>
+#include <algorithm>
 
 LargeElement::LargeElement()
     : m_position({0.0, 0.0, 0.0})
@@ -11,6 +12,7 @@ LargeElement::LargeElement()
     , m_vgrilles(0)
     , m_door_flag(false)
     , m_gap_below(false)
+    , m_clearance(0)
 {
 }
 
@@ -18,15 +20,17 @@ LargeElement::~LargeElement()
 {
 }
 
-void LargeElement::constrain(Float3 position, int span, int orientation, bool gap_below)
+void LargeElement::constrain(Float3 position, int span, int orientation, bool gap_below, int clearance)
 {
     m_position = position;
     m_span = span;
     m_door_flag = (m_position.v2 < 1.0);
     if (m_door_flag)
-        m_height = (float) round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
+        m_height = round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
     else
-        m_height = (float) round((m_span + 1.0) * 2.0); // 4/3 * 3/2
+        m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2i
+    m_height = std::min(m_height, clearance);
+    m_clearance = clearance;
     m_orientation = orientation;
     m_gap_below = gap_below;
     m_vgrilles = 1;
@@ -75,14 +79,14 @@ bool LargeElement::is_gap_below() const
 
 void LargeElement::increase_height()
 {
-    ++m_height;
+    if (m_height < m_clearance)
+        ++m_height;
 }
 
 void LargeElement::decrease_height()
 {
-    if (m_height > 3.0) {
+    if (m_height > 1)
         --m_height;
-    }
 }
 
 void LargeElement::increase_vgrilles()

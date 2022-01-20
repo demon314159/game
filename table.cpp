@@ -231,7 +231,8 @@ void Table::spawn_add_element_command()
     int orientation;
     bool same_level;
     bool roof;
-    if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
+    int clearance;
+    if (m_view->new_element_chosen(pos, span, orientation, same_level, roof, clearance)) {
         if (span == 0) {
             if (same_level) {
                 if (roof)
@@ -259,7 +260,7 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         update();
-                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation));
+                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), clearance);
                         add_generic_element();
                     }
                 }

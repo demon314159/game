@@ -134,10 +134,14 @@ void Table::add_generic_element()
 {
     if (m_le.is_gap_below() && m_le.pos().v2 > 0.5) {
         m_le_command = new AddElementCommand(new LedgeElement(m_le.pos().v1, m_le.pos().v2 + 0.5, m_le.pos().v3, m_le.orientation(), m_le.span() + 1), m_view);
-    } else if (m_le.is_door())
+        m_history.do_command(m_le_command);
+        update();
+        return;
+    } else if (m_le.is_door()) {
         m_le_command = new AddElementCommand(new DoorElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
-    else
+    } else {
         m_le_command = new AddElementCommand(new WindowElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
+    }
     m_history.do_command(m_le_command);
     update();
 

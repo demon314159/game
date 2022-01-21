@@ -29,10 +29,11 @@ public:
     void mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
-    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof, int& clearance);
-    bool gap_below_span(Float3 pos, int span, int orientation);
-    bool span_blocked(Float3 pos, int span, int orientation);
-    int span_clearance(Float3 pos, int span, int orientation);
+    bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
+    bool gap_below_span(Float3 pos, int span, int orientation) const;
+    bool span_blocked(Float3 pos, int span, int orientation) const;
+    bool element_is_above_span(const Element* e, Float3 pos, int span, int orientation) const;
+    int span_clearance(Float3 pos, int span, int orientation) const;
     int vmenu_item_chosen(int sx, int sy);
     Vmenu& get_vmenu();
 

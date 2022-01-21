@@ -67,12 +67,8 @@ const CadModel& Choose::marker_model() const
     return m_marker_model;
 }
 
-bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof, int& clearance)
+bool Choose::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof)
 {
-
-    clearance = 3; // pretend this is legitimate
-
-
     if (m_first_selected && m_second_selected) {
         same_level = m_first_choice.position.v2 == m_second_choice.position.v2;
         if (same_level) {

@@ -3,6 +3,9 @@
 #include <math.h>
 #include <algorithm>
 
+#include <stdio.h>
+
+
 LargeElement::LargeElement()
     : m_position({0.0, 0.0, 0.0})
     , m_span(0)
@@ -30,6 +33,9 @@ void LargeElement::constrain(Float3 position, int span, int orientation, bool ga
     else
         m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2i
     m_height = std::min(m_height, clearance);
+
+printf("LargeElement:: clearance = %d\n", clearance);
+
     m_clearance = clearance;
     m_orientation = orientation;
     m_gap_below = gap_below;

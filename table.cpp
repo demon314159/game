@@ -231,8 +231,7 @@ void Table::spawn_add_element_command()
     int orientation;
     bool same_level;
     bool roof;
-    int clearance;
-    if (m_view->new_element_chosen(pos, span, orientation, same_level, roof, clearance)) {
+    if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
         if (span == 0) {
             if (same_level) {
                 if (roof)

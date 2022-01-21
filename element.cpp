@@ -36,6 +36,11 @@ int Element::orientation() const
     return 0;
 }
 
+int Element::width() const
+{
+    return 1;
+}
+
 int Element::kind() const
 {
     return ELEMENT_HALF_BRICK;
@@ -289,6 +294,11 @@ int BrickElement::orientation() const
     return m_orientation;
 }
 
+int BrickElement::width() const
+{
+    return 2;
+}
+
 int BrickElement::kind() const
 {
     return ELEMENT_BRICK;
@@ -346,6 +356,11 @@ bool GableBrickElement::contains(Float3 pos) const
 int GableBrickElement::orientation() const
 {
     return m_orientation;
+}
+
+int GableBrickElement::width() const
+{
+    return 1;
 }
 
 int GableBrickElement::kind() const
@@ -433,6 +448,11 @@ int DoorElement::orientation() const
     return m_orientation;
 }
 
+int DoorElement::width() const
+{
+    return m_width;
+}
+
 int DoorElement::kind() const
 {
     return ELEMENT_DOOR;
@@ -518,6 +538,11 @@ int WindowElement::orientation() const
     return m_orientation;
 }
 
+int WindowElement::width() const
+{
+    return m_width;
+}
+
 int WindowElement::kind() const
 {
     return ELEMENT_WINDOW;
@@ -599,6 +624,11 @@ int RoofElement::orientation() const
     return m_orientation;
 }
 
+int RoofElement::width() const
+{
+    return m_width;
+}
+
 int RoofElement::kind() const
 {
     return ELEMENT_ROOF;
@@ -666,6 +696,11 @@ bool LedgeElement::contains(Float3 pos) const
 int LedgeElement::orientation() const
 {
     return m_orientation;
+}
+
+int LedgeElement::width() const
+{
+    return m_width;
 }
 
 int LedgeElement::kind() const

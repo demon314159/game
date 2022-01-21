@@ -46,6 +46,7 @@ public:
     virtual ~Element();
     Float3 get_pos() const;
     virtual int kind() const;
+    virtual int width() const;
     virtual int orientation() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
@@ -87,6 +88,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:
@@ -106,6 +108,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:
@@ -131,6 +134,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:
@@ -158,6 +162,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:
@@ -183,6 +188,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:
@@ -203,6 +209,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    int width() const override;
     int kind() const override;
 
 private:

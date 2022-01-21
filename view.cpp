@@ -647,7 +647,7 @@ bool View::top_subface_covered(const Element* e, int ix) const
     return m_doc->contains(pos);
 }
 
-bool View::gap_below_span(Float3 pos, int span, int orientation)
+bool View::gap_below_span(Float3 pos, int span, int orientation) const
 {
     if (span < 2)
         return false;
@@ -665,7 +665,7 @@ bool View::gap_below_span(Float3 pos, int span, int orientation)
     return false;
 }
 
-bool View::span_blocked(Float3 pos, int span, int orientation)
+bool View::span_blocked(Float3 pos, int span, int orientation) const
 {
     if (span < 2)
         return false;
@@ -685,38 +685,76 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
     return false;
 }
 
-int View::span_clearance(Float3 pos, int span, int orientation)  // return 0 means infinite clearance
+bool View::element_is_above_span(const Element* e, Float3 pos, int span, int orientation) const
 {
-    return 5;
-#ifdef NEVERMORE
-    if (span < 2)
-        return 0;
-    float half_width = ((float) span + 1.0) / 2.0;
-    for (int i = 1; i < span; i++) {
-        Float3 tpos = pos;
-        if (orientation & 1)
-            tpos.v3 = 0.5 + pos.v3 - half_width + (float) i;
-        else
-            tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
-
-for each i, look for lowest element above this one
-the lowest of the lows determines clearance
-if there are no elements above any i, the clearance is infinite and return 0
-
-
-
-        tpos.v2 += 0.25;
-        if (m_doc->contains(tpos)) {
-            printf("     blocked because doc contains (%f, %f, %f)\n", tpos.v1, tpos.v2, tpos.v3);
-            return true; // At least one element
+    if (e->get_pos().v2 <= pos.v2)
+        return false;
+    if (orientation == 0 || orientation == 2) { // cases 2 and 3
+        float width = span + 1;
+        float span_xlo = pos.v1 - width / 2 + 1;
+        float span_xhi = pos.v1 + width / 2 - 1;
+        float span_z = pos.v3;
+        if (e->orientation() == 0 || e->orientation() == 2) {  // case 3
+            float ewidth = e->width();
+            float e_xlo = e->get_pos().v1 - ewidth / 2;
+            float e_xhi = e->get_pos().v1 + ewidth / 2;
+            float e_z = e->get_pos().v3;
+            return (e_z == span_z) && (span_xhi >= e_xlo && span_xlo <= e_xhi);
+        } else {                                              // case 2
+            float ewidth = e->width();
+            float e_zlo = e->get_pos().v3 - ewidth / 2;
+            float e_zhi = e->get_pos().v3 + ewidth / 2;
+            float e_x = e->get_pos().v1;
+            return (e_zlo <= span_z && e_zhi >= span_z) && (span_xlo <= e_x && span_xhi >= e_x);
+        }
+    } else {                                    // cases 1 and 4
+        float width = span + 1;
+        float span_zlo = pos.v3 - width / 2 + 1;
+        float span_zhi = pos.v3 + width / 2 - 1;
+        float span_x = pos.v1;
+        if (e->orientation() == 0 || e->orientation() == 2) {  // case 1
+            float ewidth = e->width();
+            float e_xlo = e->get_pos().v1 - ewidth / 2;
+            float e_xhi = e->get_pos().v1 + ewidth / 2;
+            float e_z = e->get_pos().v3;
+            return (span_zlo <= e_z && span_zhi >= e_z) && (e_xlo <= span_x && e_xhi >= span_x);
+        } else {                                              // case 4
+            float ewidth = e->width();
+            float e_zlo = e->get_pos().v3 - ewidth / 2;
+            float e_zhi = e->get_pos().v3 + ewidth / 2;
+            float e_x = e->get_pos().v1;
+            return (e_x == span_x) && (span_zhi >= e_zlo && span_zlo <= e_zhi);
         }
     }
-#endif
+    return false;
 }
 
-bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof, int& clearance)
+int View::span_clearance(Float3 pos, int span, int orientation) const // return 0 means infinite clearance
 {
-    return m_choose.new_element_chosen(pos, span, orientation, same_level, roof, clearance);
+    if (span < 2)
+        return 0;
+    float min_height = 0.0;
+    for (int i = 0; i < m_doc->elements(); i++) {
+        const Element* e = m_doc->element(i);
+        if (element_is_above_span(e, pos, span, orientation)) {
+            printf("    element above: y = %f\n", e->get_pos().v2);
+            if (min_height == 0.0)
+                min_height = e->get_pos().v2;
+            else
+                min_height = fmin(e->get_pos().v2, min_height);
+        }
+    }
+    printf("min height = %f,  span height = %f\n", min_height, pos.v2);
+    float clearance = min_height;
+    if (clearance > 0.0)
+        clearance -= (pos.v2 + 0.5);
+    printf("min clearance = %f\n", clearance);
+    return round(clearance);
+}
+
+bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof)
+{
+    return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
 }
 
 Vmenu& View::get_vmenu()

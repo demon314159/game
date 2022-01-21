@@ -31,11 +31,9 @@ void LargeElement::constrain(Float3 position, int span, int orientation, bool ga
     if (m_door_flag)
         m_height = round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
     else
-        m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2i
-    m_height = std::min(m_height, clearance);
-
-printf("LargeElement:: clearance = %d\n", clearance);
-
+        m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2
+    if (clearance > 0)
+        m_height = std::min(m_height, clearance);
     m_clearance = clearance;
     m_orientation = orientation;
     m_gap_below = gap_below;
@@ -85,7 +83,9 @@ bool LargeElement::is_gap_below() const
 
 void LargeElement::increase_height()
 {
-    if (m_height < m_clearance)
+    if (m_clearance == 0)
+        ++m_height;
+    else if (m_height < m_clearance)
         ++m_height;
 }
 

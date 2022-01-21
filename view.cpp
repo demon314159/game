@@ -736,19 +736,18 @@ int View::span_clearance(Float3 pos, int span, int orientation) const // return 
     float min_height = 0.0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (element_is_above_span(e, pos, span, orientation)) {
-            printf("    element above: y = %f\n", e->get_pos().v2);
-            if (min_height == 0.0)
-                min_height = e->get_pos().v2;
-            else
-                min_height = fmin(e->get_pos().v2, min_height);
+        if (e->kind() == ELEMENT_LEDGE) {
+            if (element_is_above_span(e, pos, span, orientation)) {
+                if (min_height == 0.0)
+                    min_height = e->get_pos().v2;
+                else
+                    min_height = fmin(e->get_pos().v2, min_height);
+            }
         }
     }
-    printf("min height = %f,  span height = %f\n", min_height, pos.v2);
     float clearance = min_height;
     if (clearance > 0.0)
         clearance -= (pos.v2 + 0.5);
-    printf("min clearance = %f\n", clearance);
     return round(clearance);
 }
 

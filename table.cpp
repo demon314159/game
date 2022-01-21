@@ -260,7 +260,7 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         update();
-                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), clearance);
+                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
                         add_generic_element();
                     }
                 }

@@ -685,6 +685,35 @@ bool View::span_blocked(Float3 pos, int span, int orientation)
     return false;
 }
 
+int View::span_clearance(Float3 pos, int span, int orientation)  // return 0 means infinite clearance
+{
+    return 5;
+#ifdef NEVERMORE
+    if (span < 2)
+        return 0;
+    float half_width = ((float) span + 1.0) / 2.0;
+    for (int i = 1; i < span; i++) {
+        Float3 tpos = pos;
+        if (orientation & 1)
+            tpos.v3 = 0.5 + pos.v3 - half_width + (float) i;
+        else
+            tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
+
+for each i, look for lowest element above this one
+the lowest of the lows determines clearance
+if there are no elements above any i, the clearance is infinite and return 0
+
+
+
+        tpos.v2 += 0.25;
+        if (m_doc->contains(tpos)) {
+            printf("     blocked because doc contains (%f, %f, %f)\n", tpos.v1, tpos.v2, tpos.v3);
+            return true; // At least one element
+        }
+    }
+#endif
+}
+
 bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool& roof, int& clearance)
 {
     return m_choose.new_element_chosen(pos, span, orientation, same_level, roof, clearance);

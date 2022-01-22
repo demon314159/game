@@ -156,73 +156,13 @@ void Table::add_generic_element()
     vmenu.add_increase_vgrilles(corrected_pos(m_le.pos(), + 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
     vmenu.add_decrease_vgrilles(corrected_pos(m_le.pos(), - 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
     if (m_le.is_door()) {
-        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -0.18 * m_le.height() + 0.5, 0.45, m_le.orientation()), m_le.orientation());
-        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -0.18 * m_le.height() - 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -0.18 * m_le.height() + 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -0.18 * m_le.height() - 0.5, 0.45, m_le.orientation()), m_le.orientation());
     } else {
-        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -m_le.height() / 2 + 0.5, 0.45, m_le.orientation()), m_le.orientation());
-        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), -(m_le.span() + 1) / 2 - 0.25, -m_le.height() / 2 - 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 + 0.5, 0.45, m_le.orientation()), m_le.orientation());
+        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 - 0.5, 0.45, m_le.orientation()), m_le.orientation());
     }
-//    menu.addAction(m_bigger_action);
-//    if (m_le.height() > 3.0)
-//        menu.addAction(m_smaller_action);
-//    menu.addAction(m_more_v_action);
-//    if (m_le.vgrilles() > 0)
-//        menu.addAction(m_less_v_action);
-//    menu.addAction(m_more_h_action);
-//    if (m_le.hgrilles() > 0)
-//        menu.addAction(m_less_h_action);
-//    menu.addAction(m_flip_action);
-//    menu.addAction(m_cancel_action);
-//    menu.addAction(m_done_action);
-//    menu.exec(m_le_global_pos);
 }
-
-#ifdef NEVERMORE
-void Table::edit_element_more_v()
-{
-    m_history.undo_command();
-    m_le.increase_vgrilles();
-    add_generic_element();
-}
-
-void Table::edit_element_less_v()
-{
-    m_history.undo_command();
-    m_le.decrease_vgrilles();
-    add_generic_element();
-}
-
-void Table::edit_element_more_h()
-{
-    m_history.undo_command();
-    m_le.increase_hgrilles();
-    add_generic_element();
-}
-
-void Table::edit_element_less_h()
-{
-    m_history.undo_command();
-    m_le.decrease_hgrilles();
-    add_generic_element();
-}
-
-void Table::edit_element_flip()
-{
-    m_history.undo_command();
-    m_le.flip();
-    add_generic_element();
-}
-
-void Table::edit_element_cancel()
-{
-    m_history.undo_command();
-    update();
-}
-
-void Table::edit_element_done()
-{
-}
-#endif
 
 void Table::spawn_add_element_command()
 {

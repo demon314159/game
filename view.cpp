@@ -18,7 +18,8 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_vmenu()
+    : m_force_vmenu()
+    , m_edit_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
@@ -46,12 +47,22 @@ void View::mouse_unselect()
     m_choose.select_no_choice();
 }
 
-int View::vmenu_item_chosen(int sx, int sy)
+int View::force_vmenu_item_chosen(int sx, int sy)
 {
-    for (int i = 0; i < m_vmenu.items(); i++) {
-        Face f = m_vmenu.face(i);
+    for (int i = 0; i < m_force_vmenu.items(); i++) {
+        Face f = m_force_vmenu.face(i);
         if (screen_point_inside_face(f, sx, sy))
-            return m_vmenu.action_id(i);
+            return m_force_vmenu.action_id(i);
+    }
+    return Vmenu::ACTION_NONE;
+}
+
+int View::edit_vmenu_item_chosen(int sx, int sy)
+{
+    for (int i = 0; i < m_edit_vmenu.items(); i++) {
+        Face f = m_edit_vmenu.face(i);
+        if (screen_point_inside_face(f, sx, sy))
+            return m_edit_vmenu.action_id(i);
     }
     return Vmenu::ACTION_NONE;
 }
@@ -310,10 +321,11 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
+    if (m_doc->is_dirty() || m_force_vmenu.is_dirty() || m_edit_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
-        m_vmenu.add_to(m_model);
+        m_force_vmenu.add_to(m_model);
+        m_edit_vmenu.add_to(m_model);
         decorate_model();
         zoom_home();
         resize_calc();
@@ -321,8 +333,10 @@ void View::paint()
         copy_facets();
         if (m_doc->is_dirty())
             m_doc->make_clean();
-        if (m_vmenu.is_dirty())
-            m_vmenu.make_clean();
+        if (m_force_vmenu.is_dirty())
+            m_force_vmenu.make_clean();
+        if (m_edit_vmenu.is_dirty())
+            m_edit_vmenu.make_clean();
         m_choose.select_no_choice();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -756,7 +770,13 @@ bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& sa
     return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
 }
 
-Vmenu& View::get_vmenu()
+Vmenu& View::get_force_vmenu()
 {
-    return m_vmenu;
+    return m_force_vmenu;
 }
+
+Vmenu& View::get_edit_vmenu()
+{
+    return m_edit_vmenu;
+}
+

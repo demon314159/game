@@ -30,7 +30,9 @@ void main()
     } else {
         gl_Position = mvp_matrix * vec4(a_position, 1.0);
     }
-    if (a_animation_id == 1.0 || a_animation_id == 3.0) {
+    if (a_animation_id == 3.0) {
+        v_normal = vec4(billy, 0.0);
+    } else if (a_animation_id == 1.0) {
         v_normal = vec4(0.0, 0.0, 1.0, 0.0);
     } else {
         v_normal = rot_matrix * vec4(billy, 0.0);

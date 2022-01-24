@@ -298,10 +298,12 @@ void View::resize(int w, int h)
     m_width = w;
     m_height = h;
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    printf("q = %f\n", q);
     m_camz = m_radius / q;
     m_camz -= m_radius;
     m_camz = 2.0 * m_camz / 3.0;
     m_aspect = qreal(w) / qreal(h ? h : 1);
+    printf("aspect = %f\n", m_aspect);
     resize_calc();
 }
 
@@ -385,7 +387,9 @@ void View::paint()
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
     QMatrix4x4 vmenu_matrix;
-    vmenu_matrix.translate(0.0, 0.0, -1.0);
+    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    float dz = 1.5;
+    vmenu_matrix.translate(-dz * q * m_aspect, -dz * q, -dz);
     vmenu_matrix = m_projection * vmenu_matrix;
     m_program.setUniformValue("vmenu_matrix", vmenu_matrix);
     // Draw the model

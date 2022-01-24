@@ -39,6 +39,7 @@ public:
     int edit_vmenu_item_chosen(int sx, int sy);
     Vmenu& get_edit_vmenu();
     void toggle_force_vmenu();
+    bool force_vmenu_hidden() const;
 
 protected:
     bool init_shaders();

@@ -19,7 +19,7 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_hide_force_vmenu(false)
+    : m_hide_force_vmenu(true)
     , m_force_vmenu()
     , m_edit_vmenu()
     , m_choose()
@@ -798,3 +798,9 @@ void View::toggle_force_vmenu()
 {
     m_hide_force_vmenu = !m_hide_force_vmenu;
 }
+
+bool View::force_vmenu_hidden() const
+{
+    return m_hide_force_vmenu;
+}
+

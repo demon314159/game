@@ -36,7 +36,11 @@ protected:
     void spawn_delete_element_command(int ix);
     void add_generic_element();
     Float3 corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const;
+    void do_command(Command* c);
+    void do_hide_command(Command* c);
+    void do_show_command(Command* c);
 private:
+    bool m_user_hide;
     View* m_view;
     History m_history;
     LargeElement m_le;

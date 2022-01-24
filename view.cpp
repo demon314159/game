@@ -3,6 +3,7 @@
 #include "paint_can.h"
 #include "cube_shape.h"
 #include "bounding_box.h"
+#include "look.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -196,6 +197,10 @@ void View::decorate_model()
 
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
+
+    CadModel vmenu(StlInterface(QString("vmenu_grid.stl")), Look::white_paint, 3.0);
+    m_model->add(vmenu, 0.0, 0.0, 0.0);
+
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
@@ -302,7 +307,8 @@ void View::resize(int w, int h)
 
 void View::resize_calc()
 {
-    float znear = m_camz;
+//    float znear = m_camz;
+    float znear = 0.1;
     float zfar = m_camz + 2.0 * m_radius;
     m_projection.setToIdentity();
     m_projection.perspective(m_fov, m_aspect, znear, zfar);
@@ -357,8 +363,6 @@ void View::paint()
     // Animate marker
     QMatrix4x4 marker_matrix;
     if (m_choose.marker_visible()) {
-
-
         Float3 mp = m_choose.marker_position();
         marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
         float angle = m_choose.marker_angle();
@@ -375,12 +379,15 @@ void View::paint()
             marker_matrix.rotate(rot3);
         }
 
-
-
     } else {
         marker_matrix.translate(m_center.v1, -0.04, m_center.v3);
     }
     m_program.setUniformValue("marker_matrix", marker_matrix);
+
+    QMatrix4x4 vmenu_matrix;
+    vmenu_matrix.translate(0.0, 0.0, -1.0);
+    vmenu_matrix = m_projection * vmenu_matrix;
+    m_program.setUniformValue("vmenu_matrix", vmenu_matrix);
     // Draw the model
     render_facets();
 }

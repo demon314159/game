@@ -13,6 +13,7 @@ public:
     static PaintCan green_paint;
     static PaintCan blue_paint;
     static PaintCan white_paint;
+    static PaintCan black_paint;
     static PaintCan done_paint;
     static PaintCan cancel_paint;
     static PaintCan background_paint;

@@ -19,7 +19,8 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_force_vmenu()
+    : m_hide_force_vmenu(false)
+    , m_force_vmenu()
     , m_edit_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
@@ -388,8 +389,10 @@ void View::paint()
 
     QMatrix4x4 vmenu_matrix;
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    float dz = 1.5;
-    vmenu_matrix.translate(-dz * q * m_aspect, -dz * q, -dz);
+    float dy = 0.45;
+    float dz = 1.2;
+    float dx = m_hide_force_vmenu ? - 0.11 : 0.0;
+    vmenu_matrix.translate(dx + -dz * q * m_aspect,dz * q - dy, -dz);
     vmenu_matrix = m_projection * vmenu_matrix;
     m_program.setUniformValue("vmenu_matrix", vmenu_matrix);
     // Draw the model
@@ -791,3 +794,7 @@ Vmenu& View::get_edit_vmenu()
     return m_edit_vmenu;
 }
 
+void View::toggle_force_vmenu()
+{
+    m_hide_force_vmenu = !m_hide_force_vmenu;
+}

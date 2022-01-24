@@ -38,6 +38,7 @@ public:
     Vmenu& get_force_vmenu();
     int edit_vmenu_item_chosen(int sx, int sy);
     Vmenu& get_edit_vmenu();
+    void toggle_force_vmenu();
 
 protected:
     bool init_shaders();
@@ -62,6 +63,7 @@ protected:
     float normalize_angle(float angle) const;
 
 private:
+    bool m_hide_force_vmenu;
     Vmenu m_force_vmenu;
     Vmenu m_edit_vmenu;
     Choose m_choose;

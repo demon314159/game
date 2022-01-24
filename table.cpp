@@ -95,6 +95,9 @@ void Table::keyPressEvent(QKeyEvent* e)
         m_view->mouse_unselect();
         m_view->get_edit_vmenu().clear();
         update();
+    } else if (a == 0x29) { // f or F
+        m_view->toggle_force_vmenu();
+        update();
     } else {
         printf("unknown key %02x\n", a);
     }

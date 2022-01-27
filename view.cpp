@@ -132,7 +132,7 @@ void View::mouse_select(int sx, int sy)
 
 int View::mouse_delete(int sx, int sy)
 {
-//    printf("mouse delete(%d, %d)\n", sx, sy);
+//    printf("\n\nmouse delete(%d, %d)\n", sx, sy);
     m_choose.select_no_choice();
     int ix = selected_element_ix(sx, sy);
     if (ix < 0)
@@ -140,6 +140,8 @@ int View::mouse_delete(int sx, int sy)
     const Element* e = m_doc->element(ix);
     if (e == NULL)
         return -1;
+    if (e->kind() == ELEMENT_ROOF)
+        return ix;
     if (top_face_covered(e))
         return -1;
     return ix;
@@ -501,12 +503,14 @@ bool View::init_shaders()
     return true;
 }
 
-Float2 View::world2screen(Float3 point) const
+Float2 View::world2screen(Float3 point, float* distance) const
 {
     Float2 res;
     QVector4D sp = m_mvp_matrix * QVector4D(point.v1, point.v2, point.v3, 1.0);
     res.v1 = m_width / 2 + round((sp.x() * (float) m_width) / (2.0 * sp.w()));
     res.v2 = m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w()));
+    if (distance != NULL)
+        *distance = sp.z();
     return res;
 }
 
@@ -524,13 +528,20 @@ float View::max4(float a, float b, float c, float d) const
     return std::max(u, v);
 }
 
-bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
+bool View::screen_point_inside_face(const Face& f, int sx, int sy, float* depth) const
 {
     // transform the four vertices of f
-    Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3});
-    Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3});
-    Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
-    Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
+    float distance;
+    Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3}, &distance);
+    float zbuf = distance;
+    Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3}, &distance);
+    zbuf += distance;
+    Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3}, &distance);
+    zbuf += distance;
+    Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3}, &distance);
+    zbuf += distance;
+    if (depth != NULL)
+        *depth = zbuf / 4.0;
     Float2 pt = {(float) sx, (float) sy};
 
     float xmin = min4(a.v1, b.v1, c.v1, d.v1);
@@ -599,48 +610,29 @@ float View::normalize_angle(float angle) const
 
 int View::selected_element_ix(int sx, int sy) const
 {
+    float min_depth = 1000000.0;
     float max_level = -1000000.0;
-    const Element* max_e = NULL;
-    int max_ix = -1;
+    const Element* min_e = NULL;
+    int min_ix = -1;
+    float depth;
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (screen_point_inside_face(e->face(TOP_FACE), sx, sy)) {
-            bool visible = true;
-            if (e->kind() == ELEMENT_ROOF) {
-                float yangle = normalize_angle(m_yrot); // puts angle in the range 0 to 360
-                float xangle = normalize_angle(m_xrot); // puts angle in the range 0 to 360
-                printf("Element roof xangle = %f, yangle = %f\n", xangle, yangle);
-                if (xangle >= (360 - 34) || xangle <= (180 + 34)) {
-                    if (xangle < 56 || xangle > 124) {
-                        int orientation = e->orientation();
-                        if (yangle <= 90 ) {
-                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 0 || orientation == 1) : (orientation == 2 || orientation == 3);
-                        } else if (yangle < 180) {
-                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 1 || orientation == 2) : (orientation == 3 || orientation == 0);
-                        } else if (yangle < 270) {
-                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 2 || orientation == 3) : (orientation == 0 || orientation == 1);
-                        } else {
-                            visible = (xangle < 56 || xangle > (360 - 34)) ? (orientation == 3 || orientation == 0) : (orientation == 1 || orientation == 2);
-                        }
-                    }
-                } else {
-                    visible = false;
-                }
-            }
-            if (visible) {
-                if (e->top_level() > max_level) {
+        if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {
+            if (depth < min_depth || e->top_level() > max_level) {
+                if (depth < min_depth)
+                    min_depth = depth;
+                if (e->top_level() > max_level)
                     max_level = e->top_level();
-                    max_e = e;
-                    max_ix = i;
-                }
+                min_e = e;
+                min_ix = i;
             }
         }
     }
-    if (max_e == NULL)
+    if (min_e == NULL)
         return -1;
-    int sf = selected_top_subface(max_e, sx, sy);
-    return top_subface_covered(max_e, sf) ? -1 : max_ix;
+    int sf = selected_top_subface(min_e, sx, sy);
+    return top_subface_covered(min_e, sf) ? -1 : min_ix;
 }
 
 int View::selected_top_subface(const Element* e, int sx, int sy) const

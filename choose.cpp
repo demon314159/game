@@ -4,8 +4,13 @@
 #include "math.h"
 #include "element.h"
 
+
+#include "star_shape.h"
+
+
 Choose::Choose()
-    : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
+//    : m_marker_model(CadModel(StlInterface(QString("marker.stl")),PaintCan(0.0, 1.0, 0.0), 2.0))
+    : m_marker_model(CadModel(StarShape(6, 1.0),PaintCan(0.0, 0.0, 1.0), 2.0))
     , m_first_selected(false)
     , m_second_selected(false)
     , m_first_choice({{0.0, 0.0, 0.0}, 0, 0})

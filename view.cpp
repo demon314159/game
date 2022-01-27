@@ -301,12 +301,10 @@ void View::resize(int w, int h)
     m_width = w;
     m_height = h;
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    printf("q = %f\n", q);
     m_camz = m_radius / q;
     m_camz -= m_radius;
     m_camz = 2.0 * m_camz / 3.0;
     m_aspect = qreal(w) / qreal(h ? h : 1);
-    printf("aspect = %f\n", m_aspect);
     resize_calc();
 }
 

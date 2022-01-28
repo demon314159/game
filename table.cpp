@@ -9,7 +9,7 @@
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_view(new View(new Document(QString("house.brk"))))
-    , m_le_command(NULL)
+    , m_me_command(NULL)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
@@ -130,6 +130,7 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
     return p;
 }
 
+#ifdef NEVERMORE
 void Table::add_generic_element()
 {
     set_morph_button(m_me.pos(), m_me.orientation());
@@ -138,7 +139,6 @@ void Table::add_generic_element()
     update();
     return;
 
-#ifdef NEVERMORE
     } else if (m_le.is_door()) {
         m_le_command = new AddElementCommand(new DoorElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     } else {
@@ -164,8 +164,8 @@ void Table::add_generic_element()
         vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 + 0.5, 0.45, m_le.orientation()), m_le.orientation());
         vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 - 0.5, 0.45, m_le.orientation()), m_le.orientation());
     }
-#endif
 }
+#endif
 
 void Table::spawn_add_element_command()
 {
@@ -175,6 +175,7 @@ void Table::spawn_add_element_command()
     bool same_level;
     bool roof;
     if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
+        m_me.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
         if (span == 0) {
             if (same_level) {
                 if (roof)
@@ -188,8 +189,8 @@ void Table::spawn_add_element_command()
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else {
                     set_morph_button(pos, orientation);
-                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
-
+                    m_me_command = new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view);
+                    m_history.do_command(m_me_command);
                 } else {
                     orientation = (orientation + 3) & 3;
                     m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
@@ -204,8 +205,9 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         update();
-                        m_me.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
-                        add_generic_element();
+                        set_morph_button(pos, orientation);
+                        m_me_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
+                        m_history.do_command(m_me_command);
                     }
                 }
             }
@@ -239,6 +241,9 @@ void Table::mousePressEvent(QMouseEvent* e)
 //                    break;
 //                case Vmenu::ACTION_FORCE_DOOR:
 //                    break;
+//
+#ifdef NEVERMORE
+
                 case Vmenu::ACTION_INCREASE_HEIGHT:
                     m_history.undo_command();
                     m_me.increase_height();
@@ -277,10 +282,10 @@ void Table::mousePressEvent(QMouseEvent* e)
                     m_view->get_vmenu().clear();
                     break;
 
+#endif
                 default:
                     break;
             }
-
         }
         update();
     } else if (e->button() == Qt::RightButton) {

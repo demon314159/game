@@ -34,7 +34,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
-    void add_generic_element();
     Float3 corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const;
     void set_morph_button(Float3 pos, int orientation);
     void clear_morph_button();
@@ -42,7 +41,7 @@ private:
     View* m_view;
     History m_history;
     MorphElement m_me;
-    Command* m_le_command;
+    Command* m_me_command;
 };
 
 #endif // _TABLE_H_

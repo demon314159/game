@@ -722,7 +722,7 @@ bool View::element_is_above_span(const Element* e, Float3 pos, int span, int ori
 
 int View::span_clearance(Float3 pos, int span, int orientation) const // return 0 means infinite clearance
 {
-    if (span < 2)
+    if (span < 1)
         return 0;
     float min_height = 0.0;
     for (int i = 0; i < m_doc->elements(); i++) {

@@ -16,7 +16,6 @@ public:
     int orientation() const;
     int hgrilles() const;
     int vgrilles() const;
-    bool is_door() const;
     bool is_gap_below() const;
     float clearance() const;
     void increase_height();
@@ -34,7 +33,6 @@ private:
     int m_orientation;
     int m_hgrilles;
     int m_vgrilles;
-    bool m_door_flag;
     bool m_gap_below;
     int m_clearance;
 };

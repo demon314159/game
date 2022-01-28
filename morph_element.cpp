@@ -3,6 +3,8 @@
 #include <math.h>
 #include <algorithm>
 
+#include <stdio.h>
+
 MorphElement::MorphElement()
     : m_position({0.0, 0.0, 0.0})
     , m_span(0)
@@ -10,7 +12,6 @@ MorphElement::MorphElement()
     , m_orientation(0)
     , m_hgrilles(0)
     , m_vgrilles(0)
-    , m_door_flag(false)
     , m_gap_below(false)
     , m_clearance(0)
 {
@@ -22,13 +23,17 @@ MorphElement::~MorphElement()
 
 void MorphElement::constrain(Float3 position, int span, int orientation, bool gap_below, int clearance)
 {
+    printf("constrain pos (%f, %f, %f), span %d, orientation %d, gap_below %d, clearance %d\n",
+           position.v1, position.v2, position.v3, span, orientation, gap_below ? 1 : 0, clearance);
     m_position = position;
     m_span = span;
-    m_door_flag = (m_position.v2 < 1.0);
+    m_height = 1;
+#ifdef NEVERMORE
     if (m_door_flag)
         m_height = round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
     else
         m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2
+#endif
     if (clearance > 0)
         m_height = std::min(m_height, clearance);
     m_clearance = clearance;
@@ -66,11 +71,6 @@ int MorphElement::hgrilles() const
 int MorphElement::vgrilles() const
 {
     return m_vgrilles;
-}
-
-bool MorphElement::is_door() const
-{
-    return m_door_flag;
 }
 
 bool MorphElement::is_gap_below() const

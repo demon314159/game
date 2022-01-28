@@ -6,6 +6,7 @@
 StarShape::StarShape(int spikes, float width)
     : m_spikes(spikes)
     , m_width(width)
+    , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
 {

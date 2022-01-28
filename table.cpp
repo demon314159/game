@@ -175,7 +175,6 @@ void Table::spawn_add_element_command()
     bool same_level;
     bool roof;
     if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
-        m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
         if (span == 0) {
             if (same_level) {
                 if (roof)
@@ -188,9 +187,16 @@ void Table::spawn_add_element_command()
                 if (roof)
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else {
+
+
+//factor this
+                    m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
                     set_morph_button(pos, orientation);
                     m_me_command = new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view);
                     m_history.do_command(m_me_command);
+
+
+
                 } else {
                     orientation = (orientation + 3) & 3;
                     m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
@@ -205,11 +211,18 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         if (m_view->gap_below_span(pos, span, orientation)) {
-                            m_history.do_command(new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view));
+                            m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         } else {
+
+
+// and this
+                            m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
                             set_morph_button(pos, orientation);
-                            m_me_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
+                            m_me_command = new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view);
                             m_history.do_command(m_me_command);
+
+
+
                         }
                     }
                 }

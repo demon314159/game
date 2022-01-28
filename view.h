@@ -34,12 +34,8 @@ public:
     bool span_blocked(Float3 pos, int span, int orientation) const;
     bool element_is_above_span(const Element* e, Float3 pos, int span, int orientation) const;
     int span_clearance(Float3 pos, int span, int orientation) const;
-    int force_vmenu_item_chosen(int sx, int sy);
-    Vmenu& get_force_vmenu();
     int edit_vmenu_item_chosen(int sx, int sy);
     Vmenu& get_edit_vmenu();
-    void toggle_force_vmenu();
-    bool force_vmenu_hidden() const;
 
 protected:
     bool init_shaders();
@@ -64,8 +60,6 @@ protected:
     float normalize_angle(float angle) const;
 
 private:
-    bool m_hide_force_vmenu;
-    Vmenu m_force_vmenu;
     Vmenu m_edit_vmenu;
     Choose m_choose;
     int m_max_vertices;

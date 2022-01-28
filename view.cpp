@@ -19,9 +19,7 @@ struct VertexData
 };
 
 View::View(Document* doc)
-    : m_hide_force_vmenu(true)
-    , m_force_vmenu()
-    , m_edit_vmenu()
+    : m_edit_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
@@ -49,16 +47,6 @@ void View::mouse_unselect()
     m_choose.select_no_choice();
 }
 
-int View::force_vmenu_item_chosen(int sx, int sy)
-{
-    for (int i = 0; i < m_force_vmenu.items(); i++) {
-        Face f = m_force_vmenu.face(i);
-        if (screen_point_inside_face(f, sx, sy))
-            return m_force_vmenu.action_id(i);
-    }
-    return Vmenu::ACTION_NONE;
-}
-
 int View::edit_vmenu_item_chosen(int sx, int sy)
 {
     for (int i = 0; i < m_edit_vmenu.items(); i++) {
@@ -76,7 +64,6 @@ void View::mouse_select(int sx, int sy)
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
         Face f = e->top_sub_face(sf);
-        Float3 p = e->get_pos();
         Choice c;
         c.position.v1 = (f.v1.v1 + f.v3.v1) / 2.0;
         if (f.v1.v2 == f.v2.v2 && f.v3.v2 == f.v4.v2 && f.v1.v2 == f.v3.v2) {  // All on same level
@@ -200,9 +187,6 @@ void View::decorate_model()
 
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
     bb = m_model->bounding_box();
-
-    CadModel vmenu(StlInterface(QString("vmenu_grid.stl")), Look::white_paint, 3.0);
-    m_model->add(vmenu, 0.0, 0.0, 0.0);
 
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
@@ -330,10 +314,9 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty() || m_force_vmenu.is_dirty() || m_edit_vmenu.is_dirty()) {
+    if (m_doc->is_dirty() || m_edit_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
-        m_force_vmenu.add_to(m_model);
         m_edit_vmenu.add_to(m_model);
         decorate_model();
         zoom_home();
@@ -342,8 +325,6 @@ void View::paint()
         copy_facets();
         if (m_doc->is_dirty())
             m_doc->make_clean();
-        if (m_force_vmenu.is_dirty())
-            m_force_vmenu.make_clean();
         if (m_edit_vmenu.is_dirty())
             m_edit_vmenu.make_clean();
         m_choose.select_no_choice();
@@ -387,14 +368,6 @@ void View::paint()
     }
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
-    QMatrix4x4 vmenu_matrix;
-    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    float dy = 0.45;
-    float dz = 1.2;
-    float dx = m_hide_force_vmenu ? - 0.11 : 0.0;
-    vmenu_matrix.translate(dx + -dz * q * m_aspect,dz * q - dy, -dz);
-    vmenu_matrix = m_projection * vmenu_matrix;
-    m_program.setUniformValue("vmenu_matrix", vmenu_matrix);
     // Draw the model
     render_facets();
 }
@@ -774,23 +747,9 @@ bool View::new_element_chosen(Float3& pos, int& span, int& orientation, bool& sa
     return m_choose.new_element_chosen(pos, span, orientation, same_level, roof);
 }
 
-Vmenu& View::get_force_vmenu()
-{
-    return m_force_vmenu;
-}
-
 Vmenu& View::get_edit_vmenu()
 {
     return m_edit_vmenu;
 }
 
-void View::toggle_force_vmenu()
-{
-    m_hide_force_vmenu = !m_hide_force_vmenu;
-}
-
-bool View::force_vmenu_hidden() const
-{
-    return m_hide_force_vmenu;
-}
 

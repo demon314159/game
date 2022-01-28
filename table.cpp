@@ -8,7 +8,6 @@
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_user_hide(false)
     , m_view(new View(new Document(QString("house.brk"))))
     , m_le_command(NULL)
 {
@@ -39,25 +38,6 @@ void Table::resizeGL(int w, int h)
 void Table::paintGL()
 {
     m_view->paint();
-}
-
-void Table::do_command(Command* c)
-{
-    m_history.do_command(c);
-}
-
-void Table::do_hide_command(Command* c)
-{
-    if (!m_view->force_vmenu_hidden())
-        m_view->toggle_force_vmenu();
-    m_history.do_command(c);
-}
-
-void Table::do_show_command(Command* c)
-{
-    if (m_view->force_vmenu_hidden() && !m_user_hide)
-        m_view->toggle_force_vmenu();
-    m_history.do_command(c);
 }
 
 void Table::keyPressEvent(QKeyEvent* e)
@@ -96,13 +76,13 @@ void Table::keyPressEvent(QKeyEvent* e)
             if (shifted) {
                 int n = m_view->get_doc()->elements();
                 if (n > 0) {
-                    do_command(new RemoveElementCommand(n - 1, m_view));
+                    m_history.do_command(new RemoveElementCommand(n - 1, m_view));
                 } else {
                     printf("no more elements\n");
                 }
             }
             else
-              do_show_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
+              m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
             update();
         }
     } else if (a == 0x39) { // n or N
@@ -114,10 +94,6 @@ void Table::keyPressEvent(QKeyEvent* e)
     } else if (a == 0x09) {
         m_view->mouse_unselect();
         m_view->get_edit_vmenu().clear();
-        update();
-    } else if (a == 0x29) { // f or F
-        m_user_hide = !m_view->force_vmenu_hidden();
-        m_view->toggle_force_vmenu();
         update();
     } else {
         printf("unknown key %02x\n", a);
@@ -157,7 +133,7 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
 void Table::add_generic_element()
 {
     m_le_command = new AddElementCommand(new LedgeElement(m_le.pos().v1, m_le.pos().v2 + 0.5, m_le.pos().v3, m_le.orientation(), m_le.span() + 1), m_view);
-    do_show_command(m_le_command);
+    m_history.do_command(m_le_command);
     update();
     return;
 
@@ -167,7 +143,7 @@ void Table::add_generic_element()
     } else {
         m_le_command = new AddElementCommand(new WindowElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
     }
-    do_show_command(m_le_command);
+    m_history.do_command(m_le_command);
     update();
 
     Vmenu& vmenu = m_view->get_edit_vmenu();
@@ -201,24 +177,24 @@ void Table::spawn_add_element_command()
         if (span == 0) {
             if (same_level) {
                 if (roof)
-                   do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                   m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else
-                    do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+                    m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
             }
         } else if (span == 1) {
             if (same_level)
                 if (roof)
-                    do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else
-                    do_show_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 else {
                     orientation = (orientation + 3) & 3;
-                    do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 }
         } else {
             if (same_level) {
                 if (roof) {
-                    do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 } else {
                     if (m_view->span_blocked(pos, span, orientation)) {
                         m_view->mouse_unselect();
@@ -237,7 +213,7 @@ void Table::spawn_add_element_command()
 void Table::spawn_delete_element_command(int ix)
 {
     if (ix >= 0) {
-        do_command(new RemoveElementCommand(ix, m_view));
+        m_history.do_command(new RemoveElementCommand(ix, m_view));
     }
 }
 
@@ -344,7 +320,7 @@ void Table::redo_command()
 void Table::new_command()
 {
     if (!m_view->get_edit_vmenu().menu_active()) {
-        do_hide_command(new NewCommand(m_view));
+        m_history.do_command(new NewCommand(m_view));
         update();
     }
 }
@@ -360,7 +336,7 @@ void Table::load_command()
             printf("No file selected\n");
             return;
         }
-        do_hide_command(new LoadCommand(file_name, m_view));
+        m_history.do_command(new LoadCommand(file_name, m_view));
         update();
     }
 }
@@ -382,8 +358,5 @@ void Table::save_command()
             printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
         }
     }
-    if (!m_view->force_vmenu_hidden())
-        m_view->toggle_force_vmenu();
-    update();
 }
 

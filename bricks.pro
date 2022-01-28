@@ -21,7 +21,7 @@ HEADERS      += game.h \
                 roof_shape.h \
                 gable_brick_shape.h \
                 arrow_shape.h \
-                star_shape.h \
+                morph_shape.h \
                 done_shape.h \
                 background_shape.h \
                 cancel_shape.h \
@@ -53,7 +53,7 @@ SOURCES      += main.cpp \
                 roof_shape.cpp \
                 gable_brick_shape.cpp \
                 arrow_shape.cpp \
-                star_shape.cpp \
+                morph_shape.cpp \
                 done_shape.cpp \
                 background_shape.cpp \
                 cancel_shape.cpp \

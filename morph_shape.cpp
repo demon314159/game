@@ -1,11 +1,12 @@
 
-#include "star_shape.h"
+#include "morph_shape.h"
 #include <math.h>
 #include <cstddef>
 
-StarShape::StarShape(int spikes, float width)
+MorphShape::MorphShape(int spikes, float width, float separation)
     : m_spikes(spikes)
     , m_width(width)
+    , m_separation(separation)
     , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
@@ -19,47 +20,52 @@ StarShape::StarShape(int spikes, float width)
     }
 }
 
-StarShape::~StarShape()
+MorphShape::~MorphShape()
 {
     if (m_facet != NULL)
         delete [] m_facet;
 }
 
-int StarShape::facets() const
+int MorphShape::facets() const
 {
     return m_facet_count;
 }
 
-Facet StarShape::facet(int facet_ix) const
+Facet MorphShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }
 
-void StarShape::define_shape()
+void MorphShape::define_shape()
 {
     float da = 2.0 * 3.1415926536 / (2.0 * (float) m_spikes);
-    float dz = 0.01;
+    float dz = m_separation / 2.0 + 0.01;
     float r1 = m_width / 2;
     float r0 = 0.76389 * r1 / 2.0;
     for (int i = 0; i < m_spikes; i++) {
         float main_angle = 2.0 * da * (float) i;
         float left_angle = main_angle + da;
         float right_angle = main_angle - da;
-        Float3 v1 = {r1 * sin(main_angle), dz, r1 * cos(main_angle)};
-        Float3 v2 = {r0 * sin(left_angle), dz, r0 * cos(left_angle)};
-        Float3 v3 = {0.0, dz, 0.0};
-        Float3 v4 = {r0 * sin(right_angle), dz, r0 * cos(right_angle)};
+        Float3 v1 = {r1 * sin(main_angle), r1 * cos(main_angle), -dz};
+        Float3 v2 = {r0 * sin(left_angle), r0 * cos(left_angle), -dz};
+        Float3 v3 = {0.0, 0.0, -dz};
+        Float3 v4 = {r0 * sin(right_angle), r0 * cos(right_angle), -dz};
         add_face(v1, v2, v3, v4);
+        v1.v3 = dz;
+        v2.v3 = dz;
+        v3.v3 = dz;
+        v4.v3 = dz;
+        add_face(v1, v2, v3, v4, true);
     }
 }
 
-void StarShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
+void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
 {
     add_face(v1, v2, v3, flip);
     add_face(v1, v3, v4, flip);
 }
 
-void StarShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
+void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
 {
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = 0.0;

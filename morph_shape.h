@@ -1,22 +1,23 @@
 
-#ifndef _STAR_SHAPE_H_
-#define _STAR_SHAPE_H_
+#ifndef _MORPH_SHAPE_H_
+#define _MORPH_SHAPE_H_
 
 #include "shape.h"
 #include "float3.h"
 #include "facet.h"
 
-class StarShape: public Shape
+class MorphShape: public Shape
 {
 public:
-    StarShape(int spikes, float width);
-    virtual ~StarShape();
+    MorphShape(int spikes, float width, float separation);
+    virtual ~MorphShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
 private:
     int m_spikes;
     float m_width;
+    float m_separation;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;
@@ -25,4 +26,4 @@ private:
     void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };
 
-#endif // _STAR_SHAPE_
+#endif // _MORPH_SHAPE_

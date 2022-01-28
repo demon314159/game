@@ -2,6 +2,7 @@
 #include "view.h"
 #include "paint_can.h"
 #include "cube_shape.h"
+#include "morph_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 
@@ -186,6 +187,8 @@ void View::decorate_model()
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
 
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
+    CadModel mb(MorphShape(6, Look::dimh, 1.0), PaintCan(0.0, 0.0, 1.0), 0.0);
+    m_model->add(mb, 3.0, 1.5 * Look::dimh, 0.0);
     bb = m_model->bounding_box();
 
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);

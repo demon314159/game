@@ -72,7 +72,7 @@ void Table::keyPressEvent(QKeyEvent* e)
     } else if (a == 0x1b) { // r or R
         redo_command();
     } else if (a == 0x36) { // c or C
-        if (!m_view->get_edit_vmenu().menu_active()) {
+        if (!m_view->get_vmenu().menu_active()) {
             if (shifted) {
                 int n = m_view->get_doc()->elements();
                 if (n > 0) {
@@ -93,7 +93,7 @@ void Table::keyPressEvent(QKeyEvent* e)
         save_command();
     } else if (a == 0x09) {
         m_view->mouse_unselect();
-        m_view->get_edit_vmenu().clear();
+        m_view->get_vmenu().clear();
         update();
     } else {
         printf("unknown key %02x\n", a);
@@ -132,6 +132,7 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
 
 void Table::add_generic_element()
 {
+    set_morph_button(m_le.pos(), m_le.orientation());
     m_le_command = new AddElementCommand(new LedgeElement(m_le.pos().v1, m_le.pos().v2 + 0.5, m_le.pos().v3, m_le.orientation(), m_le.span() + 1), m_view);
     m_history.do_command(m_le_command);
     update();
@@ -146,7 +147,7 @@ void Table::add_generic_element()
     m_history.do_command(m_le_command);
     update();
 
-    Vmenu& vmenu = m_view->get_edit_vmenu();
+    Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
 
     float dx = Look::dimx / 2;
@@ -185,9 +186,11 @@ void Table::spawn_add_element_command()
             if (same_level)
                 if (roof)
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
-                else
-                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 else {
+                    set_morph_button(pos, orientation);
+                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+
+                } else {
                     orientation = (orientation + 3) & 3;
                     m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 }
@@ -220,9 +223,12 @@ void Table::spawn_delete_element_command(int ix)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        int action_id = m_view->edit_vmenu_item_chosen(e->pos().x(), e->pos().y());
-        if (!m_view->get_edit_vmenu().menu_active()) {
-            m_view->get_edit_vmenu().clear();
+        int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
+        if (action_id != Vmenu::ACTION_NONE) {
+            printf("action id %d\n", action_id);
+        }
+        if (!m_view->get_vmenu().menu_active()) {
+            m_view->get_vmenu().clear();
             m_view->mouse_select(e->pos().x(), e->pos().y());
             spawn_add_element_command();
         } else {
@@ -264,11 +270,11 @@ void Table::mousePressEvent(QMouseEvent* e)
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_DONE:
-                    m_view->get_edit_vmenu().clear();
+                    m_view->get_vmenu().clear();
                     break;
                 case Vmenu::ACTION_CANCEL:
                     m_history.undo_command();
-                    m_view->get_edit_vmenu().clear();
+                    m_view->get_vmenu().clear();
                     break;
 
                 default:
@@ -295,7 +301,7 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
 
 void Table::undo_command()
 {
-    if (!m_view->get_edit_vmenu().menu_active()) {
+    if (!m_view->get_vmenu().menu_active()) {
         if (!m_history.end_of_undo()) {
             m_history.undo_command();
             update();
@@ -307,7 +313,7 @@ void Table::undo_command()
 
 void Table::redo_command()
 {
-    if (!m_view->get_edit_vmenu().menu_active()) {
+    if (!m_view->get_vmenu().menu_active()) {
         if (!m_history.end_of_redo()) {
             m_history.redo_command();
             update();
@@ -319,7 +325,7 @@ void Table::redo_command()
 
 void Table::new_command()
 {
-    if (!m_view->get_edit_vmenu().menu_active()) {
+    if (!m_view->get_vmenu().menu_active()) {
         m_history.do_command(new NewCommand(m_view));
         update();
     }
@@ -327,7 +333,7 @@ void Table::new_command()
 
 void Table::load_command()
 {
-    if (!m_view->get_edit_vmenu().menu_active()) {
+    if (!m_view->get_vmenu().menu_active()) {
         releaseKeyboard();
         QString file_name = QFileDialog::getOpenFileName(this,
             tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
@@ -343,7 +349,7 @@ void Table::load_command()
 
 void Table::save_command()
 {
-    if (!m_view->get_edit_vmenu().menu_active()) {
+    if (!m_view->get_vmenu().menu_active()) {
         releaseKeyboard();
         QString file_name = QFileDialog::getSaveFileName(this,
             tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
@@ -358,5 +364,19 @@ void Table::save_command()
             printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
         }
     }
+}
+
+void Table::set_morph_button(Float3 pos, int orientation)
+{
+    Vmenu& vmenu = m_view->get_vmenu();
+    vmenu.clear();
+    float dz = 0.51;
+    vmenu.add_morph(corrected_pos(pos, 0.0, 0.0, dz, orientation), orientation);
+    vmenu.add_morph(corrected_pos(pos, 0.0, 0.0, -dz, orientation), orientation);
+}
+
+void Table::clear_morph_button()
+{
+    m_view->get_vmenu().clear();
 }
 

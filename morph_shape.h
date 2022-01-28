@@ -9,7 +9,7 @@
 class MorphShape: public Shape
 {
 public:
-    MorphShape(int spikes, float width, float separation);
+    MorphShape(int spikes, float width);
     virtual ~MorphShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
@@ -17,7 +17,6 @@ public:
 private:
     int m_spikes;
     float m_width;
-    float m_separation;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;

@@ -5,6 +5,7 @@
 #include "arrow_shape.h"
 #include "done_shape.h"
 #include "cancel_shape.h"
+#include "morph_shape.h"
 #include "background_shape.h"
 #include "look.h"
 #include "element.h"
@@ -25,9 +26,7 @@ Vmenu::~Vmenu()
 #define MAG2 0.33 * 0.75 * 0.5
 #define MAG3 0.33 * 0.75 * 0.5
 
-CadModel Vmenu::m_model_brick = CadModel(BrickShape(MAG1 * 2.0, MAG1 * Element::dimh, MAG1 * 1.0, MAG1 * Element::dimb), Element::red_paint, 0.0);
-CadModel Vmenu::m_model_window = WindowModel(MAG2 * 3, MAG2 * 6 * Element::dimh, MAG2 * 1.0, MAG2 * Element::dimb, 1, 1, Element::white_paint, 0.0);
-CadModel Vmenu::m_model_door = DoorModel(MAG3 * 3, MAG3 * 8 * Element::dimh, MAG3 * 1.0, MAG3 * Element::dimb, 0, 0, Element::door_paint, 0.0);
+CadModel Vmenu::m_model_morph = CadModel(MorphShape(7, Element::dimh), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);
@@ -44,19 +43,9 @@ void Vmenu::clear()
     m_items = 0;
 }
 
-void Vmenu::add_force_brick(Float3 position, int orientation)
+void Vmenu::add_morph(Float3 position, int orientation)
 {
-    add_item(ACTION_FORCE_BRICK, position, orientation);
-}
-
-void Vmenu::add_force_window(Float3 position, int orientation)
-{
-    add_item(ACTION_FORCE_WINDOW, position, orientation);
-}
-
-void Vmenu::add_force_door(Float3 position, int orientation)
-{
-    add_item(ACTION_FORCE_DOOR, position, orientation);
+    add_item(ACTION_MORPH, position, orientation);
 }
 
 void Vmenu::add_increase_height(Float3 position, int orientation)
@@ -121,14 +110,8 @@ void Vmenu::add_to(CadModel* model) const
         Float3 p = m_position[ix];
         CadModel cm;
         switch (m_action[ix]) {
-            case ACTION_FORCE_BRICK:
-                cm.add(m_model_brick);
-                break;
-            case ACTION_FORCE_WINDOW:
-                cm.add(m_model_window);
-                break;
-            case ACTION_FORCE_DOOR:
-                cm.add(m_model_door);
+            case ACTION_MORPH:
+                cm.add(m_model_morph);
                 break;
             case ACTION_INCREASE_HEIGHT:
                 cm.add(m_model_increase_height);
@@ -195,14 +178,8 @@ Face Vmenu::face(int ix) const
     Float3 pos = m_position[ix];
     BoundingBox bb;
     switch (m_action[ix]) {
-        case ACTION_FORCE_BRICK:
-            bb = m_model_brick.bounding_box();
-            break;
-        case ACTION_FORCE_WINDOW:
-            bb = m_model_window.bounding_box();
-            break;
-        case ACTION_FORCE_DOOR:
-            bb = m_model_door.bounding_box();
+        case ACTION_MORPH:
+            bb = m_model_morph.bounding_box();
             break;
         case ACTION_INCREASE_HEIGHT:
             bb = m_model_increase_height.bounding_box();

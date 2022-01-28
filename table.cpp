@@ -175,7 +175,7 @@ void Table::spawn_add_element_command()
     bool same_level;
     bool roof;
     if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
-        m_me.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
+        m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
         if (span == 0) {
             if (same_level) {
                 if (roof)
@@ -204,10 +204,13 @@ void Table::spawn_add_element_command()
                         m_view->mouse_unselect();
                         update();
                     } else {
-                        update();
-                        set_morph_button(pos, orientation);
-                        m_me_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
-                        m_history.do_command(m_me_command);
+                        if (m_view->gap_below_span(pos, span, orientation)) {
+                            m_history.do_command(new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view));
+                        } else {
+                            set_morph_button(pos, orientation);
+                            m_me_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
+                            m_history.do_command(m_me_command);
+                        }
                     }
                 }
             }

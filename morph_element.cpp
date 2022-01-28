@@ -12,7 +12,6 @@ MorphElement::MorphElement()
     , m_orientation(0)
     , m_hgrilles(0)
     , m_vgrilles(0)
-    , m_gap_below(false)
     , m_clearance(0)
 {
 }
@@ -21,10 +20,10 @@ MorphElement::~MorphElement()
 {
 }
 
-void MorphElement::constrain(Float3 position, int span, int orientation, bool gap_below, int clearance)
+void MorphElement::constrain(Float3 position, int span, int orientation, int clearance)
 {
-    printf("constrain pos (%f, %f, %f), span %d, orientation %d, gap_below %d, clearance %d\n",
-           position.v1, position.v2, position.v3, span, orientation, gap_below ? 1 : 0, clearance);
+    printf("constrain pos (%f, %f, %f), span %d, orientation %d, clearance %d\n",
+           position.v1, position.v2, position.v3, span, orientation, clearance);
     m_position = position;
     m_span = span;
     m_height = 1;
@@ -38,7 +37,6 @@ void MorphElement::constrain(Float3 position, int span, int orientation, bool ga
         m_height = std::min(m_height, clearance);
     m_clearance = clearance;
     m_orientation = orientation;
-    m_gap_below = gap_below;
     m_vgrilles = 1;
     m_hgrilles = 2;
 }
@@ -71,11 +69,6 @@ int MorphElement::hgrilles() const
 int MorphElement::vgrilles() const
 {
     return m_vgrilles;
-}
-
-bool MorphElement::is_gap_below() const
-{
-    return m_gap_below;
 }
 
 void MorphElement::increase_height()

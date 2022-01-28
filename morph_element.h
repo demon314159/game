@@ -1,14 +1,14 @@
 
-#ifndef _LARGE_ELEMENT_H_
-#define _LARGE_ELEMENT_H_
+#ifndef _MORPH_ELEMENT_H_
+#define _MORPH_ELEMENT_H_
 
 #include "float3.h"
 
-class LargeElement
+class MorphElement
 {
 public:
-    LargeElement();
-    ~LargeElement();
+    MorphElement();
+    ~MorphElement();
     void constrain(Float3 position, int span, int orientation, bool gap_below, int clearance);
     Float3 pos() const;
     int span() const;
@@ -39,4 +39,4 @@ private:
     int m_clearance;
 };
 
-#endif // _LARGE_ELEMENT_H_
+#endif // _MORPH_ELEMENT_H_

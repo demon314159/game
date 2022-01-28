@@ -126,14 +126,14 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
         p.v1 -= dz;
         p.v3 += dx;
     }
-    p.v2 = Look::dimh * p.v2 + (Look::dimh * m_le.height() + Look::dimh * dy);
+    p.v2 = Look::dimh * p.v2 + (Look::dimh * m_me.height() + Look::dimh * dy);
     return p;
 }
 
 void Table::add_generic_element()
 {
-    set_morph_button(m_le.pos(), m_le.orientation());
-    m_le_command = new AddElementCommand(new LedgeElement(m_le.pos().v1, m_le.pos().v2 + 0.5, m_le.pos().v3, m_le.orientation(), m_le.span() + 1), m_view);
+    set_morph_button(m_me.pos(), m_me.orientation());
+    m_le_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
     m_history.do_command(m_le_command);
     update();
     return;
@@ -204,7 +204,7 @@ void Table::spawn_add_element_command()
                         update();
                     } else {
                         update();
-                        m_le.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
+                        m_me.constrain(pos, span, orientation, m_view->gap_below_span(pos, span, orientation), m_view->span_clearance(pos, span, orientation));
                         add_generic_element();
                     }
                 }
@@ -241,32 +241,32 @@ void Table::mousePressEvent(QMouseEvent* e)
 //                    break;
                 case Vmenu::ACTION_INCREASE_HEIGHT:
                     m_history.undo_command();
-                    m_le.increase_height();
+                    m_me.increase_height();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_DECREASE_HEIGHT:
                     m_history.undo_command();
-                    m_le.decrease_height();
+                    m_me.decrease_height();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_INCREASE_VGRILLES:
                     m_history.undo_command();
-                    m_le.increase_vgrilles();
+                    m_me.increase_vgrilles();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_DECREASE_VGRILLES:
                     m_history.undo_command();
-                    m_le.decrease_vgrilles();
+                    m_me.decrease_vgrilles();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_INCREASE_HGRILLES:
                     m_history.undo_command();
-                    m_le.increase_hgrilles();
+                    m_me.increase_hgrilles();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_DECREASE_HGRILLES:
                     m_history.undo_command();
-                    m_le.decrease_hgrilles();
+                    m_me.decrease_hgrilles();
                     add_generic_element();
                     break;
                 case Vmenu::ACTION_DONE:

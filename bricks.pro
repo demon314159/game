@@ -26,7 +26,7 @@ HEADERS      += game.h \
                 background_shape.h \
                 cancel_shape.h \
                 element.h \
-                large_element.h \
+                morph_element.h \
                 command.h \
                 history.h \
                 choose.h \
@@ -58,7 +58,7 @@ SOURCES      += main.cpp \
                 background_shape.cpp \
                 cancel_shape.cpp \
                 element.cpp \
-                large_element.cpp \
+                morph_element.cpp \
                 command.cpp \
                 history.cpp \
                 choose.cpp \

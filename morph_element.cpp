@@ -1,12 +1,9 @@
 
-#include "large_element.h"
+#include "morph_element.h"
 #include <math.h>
 #include <algorithm>
 
-#include <stdio.h>
-
-
-LargeElement::LargeElement()
+MorphElement::MorphElement()
     : m_position({0.0, 0.0, 0.0})
     , m_span(0)
     , m_height(0)
@@ -19,11 +16,11 @@ LargeElement::LargeElement()
 {
 }
 
-LargeElement::~LargeElement()
+MorphElement::~MorphElement()
 {
 }
 
-void LargeElement::constrain(Float3 position, int span, int orientation, bool gap_below, int clearance)
+void MorphElement::constrain(Float3 position, int span, int orientation, bool gap_below, int clearance)
 {
     m_position = position;
     m_span = span;
@@ -41,47 +38,47 @@ void LargeElement::constrain(Float3 position, int span, int orientation, bool ga
     m_hgrilles = 2;
 }
 
-Float3 LargeElement::pos() const
+Float3 MorphElement::pos() const
 {
     return m_position;
 }
 
-int LargeElement::span() const
+int MorphElement::span() const
 {
     return m_span;
 }
 
-int LargeElement::height() const
+int MorphElement::height() const
 {
     return m_height;
 }
 
-int LargeElement::orientation() const
+int MorphElement::orientation() const
 {
     return m_orientation;
 }
 
-int LargeElement::hgrilles() const
+int MorphElement::hgrilles() const
 {
     return m_hgrilles;
 }
 
-int LargeElement::vgrilles() const
+int MorphElement::vgrilles() const
 {
     return m_vgrilles;
 }
 
-bool LargeElement::is_door() const
+bool MorphElement::is_door() const
 {
     return m_door_flag;
 }
 
-bool LargeElement::is_gap_below() const
+bool MorphElement::is_gap_below() const
 {
     return m_gap_below;
 }
 
-void LargeElement::increase_height()
+void MorphElement::increase_height()
 {
     if (m_clearance == 0)
         ++m_height;
@@ -89,37 +86,37 @@ void LargeElement::increase_height()
         ++m_height;
 }
 
-void LargeElement::decrease_height()
+void MorphElement::decrease_height()
 {
     if (m_height > 1)
         --m_height;
 }
 
-void LargeElement::increase_vgrilles()
+void MorphElement::increase_vgrilles()
 {
     ++m_vgrilles;
 }
 
-void LargeElement::decrease_vgrilles()
+void MorphElement::decrease_vgrilles()
 {
     if (m_vgrilles > 0) {
         --m_vgrilles;
     }
 }
 
-void LargeElement::increase_hgrilles()
+void MorphElement::increase_hgrilles()
 {
     ++m_hgrilles;
 }
 
-void LargeElement::decrease_hgrilles()
+void MorphElement::decrease_hgrilles()
 {
     if (m_hgrilles > 0) {
         --m_hgrilles;
     }
 }
 
-void LargeElement::flip()
+void MorphElement::flip()
 {
     m_orientation = (m_orientation + 2) & 3;
 }

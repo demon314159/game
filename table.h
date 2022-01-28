@@ -7,7 +7,7 @@
 #include "document.h"
 #include "view.h"
 #include "history.h"
-#include "large_element.h"
+#include "morph_element.h"
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 
@@ -41,7 +41,7 @@ protected:
 private:
     View* m_view;
     History m_history;
-    LargeElement m_le;
+    MorphElement m_me;
     Command* m_le_command;
 };
 

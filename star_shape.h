@@ -1,16 +1,16 @@
 
-#ifndef _MORPH_SHAPE_H_
-#define _MORPH_SHAPE_H_
+#ifndef _STAR_SHAPE_H_
+#define _STAR_SHAPE_H_
 
 #include "shape.h"
 #include "float3.h"
 #include "facet.h"
 
-class MorphShape: public Shape
+class StarShape: public Shape
 {
 public:
-    MorphShape(int spikes, float width);
-    virtual ~MorphShape();
+    StarShape(int spikes, float width);
+    virtual ~StarShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
@@ -25,4 +25,4 @@ private:
     void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };
 
-#endif // _MORPH_SHAPE_
+#endif // _STAR_SHAPE_

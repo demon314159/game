@@ -1,9 +1,9 @@
 
-#include "morph_shape.h"
+#include "star_shape.h"
 #include <math.h>
 #include <cstddef>
 
-MorphShape::MorphShape(int spikes, float width)
+StarShape::StarShape(int spikes, float width)
     : m_spikes(spikes)
     , m_width(width)
     , m_count_mode(true)
@@ -19,23 +19,23 @@ MorphShape::MorphShape(int spikes, float width)
     }
 }
 
-MorphShape::~MorphShape()
+StarShape::~StarShape()
 {
     if (m_facet != NULL)
         delete [] m_facet;
 }
 
-int MorphShape::facets() const
+int StarShape::facets() const
 {
     return m_facet_count;
 }
 
-Facet MorphShape::facet(int facet_ix) const
+Facet StarShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }
 
-void MorphShape::define_shape()
+void StarShape::define_shape()
 {
     float da = 2.0 * 3.1415926536 / (2.0 * (float) m_spikes);
     float dz = 0.0;
@@ -54,13 +54,13 @@ void MorphShape::define_shape()
     }
 }
 
-void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
+void StarShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
 {
     add_face(v1, v2, v3, flip);
     add_face(v1, v3, v4, flip);
 }
 
-void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
+void StarShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
 {
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = 0.0;
@@ -77,5 +77,4 @@ void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
     }
     ++m_facet_count;
 }
-
 

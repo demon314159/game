@@ -19,7 +19,7 @@ public:
     static const int ACTION_DECREASE_HGRILLES = 7;
     static const int ACTION_DONE = 8;
     static const int ACTION_CANCEL = 9;
-    static const int MAX_ITEMS = 10;
+    static const int MAX_ITEMS = 16;
 
     Vmenu();
     ~Vmenu();

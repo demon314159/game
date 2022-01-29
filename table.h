@@ -35,7 +35,7 @@ protected:
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
     Float3 corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const;
-    void set_morph_button(Float3 pos, int orientation);
+    void set_morph_button();
     void morph_element();
 private:
     View* m_view;

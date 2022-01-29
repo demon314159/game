@@ -38,19 +38,27 @@ Facet StarShape::facet(int facet_ix) const
 void StarShape::define_shape()
 {
     float da = 2.0 * 3.1415926536 / (2.0 * (float) m_spikes);
-    float dz = 0.0;
+    float dz = 0.01;
     float r1 = m_width / 2;
     float r0 = 0.76389 * r1 / 2.0;
     for (int i = 0; i < m_spikes; i++) {
         float main_angle = 2.0 * da * (float) i;
         float left_angle = main_angle + da;
         float right_angle = main_angle - da;
-        Float3 v1 = {r1 * sin(main_angle), r1 * cos(main_angle), dz};
-        Float3 v2 = {r0 * sin(left_angle), r0 * cos(left_angle), dz};
-        Float3 v3 = {0.0, 0.0, dz};
-        Float3 v4 = {r0 * sin(right_angle), r0 * cos(right_angle), dz};
+        Float3 v1 = {r1 * sin(main_angle), r1 * cos(main_angle), -dz};
+        Float3 v2 = {r0 * sin(left_angle), r0 * cos(left_angle), -dz};
+        Float3 v3 = {0.0, 0.0, -dz};
+        Float3 v4 = {r0 * sin(right_angle), r0 * cos(right_angle), -dz};
+        // front face
         add_face(v1, v2, v3, v4);
         add_face(v1, v2, v3, v4, true);
+        v1.v3 = dz;
+        v2.v3 = dz;
+        v3.v3 = dz;
+        v4.v3 = dz;
+        // back face
+        add_face(v1, v2, v3, v4, true);
+        add_face(v1, v2, v3, v4);
     }
 }
 

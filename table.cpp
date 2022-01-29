@@ -187,7 +187,7 @@ void Table::spawn_add_element_command()
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else {
                     m_me.constrain(MorphElement::MORPH_BRICK, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
-                    set_morph_button(pos, orientation);
+                    set_morph_button();
                     m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 } else {
                     orientation = (orientation + 3) & 3;
@@ -202,11 +202,11 @@ void Table::spawn_add_element_command()
                         m_view->mouse_unselect();
                         update();
                     } else {
-                        if (m_view->gap_below_span(pos, span, orientation)) {
+                        if (pos.v2 > 0.5 && m_view->gap_below_span(pos, span, orientation)) {
                             m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         } else {
                             m_me.constrain(MorphElement::MORPH_LEDGE, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
-                            set_morph_button(pos, orientation);
+                            set_morph_button();
                             m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         }
                     }
@@ -234,6 +234,7 @@ void Table::mousePressEvent(QMouseEvent* e)
         if (action_id != Vmenu::ACTION_NONE) {
             if (action_id == Vmenu::ACTION_MORPH) {
                 morph_element();
+                set_morph_button();
                 update();
                 return;
             }
@@ -381,19 +382,17 @@ void Table::save_command()
     }
 }
 
-void Table::set_morph_button(Float3 pos, int orientation)
+void Table::set_morph_button()
 {
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
     float dz = 0.51;
-    float dy = -0.5;
-    vmenu.add_morph(corrected_pos(pos, 0.0, dy, dz, orientation), orientation);
-    vmenu.add_morph(corrected_pos(pos, 0.0, dy, -dz, orientation), orientation);
+    float dy = 1.0;
+    vmenu.add_morph(corrected_pos(m_me.pos(), 0.0, dy, dz, m_me.orientation()), m_me.orientation());
 }
 
 void Table::morph_element()
 {
-    printf("morph element\n");
     m_history.undo_command();
     m_me.morph();
     switch (m_me.kind()) {

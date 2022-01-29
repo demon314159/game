@@ -27,12 +27,6 @@ void MorphElement::constrain(int kind, Float3 position, int span, int orientatio
     m_position = position;
     m_span = span;
     m_height = 1;
-#ifdef NEVERMORE
-    if (m_door_flag)
-        m_height = round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
-    else
-        m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2
-#endif
     if (clearance > 0)
         m_height = std::min(m_height, clearance);
     m_clearance = clearance;

@@ -317,8 +317,8 @@ void View::paint()
     if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
-        m_vmenu.add_to(m_model);
         decorate_model();
+        m_vmenu.add_to(m_model);
         zoom_home();
         resize_calc();
         check_storage();

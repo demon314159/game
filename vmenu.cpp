@@ -26,7 +26,7 @@ Vmenu::~Vmenu()
 #define MAG2 0.33 * 0.75 * 0.5
 #define MAG3 0.33 * 0.75 * 0.5
 
-CadModel Vmenu::m_model_morph = CadModel(StarShape(7, Element::dimh), Look::blue_paint, 0.0);
+CadModel Vmenu::m_model_morph = CadModel(StarShape(7, 0.5), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);
@@ -112,6 +112,7 @@ void Vmenu::add_to(CadModel* model) const
         switch (m_action[ix]) {
             case ACTION_MORPH:
                 cm.add(m_model_morph);
+                cm.add(m_model_background);
                 break;
             case ACTION_INCREASE_HEIGHT:
                 cm.add(m_model_increase_height);

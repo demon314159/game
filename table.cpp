@@ -186,7 +186,7 @@ void Table::spawn_add_element_command()
                 if (roof)
                     m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else {
-                    m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
+                    m_me.constrain(MorphElement::MORPH_BRICK, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
                     set_morph_button(pos, orientation);
                     m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 } else {
@@ -205,7 +205,7 @@ void Table::spawn_add_element_command()
                         if (m_view->gap_below_span(pos, span, orientation)) {
                             m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         } else {
-                            m_me.constrain(pos, span, orientation, m_view->span_clearance(pos, span, orientation));
+                            m_me.constrain(MorphElement::MORPH_LEDGE, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
                             set_morph_button(pos, orientation);
                             m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         }
@@ -213,6 +213,9 @@ void Table::spawn_add_element_command()
                 }
             }
         }
+    } else {
+        m_view->get_vmenu().clear();
+        update();
     }
 }
 
@@ -227,14 +230,20 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
+
         if (action_id != Vmenu::ACTION_NONE) {
-            printf("action id %d\n", action_id);
+            if (action_id == Vmenu::ACTION_MORPH) {
+                morph_element();
+                update();
+                return;
+            }
         }
         if (!m_view->get_vmenu().menu_active()) {
-            m_view->get_vmenu().clear();
+//            m_view->get_vmenu().clear();
             m_view->mouse_select(e->pos().x(), e->pos().y());
             spawn_add_element_command();
         } else {
+
             switch (action_id) {
 //                case Vmenu::ACTION_FORCE_BRICK:
 //                    break;
@@ -382,8 +391,24 @@ void Table::set_morph_button(Float3 pos, int orientation)
     vmenu.add_morph(corrected_pos(pos, 0.0, dy, -dz, orientation), orientation);
 }
 
-void Table::clear_morph_button()
+void Table::morph_element()
 {
-    m_view->get_vmenu().clear();
-}
+    printf("morph element\n");
+    m_history.undo_command();
+    m_me.morph();
+    switch (m_me.kind()) {
+        case MorphElement::MORPH_BRICK:
+             m_history.do_command(new AddElementCommand(new BrickElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation()), m_view));
+             break;
+        case MorphElement::MORPH_LEDGE:
+             m_history.do_command(new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view));
+             break;
+        case MorphElement::MORPH_DOOR:
+             m_history.do_command(new AddElementCommand(new DoorElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
+             break;
+        case MorphElement::MORPH_WINDOW:
+             m_history.do_command(new AddElementCommand(new WindowElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
+             break;
+    }
 
+}

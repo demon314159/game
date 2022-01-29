@@ -323,11 +323,12 @@ void View::paint()
         resize_calc();
         check_storage();
         copy_facets();
-        if (m_doc->is_dirty())
+        if (m_doc->is_dirty()) {
             m_doc->make_clean();
+            m_choose.select_no_choice();
+        }
         if (m_vmenu.is_dirty())
             m_vmenu.make_clean();
-        m_choose.select_no_choice();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};

@@ -41,7 +41,6 @@ private:
     View* m_view;
     History m_history;
     MorphElement m_me;
-    Command* m_me_command;
 };
 
 #endif // _TABLE_H_

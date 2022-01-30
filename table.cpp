@@ -213,6 +213,7 @@ void Table::spawn_add_element_command()
                 }
             }
         }
+        update();
     } else {
         m_view->get_vmenu().clear();
         update();
@@ -230,75 +231,55 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
-
         if (action_id != Vmenu::ACTION_NONE) {
             if (action_id == Vmenu::ACTION_MORPH) {
-                morph_element();
-                set_morph_button();
-                update();
+                m_me.morph();
+                update_morph_element();
                 return;
             }
         }
         if (!m_view->get_vmenu().menu_active()) {
-//            m_view->get_vmenu().clear();
             m_view->mouse_select(e->pos().x(), e->pos().y());
             spawn_add_element_command();
         } else {
-
             switch (action_id) {
-//                case Vmenu::ACTION_FORCE_BRICK:
-//                    break;
-//                case Vmenu::ACTION_FORCE_WINDOW:
-//                    break;
-//                case Vmenu::ACTION_FORCE_DOOR:
-//                    break;
-//
-#ifdef NEVERMORE
-
                 case Vmenu::ACTION_INCREASE_HEIGHT:
-                    m_history.undo_command();
                     m_me.increase_height();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_DECREASE_HEIGHT:
-                    m_history.undo_command();
                     m_me.decrease_height();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_INCREASE_VGRILLES:
-                    m_history.undo_command();
                     m_me.increase_vgrilles();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_DECREASE_VGRILLES:
-                    m_history.undo_command();
                     m_me.decrease_vgrilles();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_INCREASE_HGRILLES:
-                    m_history.undo_command();
                     m_me.increase_hgrilles();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_DECREASE_HGRILLES:
-                    m_history.undo_command();
                     m_me.decrease_hgrilles();
-                    add_generic_element();
+                    update_morph_element();
                     break;
                 case Vmenu::ACTION_DONE:
                     m_view->get_vmenu().clear();
+                    update();
                     break;
                 case Vmenu::ACTION_CANCEL:
                     m_history.undo_command();
                     m_view->get_vmenu().clear();
+                    update();
                     break;
-
-#endif
                 default:
                     break;
             }
         }
-        update();
     } else if (e->button() == Qt::RightButton) {
         int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());
         spawn_delete_element_command(ix);
@@ -386,15 +367,31 @@ void Table::set_morph_button()
 {
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
-    float dz = 0.51;
+    float dz = 0.61;
     float dy = 1.0;
     vmenu.add_morph(corrected_pos(m_me.pos(), 0.0, dy, dz, m_me.orientation()), m_me.orientation());
+    if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
+        float dx = Look::dimx / 2;
+        vmenu.add_increase_height(corrected_pos(m_me.pos(), -dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
+        vmenu.add_decrease_height(corrected_pos(m_me.pos(), dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
+        vmenu.add_done(corrected_pos(m_me.pos(), dx + Look::dimx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
+        vmenu.add_cancel(corrected_pos(m_me.pos(), - dx - Look::dimx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
+        vmenu.add_increase_vgrilles(corrected_pos(m_me.pos(), + 3 * dx / 4, -0.375, 0.45, m_me.orientation()), m_me.orientation());
+        vmenu.add_decrease_vgrilles(corrected_pos(m_me.pos(), - 3 * dx / 4, -0.375, 0.45, m_me.orientation()), m_me.orientation());
+        if (m_me.kind() == MorphElement::MORPH_DOOR) {
+            vmenu.add_increase_hgrilles(corrected_pos(m_me.pos(), 0.25 - 0.5 * (m_me.span() + 1), -0.18 * m_me.height() + 0.5, 0.45, m_me.orientation()), m_me.orientation());
+            vmenu.add_decrease_hgrilles(corrected_pos(m_me.pos(), 0.25 - 0.5 * (m_me.span() + 1), -0.18 * m_me.height() - 0.5, 0.45, m_me.orientation()), m_me.orientation());
+        } else {
+            vmenu.add_increase_hgrilles(corrected_pos(m_me.pos(), 0.25 - 0.5 * (m_me.span() + 1), -m_me.height() / 2 + 0.5, 0.45, m_me.orientation()), m_me.orientation());
+            vmenu.add_decrease_hgrilles(corrected_pos(m_me.pos(), 0.25 - 0.5 * (m_me.span() + 1), -m_me.height() / 2 - 0.5, 0.45, m_me.orientation()), m_me.orientation());
+        }
+    }
+    update();
 }
 
-void Table::morph_element()
+void Table::update_morph_element()
 {
     m_history.undo_command();
-    m_me.morph();
     switch (m_me.kind()) {
         case MorphElement::MORPH_BRICK:
              m_history.do_command(new AddElementCommand(new BrickElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation()), m_view));
@@ -409,5 +406,6 @@ void Table::morph_element()
              m_history.do_command(new AddElementCommand(new WindowElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
              break;
     }
-
+    set_morph_button();
 }
+

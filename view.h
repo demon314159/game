@@ -50,7 +50,9 @@ protected:
     int selected_top_subface(const Element* e, int sx, int sy) const;
     bool no_part_of_any_element_selected(int sx, int sy) const;
     Float2 world2screen(Float3 point, float* distance = NULL) const;
+    Float2 fixed2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy, float* depth = NULL) const;
+    bool screen_point_inside_fixed_face(const Face& f, int sx, int sy) const;
     Float3 screen_point_on_floor(const Face& f, int sx, int sy) const;
     float min4(float a, float b, float c, float d) const;
     float max4(float a, float b, float c, float d) const;

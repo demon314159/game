@@ -22,7 +22,7 @@ Vmenu::Vmenu()
 Vmenu::~Vmenu()
 {
 }
-#define MAG1 0.2
+#define MAG1 0.15
 CadModel Vmenu::m_model_morph = CadModel(StarShape(7, 0.5 * MAG1), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
@@ -109,7 +109,6 @@ void Vmenu::add_to(CadModel* model) const
         switch (m_action[ix]) {
             case ACTION_MORPH:
                 cm.add(m_model_morph);
-                cm.add(m_model_background);
                 break;
             case ACTION_INCREASE_HEIGHT:
                 cm.add(m_model_increase_height);
@@ -169,6 +168,11 @@ void Vmenu::make_clean()
 void Vmenu::make_dirty()
 {
     m_is_dirty = true;
+}
+
+bool Vmenu::fixed(int ix) const
+{
+    return m_action[ix] == ACTION_MORPH;
 }
 
 Face Vmenu::face(int ix) const

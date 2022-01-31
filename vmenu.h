@@ -30,6 +30,7 @@ public:
     void make_clean();
     void make_dirty();
     Face face(int ix) const;
+    bool fixed(int ix) const;
     int action_id(int ix) const;
     bool menu_active() const;
 

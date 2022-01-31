@@ -51,8 +51,14 @@ int View::vmenu_item_chosen(int sx, int sy)
 {
     for (int i = 0; i < m_vmenu.items(); i++) {
         Face f = m_vmenu.face(i);
-        if (screen_point_inside_face(f, sx, sy))
-            return m_vmenu.action_id(i);
+        if (m_vmenu.fixed(i)) {
+            if (screen_point_inside_fixed_face(f, sx, sy))
+                return m_vmenu.action_id(i);
+        }
+        else {
+            if (screen_point_inside_face(f, sx, sy))
+                return m_vmenu.action_id(i);
+        }
     }
     return Vmenu::ACTION_NONE;
 }
@@ -371,7 +377,7 @@ void View::paint()
 
     m_fixed_matrix = QMatrix4x4();
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    float dy = 0.45;
+    float dy = 0.0;
     float dz = 1.2;
     float dx = 0.0;
 //    float dx = m_hide_force_vmenu ? - 0.11 : 0.0;
@@ -496,6 +502,15 @@ Float2 View::world2screen(Float3 point, float* distance) const
     return res;
 }
 
+Float2 View::fixed2screen(Float3 point) const
+{
+    Float2 res;
+    QVector4D sp = m_fixed_matrix * QVector4D(point.v1, point.v2, point.v3, 1.0);
+    res.v1 = m_width / 2 + round((sp.x() * (float) m_width) / (2.0 * sp.w()));
+    res.v2 = m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w()));
+    return res;
+}
+
 float View::min4(float a, float b, float c, float d) const
 {
     float u = std::min(a, b);
@@ -524,6 +539,28 @@ bool View::screen_point_inside_face(const Face& f, int sx, int sy, float* depth)
     zbuf += distance;
     if (depth != NULL)
         *depth = zbuf / 4.0;
+    Float2 pt = {(float) sx, (float) sy};
+
+    float xmin = min4(a.v1, b.v1, c.v1, d.v1);
+    float xmax = max4(a.v1, b.v1, c.v1, d.v1);
+    float ymin = min4(a.v2, b.v2, c.v2, d.v2);
+    float ymax = max4(a.v2, b.v2, c.v2, d.v2);
+    if (pt.v1 < xmin || pt.v1 > xmax)
+        return false;
+    if (pt.v2 < ymin || pt.v2 > ymax)
+        return false;
+    double area1 = tri_area(a, b, pt) + tri_area(b, c, pt) + tri_area(c, d, pt) + tri_area(d, a, pt);
+    double area2 = quad_area(a, b, c, d);
+    return area1 <= (area2 + 1.00);
+}
+
+bool View::screen_point_inside_fixed_face(const Face& f, int sx, int sy) const
+{
+    // transform the four vertices of f
+    Float2 a = fixed2screen({f.v1.v1, f.v1.v2, f.v1.v3});
+    Float2 b = fixed2screen({f.v2.v1, f.v2.v2, f.v2.v3});
+    Float2 c = fixed2screen({f.v3.v1, f.v3.v2, f.v3.v3});
+    Float2 d = fixed2screen({f.v4.v1, f.v4.v2, f.v4.v3});
     Float2 pt = {(float) sx, (float) sy};
 
     float xmin = min4(a.v1, b.v1, c.v1, d.v1);

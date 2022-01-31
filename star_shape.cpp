@@ -50,15 +50,7 @@ void StarShape::define_shape()
         Float3 v3 = {0.0, 0.0, -dz};
         Float3 v4 = {r0 * sin(right_angle), r0 * cos(right_angle), -dz};
         // front face
-        add_face(v1, v2, v3, v4);
         add_face(v1, v2, v3, v4, true);
-        v1.v3 = dz;
-        v2.v3 = dz;
-        v3.v3 = dz;
-        v4.v3 = dz;
-        // back face
-        add_face(v1, v2, v3, v4, true);
-        add_face(v1, v2, v3, v4);
     }
 }
 

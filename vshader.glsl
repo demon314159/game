@@ -7,7 +7,7 @@ precision mediump float;
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
 uniform mat4 marker_matrix;
-uniform mat4 morph_matrix;
+uniform mat4 fixed_matrix;
 
 attribute vec3 a_position;
 attribute vec3 a_normal;
@@ -28,7 +28,7 @@ void main()
         v_normal = rot_matrix * vec4(billy, 0.0);
     } else {
         if (a_animation_id == 3.0) {
-            gl_Position = morph_matrix * vec4(a_position, 1.0);
+            gl_Position = fixed_matrix * vec4(a_position, 1.0);
         } else if (a_animation_id == 2.0) {
             gl_Position = mvp_matrix *  marker_matrix * vec4(a_position, 1.0);
         } else { // Treat unknowns like 0.0

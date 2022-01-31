@@ -369,7 +369,7 @@ void Table::set_morph_button()
     vmenu.clear();
     float dz = 0.61;
     float dy = 1.0;
-    vmenu.add_morph(corrected_pos(m_me.pos(), 0.0, dy, dz, m_me.orientation()), m_me.orientation());
+    vmenu.add_morph({0.1, 0.0, 0.0});
     if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
         float dx = Look::dimx / 2;
         vmenu.add_increase_height(corrected_pos(m_me.pos(), -dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());

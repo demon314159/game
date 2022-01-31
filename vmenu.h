@@ -33,7 +33,7 @@ public:
     int action_id(int ix) const;
     bool menu_active() const;
 
-    void add_morph(Float3 position, int orientation);
+    void add_morph(Float3 position);
     void add_increase_height(Float3 position, int orientation);
     void add_decrease_height(Float3 position, int orientation);
     void add_increase_vgrilles(Float3 position, int orientation);

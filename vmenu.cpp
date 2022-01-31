@@ -22,11 +22,8 @@ Vmenu::Vmenu()
 Vmenu::~Vmenu()
 {
 }
-#define MAG1 0.5 * 0.75 * 0.5
-#define MAG2 0.33 * 0.75 * 0.5
-#define MAG3 0.33 * 0.75 * 0.5
-
-CadModel Vmenu::m_model_morph = CadModel(StarShape(7, 0.5), Look::blue_paint, 0.0);
+#define MAG1 0.2
+CadModel Vmenu::m_model_morph = CadModel(StarShape(7, 0.5 * MAG1), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);
@@ -43,9 +40,9 @@ void Vmenu::clear()
     m_items = 0;
 }
 
-void Vmenu::add_morph(Float3 position, int orientation)
+void Vmenu::add_morph(Float3 position)
 {
-    add_item(ACTION_MORPH, position, orientation);
+    add_item(ACTION_MORPH, position, 0);
 }
 
 void Vmenu::add_increase_height(Float3 position, int orientation)

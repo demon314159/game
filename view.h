@@ -77,6 +77,7 @@ private:
     float m_xrot;
     float m_yrot;
     QOpenGLShaderProgram m_program;
+    QMatrix4x4 m_fixed_matrix;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;
     QMatrix4x4 m_projection;

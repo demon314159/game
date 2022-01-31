@@ -369,6 +369,16 @@ void View::paint()
     }
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
+    m_fixed_matrix = QMatrix4x4();
+    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    float dy = 0.45;
+    float dz = 1.2;
+    float dx = 0.0;
+//    float dx = m_hide_force_vmenu ? - 0.11 : 0.0;
+//    float dx = m_show_morph_button ? 0.0 : 1.0;
+    m_fixed_matrix.translate(dx + -dz * q * m_aspect,dz * q - dy, -dz);
+    m_fixed_matrix = m_projection * m_fixed_matrix;
+    m_program.setUniformValue("fixed_matrix", m_fixed_matrix);
     // Draw the model
     render_facets();
 }

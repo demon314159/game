@@ -17,6 +17,7 @@ public:
     static PaintCan done_paint;
     static PaintCan cancel_paint;
     static PaintCan background_paint;
+    static PaintCan grid_paint;
 };
 
 #endif // _LOOK_H_

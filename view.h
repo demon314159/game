@@ -60,6 +60,7 @@ protected:
     double tri_area(Float2 v1, Float2 v2, Float2 v3) const;
     double quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const;
     float normalize_angle(float angle) const;
+    void add_grid(CadModel& cm, const BoundingBox& bb);
 
 private:
     Vmenu m_vmenu;

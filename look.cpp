@@ -11,4 +11,5 @@ PaintCan Look::black_paint(0.0, 0.0, 0.0);
 PaintCan Look::done_paint(0.0, 0.7, 0.3);
 PaintCan Look::cancel_paint(1.0, 0.0, 0.0);
 PaintCan Look::background_paint(1.0, 192.0 / 256.0, 203.0 / 256.0); // pink
+PaintCan Look::grid_paint(0.5, 0.5, 0.5);
 

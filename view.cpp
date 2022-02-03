@@ -84,7 +84,7 @@ void View::mouse_select(int sx, int sy)
         c.position.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_choice(c);
     } else {
-        BoundingBox bb = m_model->bounding_box();
+        BoundingBox bb = m_model->bounding_box(true);
 
         Face plane;
         float rim = 1.0;
@@ -181,41 +181,41 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
     }
 }
 
-void View::add_grid(CadModel& cm, const BoundingBox& bb)
+void View::add_grid(CadModel* cm, const BoundingBox& bb)
 {
+    printf("bounding box (%f, %f)  (%f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmax.v1, bb.vmax.v3);
     float db = 2 * Element::dimb;
-    float dx = bb.vmax.v1 - bb.vmin.v1 + 2.0;
+    float dx = bb.vmax.v1 - bb.vmin.v1;
     float dy = 2 * Element::dimh / 20.0;
-    float dz = bb.vmax.v3 - bb.vmin.v3 + 2.0;
+    float dz = bb.vmax.v3 - bb.vmin.v3;
+    float tabley = Element::dimh / 20.0;
+    printf("    %f x %f\n", dx, dz);
     int nx = round(dx);
     int nz = round(dz);
     for (int i = 0; i <= nx; i++) {
         CubeShape ls(db, dy, dz);
         CadModel line_model(ls, Look::grid_paint, 1.0);
-        cm.add(line_model, -dx / 2 + (float) i, 0.0, 0.0);
+        cm->add(line_model, bb.vmin.v1 + (float) i, -tabley, (bb.vmin.v3 + bb.vmax.v3) / 2);
     }
     for (int i = 0; i <= nz; i++) {
         CubeShape ls(dx, dy, db);
         CadModel line_model(ls, Look::grid_paint, 1.0);
-        cm.add(line_model, 0.0, 0.0, -dz / 2 + (float) i);
+        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, -tabley, bb.vmin.v3 + (float) i);
     }
 }
 
 void View::decorate_model()
 {
 //    printf("%d facets\n", m_model->facets());
-    BoundingBox bb = m_model->bounding_box();
+    BoundingBox bb = m_model->bounding_box(true);
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 2.0;
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
-
-    add_grid(tt, bb);
-
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
-    bb = m_model->bounding_box();
-
+    bb = m_model->bounding_box(true);
+    add_grid(m_model, bb);
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );

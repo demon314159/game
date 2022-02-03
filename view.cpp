@@ -85,15 +85,12 @@ void View::mouse_select(int sx, int sy)
         m_choose.select_choice(c);
     } else {
         BoundingBox bb = m_model->bounding_box(true);
-
         Face plane;
         float rim = 1.0;
         float xlo = bb.vmin.v1 - rim;
         float xhi = bb.vmax.v1 + rim;
         float zlo = bb.vmin.v3 - rim;
         float zhi = bb.vmax.v3 + rim;
-
-
         plane.v1.v1 = xlo;
         plane.v1.v2 = 0.0;
         plane.v1.v3 = zlo;
@@ -183,13 +180,11 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)
 {
-    printf("bounding box (%f, %f)  (%f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmax.v1, bb.vmax.v3);
     float db = 2 * Element::dimb;
     float dx = bb.vmax.v1 - bb.vmin.v1;
     float dy = 2 * Element::dimh / 20.0;
     float dz = bb.vmax.v3 - bb.vmin.v3;
     float tabley = Element::dimh / 20.0;
-    printf("    %f x %f\n", dx, dz);
     int nx = round(dx);
     int nz = round(dz);
     for (int i = 0; i <= nx; i++) {
@@ -206,7 +201,6 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
 
 void View::decorate_model()
 {
-//    printf("%d facets\n", m_model->facets());
     BoundingBox bb = m_model->bounding_box(true);
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
     float tabley = Element::dimh / 20.0;

@@ -415,21 +415,18 @@ BoundingBox CadModel::bounding_box(bool roof_filter) const
         bb.vmax.v1 = fmax(bb.vmax.v1, v.v1);
         bb.vmax.v2 = fmax(bb.vmax.v2, v.v2);
         bb.vmax.v3 = fmax(bb.vmax.v3, v.v3);
-        if (roof_filter) {
-            filter_roof(bb.vmin.v1);
-            filter_roof(bb.vmin.v3);
-            filter_roof(bb.vmax.v1);
-            filter_roof(bb.vmax.v3);
-        }
+    }
+    if (roof_filter) {
+        filter_roof(bb.vmin.v1);
+        filter_roof(bb.vmin.v3);
+        filter_roof(bb.vmax.v1);
+        filter_roof(bb.vmax.v3);
     }
     return bb;
 }
 
 void CadModel::filter_roof(float& v) const
 {
-    if (v < 0.0)
-        v = ceil(2 * v) / 2;
-    else
-        v = floor(2 * v) / 2;
+    v = round(v + 0.5) - 0.5;
 }
 

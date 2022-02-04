@@ -31,8 +31,13 @@ void MorphElement::constrain(int kind, Float3 position, int span, int orientatio
         m_height = std::min(m_height, clearance);
     m_clearance = clearance;
     m_orientation = orientation;
-    m_vgrilles = 1;
-    m_hgrilles = 2;
+    if (kind == MORPH_DOOR) {
+        m_vgrilles = 2;
+        m_hgrilles = 1;
+    } else {
+        m_vgrilles = 1;
+        m_hgrilles = 2;
+    }
 }
 
 Float3 MorphElement::pos() const
@@ -81,8 +86,12 @@ void MorphElement::morph()
         ++m_kind;
     if (m_kind == MORPH_DOOR) {
         m_height = round((m_span + 1.0) * (4.0 / 2.0) * (3.0 / 2.0)); // 4/2 * 3/2
+        m_vgrilles = 2;
+        m_hgrilles = 1;
     } else if (m_kind == MORPH_WINDOW) {
         m_height = round((m_span + 1.0) * 2.0); // 4/3 * 3/2
+        m_vgrilles = 1;
+        m_hgrilles = 2;
     } else {
         m_height = 1;
     }

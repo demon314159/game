@@ -20,7 +20,7 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
 
     float f_mid = dimy * 0.7;
     float f_stile = f_jamb * 4.0;
-    float sill_zoffset = 0.75 * m_dimz / 2.0;
+    float sill_zoffset = 0.5 * m_dimz / 2.0;
 
     float upper_sash_dy = m_dimy - f_mid + f_stile - m_dimb;
     float lower_sash_dy = f_mid - m_dimb;
@@ -34,10 +34,8 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     CubeShape cube(m_dimx - m_dimb, f_mid, f_jamb);
     CadModel cube_model(cube, Look::door_paint, animation_id);
     add(cube_model, 0.0, -(m_dimy - f_mid) / 2, sill_zoffset);
-
     float f_upper_grille = f_jamb;
     float f_lower_grille = f_thickness;
-
     if (vgrills > 0) {
         BrickShape upper_vs(f_upper_grille, upper_sash_dy, f_upper_grille, m_dimb);
         BrickShape lower_vs(f_lower_grille, lower_sash_dy, f_lower_grille, m_dimb);
@@ -52,18 +50,15 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
             add(lower_vgrille, -dx / 2.0 + (lower_space + f_lower_grille) * (float) (i + 1) - f_lower_grille / 2.0, -(m_dimy - lower_sash_dy) / 2 + m_dimb, sill_zoffset);
         }
     }
-
-#ifdef NEVERMORE
     if (hgrills > 0) {
-        BrickShape hs(m_dimx, f_grille, f_grille, m_dimb);
-        CadModel hgrille(hs, paint_can, animation_id);
-        float dy = m_dimy - 2.0 * f_rail;
-        float space = dy / (float) (hgrills + 1);
+        BrickShape hs(m_dimx - m_dimb, f_upper_grille, f_upper_grille, m_dimb);
+        CadModel hgrille(hs, Look::door_paint, animation_id);
+        float dy = m_dimy -f_stile - f_mid;
+        float space = (dy - f_upper_grille * (float) hgrills) / (float) (hgrills + 1);
         for (int i = 0; i < hgrills; i++) {
-            add(hgrille, 0.0, -dy / 2.0 + space * (float) (i + 1), sill_offset);
+            add(hgrille, 0.0, (m_dimy - dy) / 2 - f_stile -dy / 2.0 + (space + f_upper_grille) * (float) (i + 1) - f_upper_grille / 2.0, sill_zoffset);
         }
     }
-#endif
 }
 
 DoorModel::~DoorModel()

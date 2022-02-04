@@ -7,7 +7,7 @@
 class DoorModel: public CadModel
 {
 public:
-    DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrilles, int hgrilles, const PaintCan& paint_can, float animation_id = 0.0);
+    DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrilles, int hgrilles, float animation_id = 0.0);
     virtual ~DoorModel();
 
 private:

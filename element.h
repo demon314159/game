@@ -39,7 +39,6 @@ public:
     static PaintCan red_paint;
     static PaintCan roof_paint;
     static PaintCan white_paint;
-    static PaintCan door_paint;
     static PaintCan gray_paint;
     Element(Float3 pos);
     Element() = delete;

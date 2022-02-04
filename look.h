@@ -18,6 +18,8 @@ public:
     static PaintCan cancel_paint;
     static PaintCan background_paint;
     static PaintCan grid_paint;
+    static PaintCan door_paint;
+    static PaintCan frame_paint;
 };
 
 #endif // _LOOK_H_

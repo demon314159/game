@@ -34,7 +34,8 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     CubeShape cube(m_dimx - m_dimb, f_mid, f_jamb);
     CadModel cube_model(cube, Look::door_paint, animation_id);
     add(cube_model, 0.0, -(m_dimy - f_mid) / 2, sill_zoffset);
-    float f_upper_grille = f_jamb;
+
+    float f_upper_grille = 0.7 * f_jamb;
     float f_lower_grille = f_thickness;
     if (vgrills > 0) {
         BrickShape upper_vs(f_upper_grille, upper_sash_dy, f_upper_grille, m_dimb);

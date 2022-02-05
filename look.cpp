@@ -19,3 +19,4 @@ PaintCan Look::door_paint(1.0, 1.0, 1.0);
 
 PaintCan Look::frame_paint(1.0, 1.0, 1.0);
 
+PaintCan Look::glass_paint(0.0, 0.0, 0.0);

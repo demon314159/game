@@ -31,6 +31,14 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     add(upper_sash, 0.0, (m_dimy - upper_sash_dy) / 2 - m_dimb, sill_zoffset);
     FrameModel lower_sash(m_dimx - m_dimb, lower_sash_dy, f_thickness, m_dimb, f_stile, f_stile, f_stile, Look::door_paint, animation_id);
     add(lower_sash, 0.0, -(m_dimy - lower_sash_dy) / 2 + m_dimb, sill_zoffset);
+
+
+    CubeShape pane(m_dimx - m_dimb, upper_sash_dy, f_jamb / 2);
+    CadModel pane_model(pane, Look::glass_paint, 0.0);
+    add(pane_model, 0.0, (m_dimy - upper_sash_dy) / 2 - m_dimb, sill_zoffset);
+
+
+
     CubeShape cube(m_dimx - m_dimb, f_mid, f_jamb);
     CadModel cube_model(cube, Look::door_paint, animation_id);
     add(cube_model, 0.0, -(m_dimy - f_mid) / 2, sill_zoffset);

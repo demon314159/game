@@ -2,6 +2,8 @@
 #include "window_model.h"
 #include "frame_model.h"
 #include "brick_shape.h"
+#include "cube_shape.h"
+#include "look.h"
 
 WindowModel::WindowModel(float dimx, float dimy, float dimz, float dimb, int vgrills, int hgrills, const PaintCan& paint_can, float animation_id)
     : m_dimx(dimx)
@@ -21,6 +23,9 @@ WindowModel::WindowModel(float dimx, float dimy, float dimz, float dimb, int vgr
     add(frame, 0.0, 0.0, 0.0);
     FrameModel sash(m_dimx, m_dimy, f_jamb, m_dimb, f_rail, f_rail, f_stile, paint_can, animation_id);
     add(sash, 0.0, 0.0, sill_offset);
+    CubeShape pane(m_dimx - m_dimb, m_dimy - m_dimb, f_jamb / 2);
+    CadModel pane_model(pane, Look::glass_paint, 0.0);
+    add(pane_model, 0.0, 0.0, sill_offset);
     if (vgrills > 0) {
         BrickShape vs(f_grille, m_dimy, f_grille, m_dimb);
         CadModel vgrille(vs, paint_can, animation_id);

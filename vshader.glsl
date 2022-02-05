@@ -15,7 +15,7 @@ attribute vec3 a_color;
 attribute float a_animation_id;
 
 varying vec4 v_normal;
-varying vec3 v_color;
+varying vec4 v_color;
 
 void main()
 {
@@ -43,5 +43,9 @@ void main()
         }
     }
     // Pass color coordinate to fragment shader
-    v_color = a_color;
+    if (a_animation_id == 99.0) {
+        v_color = vec4(a_color, 0.5);
+    } else {
+        v_color = vec4(a_color, 1.0);
+    }
 }

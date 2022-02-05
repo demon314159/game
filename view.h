@@ -11,6 +11,14 @@
 #include "choose.h"
 #include "vmenu.h"
 
+struct VertexData
+{
+    QVector3D position;
+    QVector3D normal;
+    QVector3D color;
+    float animation_id;
+};
+
 class View: protected QOpenGLFunctions
 {
 public:
@@ -43,6 +51,7 @@ protected:
     void decorate_model();
     void check_storage();
     void copy_facets();
+    void sub_copy_facets(VertexData* vertices, int& vix, bool transparent);
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;

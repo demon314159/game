@@ -24,7 +24,7 @@ WindowModel::WindowModel(float dimx, float dimy, float dimz, float dimb, int vgr
     FrameModel sash(m_dimx, m_dimy, f_jamb, m_dimb, f_rail, f_rail, f_stile, paint_can, animation_id);
     add(sash, 0.0, 0.0, sill_offset);
     CubeShape pane(m_dimx - m_dimb, m_dimy - m_dimb, f_jamb / 2);
-    CadModel pane_model(pane, Look::glass_paint, 0.0);
+    CadModel pane_model(pane, Look::glass_paint, Look::glass_animation_id);
     add(pane_model, 0.0, 0.0, sill_offset);
     if (vgrills > 0) {
         BrickShape vs(f_grille, m_dimy, f_grille, m_dimb);

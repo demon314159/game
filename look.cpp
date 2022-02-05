@@ -19,4 +19,9 @@ PaintCan Look::door_paint(1.0, 1.0, 1.0);
 
 PaintCan Look::frame_paint(1.0, 1.0, 1.0);
 
-PaintCan Look::glass_paint(0.0, 0.0, 0.0);
+//PaintCan Look::glass_paint(0.0, 0.0, 0.0);
+//PaintCan Look::glass_paint(1.0, 1.0, 1.0);
+PaintCan Look::glass_paint(0.96, 0.99, 1.0);
+
+
+float Look::glass_animation_id = 99.0;

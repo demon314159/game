@@ -10,14 +10,6 @@
 
 #define notVERBOSE
 
-struct VertexData
-{
-    QVector3D position;
-    QVector3D normal;
-    QVector3D color;
-    float animation_id;
-};
-
 View::View(Document* doc)
     : m_vmenu()
     , m_choose()
@@ -255,6 +247,10 @@ bool View::initialize()
         return false;
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     resize_calc();
     m_vertex_buf.create();
     m_vertex_buf.bind();
@@ -264,6 +260,34 @@ bool View::initialize()
     return true;
 }
 
+void View::sub_copy_facets(VertexData* vertices, int& vix, bool transparent)
+{
+    float an_id;
+    Float3 vp, vc, vn;
+    for (int i = 0; i < m_model->facets(); i++) {
+        an_id = m_model->facet_animation_id(i);
+        if ((transparent && (an_id == 99.0)) || (!transparent && (an_id != 99.0))) {
+            vc = m_model->facet_color(i);
+            vn = m_model->facet_normal(i);
+            vp = m_model->facet_v1(i);
+            vertices[vix].animation_id = an_id;
+            vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+            vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
+            vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+            vp = m_model->facet_v2(i);
+            vertices[vix].animation_id = an_id;
+            vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+            vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
+            vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+            vp = m_model->facet_v3(i);
+            vertices[vix].animation_id = an_id;
+            vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
+            vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
+            vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+        }
+    }
+}
+
 void View::copy_facets()
 {
     m_vertices = 3 * m_model->facets();
@@ -271,29 +295,9 @@ void View::copy_facets()
         return;
     }
     VertexData* vertices = new VertexData[m_vertices];
-    float an_id;
-    Float3 vp, vc, vn;
     int vix = 0;
-    for (int i = 0; i < m_model->facets(); i++) {
-        an_id = m_model->facet_animation_id(i);
-        vc = m_model->facet_color(i);
-        vn = m_model->facet_normal(i);
-        vp = m_model->facet_v1(i);
-        vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
-        vp = m_model->facet_v2(i);
-        vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
-        vp = m_model->facet_v3(i);
-        vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
-    }
+    sub_copy_facets(vertices, vix, false);
+    sub_copy_facets(vertices, vix, true);
     // Transfer vertex data to VBO 0
     m_vertex_buf.write(0, vertices, m_vertices * sizeof(VertexData));
     delete [] vertices;

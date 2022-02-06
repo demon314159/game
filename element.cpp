@@ -591,7 +591,7 @@ Face RoofElement::face(int ix) const
     float xf = (m_orientation == 0 || m_orientation == 2) ? m_width / 2.0 : 0.5;
     float yf = 0.5;
     float zf = (m_orientation == 0 || m_orientation == 2) ? 0.5 : m_width / 2.0;
-    return gen_gable_face(ix, xf, yf, zf, m_orientation);
+    return gen_roof_face(ix, xf, yf, zf, m_orientation);
 }
 
 int RoofElement::sub_face_count() const

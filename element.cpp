@@ -174,6 +174,92 @@ Face Element::common_gen_face(int ix, float xf, float yf, float zf, bool gable_f
     return f;
 }
 
+Face Element::gen_roof_face(int ix, float xf, float yf, float zf, int orientation) const
+{
+    Face f;
+
+    float oh = 0.25;
+    float t = RoofElement::dimt;
+    Float3 v_lbl;
+    Float3 v_lfl;
+    Float3 v_lfr;
+    Float3 v_lbr;
+    Float3 v_ubl;
+    Float3 v_ufl;
+    Float3 v_ufr;
+    Float3 v_ubr;
+    if (orientation == 0) {
+        v_lbl = face_vertex(-xf - oh, yf, -zf);
+        v_lfl = face_vertex(-xf - oh, -yf - oh, zf + oh);
+        v_lfr = face_vertex(xf + oh, -yf - oh, zf + oh);
+        v_lbr = face_vertex(xf + oh, yf, -zf);
+        v_ubl = face_vertex(-xf - oh, yf + t, -zf);
+        v_ufl = face_vertex(-xf - oh, -yf - oh + t, zf + oh);
+        v_ufr = face_vertex(xf + oh, -yf - oh + t, zf + oh);
+        v_ubr = face_vertex(xf + oh, yf + t, -zf);
+    } else if (orientation == 1) {
+        v_lbl = face_vertex(-xf, yf, -zf - oh);
+        v_lfl = face_vertex(-xf, yf, zf + oh);
+        v_lfr = face_vertex(xf + oh, -yf - oh, zf + oh);
+        v_lbr = face_vertex(xf + oh, -yf -oh, -zf - oh);
+        v_ubl = face_vertex(-xf, yf + t, -zf - oh);
+        v_ufl = face_vertex(-xf, yf + t, zf + oh);
+        v_ufr = face_vertex(xf + oh, -yf - oh + t, zf + oh);
+        v_ubr = face_vertex(xf + oh, -yf - oh + t, -zf - oh);
+    } else if (orientation == 2) {
+        v_lbl = face_vertex(-xf - oh, -yf - oh, -zf - oh);
+        v_lfl = face_vertex(-xf - oh, yf, zf);
+        v_lfr = face_vertex(xf + oh, yf, zf);
+        v_lbr = face_vertex(xf + oh, -yf - oh, -zf - oh);
+        v_ubl = face_vertex(-xf - oh, -yf - oh + t, -zf - oh);
+        v_ufl = face_vertex(-xf - oh, yf + t, zf);
+        v_ufr = face_vertex(xf + oh, yf + t, zf);
+        v_ubr = face_vertex(xf + oh, -yf -oh + t, -zf - oh);
+    } else {  // orientation = 3
+
+        v_lbl = face_vertex(-xf - oh, -yf - oh, -zf - oh);
+        v_lfl = face_vertex(-xf - oh, -yf - oh, zf + oh);
+        v_lfr = face_vertex(xf, yf, zf + oh);
+        v_lbr = face_vertex(xf, yf, -zf - oh);
+        v_ubl = face_vertex(-xf - oh, -yf - oh + t, -zf - oh);
+        v_ufl = face_vertex(-xf - oh, -yf - oh + t, zf + oh);
+        v_ufr = face_vertex(xf, yf + t, zf + oh);
+        v_ubr = face_vertex(xf, yf + t, -zf - oh);
+    }
+    if (ix == TOP_FACE) {
+        f.v1 = v_ubl;
+        f.v2 = v_ufl;
+        f.v3 = v_ufr;
+        f.v4 = v_ubr;
+    } else if (ix == BOTTOM_FACE) {
+        f.v1 = v_lbl;
+        f.v2 = v_lfl;
+        f.v3 = v_lfr;
+        f.v4 = v_lbr;
+    } else if (ix == LEFT_FACE) {
+        f.v1 = v_lbl;
+        f.v2 = v_lfl;
+        f.v3 = v_ufl;
+        f.v4 = v_ubl;
+    } else if (ix == RIGHT_FACE) {
+        f.v1 = v_lbr;
+        f.v2 = v_lfr;
+        f.v3 = v_ufr;
+        f.v4 = v_ubr;
+    } else if (ix == FRONT_FACE) {
+        f.v1 = v_lfl;
+        f.v2 = v_lfr;
+        f.v3 = v_ufr;
+        f.v4 = v_ufl;
+    } else { // BACK_FACE
+        f.v1 = v_lbl;
+        f.v2 = v_lbr;
+        f.v3 = v_ubr;
+        f.v4 = v_ubl;
+    }
+    return f;
+}
+
 float Element::top_level() const
 {
     return m_pos.v2 + 0.5;
@@ -551,8 +637,6 @@ RoofElement::RoofElement(float xpos, float ypos, float zpos, int orientation, in
     , m_orientation(orientation)
     , m_width(width)
 {
-    float dimb = 0.025;
-    float dimt = 0.05;
     CadModel rm(RoofShape(dimx, dimx, dimx, dimb, dimt), roof_paint, 0.0);
     for (int i = 0; i < width; i++) {
         float hw = 0.5 * (float) width;

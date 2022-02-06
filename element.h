@@ -57,6 +57,7 @@ public:
     virtual bool contains(Float3 pos) const;
     Face gen_face(int ix, float xf, float yf, float zf) const;
     Face gen_gable_face(int ix, float xf, float yf, float zf, int orientation) const;
+    Face gen_roof_face(int ix, float xf, float yf, float zf, int orientation) const;
     Face gen_top_sub_face(float xf, float yf, float zf, float xoff, float zoff) const;
     bool gen_contains(Float3 pos, float xf, float yf, float zf, bool gable = false) const;
 protected:
@@ -177,6 +178,8 @@ private:
 class RoofElement: public Element
 {
 public:
+    static constexpr float dimb = 0.025;
+    static constexpr float dimt = 0.05;
     RoofElement(float xpos, float ypos, float zpos, int orientation, int width);
     RoofElement() = delete;
     void save_to_file(QDataStream& ds) const override;

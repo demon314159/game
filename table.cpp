@@ -41,6 +41,7 @@ void Table::paintGL()
 
 void Table::keyPressEvent(QKeyEvent* e)
 {
+    QOpenGLWidget::keyPressEvent(e);
     unsigned int a = e->nativeScanCode();
     bool shifted = (e->modifiers() & Qt::ShiftModifier) ? true : false;
     if (a == 0x6f) { // up
@@ -97,7 +98,6 @@ void Table::keyPressEvent(QKeyEvent* e)
     } else {
         printf("unknown key %02x\n", a);
     }
-    QOpenGLWidget::keyPressEvent(e);
 }
 
 void Table::keyReleaseEvent(QKeyEvent* e)

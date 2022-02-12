@@ -31,13 +31,17 @@ protected:
     void keyPressEvent(QKeyEvent* e) override;
     void keyReleaseEvent(QKeyEvent* e) override;
     void mousePressEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouse_navigate(QMouseEvent* e);
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
     Float3 corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const;
     void set_morph_button();
     void update_morph_element();
 private:
+    int m_last_sx;
+    int m_last_sy;
     View* m_view;
     History m_history;
     MorphElement m_me;

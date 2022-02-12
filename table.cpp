@@ -3,11 +3,14 @@
 //
 #include "table.h"
 #include "look.h"
+#include <math.h>
 #include <QMouseEvent>
 #include <QFileDialog>
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
+    , m_last_sx(0)
+    , m_last_sy(0)
     , m_view(new View(new Document(QString("house.brk"))))
 {
     setMinimumWidth(600);
@@ -129,43 +132,6 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
     return p;
 }
 
-#ifdef NEVERMORE
-void Table::add_generic_element()
-{
-    set_morph_button(m_me.pos(), m_me.orientation());
-    m_le_command = new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view);
-    m_history.do_command(m_le_command);
-    update();
-    return;
-
-    } else if (m_le.is_door()) {
-        m_le_command = new AddElementCommand(new DoorElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
-    } else {
-        m_le_command = new AddElementCommand(new WindowElement(m_le.pos().v1, m_le.pos().v2 + m_le.height() / 2.0, m_le.pos().v3, m_le.orientation(), m_le.span() + 1, m_le.height(), m_le.hgrilles(), m_le.vgrilles()), m_view);
-    }
-    m_history.do_command(m_le_command);
-    update();
-
-    Vmenu& vmenu = m_view->get_vmenu();
-    vmenu.clear();
-
-    float dx = Look::dimx / 2;
-    vmenu.add_increase_height(corrected_pos(m_le.pos(), -dx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
-    vmenu.add_decrease_height(corrected_pos(m_le.pos(), dx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
-    vmenu.add_done(corrected_pos(m_le.pos(), dx + Look::dimx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
-    vmenu.add_cancel(corrected_pos(m_le.pos(), - dx - Look::dimx, 0.5, 0.6, m_le.orientation()), m_le.orientation());
-    vmenu.add_increase_vgrilles(corrected_pos(m_le.pos(), + 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
-    vmenu.add_decrease_vgrilles(corrected_pos(m_le.pos(), - 3 * dx / 4, -0.375, 0.45, m_le.orientation()), m_le.orientation());
-    if (m_le.is_door()) {
-        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -0.18 * m_le.height() + 0.5, 0.45, m_le.orientation()), m_le.orientation());
-        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -0.18 * m_le.height() - 0.5, 0.45, m_le.orientation()), m_le.orientation());
-    } else {
-        vmenu.add_increase_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 + 0.5, 0.45, m_le.orientation()), m_le.orientation());
-        vmenu.add_decrease_hgrilles(corrected_pos(m_le.pos(), 0.25 - 0.5 * (m_le.span() + 1), -m_le.height() / 2 - 0.5, 0.45, m_le.orientation()), m_le.orientation());
-    }
-}
-#endif
-
 void Table::spawn_add_element_command()
 {
     Float3 pos;
@@ -230,6 +196,9 @@ void Table::spawn_delete_element_command(int ix)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
+//        printf("\nmouse press %d, %d\n", e->pos().x(), e->pos().y());
+        m_last_sx = e->pos().x();
+        m_last_sy = e->pos().y();
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
         if (action_id != Vmenu::ACTION_NONE) {
             if (action_id == Vmenu::ACTION_MORPH) {
@@ -288,9 +257,33 @@ void Table::mousePressEvent(QMouseEvent* e)
     QOpenGLWidget::mousePressEvent(e);
 }
 
+void Table::mouse_navigate(QMouseEvent* e)
+{
+    int new_sx = e->pos().x();
+    int new_sy = e->pos().y();
+    int dx = 0.2 * (new_sx - m_last_sx);
+    int dy = 0.2 * (new_sy - m_last_sy);
+    float degx = round(dx);
+    float degy = round(dy);
+    m_last_sx = new_sx;
+    m_last_sy = new_sy;
+    m_view->rotate_ay(degx);
+    m_view->rotate_ax(degy);
+    update();
+}
+
+void Table::mouseMoveEvent(QMouseEvent* e)
+{
+//    printf("  mouse move %d, %d\n", e->pos().x(), e->pos().y());
+    mouse_navigate(e);
+    QOpenGLWidget::mouseMoveEvent(e);
+}
+
 void Table::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
+//        printf("  mouse release %d, %d\n", e->pos().x(), e->pos().y());
+        mouse_navigate(e);
     } else if (e->button() == Qt::RightButton) {
     }
     QOpenGLWidget::mouseReleaseEvent(e);

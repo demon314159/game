@@ -55,7 +55,7 @@ int View::vmenu_item_chosen(int sx, int sy)
     return Vmenu::ACTION_NONE;
 }
 
-void View::mouse_select(int sx, int sy)
+bool View::mouse_select(int sx, int sy)
 {
     int ix = selected_element_ix(sx, sy);
     if (ix >= 0) {
@@ -75,6 +75,7 @@ void View::mouse_select(int sx, int sy)
         }
         c.position.v3 = (f.v1.v3 + f.v3.v3) / 2.0;
         m_choose.select_choice(c);
+        return true;
     } else {
         BoundingBox bb = m_model->bounding_box(true);
         Face plane;
@@ -102,14 +103,15 @@ void View::mouse_select(int sx, int sy)
                 c.kind = 0;
                 c.orientation = 0;
                 m_choose.select_choice(c);
+                return true;
             } else {
                 m_choose.select_no_choice();
             }
-
         } else {
             m_choose.select_no_choice();
         }
     }
+    return false;
 }
 
 int View::mouse_delete(int sx, int sy)

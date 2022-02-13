@@ -30,6 +30,7 @@ HEADERS      += game.h \
                 command.h \
                 history.h \
                 choose.h \
+                navigate.h \
                 vmenu.h \
                 document.h \
                 bin_interface.h \
@@ -62,6 +63,7 @@ SOURCES      += main.cpp \
                 command.cpp \
                 history.cpp \
                 choose.cpp \
+                navigate.cpp \
                 vmenu.cpp \
                 document.cpp \
                 bin_interface.cpp \

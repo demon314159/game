@@ -3,14 +3,11 @@
 //
 #include "table.h"
 #include "look.h"
-#include <math.h>
 #include <QMouseEvent>
 #include <QFileDialog>
 
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_last_sx(0)
-    , m_last_sy(0)
     , m_view(new View(new Document(QString("house.brk"))))
 {
     setMinimumWidth(600);
@@ -197,8 +194,7 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
 //        printf("\nmouse press %d, %d\n", e->pos().x(), e->pos().y());
-        m_last_sx = e->pos().x();
-        m_last_sy = e->pos().y();
+        m_navigate.start(e->pos().x(), e->pos().y());
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
         if (action_id != Vmenu::ACTION_NONE) {
             if (action_id == Vmenu::ACTION_MORPH) {
@@ -208,7 +204,9 @@ void Table::mousePressEvent(QMouseEvent* e)
             }
         }
         if (!m_view->get_vmenu().menu_active()) {
-            m_view->mouse_select(e->pos().x(), e->pos().y());
+            if (m_view->mouse_select(e->pos().x(), e->pos().y())) {
+                m_navigate.stop();
+            }
             spawn_add_element_command();
         } else {
             switch (action_id) {
@@ -259,23 +257,19 @@ void Table::mousePressEvent(QMouseEvent* e)
 
 void Table::mouse_navigate(QMouseEvent* e)
 {
-    int new_sx = e->pos().x();
-    int new_sy = e->pos().y();
-    int dx = 0.2 * (new_sx - m_last_sx);
-    int dy = 0.2 * (new_sy - m_last_sy);
-    float degx = round(dx);
-    float degy = round(dy);
-    m_last_sx = new_sx;
-    m_last_sy = new_sy;
-    m_view->rotate_ay(degx);
-    m_view->rotate_ax(degy);
-    update();
+    float degx, degy;
+    if (m_navigate.threshold_exceeded(e->pos().x(), e->pos().y(), degx, degy)) {
+        m_view->rotate_ay(degx);
+        m_view->rotate_ax(degy);
+        update();
+    }
 }
 
 void Table::mouseMoveEvent(QMouseEvent* e)
 {
 //    printf("  mouse move %d, %d\n", e->pos().x(), e->pos().y());
-    mouse_navigate(e);
+    if (m_navigate.active())
+        mouse_navigate(e);
     QOpenGLWidget::mouseMoveEvent(e);
 }
 
@@ -283,10 +277,18 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
 //        printf("  mouse release %d, %d\n", e->pos().x(), e->pos().y());
-        mouse_navigate(e);
+        if (m_navigate.active())
+            mouse_navigate(e);
+        m_navigate.stop();
     } else if (e->button() == Qt::RightButton) {
     }
     QOpenGLWidget::mouseReleaseEvent(e);
+}
+
+void Table::wheelEvent(QWheelEvent* e)
+{
+    printf("wheel event\n");
+    QOpenGLWidget::wheelEvent(e);
 }
 
 void Table::undo_command()

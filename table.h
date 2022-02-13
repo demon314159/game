@@ -8,8 +8,10 @@
 #include "view.h"
 #include "history.h"
 #include "morph_element.h"
+#include "navigate.h"
 #include <QOpenGLWidget>
 #include <QMouseEvent>
+#include <QWheelEvent>
 
 class Table: public QOpenGLWidget
 {
@@ -33,6 +35,7 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseMoveEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void wheelEvent(QWheelEvent *e) override;
     void mouse_navigate(QMouseEvent* e);
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
@@ -40,11 +43,10 @@ protected:
     void set_morph_button();
     void update_morph_element();
 private:
-    int m_last_sx;
-    int m_last_sy;
     View* m_view;
     History m_history;
     MorphElement m_me;
+    Navigate m_navigate;
 };
 
 #endif // _TABLE_H_

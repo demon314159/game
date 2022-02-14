@@ -303,8 +303,17 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
 
 void Table::wheelEvent(QWheelEvent* e)
 {
-    printf("wheel event\n");
-    QOpenGLWidget::wheelEvent(e);
+    int angle = e->angleDelta().y();
+//    printf("wheel event angle = %d\n", angle);
+    if (angle > 0) {
+        m_view->zoom(2.0 / 3.0);
+        update();
+    }
+    if (angle < 0) {
+        m_view->zoom(3.0 / 2.0);
+        update();
+    }
+    e->accept();
 }
 
 void Table::undo_command()

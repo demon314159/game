@@ -194,7 +194,7 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
 //        printf("\nmouse press %d, %d\n", e->pos().x(), e->pos().y());
-        m_navigate.start(e->pos().x(), e->pos().y());
+        m_navigate.start_rotate(e->pos().x(), e->pos().y());
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
         if (action_id != Vmenu::ACTION_NONE) {
             if (action_id == Vmenu::ACTION_MORPH) {
@@ -249,19 +249,33 @@ void Table::mousePressEvent(QMouseEvent* e)
         }
     } else if (e->button() == Qt::RightButton) {
         int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());
-        spawn_delete_element_command(ix);
-        update();
+        if (ix < 0) {
+            m_navigate.start_translate(e->pos().x(), e->pos().y());
+        } else {
+            spawn_delete_element_command(ix);
+            update();
+        }
     }
     QOpenGLWidget::mousePressEvent(e);
 }
 
 void Table::mouse_navigate(QMouseEvent* e)
 {
-    float degx, degy;
-    if (m_navigate.threshold_exceeded(e->pos().x(), e->pos().y(), degx, degy)) {
-        m_view->rotate_ay(degx);
-        m_view->rotate_ax(degy);
-        update();
+    if (m_navigate.is_rotate()) {
+        float degx, degy;
+        if (m_navigate.rotate_threshold_exceeded(e->pos().x(), e->pos().y(), degx, degy)) {
+            m_view->rotate_ay(degx);
+            m_view->rotate_ax(degy);
+            update();
+        }
+    } else if (m_navigate.is_translate()) {
+        int dx, dy;
+        if (m_navigate.translate_threshold_exceeded(e->pos().x(), e->pos().y(), dx, dy)) {
+            m_view->translate_x(dx);
+            m_view->translate_y(dy);
+            update();
+        }
+
     }
 }
 

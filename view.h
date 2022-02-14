@@ -29,11 +29,16 @@ public:
     bool initialize();
     void resize(int w, int h);
     void paint();
+    void translate_x(float dx);
+    void translate_y(float dy);
     void rotate_ax(float degrees);
     void rotate_ay(float degrees);
     void rotate_home();
     void zoom(float factor);
     void zoom_home();
+    void translate_x(int x);
+    void translate_y(int y);
+    void translate_home();
     bool mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
@@ -88,6 +93,8 @@ private:
     float m_camz;
     float m_xrot;
     float m_yrot;
+    float m_xoff;
+    float m_yoff;
     QOpenGLShaderProgram m_program;
     QMatrix4x4 m_fixed_matrix;
     QMatrix4x4 m_mvp_matrix;

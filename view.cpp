@@ -26,6 +26,8 @@ View::View(Document* doc)
     , m_camz(8.0)
     , m_xrot(0.0)
     , m_yrot(0.0)
+    , m_xoff(1.0)
+    , m_yoff(1.0)
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
@@ -365,7 +367,7 @@ void View::paint()
     QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
     QQuaternion my_rot = rot1 * rot2;
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -m_camz - m_radius);
+    matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
     matrix.rotate(my_rot);
     matrix.translate(-m_center.v1, -m_center.v2, -m_center.v3);
     // Set modelview-projection matrix
@@ -450,6 +452,23 @@ void View::render_facets()
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices);
 }
+
+void View::translate_x(int x)
+{
+    m_xoff += (((float) x) / 64.0);
+}
+
+void View::translate_y(int y)
+{
+    m_yoff -= (((float) y) / 64.0);
+}
+
+void View::translate_home()
+{
+    m_xoff = 0.0;
+    m_yoff = 0.0;
+}
+
 
 void View::rotate_ax(float degrees)
 {

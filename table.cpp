@@ -64,8 +64,10 @@ void Table::keyPressEvent(QKeyEvent* e)
         update();
     } else if (a == 0x2b) { // h or H
         m_view->zoom_home();
-        if (shifted)
+        if (shifted) {
             m_view->rotate_home();
+            m_view->translate_home();
+        }
         update();
     } else if (a == 0x1e) { // u or U
         undo_command();

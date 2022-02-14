@@ -26,8 +26,8 @@ View::View(Document* doc)
     , m_camz(8.0)
     , m_xrot(0.0)
     , m_yrot(0.0)
-    , m_xoff(1.0)
-    , m_yoff(1.0)
+    , m_xoff(0.0)
+    , m_yoff(0.0)
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");

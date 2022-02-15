@@ -53,7 +53,7 @@ bool Navigate::is_translate() const
 
 bool Navigate::rotate_threshold_exceeded(int sx, int sy, float& degx, float& degy)
 {
-    float threshold = 10.0;
+    float threshold = 5.0;
     float dx = 0.2 * (sx - m_sx);
     float dy = 0.2 * (sy - m_sy);
     degx = round(dx);
@@ -68,7 +68,7 @@ bool Navigate::rotate_threshold_exceeded(int sx, int sy, float& degx, float& deg
 
 bool Navigate::translate_threshold_exceeded(int sx, int sy, int& dx, int& dy)
 {
-    int threshold = 16;
+    int threshold = 8;
     dx = sx - m_sx;
     dy = sy - m_sy;
     if (abs(dx) > threshold || abs(dy) > threshold) {

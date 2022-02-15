@@ -23,12 +23,15 @@ public:
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;
     bool is_dirty() const;
+    bool is_filthy() const;
     void make_clean();
     void make_dirty();
+    void make_filthy();
     bool contains(Float3 pos) const;
 
 private:
     bool m_is_dirty;
+    bool m_is_filthy;
     int m_max_elements;
     int m_elements;
     Element** m_element_ptr;

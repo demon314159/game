@@ -349,8 +349,12 @@ void View::paint()
         m_model = new CadModel(m_doc);
         decorate_model();
         m_vmenu.add_to(m_model);
-        zoom_home();
         resize_calc();
+        if (m_doc->is_filthy()) {
+//            rotate_home();
+            zoom_home();
+            translate_home();
+        }
         check_storage();
         copy_facets();
         if (m_doc->is_dirty()) {

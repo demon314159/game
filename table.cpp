@@ -297,6 +297,9 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
             mouse_navigate(e);
         m_navigate.stop();
     } else if (e->button() == Qt::RightButton) {
+        if (m_navigate.active())
+            mouse_navigate(e);
+         m_navigate.stop();
     }
     QOpenGLWidget::mouseReleaseEvent(e);
 }

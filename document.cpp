@@ -5,6 +5,7 @@
 
 Document::Document()
     : m_is_dirty(true)
+    , m_is_filthy(true)
     , m_max_elements(16384)
     , m_elements(0)
 {
@@ -13,6 +14,7 @@ Document::Document()
 
 Document::Document(const QString& file_name)
     : m_is_dirty(true)
+    , m_is_filthy(true)
     , m_max_elements(16384)
     , m_elements(0)
 {
@@ -60,6 +62,8 @@ void Document::add_element(Element* e)
         double_the_storage();
     }
     m_element_ptr[m_elements] = e;
+    if (m_elements == 0)
+        m_is_filthy = true;
     ++m_elements;
     m_is_dirty = true;
 }
@@ -76,6 +80,8 @@ void Document::add_element(Element* e, int ix)
         m_element_ptr[m_elements - i + index] = m_element_ptr[m_elements - i + index - 1];
     }
     m_element_ptr[index] = e;
+    if (m_elements == 0)
+        m_is_filthy = true;
     ++m_elements;
     m_is_dirty = true;
 }
@@ -366,17 +372,28 @@ bool Document::parse_float(TokenInterface& ti, float& v, QString& error_message)
 
 bool Document::is_dirty() const
 {
-    return m_is_dirty;
+    return m_is_dirty || m_is_filthy;
+}
+
+bool Document::is_filthy() const
+{
+    return m_is_filthy;
 }
 
 void Document::make_clean()
 {
     m_is_dirty = false;
+    m_is_filthy = false;
 }
 
 void Document::make_dirty()
 {
     m_is_dirty = true;
+}
+
+void Document::make_filthy()
+{
+    m_is_filthy = true;
 }
 
 bool Document::contains(Float3 pos) const

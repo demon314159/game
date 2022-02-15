@@ -24,6 +24,7 @@ View::View(Document* doc)
     , m_aspect(1.0)
     , m_fov(45.0)
     , m_camz(8.0)
+    , m_zoom(1.0)
     , m_xrot(0.0)
     , m_yrot(0.0)
     , m_xoff(0.0)
@@ -314,19 +315,18 @@ void View::resize(int w, int h)
 #endif
     m_width = w;
     m_height = h;
-    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    m_camz = m_radius / q;
-    m_camz -= m_radius;
-    m_camz = 2.0 * m_camz / 3.0;
     m_aspect = qreal(w) / qreal(h ? h : 1);
     resize_calc();
 }
 
 void View::resize_calc()
 {
-//    float znear = m_camz;
+    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    m_camz = m_radius / q;
+    m_camz -= m_radius;
+    m_camz = 2.0 * m_camz / 3.0;
     float znear = 0.1;
-    float zfar = m_camz + 2.0 * m_radius;
+    float zfar = m_camz * m_zoom + 2.0 * m_radius;
     m_projection.setToIdentity();
     m_projection.perspective(m_fov, m_aspect, znear, zfar);
 }
@@ -349,12 +349,12 @@ void View::paint()
         m_model = new CadModel(m_doc);
         decorate_model();
         m_vmenu.add_to(m_model);
-        resize_calc();
         if (m_doc->is_filthy()) {
 //            rotate_home();
             zoom_home();
             translate_home();
         }
+        resize_calc();
         check_storage();
         copy_facets();
         if (m_doc->is_dirty()) {
@@ -371,7 +371,7 @@ void View::paint()
     QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
     QQuaternion my_rot = rot1 * rot2;
     QMatrix4x4 matrix;
-    matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
+    matrix.translate(m_xoff, m_yoff, -m_camz * m_zoom - m_radius);
     matrix.rotate(my_rot);
     matrix.translate(-m_center.v1, -m_center.v2, -m_center.v3);
     // Set modelview-projection matrix
@@ -504,7 +504,7 @@ void View::zoom(float factor)
 #ifdef VERBOSE
     printf("View::zoom(%f)\n", factor);
 #endif
-    m_camz *= factor;
+    m_zoom = std::max(m_zoom * factor, (float) 0.1);
     resize_calc();
 }
 
@@ -513,10 +513,7 @@ void View::zoom_home()
 #ifdef VERBOSE
     printf("View::zoom_home()\n");
 #endif
-    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    m_camz = m_radius / q;
-    m_camz -= m_radius;
-    m_camz = 2.0 * m_camz / 3.0;
+    m_zoom = 1.0;
     resize_calc();
 }
 

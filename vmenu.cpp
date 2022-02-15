@@ -5,7 +5,7 @@
 #include "arrow_shape.h"
 #include "done_shape.h"
 #include "cancel_shape.h"
-#include "star_shape.h"
+#include "morph_shape.h"
 #include "background_shape.h"
 #include "look.h"
 #include "element.h"
@@ -23,7 +23,7 @@ Vmenu::~Vmenu()
 {
 }
 #define MAG1 0.15
-CadModel Vmenu::m_model_morph = CadModel(StarShape(7, 0.5 * MAG1), Look::blue_paint, 3.0);
+CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);

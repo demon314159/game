@@ -82,11 +82,10 @@ bool View::mouse_select(int sx, int sy)
     } else {
         BoundingBox bb = m_model->bounding_box(true);
         Face plane;
-        float rim = 1.0;
-        float xlo = bb.vmin.v1 - rim;
-        float xhi = bb.vmax.v1 + rim;
-        float zlo = bb.vmin.v3 - rim;
-        float zhi = bb.vmax.v3 + rim;
+        float xlo = bb.vmin.v1;
+        float xhi = bb.vmax.v1;
+        float zlo = bb.vmin.v3;
+        float zhi = bb.vmax.v3;
         plane.v1.v1 = xlo;
         plane.v1.v2 = 0.0;
         plane.v1.v3 = zlo;
@@ -199,12 +198,12 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
 void View::decorate_model()
 {
     BoundingBox bb = m_model->bounding_box(true);
-    float tablex = bb.vmax.v1 - bb.vmin.v1 + 2.0;
+    float tablex = bb.vmax.v1 - bb.vmin.v1 + 4.0;
     float tabley = Element::dimh / 20.0;
-    float tablez = bb.vmax.v3 - bb.vmin.v3 + 2.0;
+    float tablez = bb.vmax.v3 - bb.vmin.v3 + 4.0;
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
-    m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 1.0, -tabley, bb.vmin.v3 + tablez / 2 - 1.0);
+    m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, -tabley, bb.vmin.v3 + tablez / 2 - 2.0);
     bb = m_model->bounding_box(true);
     add_grid(m_model, bb);
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);

@@ -20,8 +20,10 @@ private:
     int m_facet_count;
     Facet *m_facet;
     void define_shape();
-    void add_face(Float3 v1, Float3 v2, Float3 v3, bool flip = false);
-    void add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
+    void define_arrow_shape(float degrees);
+    void add_face(float degrees, Float3 v1, Float3 v2, Float3 v3, bool flip = false);
+    void add_face(float degrees, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
+    Float3 rotate(Float3 v, float degrees);
 };
 
 #endif // _MORPH_SHAPE_

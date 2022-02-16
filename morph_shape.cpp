@@ -36,44 +36,63 @@ Facet MorphShape::facet(int facet_ix) const
 
 void MorphShape::define_shape()
 {
-    float da = 2.0 * 3.1415926536 / (2.0 * (float) 5);
+    define_arrow_shape(0);
+    define_arrow_shape(120);
+    define_arrow_shape(240);
+}
+
+void MorphShape::define_arrow_shape(float degrees)
+{
     float dz = 0.01;
-    float r1 = m_width / 2;
-    float r0 = 0.76389 * r1 / 2.0;
-    for (int i = 0; i < 5; i++) {
-        float main_angle = 2.0 * da * (float) i;
-        float left_angle = main_angle + da;
-        float right_angle = main_angle - da;
-        Float3 v1 = {r1 * sin(main_angle), r1 * cos(main_angle), -dz};
-        Float3 v2 = {r0 * sin(left_angle), r0 * cos(left_angle), -dz};
-        Float3 v3 = {0.0, 0.0, -dz};
-        Float3 v4 = {r0 * sin(right_angle), r0 * cos(right_angle), -dz};
-        // front face
-        add_face(v1, v2, v3, v4, true);
-    }
+    float y0 = -m_width / 4;
+    float y1 = -m_width / 8;
+    float y2 = m_width / 8;
+    float y3 = m_width / 4;
+    float x0 = -m_width / 2;
+    float x1 = m_width / 2;
+    // front face
+    add_face(degrees, {0.0, y0, dz}, {0.0, y3, dz}, {x1, 0.0, dz}, true);
+    add_face(degrees, {x0, y1, dz}, {0.0, y1, dz}, {0.0, y2, dz}, {x0, y2, dz});
 }
 
-void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
+void MorphShape::add_face(float degrees, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
 {
-    add_face(v1, v2, v3, flip);
-    add_face(v1, v3, v4, flip);
+    add_face(degrees, v1, v2, v3, flip);
+    add_face(degrees, v1, v3, v4, flip);
 }
 
-void MorphShape::add_face(Float3 v1, Float3 v2, Float3 v3, bool flip)
+void MorphShape::add_face(float degrees, Float3 v1, Float3 v2, Float3 v3, bool flip)
 {
+    float offset = m_width / 3;
+    v1.v2 -= offset;
+    v2.v2 -= offset;
+    v3.v2 -= offset;
+    Float3 rv1 = rotate(v1, degrees);
+    Float3 rv2 = rotate(v2, degrees);
+    Float3 rv3 = rotate(v3, degrees);
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = 0.0;
         m_facet[m_facet_count].color = {1.0, 1.0, 1.0};
         if (flip) {
-            m_facet[m_facet_count].v1 = v1;
-            m_facet[m_facet_count].v2 = v3;
-            m_facet[m_facet_count].v3 = v2;
+            m_facet[m_facet_count].v1 = rv1;
+            m_facet[m_facet_count].v2 = rv3;
+            m_facet[m_facet_count].v3 = rv2;
         } else {
-            m_facet[m_facet_count].v1 = v1;
-            m_facet[m_facet_count].v2 = v2;
-            m_facet[m_facet_count].v3 = v3;
+            m_facet[m_facet_count].v1 = rv1;
+            m_facet[m_facet_count].v2 = rv2;
+            m_facet[m_facet_count].v3 = rv3;
         }
     }
     ++m_facet_count;
 }
 
+Float3 MorphShape::rotate(Float3 v, float degrees)
+{
+    float angle = degrees * 3.1415926536 / 180.0;
+    Float3 rv;
+
+    rv.v1 = v.v1 * cos(angle) + v.v2 * sin(angle);
+    rv.v2 = -v.v1 * sin(angle) + v.v2 * cos(angle);
+    rv.v3 = v.v3;
+    return rv;
+}

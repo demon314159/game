@@ -22,7 +22,7 @@ Vmenu::Vmenu()
 Vmenu::~Vmenu()
 {
 }
-#define MAG1 0.15
+#define MAG1 0.10
 CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);

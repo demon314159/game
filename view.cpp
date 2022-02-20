@@ -404,10 +404,8 @@ void View::paint()
 
     m_fixed_matrix = QMatrix4x4();
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
-    float dy = 0.0;
     float dz = 1.2;
-    float dx = 0.0;
-    m_fixed_matrix.translate(dx - dz * q * m_aspect, dz * q - dy, -dz);
+    m_fixed_matrix.translate(dz * q * m_aspect, dz * q, -dz);
     m_fixed_matrix = m_projection * m_fixed_matrix;
     m_program.setUniformValue("fixed_matrix", m_fixed_matrix);
     // Draw the model

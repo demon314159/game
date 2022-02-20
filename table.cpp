@@ -391,7 +391,7 @@ void Table::set_morph_button()
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
     float dd = 0.04;
-    vmenu.add_morph({dd, -dd, 0.0});
+    vmenu.add_morph({-dd, -dd, 0.0});
     if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
         float dx = Look::dimx / 2;
         vmenu.add_increase_height(corrected_pos(m_me.pos(), -dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());

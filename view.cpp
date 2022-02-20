@@ -176,7 +176,7 @@ Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)
 {
-    float db = 2 * Element::dimb;
+    float db = Element::dimb;
     float dx = bb.vmax.v1 - bb.vmin.v1;
     float dy = 2 * Element::dimh / 20.0;
     float dz = bb.vmax.v3 - bb.vmin.v3;

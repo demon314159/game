@@ -35,7 +35,7 @@ class Element
 public:
     static constexpr float dimx = 1.0;
     static constexpr float dimh = 2.0 / 3.0;
-    static constexpr float dimb = 0.050;
+    static constexpr float dimb = 0.025;
     static PaintCan red_paint;
     static PaintCan roof_paint;
     static PaintCan white_paint;

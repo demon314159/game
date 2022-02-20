@@ -78,13 +78,13 @@ void Table::keyPressEvent(QKeyEvent* e)
             if (shifted) {
                 int n = m_view->get_doc()->elements();
                 if (n > 0) {
-                    m_history.do_command(new RemoveElementCommand(n - 1, m_view));
+                    do_command(new RemoveElementCommand(n - 1, m_view));
                 } else {
                     printf("no more elements\n");
                 }
             }
             else
-              m_history.do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
+              do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
             update();
         }
     } else if (a == 0x39) { // n or N
@@ -95,7 +95,7 @@ void Table::keyPressEvent(QKeyEvent* e)
         save_command();
     } else if (a == 0x09) {
         m_view->mouse_unselect();
-        m_view->get_vmenu().clear();
+        set_history_buttons();
         update();
     } else {
         printf("unknown key %02x\n", a);
@@ -131,6 +131,12 @@ Float3 Table::corrected_pos(Float3 pos, float dx, float dy, float dz, int orient
     return p;
 }
 
+void Table::do_command(Command *c)
+{
+    m_history.do_command(c);
+    set_history_buttons();
+}
+
 void Table::spawn_add_element_command()
 {
     Float3 pos;
@@ -139,40 +145,41 @@ void Table::spawn_add_element_command()
     bool same_level;
     bool roof;
     if (m_view->new_element_chosen(pos, span, orientation, same_level, roof)) {
+
         if (span == 0) {
             if (same_level) {
                 if (roof)
-                   m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                   do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else
-                    m_history.do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
+                   do_command(new AddElementCommand(new HalfBrickElement(pos.v1, pos.v2 + 0.5, pos.v3), m_view));
             }
         } else if (span == 1) {
             if (same_level)
                 if (roof)
-                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                    do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 else {
                     m_me.constrain(MorphElement::MORPH_BRICK, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
-                    set_morph_button();
-                    m_history.do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    do_command(new AddElementCommand(new BrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    add_morph_button();
                 } else {
                     orientation = (orientation + 3) & 3;
-                    m_history.do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
+                    do_command(new AddElementCommand(new GableBrickElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation), m_view));
                 }
         } else {
             if (same_level) {
                 if (roof) {
-                    m_history.do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
+                    do_command(new AddElementCommand(new RoofElement(pos.v1, pos.v2, pos.v3, orientation, span + 1), m_view));
                 } else {
                     if (m_view->span_blocked(pos, span, orientation)) {
                         m_view->mouse_unselect();
                         update();
                     } else {
                         if (pos.v2 > 0.5 && m_view->gap_below_span(pos, span, orientation)) {
-                            m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                            do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
                         } else {
                             m_me.constrain(MorphElement::MORPH_LEDGE, pos, span, orientation, m_view->span_clearance(pos, span, orientation));
-                            set_morph_button();
-                            m_history.do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                            do_command(new AddElementCommand(new LedgeElement(pos.v1, pos.v2 + 0.5, pos.v3, orientation, span + 1), m_view));
+                            add_morph_button();
                         }
                     }
                 }
@@ -180,7 +187,7 @@ void Table::spawn_add_element_command()
         }
         update();
     } else {
-        m_view->get_vmenu().clear();
+        set_history_buttons();
         update();
     }
 }
@@ -188,7 +195,7 @@ void Table::spawn_add_element_command()
 void Table::spawn_delete_element_command(int ix)
 {
     if (ix >= 0) {
-        m_history.do_command(new RemoveElementCommand(ix, m_view));
+        do_command(new RemoveElementCommand(ix, m_view));
     }
 }
 
@@ -203,6 +210,10 @@ void Table::mousePressEvent(QMouseEvent* e)
                 m_me.morph();
                 update_morph_element();
                 return;
+            } else if (action_id == Vmenu::ACTION_UNDO) {
+                undo_command();
+            } else if (action_id == Vmenu::ACTION_REDO) {
+                redo_command();
             }
         }
         if (!m_view->get_vmenu().menu_active()) {
@@ -237,12 +248,12 @@ void Table::mousePressEvent(QMouseEvent* e)
                     update_morph_element();
                     break;
                 case Vmenu::ACTION_DONE:
-                    m_view->get_vmenu().clear();
+                    set_history_buttons();
                     update();
                     break;
                 case Vmenu::ACTION_CANCEL:
                     m_history.undo_command();
-                    m_view->get_vmenu().clear();
+                    set_history_buttons();
                     update();
                     break;
                 default:
@@ -321,32 +332,34 @@ void Table::wheelEvent(QWheelEvent* e)
 
 void Table::undo_command()
 {
-    if (!m_view->get_vmenu().menu_active()) {
+//    if (!m_view->get_vmenu().menu_active()) {
         if (!m_history.end_of_undo()) {
             m_history.undo_command();
+            set_history_buttons();
             update();
         } else {
     //        printf("At first command\n");
         }
-    }
+//    }
 }
 
 void Table::redo_command()
 {
-    if (!m_view->get_vmenu().menu_active()) {
+//    if (!m_view->get_vmenu().menu_active()) {
         if (!m_history.end_of_redo()) {
             m_history.redo_command();
+            set_history_buttons();
             update();
         } else {
     //        printf("At last command\n");
         }
-    }
+//    }
 }
 
 void Table::new_command()
 {
     if (!m_view->get_vmenu().menu_active()) {
-        m_history.do_command(new NewCommand(m_view));
+        do_command(new NewCommand(m_view));
         update();
     }
 }
@@ -362,7 +375,7 @@ void Table::load_command()
             printf("No file selected\n");
             return;
         }
-        m_history.do_command(new LoadCommand(file_name, m_view));
+        do_command(new LoadCommand(file_name, m_view));
         update();
     }
 }
@@ -386,10 +399,20 @@ void Table::save_command()
     }
 }
 
-void Table::set_morph_button()
+void Table::set_history_buttons()
 {
     Vmenu& vmenu = m_view->get_vmenu();
     vmenu.clear();
+    float dd = 0.04;
+    if (!m_history.end_of_undo())
+        vmenu.add_undo({-5 * dd, -dd, 0.0});
+    if (!m_history.end_of_redo())
+        vmenu.add_redo({-3 * dd, -dd, 0.0});
+}
+
+void Table::add_morph_button()
+{
+    Vmenu& vmenu = m_view->get_vmenu();
     float dd = 0.04;
     vmenu.add_morph({-dd, -dd, 0.0});
     if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
@@ -416,18 +439,18 @@ void Table::update_morph_element()
     m_history.undo_command();
     switch (m_me.kind()) {
         case MorphElement::MORPH_BRICK:
-             m_history.do_command(new AddElementCommand(new BrickElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation()), m_view));
+             do_command(new AddElementCommand(new BrickElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation()), m_view));
              break;
         case MorphElement::MORPH_LEDGE:
-             m_history.do_command(new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view));
+             do_command(new AddElementCommand(new LedgeElement(m_me.pos().v1, m_me.pos().v2 + 0.5, m_me.pos().v3, m_me.orientation(), m_me.span() + 1), m_view));
              break;
         case MorphElement::MORPH_DOOR:
-             m_history.do_command(new AddElementCommand(new DoorElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
+             do_command(new AddElementCommand(new DoorElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
              break;
         case MorphElement::MORPH_WINDOW:
-             m_history.do_command(new AddElementCommand(new WindowElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
+             do_command(new AddElementCommand(new WindowElement(m_me.pos().v1, m_me.pos().v2 + m_me.height() / 2.0, m_me.pos().v3, m_me.orientation(), m_me.span() + 1, m_me.height(), m_me.hgrilles(), m_me.vgrilles()), m_view));
              break;
     }
-    set_morph_button();
+    add_morph_button();
 }
 

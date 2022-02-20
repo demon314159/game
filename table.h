@@ -40,7 +40,9 @@ protected:
     void spawn_add_element_command();
     void spawn_delete_element_command(int ix);
     Float3 corrected_pos(Float3 pos, float dx, float dy, float dz, int orientation) const;
-    void set_morph_button();
+    void do_command(Command* c);
+    void set_history_buttons();
+    void add_morph_button();
     void update_morph_element();
 private:
     View* m_view;

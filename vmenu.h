@@ -10,15 +10,17 @@ class Vmenu
 {
 public:
     static const int ACTION_NONE = 0;
-    static const int ACTION_MORPH = 1;
-    static const int ACTION_INCREASE_HEIGHT = 2;
-    static const int ACTION_DECREASE_HEIGHT = 3;
-    static const int ACTION_INCREASE_VGRILLES = 4;
-    static const int ACTION_DECREASE_VGRILLES = 5;
-    static const int ACTION_INCREASE_HGRILLES = 6;
-    static const int ACTION_DECREASE_HGRILLES = 7;
-    static const int ACTION_DONE = 8;
-    static const int ACTION_CANCEL = 9;
+    static const int ACTION_UNDO = 1;
+    static const int ACTION_REDO = 2;
+    static const int ACTION_MORPH = 3;
+    static const int ACTION_INCREASE_HEIGHT = 4;
+    static const int ACTION_DECREASE_HEIGHT = 5;
+    static const int ACTION_INCREASE_VGRILLES = 6;
+    static const int ACTION_DECREASE_VGRILLES = 7;
+    static const int ACTION_INCREASE_HGRILLES = 8;
+    static const int ACTION_DECREASE_HGRILLES = 9;
+    static const int ACTION_DONE = 10;
+    static const int ACTION_CANCEL = 11;
     static const int MAX_ITEMS = 16;
 
     Vmenu();
@@ -34,6 +36,8 @@ public:
     int action_id(int ix) const;
     bool menu_active() const;
 
+    void add_undo(Float3 position);
+    void add_redo(Float3 position);
     void add_morph(Float3 position);
     void add_increase_height(Float3 position, int orientation);
     void add_decrease_height(Float3 position, int orientation);
@@ -49,6 +53,8 @@ private:
     int m_action[MAX_ITEMS];
     Float3 m_position[MAX_ITEMS];
     int m_orientation[MAX_ITEMS];
+    static CadModel m_model_undo;
+    static CadModel m_model_redo;
     static CadModel m_model_morph;
     static CadModel m_model_increase_height;
     static CadModel m_model_decrease_height;

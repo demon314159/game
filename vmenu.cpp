@@ -23,6 +23,8 @@ Vmenu::~Vmenu()
 {
 }
 #define MAG1 0.10
+CadModel Vmenu::m_model_undo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT), Look::blue_paint, 3.0);
+CadModel Vmenu::m_model_redo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
@@ -38,6 +40,16 @@ void Vmenu::clear()
 {
     m_is_dirty = m_is_dirty || (m_items > 0);
     m_items = 0;
+}
+
+void Vmenu::add_undo(Float3 position)
+{
+    add_item(ACTION_UNDO, position, 0);
+}
+
+void Vmenu::add_redo(Float3 position)
+{
+    add_item(ACTION_REDO, position, 0);
 }
 
 void Vmenu::add_morph(Float3 position)
@@ -107,6 +119,12 @@ void Vmenu::add_to(CadModel* model) const
         Float3 p = m_position[ix];
         CadModel cm;
         switch (m_action[ix]) {
+            case ACTION_UNDO:
+                cm.add(m_model_undo);
+                break;
+            case ACTION_REDO:
+                cm.add(m_model_redo);
+                break;
             case ACTION_MORPH:
                 cm.add(m_model_morph);
                 break;
@@ -172,7 +190,7 @@ void Vmenu::make_dirty()
 
 bool Vmenu::fixed(int ix) const
 {
-    return m_action[ix] == ACTION_MORPH;
+    return m_action[ix] == ACTION_MORPH || m_action[ix] == ACTION_UNDO || m_action[ix] == ACTION_REDO;
 }
 
 Face Vmenu::face(int ix) const
@@ -180,6 +198,12 @@ Face Vmenu::face(int ix) const
     Float3 pos = m_position[ix];
     BoundingBox bb;
     switch (m_action[ix]) {
+        case ACTION_UNDO:
+            bb = m_model_undo.bounding_box();
+            break;
+        case ACTION_REDO:
+            bb = m_model_redo.bounding_box();
+            break;
         case ACTION_MORPH:
             bb = m_model_morph.bounding_box();
             break;

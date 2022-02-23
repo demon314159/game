@@ -27,6 +27,7 @@ HEADERS      += game.h \
                 cancel_shape.h \
                 element.h \
                 morph_element.h \
+                mouse_vector.h \
                 command.h \
                 history.h \
                 choose.h \

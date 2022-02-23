@@ -10,6 +10,7 @@
 #include "document.h"
 #include "choose.h"
 #include "vmenu.h"
+#include "mouse_vector.h"
 
 struct VertexData
 {
@@ -42,6 +43,8 @@ public:
     bool mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
+    MouseVector mouse_vector(int sx, int sy) const;
+    bool mouse_vector_intersects(const MouseVector& mv, const Element* e) const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation) const;
     bool span_blocked(Float3 pos, int span, int orientation) const;

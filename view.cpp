@@ -641,14 +641,33 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
+MouseVector View::mouse_vector(int sx, int sy) const
+{
+    MouseVector mv = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+    return mv;
+}
+
+bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
+{
+    return true;
+}
+
 bool View::no_part_of_any_element_selected(int sx, int sy) const
 {
+    MouseVector mv = mouse_vector(sx, sy);
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        for (int j = 0; j < 6; j++) {
-            Face f = e->face(j);
-            if (screen_point_inside_face(f, sx, sy))
-                return false;
+        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+
+            // the mouse_vector_intersect is intended to eliminate most candidates, but it may actually make the code
+            // below fully redundant
+
+
+            for (int j = 0; j < 6; j++) {
+                Face f = e->face(j);
+                if (screen_point_inside_face(f, sx, sy))  // Very expensive test times 6 for each candidate
+                    return false;
+            }
         }
     }
     return true;
@@ -672,16 +691,24 @@ int View::selected_element_ix(int sx, int sy) const
     int min_ix = -1;
     float depth;
 
+    MouseVector mv = mouse_vector(sx, sy);
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {
-            if (depth < min_depth || e->top_level() > max_level) {
-                if (depth < min_depth)
-                    min_depth = depth;
-                if (e->top_level() > max_level)
-                    max_level = e->top_level();
-                min_e = e;
-                min_ix = i;
+
+        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+
+            // the mouse_vector_intersect is intended to eliminate most candidates, but we still have
+            // to check the remaining candidates for top face selection
+
+            if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
+                if (depth < min_depth || e->top_level() > max_level) {
+                    if (depth < min_depth)
+                        min_depth = depth;
+                    if (e->top_level() > max_level)
+                        max_level = e->top_level();
+                    min_e = e;
+                    min_ix = i;
+                }
             }
         }
     }

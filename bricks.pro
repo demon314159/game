@@ -28,6 +28,7 @@ HEADERS      += game.h \
                 element.h \
                 morph_element.h \
                 mouse_vector.h \
+                mouse_vector_shape.h \
                 command.h \
                 history.h \
                 choose.h \
@@ -61,6 +62,7 @@ SOURCES      += main.cpp \
                 cancel_shape.cpp \
                 element.cpp \
                 morph_element.cpp \
+                mouse_vector_shape.cpp \
                 command.cpp \
                 history.cpp \
                 choose.cpp \

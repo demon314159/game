@@ -80,6 +80,8 @@ protected:
     void add_grid(CadModel* cm, const BoundingBox& bb);
 
 private:
+    bool m_mouse_vector_on;
+    MouseVector m_mouse_vector;
     Vmenu m_vmenu;
     Choose m_choose;
     int m_max_vertices;

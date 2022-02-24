@@ -2,6 +2,7 @@
 #include "view.h"
 #include "paint_can.h"
 #include "cube_shape.h"
+#include "mouse_vector_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 
@@ -11,7 +12,9 @@
 #define notVERBOSE
 
 View::View(Document* doc)
-    : m_vmenu()
+    : m_mouse_vector_on(true)
+    , m_mouse_vector({{0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}})
+    , m_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
@@ -344,6 +347,7 @@ void View::paint()
     printf("View::paint()\n");
 #endif
     if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
+        printf("wtf\n");
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();
@@ -354,6 +358,11 @@ void View::paint()
             translate_home();
         }
         resize_calc();
+        if (m_mouse_vector_on) {
+            MouseVectorShape mv_shape(m_mouse_vector, 0.0, 1.0);
+            CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
+            m_model->add(mv_model, 0.0, 0.0, 0.0);
+        }
         check_storage();
         copy_facets();
         if (m_doc->is_dirty()) {
@@ -368,7 +377,11 @@ void View::paint()
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
     QVector3D axis2 = {0.0, 1.0, 0.0};
     QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
+
     QQuaternion my_rot = rot1 * rot2;
+//    QQuaternion my_rot = rot2 * rot1;
+
+
     QMatrix4x4 matrix;
     matrix.translate(m_xoff, m_yoff, -m_camz * m_zoom - m_radius);
     matrix.rotate(my_rot);
@@ -644,6 +657,12 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
 MouseVector View::mouse_vector(int sx, int sy) const
 {
     MouseVector mv = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+    float camy = m_camz * tan(m_fov / 2);
+    float k = 2 * camy / (float) m_height;
+    mv.vector.v1 = k * (float) sx;
+    mv.vector.v2 = k * (float) sy;
+    mv.vector.v3 = m_camz;
+
     return mv;
 }
 

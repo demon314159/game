@@ -36,7 +36,7 @@ bool MouseVector::is_dirty() const
 
 void MouseVector::make_clean()
 {
-//    m_is_dirty = false;
+    m_is_dirty = false;
 }
 
 void MouseVector::make_dirty()
@@ -85,6 +85,18 @@ void MouseVector::rotate_ax(float deg)
     t_vec.v3 = -m_vector.v2 * sin(angle) + m_vector.v3 * cos(angle);
     m_origin = t_org;
     m_vector = t_vec;
+    make_dirty();
+}
+
+void MouseVector::turn_on()
+{
+    m_is_on = true;
+    make_dirty();
+}
+
+void MouseVector::turn_off()
+{
+    m_is_on = false;
     make_dirty();
 }
 

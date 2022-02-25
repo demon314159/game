@@ -19,6 +19,8 @@ public:
     void translate(Float3 off);
     void rotate_ay(float deg);
     void rotate_ax(float deg);
+    void turn_on();
+    void turn_off();
 
 private:
     bool m_is_on;

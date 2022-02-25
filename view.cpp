@@ -217,16 +217,8 @@ void View::decorate_model()
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
     if (m_mouse_vector.is_on()) {
-        MouseVector tmv = m_mouse_vector;
 
-
-        tmv.translate({-m_xoff, -m_yoff, m_camz + m_radius});
-        tmv.rotate_ax(m_xrot);
-        tmv.rotate_ay(m_yrot);
-        tmv.translate(m_center);
-
-
-        MouseVectorShape mv_shape(tmv, m_camz, m_camz + m_radius);
+        MouseVectorShape mv_shape(m_mouse_vector, m_camz, m_camz + 2 * m_radius);
         CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
         m_model->add(mv_model, 0.0, 0.0, 0.0);
     }
@@ -663,30 +655,47 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
-#ifdef NEVERMORE
-MouseVector::mouse_vector(int sx, int sy) const
+void View::new_mouse_vector(int sx, int sy)
 {
-    MouseVector mv = {false, false, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-    float camy = m_camz * tan(m_fov / 2);
-    float k = 2 * camy / (float) m_height;
-    mv.vector.v1 = k * (float) sx;
-    mv.vector.v2 = k * (float) sy;
-    mv.vector.v3 = m_camz;
+    double camy = m_camz * tan((3.1415926536 / 180.0) * m_fov / 2);
+//    printf("camz = %lf, camy = %lf\n", m_camz, camy);
+    double k = 2 * camy / (double) m_height;
 
-    return mv;
+    double v1 = k * ((double) sx - (double) m_width / 2);
+    double v2 = k * (-(double) sy + (double) m_height / 2);
+//    double v3 = m_camz + m_radius;
+//    printf("v1, v2, v3 = %lf, %lfd, %lfd\n", v1, v2, v3);
+//    double len = sqrt(v1 * v1 + v2 * v2 + v3 * v3);
+//    printf("nv1, nv2, nv3 = %lf, %lf, %lf\n", v1 / len, v2 / len, v3 / len);
+
+//    Float3 vector = {v1 / len, v2 / len, v3 / len};
+
+
+    Float3 vector = {v1 / m_camz, v2 / m_camz, -1.0};
+    Float3 origin = {0.0, 0.0, 0.0};
+    m_mouse_vector.set_new_vector(origin, vector);
+    m_mouse_vector.translate({-m_xoff, -m_yoff, m_camz + m_radius});
+    m_mouse_vector.rotate_ax(m_xrot);
+    m_mouse_vector.rotate_ay(m_yrot);
+    m_mouse_vector.translate(m_center);
+    m_mouse_vector.turn_on();
+    if (m_mouse_vector.vector().v2 != 0) {
+        float t = -m_mouse_vector.origin().v2 / m_mouse_vector.vector().v2;
+        float x = m_mouse_vector.origin().v1 + t * m_mouse_vector.vector().v1;
+        float y = m_mouse_vector.origin().v2 + t * m_mouse_vector.vector().v2;
+        float z = m_mouse_vector.origin().v3 + t * m_mouse_vector.vector().v3;
+        printf("floor point = %f, %f, %f\n", x, y, z);
+    }
 }
-#endif
 
-bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
+bool View::mouse_vector_intersects(MouseVector& mv, const Element* e)
 {
     return true;
 }
 
-bool View::no_part_of_any_element_selected(int sx, int sy) const
+bool View::no_part_of_any_element_selected(int sx, int sy)
 {
-#ifdef NEVERMORE
-    MouseVector mv = mouse_vector(sx, sy);
-#endif
+    new_mouse_vector(sx, sy);
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
 //        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates

@@ -103,7 +103,7 @@ bool View::mouse_select(int sx, int sy)
         plane.v4.v2 = 0.0;
         plane.v4.v3 = zlo;
         if (screen_point_inside_face(plane, sx, sy)) {
-            if (no_part_of_any_element_selected(sx, sy)) {
+            if (no_part_of_any_element_selected(sx, sy, tmv)) {
                 Choice c;
                 c.position = screen_point_on_floor(plane, sx, sy);
                 c.kind = 0;
@@ -679,7 +679,7 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
         float y = tmv.origin().v2 + t * tmv.vector().v2;
         float z = tmv.origin().v3 + t * tmv.vector().v3;
         printf("\nmouse origin = %f, %f, %f\n", tmv.origin().v1, tmv.origin().v2, tmv.origin().v3);
-        printf("\nmouse vector = %f, %f, %f\n", tmv.vector().v1, tmv.vector().v2, tmv.vector().v3);
+        printf("mouse vector = %f, %f, %f\n", tmv.vector().v1, tmv.vector().v2, tmv.vector().v3);
         printf("t = %f\n", t);
         printf("floor point = %f, %f, %f\n", x, y, z);
     } else {
@@ -688,28 +688,35 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
     return tmv;
 }
 
-bool View::mouse_vector_intersects(MouseVector& mv, const Element* e) const
+bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
 {
     return true;
 }
 
-bool View::no_part_of_any_element_selected(int sx, int sy) const
+bool View::no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv) const
 {
+    int tests = 0;
+    int skips = 0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-//        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-
+        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+            tests += 6;
             // the mouse_vector_intersect is intended to eliminate most candidates, but it may actually make the code
             // below fully redundant
 
 
             for (int j = 0; j < 6; j++) {
                 Face f = e->face(j);
-                if (screen_point_inside_face(f, sx, sy))  // Very expensive test times 6 for each candidate
+                if (screen_point_inside_face(f, sx, sy)) {  // Very expensive test times 6 for each candidate
+                    printf("no_part_of_any_element_selected: early return tests = %d, skips = %d\n", tests, skips);
                     return false;
+                }
             }
-//        }
+        } else {
+            skips += 6;
+        }
     }
+    printf("no_part_of_any_element_selected: tests = %d, skips = %d\n", tests, skips);
     return true;
 }
 
@@ -732,10 +739,13 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
     float depth;
 
 //    MouseVector mv = mouse_vector(sx, sy);
+    int tests = 0;
+    int skips = 0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
 
-//        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+            ++tests;
 
             // the mouse_vector_intersect is intended to eliminate most candidates, but we still have
             // to check the remaining candidates for top face selection
@@ -750,8 +760,11 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
                     min_ix = i;
                 }
             }
-  //      }
+        } else {
+            ++skips;
+        }
     }
+    printf("selected_element_ix: tests = %d, skips = %d\n", tests, skips);
     if (min_e == NULL)
         return -1;
     int sf = selected_top_subface(min_e, sx, sy);

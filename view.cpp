@@ -218,7 +218,7 @@ void View::decorate_model()
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
     if (m_mouse_vector.is_on()) {
 
-        MouseVectorShape mv_shape(m_mouse_vector, m_camz, m_camz + 2 * m_radius);
+        MouseVectorShape mv_shape(m_mouse_vector, m_camz * m_zoom, m_camz * m_zoom + 2 * m_radius);
         CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
         m_model->add(mv_model, 0.0, 0.0, 0.0);
     }
@@ -674,7 +674,7 @@ void View::new_mouse_vector(int sx, int sy)
     Float3 vector = {v1 / m_camz, v2 / m_camz, -1.0};
     Float3 origin = {0.0, 0.0, 0.0};
     m_mouse_vector.set_new_vector(origin, vector);
-    m_mouse_vector.translate({-m_xoff, -m_yoff, m_camz + m_radius});
+    m_mouse_vector.translate({-m_xoff, -m_yoff, m_camz * m_zoom + m_radius});
     m_mouse_vector.rotate_ax(m_xrot);
     m_mouse_vector.rotate_ay(m_yrot);
     m_mouse_vector.translate(m_center);

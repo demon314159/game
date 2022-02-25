@@ -12,7 +12,7 @@
 #define notVERBOSE
 
 View::View(Document* doc)
-    : m_mouse_vector({0.0, 1.0, 0.0}, {0.0, 0.0, -1.0})
+    : m_mouse_vector({0.0, 0.0, 0.0}, {0.0, 0.0, -1.0})
     , m_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
@@ -218,7 +218,13 @@ void View::decorate_model()
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
     if (m_mouse_vector.is_on()) {
         MouseVector tmv = m_mouse_vector;
+
+        tmv.translate({-m_xoff, -m_yoff, 0.0});
+        tmv.rotate_ax(m_xrot);
+        tmv.rotate_ay(m_yrot);
         tmv.translate(m_center);
+
+
         MouseVectorShape mv_shape(tmv, 0.0, 1.0);
         CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
         m_model->add(mv_model, 0.0, 0.0, 0.0);

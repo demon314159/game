@@ -17,6 +17,8 @@ public:
     void make_dirty();
     void set_new_vector(Float3 origin, Float3 vector);
     void translate(Float3 off);
+    void rotate_ay(float deg);
+    void rotate_ax(float deg);
 
 private:
     bool m_is_on;

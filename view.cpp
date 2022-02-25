@@ -12,8 +12,7 @@
 #define notVERBOSE
 
 View::View(Document* doc)
-    : m_mouse_vector_on(true)
-    , m_mouse_vector({{0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}})
+    : m_mouse_vector({0.0, 1.0, 0.0}, {0.0, 0.0, -1.0})
     , m_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
@@ -217,6 +216,13 @@ void View::decorate_model()
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
+    if (m_mouse_vector.is_on()) {
+        MouseVector tmv = m_mouse_vector;
+        tmv.translate(m_center);
+        MouseVectorShape mv_shape(tmv, 0.0, 1.0);
+        CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
+        m_model->add(mv_model, 0.0, 0.0, 0.0);
+    }
 }
 
 View::~View()
@@ -346,8 +352,7 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
-        printf("wtf\n");
+    if (m_doc->is_dirty() || m_vmenu.is_dirty() || m_mouse_vector.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();
@@ -358,11 +363,6 @@ void View::paint()
             translate_home();
         }
         resize_calc();
-        if (m_mouse_vector_on) {
-            MouseVectorShape mv_shape(m_mouse_vector, 0.0, 1.0);
-            CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
-            m_model->add(mv_model, 0.0, 0.0, 0.0);
-        }
         check_storage();
         copy_facets();
         if (m_doc->is_dirty()) {
@@ -371,6 +371,8 @@ void View::paint()
         }
         if (m_vmenu.is_dirty())
             m_vmenu.make_clean();
+        if (m_mouse_vector.is_dirty())
+            m_mouse_vector.make_clean();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -654,9 +656,10 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
-MouseVector View::mouse_vector(int sx, int sy) const
+#ifdef NEVERMORE
+MouseVector::mouse_vector(int sx, int sy) const
 {
-    MouseVector mv = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+    MouseVector mv = {false, false, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
     float camy = m_camz * tan(m_fov / 2);
     float k = 2 * camy / (float) m_height;
     mv.vector.v1 = k * (float) sx;
@@ -665,6 +668,7 @@ MouseVector View::mouse_vector(int sx, int sy) const
 
     return mv;
 }
+#endif
 
 bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
 {
@@ -673,10 +677,12 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) cons
 
 bool View::no_part_of_any_element_selected(int sx, int sy) const
 {
+#ifdef NEVERMORE
     MouseVector mv = mouse_vector(sx, sy);
+#endif
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+//        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
 
             // the mouse_vector_intersect is intended to eliminate most candidates, but it may actually make the code
             // below fully redundant
@@ -687,7 +693,7 @@ bool View::no_part_of_any_element_selected(int sx, int sy) const
                 if (screen_point_inside_face(f, sx, sy))  // Very expensive test times 6 for each candidate
                     return false;
             }
-        }
+//        }
     }
     return true;
 }
@@ -710,11 +716,11 @@ int View::selected_element_ix(int sx, int sy) const
     int min_ix = -1;
     float depth;
 
-    MouseVector mv = mouse_vector(sx, sy);
+//    MouseVector mv = mouse_vector(sx, sy);
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
 
-        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+//        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
 
             // the mouse_vector_intersect is intended to eliminate most candidates, but we still have
             // to check the remaining candidates for top face selection
@@ -729,7 +735,7 @@ int View::selected_element_ix(int sx, int sy) const
                     min_ix = i;
                 }
             }
-        }
+  //      }
     }
     if (min_e == NULL)
         return -1;

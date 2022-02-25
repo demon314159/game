@@ -2,7 +2,7 @@
 #include "mouse_vector_shape.h"
 #include <cstddef>
 
-MouseVectorShape::MouseVectorShape(MouseVector mv, float t0, float t1)
+MouseVectorShape::MouseVectorShape(const MouseVector& mv, float t0, float t1)
     : m_pt0({0.0, 0.0, 0.0})
     , m_pt1({0.0, 0.0, 0.0})
     , m_dimb(0.025)
@@ -10,12 +10,12 @@ MouseVectorShape::MouseVectorShape(MouseVector mv, float t0, float t1)
     , m_facet_count(0)
     , m_facet(NULL)
 {
-    m_pt0.v1 = mv.origin.v1 + t0 * mv.vector.v1;
-    m_pt0.v2 = mv.origin.v2 + t0 * mv.vector.v2;
-    m_pt0.v3 = mv.origin.v3 + t0 * mv.vector.v3;
-    m_pt1.v1 = mv.origin.v1 + t1 * mv.vector.v1;
-    m_pt1.v2 = mv.origin.v2 + t1 * mv.vector.v2;
-    m_pt1.v3 = mv.origin.v3 + t1 * mv.vector.v3;
+    m_pt0.v1 = mv.origin().v1 + t0 * mv.vector().v1;
+    m_pt0.v2 = mv.origin().v2 + t0 * mv.vector().v2;
+    m_pt0.v3 = mv.origin().v3 + t0 * mv.vector().v3;
+    m_pt1.v1 = mv.origin().v1 + t1 * mv.vector().v1;
+    m_pt1.v2 = mv.origin().v2 + t1 * mv.vector().v2;
+    m_pt1.v3 = mv.origin().v3 + t1 * mv.vector().v3;
     if (m_pt1.v3 > m_pt0.v3) {
         Float3 tp = m_pt0;
         m_pt0 = m_pt1;

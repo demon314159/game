@@ -10,7 +10,7 @@
 class MouseVectorShape: public Shape
 {
 public:
-    MouseVectorShape(MouseVector mv, float t0, float t1);
+    MouseVectorShape(const MouseVector& mv, float t0, float t1);
     virtual ~MouseVectorShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;

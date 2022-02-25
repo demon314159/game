@@ -43,7 +43,7 @@ public:
     bool mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
-    MouseVector mouse_vector(int sx, int sy) const;
+//    MouseVector mouse_vector(int sx, int sy) const;
     bool mouse_vector_intersects(const MouseVector& mv, const Element* e) const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation) const;
@@ -80,7 +80,6 @@ protected:
     void add_grid(CadModel* cm, const BoundingBox& bb);
 
 private:
-    bool m_mouse_vector_on;
     MouseVector m_mouse_vector;
     Vmenu m_vmenu;
     Choose m_choose;

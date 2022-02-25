@@ -62,6 +62,7 @@ SOURCES      += main.cpp \
                 cancel_shape.cpp \
                 element.cpp \
                 morph_element.cpp \
+                mouse_vector.cpp \
                 mouse_vector_shape.cpp \
                 command.cpp \
                 history.cpp \

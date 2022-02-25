@@ -62,7 +62,9 @@ int View::vmenu_item_chosen(int sx, int sy)
 
 bool View::mouse_select(int sx, int sy)
 {
-    int ix = selected_element_ix(sx, sy);
+    MouseVector tmv = new_mouse_vector(sx, sy);
+    m_mouse_vector = tmv;
+    int ix = selected_element_ix(sx, sy, tmv);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
@@ -122,7 +124,9 @@ int View::mouse_delete(int sx, int sy)
 {
 //    printf("\n\nmouse delete(%d, %d)\n", sx, sy);
     m_choose.select_no_choice();
-    int ix = selected_element_ix(sx, sy);
+    MouseVector tmv = new_mouse_vector(sx, sy);
+    m_mouse_vector = tmv;
+    int ix = selected_element_ix(sx, sy, tmv);
     if (ix < 0)
         return -1;
     const Element* e = m_doc->element(ix);
@@ -655,47 +659,42 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
 }
 
-void View::new_mouse_vector(int sx, int sy)
+MouseVector View::new_mouse_vector(int sx, int sy) const
 {
     double camy = m_camz * tan((3.1415926536 / 180.0) * m_fov / 2);
-//    printf("camz = %lf, camy = %lf\n", m_camz, camy);
     double k = 2 * camy / (double) m_height;
-
-    double v1 = k * ((double) sx - (double) m_width / 2);
-    double v2 = k * (-(double) sy + (double) m_height / 2);
-//    double v3 = m_camz + m_radius;
-//    printf("v1, v2, v3 = %lf, %lfd, %lfd\n", v1, v2, v3);
-//    double len = sqrt(v1 * v1 + v2 * v2 + v3 * v3);
-//    printf("nv1, nv2, nv3 = %lf, %lf, %lf\n", v1 / len, v2 / len, v3 / len);
-
-//    Float3 vector = {v1 / len, v2 / len, v3 / len};
-
-
+    float v1 = k * ((double) sx - (double) m_width / 2);
+    float v2 = k * (-(double) sy + (double) m_height / 2);
     Float3 vector = {v1 / m_camz, v2 / m_camz, -1.0};
     Float3 origin = {0.0, 0.0, 0.0};
-    m_mouse_vector.set_new_vector(origin, vector);
-    m_mouse_vector.translate({-m_xoff, -m_yoff, m_camz * m_zoom + m_radius});
-    m_mouse_vector.rotate_ax(m_xrot);
-    m_mouse_vector.rotate_ay(m_yrot);
-    m_mouse_vector.translate(m_center);
-    m_mouse_vector.turn_on();
-    if (m_mouse_vector.vector().v2 != 0) {
-        float t = -m_mouse_vector.origin().v2 / m_mouse_vector.vector().v2;
-        float x = m_mouse_vector.origin().v1 + t * m_mouse_vector.vector().v1;
-        float y = m_mouse_vector.origin().v2 + t * m_mouse_vector.vector().v2;
-        float z = m_mouse_vector.origin().v3 + t * m_mouse_vector.vector().v3;
+    MouseVector tmv(origin, vector);
+    tmv.translate({-m_xoff, -m_yoff, m_camz * m_zoom + m_radius});
+    tmv.rotate_ax(m_xrot);
+    tmv.rotate_ay(m_yrot);
+    tmv.translate(m_center);
+    tmv.turn_on();
+    if (tmv.vector().v2 != 0) {
+        float t = -tmv.origin().v2 / tmv.vector().v2;
+        float x = tmv.origin().v1 + t * tmv.vector().v1;
+        float y = tmv.origin().v2 + t * tmv.vector().v2;
+        float z = tmv.origin().v3 + t * tmv.vector().v3;
+        printf("\nmouse origin = %f, %f, %f\n", tmv.origin().v1, tmv.origin().v2, tmv.origin().v3);
+        printf("\nmouse vector = %f, %f, %f\n", tmv.vector().v1, tmv.vector().v2, tmv.vector().v3);
+        printf("t = %f\n", t);
         printf("floor point = %f, %f, %f\n", x, y, z);
+    } else {
+        printf("no floor point\n");
     }
+    return tmv;
 }
 
-bool View::mouse_vector_intersects(MouseVector& mv, const Element* e)
+bool View::mouse_vector_intersects(MouseVector& mv, const Element* e) const
 {
     return true;
 }
 
-bool View::no_part_of_any_element_selected(int sx, int sy)
+bool View::no_part_of_any_element_selected(int sx, int sy) const
 {
-    new_mouse_vector(sx, sy);
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
 //        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
@@ -724,7 +723,7 @@ float View::normalize_angle(float angle) const
     return a;
 }
 
-int View::selected_element_ix(int sx, int sy) const
+int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
 {
     float min_depth = 1000000.0;
     float max_level = -1000000.0;

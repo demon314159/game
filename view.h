@@ -43,8 +43,8 @@ public:
     bool mouse_select(int sx, int sy);
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
-    void new_mouse_vector(int sx, int sy);
-    bool mouse_vector_intersects(MouseVector& mv, const Element* e);
+    MouseVector new_mouse_vector(int sx, int sy) const;
+    bool mouse_vector_intersects(MouseVector& mv, const Element* e) const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation) const;
     bool span_blocked(Float3 pos, int span, int orientation) const;
@@ -63,9 +63,9 @@ protected:
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
-    int selected_element_ix(int sx, int sy) const;
+    int selected_element_ix(int sx, int sy, const MouseVector& mv) const;
     int selected_top_subface(const Element* e, int sx, int sy) const;
-    bool no_part_of_any_element_selected(int sx, int sy);
+    bool no_part_of_any_element_selected(int sx, int sy) const;
     Float2 world2screen(Float3 point, float* distance = NULL) const;
     Float2 fixed2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy, float* depth = NULL) const;

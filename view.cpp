@@ -219,13 +219,14 @@ void View::decorate_model()
     if (m_mouse_vector.is_on()) {
         MouseVector tmv = m_mouse_vector;
 
-        tmv.translate({-m_xoff, -m_yoff, 0.0});
+
+        tmv.translate({-m_xoff, -m_yoff, m_camz + m_radius});
         tmv.rotate_ax(m_xrot);
         tmv.rotate_ay(m_yrot);
         tmv.translate(m_center);
 
 
-        MouseVectorShape mv_shape(tmv, 0.0, 1.0);
+        MouseVectorShape mv_shape(tmv, m_camz, m_camz + m_radius);
         CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
         m_model->add(mv_model, 0.0, 0.0, 0.0);
     }

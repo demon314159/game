@@ -63,8 +63,9 @@ int View::vmenu_item_chosen(int sx, int sy)
 bool View::mouse_select(int sx, int sy)
 {
     MouseVector tmv = new_mouse_vector(sx, sy);
-    m_mouse_vector = tmv;
+//    m_mouse_vector = tmv;
     int ix = selected_element_ix(sx, sy, tmv);
+    printf("selecting element %d\n", ix);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
@@ -125,8 +126,9 @@ int View::mouse_delete(int sx, int sy)
 //    printf("\n\nmouse delete(%d, %d)\n", sx, sy);
     m_choose.select_no_choice();
     MouseVector tmv = new_mouse_vector(sx, sy);
-    m_mouse_vector = tmv;
+//    m_mouse_vector = tmv;
     int ix = selected_element_ix(sx, sy, tmv);
+    printf("deleting element %d\n", ix);
     if (ix < 0)
         return -1;
     const Element* e = m_doc->element(ix);
@@ -663,8 +665,8 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
 {
     double camy = m_camz * tan((3.1415926536 / 180.0) * m_fov / 2);
     double k = 2 * camy / (double) m_height;
-    float v1 = k * ((double) sx - (double) m_width / 2);
-    float v2 = k * (-(double) sy + (double) m_height / 2);
+    float v1 = k * ((double) sx - ((double) m_width) / 2);
+    float v2 = k * (-(double) sy + ((double) m_height) / 2);
     Float3 vector = {v1 / m_camz, v2 / m_camz, -1.0};
     Float3 origin = {0.0, 0.0, 0.0};
     MouseVector tmv(origin, vector);
@@ -690,7 +692,61 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
 
 bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
 {
-    return true;
+    Float3 mv_org = mv.origin();
+    Float3 mv_vec = mv.vector();
+    BoundingBox bb = e->bounding_box();
+    float abs_v1 = fabs(mv_vec.v1);
+    float abs_v2 = fabs(mv_vec.v2);
+    float abs_v3 = fabs(mv_vec.v3);
+    if (abs_v3 > abs_v1 && abs_v3 > abs_v2) {        // Z is dominant axis
+        float tmin = (bb.vmin.v3 - mv_org.v3) / mv_vec.v3;
+        float tmax = (bb.vmax.v3 - mv_org.v3) / mv_vec.v3;
+        float xmin = mv_org.v1 + tmin * mv_vec.v1;
+        float xmax = mv_org.v1 + tmax * mv_vec.v1;
+        float ymin = mv_org.v2 + tmin * mv_vec.v2;
+        float ymax = mv_org.v2 + tmax * mv_vec.v2;
+        if (xmin < bb.vmin.v1 && xmax < bb.vmin.v1)
+            return false;
+        if (xmin > bb.vmax.v1 && xmax > bb.vmax.v1)
+            return false;
+        if (ymin < bb.vmin.v2 && ymax < bb.vmin.v2)
+            return false;
+        if (ymin > bb.vmax.v2 && ymax > bb.vmax.v2)
+            return false;
+        return true;
+    } else if (abs_v2 > abs_v1 && abs_v2 > abs_v3) { // Y is dominant axis
+        float tmin = (bb.vmin.v2 - mv_org.v2) / mv_vec.v2;
+        float tmax = (bb.vmax.v2 - mv_org.v2) / mv_vec.v2;
+        float xmin = mv_org.v1 + tmin * mv_vec.v1;
+        float xmax = mv_org.v1 + tmax * mv_vec.v1;
+        float zmin = mv_org.v3 + tmin * mv_vec.v3;
+        float zmax = mv_org.v3 + tmax * mv_vec.v3;
+        if (xmin < bb.vmin.v1 && xmax < bb.vmin.v1)
+            return false;
+        if (xmin > bb.vmax.v1 && xmax > bb.vmax.v1)
+            return false;
+        if (zmin < bb.vmin.v3 && zmax < bb.vmin.v3)
+            return false;
+        if (zmin > bb.vmax.v3 && zmax > bb.vmax.v3)
+            return false;
+        return true;
+    } else {                                         // X is dominant axis
+        float tmin = (bb.vmin.v1 - mv_org.v1) / mv_vec.v1;
+        float tmax = (bb.vmax.v1 - mv_org.v1) / mv_vec.v1;
+        float ymin = mv_org.v2 + tmin * mv_vec.v2;
+        float ymax = mv_org.v2 + tmax * mv_vec.v2;
+        float zmin = mv_org.v3 + tmin * mv_vec.v3;
+        float zmax = mv_org.v3 + tmax * mv_vec.v3;
+        if (ymin < bb.vmin.v2 && ymax < bb.vmin.v2)
+            return false;
+        if (ymin > bb.vmax.v2 && ymax > bb.vmax.v2)
+            return false;
+        if (zmin < bb.vmin.v3 && zmax < bb.vmin.v3)
+            return false;
+        if (zmin > bb.vmax.v3 && zmax > bb.vmax.v3)
+            return false;
+        return true;
+    }
 }
 
 bool View::no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv) const
@@ -743,7 +799,6 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
     int skips = 0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-
         if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
             ++tests;
 
@@ -751,6 +806,7 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
             // to check the remaining candidates for top face selection
 
             if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
+                printf("        screen test passed\n");
                 if (depth < min_depth || e->top_level() > max_level) {
                     if (depth < min_depth)
                         min_depth = depth;

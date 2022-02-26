@@ -202,7 +202,7 @@ void Table::spawn_delete_element_command(int ix)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-//        printf("\nmouse press %d, %d\n", e->pos().x(), e->pos().y());
+        printf("\nmouse press %d, %d\n", e->pos().x(), e->pos().y());
         m_navigate.start_rotate(e->pos().x(), e->pos().y());
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
         if (action_id != Vmenu::ACTION_NONE) {
@@ -260,6 +260,7 @@ void Table::mousePressEvent(QMouseEvent* e)
                     break;
             }
         }
+        printf("mouse done\n");
     } else if (e->button() == Qt::RightButton) {
         int ix = m_view->mouse_delete(e->pos().x(), e->pos().y());
         if (ix < 0) {

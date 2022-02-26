@@ -41,6 +41,18 @@ int Element::width() const
     return 1;
 }
 
+BoundingBox Element::bounding_box() const
+{
+    BoundingBox bb;
+    bb.vmin.v1 = m_pos.v1 - dimx / 2.0;
+    bb.vmin.v2 = m_pos.v2 * dimh - dimh / 2.0;
+    bb.vmin.v3 = m_pos.v3 - dimx / 2.0;
+    bb.vmax.v1 = m_pos.v1 + dimx / 2.0;
+    bb.vmax.v2 = m_pos.v2 *dimh + dimh / 2.0;
+    bb.vmax.v3 = m_pos.v3 + dimx / 2.0;
+    return bb;
+}
+
 int Element::kind() const
 {
     return ELEMENT_HALF_BRICK;
@@ -378,6 +390,26 @@ int BrickElement::orientation() const
     return m_orientation;
 }
 
+BoundingBox BrickElement::bounding_box() const
+{
+    BoundingBox bb;
+    Float3 pos = get_pos();
+    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0;
+    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    if (m_orientation == 0 || m_orientation == 2) {
+        bb.vmin.v1 = pos.v1 - dimx;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0;
+        bb.vmax.v1 = pos.v1 + dimx;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+    } else {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0;
+        bb.vmin.v3 = pos.v3 - dimx;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0;
+        bb.vmax.v3 = pos.v3 + dimx;
+    }
+    return bb;
+}
+
 int BrickElement::width() const
 {
     return 2;
@@ -532,6 +564,26 @@ int DoorElement::orientation() const
     return m_orientation;
 }
 
+BoundingBox DoorElement::bounding_box() const
+{
+    BoundingBox bb;
+    Float3 pos = get_pos();
+    bb.vmin.v2 = pos.v2 *dimh - m_height * dimh / 2.0;
+    bb.vmax.v2 = pos.v2 *dimh + m_height * dimh / 2.0;
+    if (m_orientation == 0 || m_orientation == 2) {
+        bb.vmin.v1 = pos.v1 - m_width / 2.0;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0;
+        bb.vmax.v1 = pos.v1 + m_width / 2.0;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+    } else {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0;
+        bb.vmin.v3 = pos.v3 - m_width / 2.0;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0;
+        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+    }
+    return bb;
+}
+
 int DoorElement::width() const
 {
     return m_width;
@@ -622,6 +674,26 @@ int WindowElement::orientation() const
     return m_orientation;
 }
 
+BoundingBox WindowElement::bounding_box() const
+{
+    BoundingBox bb;
+    Float3 pos = get_pos();
+    bb.vmin.v2 = pos.v2 * dimh - m_height * dimh / 2.0;
+    bb.vmax.v2 = pos.v2 * dimh + m_height * dimh / 2.0;
+    if (m_orientation == 0 || m_orientation == 2) {
+        bb.vmin.v1 = pos.v1 - m_width / 2.0;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0;
+        bb.vmax.v1 = pos.v1 + m_width / 2.0;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+    } else {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0;
+        bb.vmin.v3 = pos.v3 - m_width / 2.0;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0;
+        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+    }
+    return bb;
+}
+
 int WindowElement::width() const
 {
     return m_width;
@@ -706,6 +778,37 @@ int RoofElement::orientation() const
     return m_orientation;
 }
 
+BoundingBox RoofElement::bounding_box() const
+{
+    BoundingBox bb;
+    Float3 pos = get_pos();
+    float q = dimb / 4;
+    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0 - q * dimh;
+    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    if (m_orientation == 0) {
+        bb.vmin.v1 = pos.v1 - m_width / 2.0 - q;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0;
+        bb.vmax.v1 = pos.v1 + m_width / 2.0 + q;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0 + q;
+    } else if (m_orientation == 2) {
+        bb.vmin.v1 = pos.v1 - m_width / 2.0 - q;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0 - q;
+        bb.vmax.v1 = pos.v1 + m_width / 2.0 + q;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+    } else if (m_orientation == 1) {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0;
+        bb.vmin.v3 = pos.v3 - m_width / 2.0 - q;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0 + q;
+        bb.vmax.v3 = pos.v3 + m_width / 2.0 + q;
+    } else {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0 - q;
+        bb.vmin.v3 = pos.v3 - m_width / 2.0 - q;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0;
+        bb.vmax.v3 = pos.v3 + m_width / 2.0 + q;
+    }
+    return bb;
+}
+
 int RoofElement::width() const
 {
     return m_width;
@@ -778,6 +881,26 @@ bool LedgeElement::contains(Float3 pos) const
 int LedgeElement::orientation() const
 {
     return m_orientation;
+}
+
+BoundingBox LedgeElement::bounding_box() const
+{
+    BoundingBox bb;
+    Float3 pos = get_pos();
+    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0;
+    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    if (m_orientation == 0 || m_orientation == 2) {
+        bb.vmin.v1 = pos.v1 - m_width / 2.0;
+        bb.vmin.v3 = pos.v3 - dimx / 2.0;
+        bb.vmax.v1 = pos.v1 + m_width / 2.0;
+        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+    } else {
+        bb.vmin.v1 = pos.v1 - dimx / 2.0;
+        bb.vmin.v3 = pos.v3 - m_width / 2.0;
+        bb.vmax.v1 = pos.v1 + dimx / 2.0;
+        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+    }
+    return bb;
 }
 
 int LedgeElement::width() const

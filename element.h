@@ -4,6 +4,7 @@
 
 #include "float3.h"
 #include "face.h"
+#include "bounding_box.h"
 #include "brick_shape.h"
 #include "paint_can.h"
 #include "cad_model.h"
@@ -47,6 +48,7 @@ public:
     virtual int kind() const;
     virtual int width() const;
     virtual int orientation() const;
+    virtual BoundingBox bounding_box() const;
     virtual void save_to_file(QDataStream& ds) const;
     virtual const CadModel& model() const;
     virtual float top_level() const;
@@ -88,6 +90,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    BoundingBox bounding_box() const override;
     int width() const override;
     int kind() const override;
 
@@ -134,6 +137,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    BoundingBox bounding_box() const override;
     int width() const override;
     int kind() const override;
 
@@ -162,6 +166,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    BoundingBox bounding_box() const override;
     int width() const override;
     int kind() const override;
 
@@ -190,6 +195,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    BoundingBox bounding_box() const override;
     int width() const override;
     int kind() const override;
 
@@ -211,6 +217,7 @@ public:
     Face top_sub_face(int ix) const override;
     bool contains(Float3 pos) const override;
     int orientation() const override;
+    BoundingBox bounding_box() const override;
     int width() const override;
     int kind() const override;
 

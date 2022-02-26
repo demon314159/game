@@ -3,7 +3,7 @@
 #include "math.h"
 
 MouseVector::MouseVector(Float3 origin, Float3 vector)
-    : m_is_on(true)
+    : m_is_on(false)
     , m_is_dirty(true)
     , m_origin(origin)
     , m_vector(vector)

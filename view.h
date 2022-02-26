@@ -70,7 +70,6 @@ protected:
     Float2 fixed2screen(Float3 point) const;
     bool screen_point_inside_face(const Face& f, int sx, int sy, float* depth = NULL) const;
     bool screen_point_inside_fixed_face(const Face& f, int sx, int sy) const;
-    Float3 screen_point_on_floor(const Face& f, int sx, int sy) const;
     float min4(float a, float b, float c, float d) const;
     float max4(float a, float b, float c, float d) const;
     double len(Float2 v1, Float2 v2) const;
@@ -80,7 +79,6 @@ protected:
     void add_grid(CadModel* cm, const BoundingBox& bb);
 
 private:
-    MouseVector m_mouse_vector;
     Vmenu m_vmenu;
     Choose m_choose;
     int m_max_vertices;

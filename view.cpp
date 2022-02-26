@@ -2,7 +2,6 @@
 #include "view.h"
 #include "paint_can.h"
 #include "cube_shape.h"
-#include "mouse_vector_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 
@@ -12,8 +11,7 @@
 #define notVERBOSE
 
 View::View(Document* doc)
-    : m_mouse_vector({0.0, 0.0, 0.0}, {0.0, 0.0, -1.0})
-    , m_vmenu()
+    : m_vmenu()
     , m_choose()
     , m_max_vertices(1024 * 1024)
     , m_vertices(0)
@@ -63,9 +61,7 @@ int View::vmenu_item_chosen(int sx, int sy)
 bool View::mouse_select(int sx, int sy)
 {
     MouseVector tmv = new_mouse_vector(sx, sy);
-//    m_mouse_vector = tmv;
     int ix = selected_element_ix(sx, sy, tmv);
-    printf("selecting element %d\n", ix);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
@@ -85,35 +81,31 @@ bool View::mouse_select(int sx, int sy)
         m_choose.select_choice(c);
         return true;
     } else {
-        BoundingBox bb = m_model->bounding_box(true);
-        Face plane;
-        float xlo = bb.vmin.v1;
-        float xhi = bb.vmax.v1;
-        float zlo = bb.vmin.v3;
-        float zhi = bb.vmax.v3;
-        plane.v1.v1 = xlo;
-        plane.v1.v2 = 0.0;
-        plane.v1.v3 = zlo;
-        plane.v2.v1 = xlo;
-        plane.v2.v2 = 0.0;
-        plane.v2.v3 = zhi;
-        plane.v3.v1 = xhi;
-        plane.v3.v2 = 0.0;
-        plane.v3.v3 = zhi;
-        plane.v4.v1 = xhi;
-        plane.v4.v2 = 0.0;
-        plane.v4.v3 = zlo;
-        if (screen_point_inside_face(plane, sx, sy)) {
-            if (no_part_of_any_element_selected(sx, sy, tmv)) {
-                Choice c;
-                c.position = screen_point_on_floor(plane, sx, sy);
-                c.kind = 0;
-                c.orientation = 0;
-                m_choose.select_choice(c);
-                return true;
+        if (tmv.vector().v2 != 0.0) {
+            BoundingBox bb = m_model->bounding_box(true);
+            float xlo = truncf(bb.vmin.v1);
+            float xhi = truncf(bb.vmax.v1);
+            float zlo = truncf(bb.vmin.v3);
+            float zhi = truncf(bb.vmax.v3);
+            float t = -tmv.origin().v2 / tmv.vector().v2;
+            float x = roundf(tmv.origin().v1 + t * tmv.vector().v1);
+            float z = roundf(tmv.origin().v3 + t * tmv.vector().v3);
+            if (x >= xlo && x <= xhi && z >= zlo && z <= zhi) {
+                if (no_part_of_any_element_selected(sx, sy, tmv)) {
+                    Choice c;
+                    c.position = {x, 0.0, z};
+                    c.kind = 0;
+                    c.orientation = 0;
+                    m_choose.select_choice(c);
+                    return true;
+                } else {
+                    m_choose.select_no_choice();
+                }
+
             } else {
                 m_choose.select_no_choice();
             }
+
         } else {
             m_choose.select_no_choice();
         }
@@ -123,12 +115,9 @@ bool View::mouse_select(int sx, int sy)
 
 int View::mouse_delete(int sx, int sy)
 {
-//    printf("\n\nmouse delete(%d, %d)\n", sx, sy);
     m_choose.select_no_choice();
     MouseVector tmv = new_mouse_vector(sx, sy);
-//    m_mouse_vector = tmv;
     int ix = selected_element_ix(sx, sy, tmv);
-    printf("deleting element %d\n", ix);
     if (ix < 0)
         return -1;
     const Element* e = m_doc->element(ix);
@@ -139,47 +128,6 @@ int View::mouse_delete(int sx, int sy)
     if (top_face_covered(e))
         return -1;
     return ix;
-}
-
-Float3 View::screen_point_on_floor(const Face& f, int sx, int sy) const
-{
-//    printf("screen_point_on_floor((%f, %f) (%f, %f))\n", f.v1.v1, f.v1.v3, f.v3.v1, f.v3.v3);
-    Face box1 = f;
-    Face box2 = f;
-    if (fabs(f.v2.v3 - f.v1.v3) > 1.1) { // zsplit possible
-//        printf("z split\n");
-        float midz = (float) round((f.v2.v3 - f.v1.v3) / 2.0);
-        box1.v2.v3 = f.v1.v3 + midz;
-        box1.v3.v3 = f.v4.v3 + midz;
-        box2.v1.v3 = f.v1.v3 + midz;
-        box2.v4.v3 = f.v4.v3 + midz;
-        if (screen_point_inside_face(box1, sx, sy)) {
-            return screen_point_on_floor(box1, sx, sy);
-        } else if (screen_point_inside_face(box2, sx, sy)) {
-            return screen_point_on_floor(box2, sx, sy);
-        } else {
-            printf("<<< Can't zsplit because the point is in neither box. >>>\n");
-            return {0.0, 0.0, 0.0};
-        }
-    } else if (fabs(f.v4.v1 - f.v1.v1) > 1.1) { // xsplit possible
-//        printf("x split\n");
-        float midx = (float) round((f.v4.v1 - f.v1.v1) / 2.0);
-        box1.v4.v1 = f.v1.v1 + midx;
-        box1.v3.v1 = f.v2.v1 + midx;
-        box2.v1.v1 = f.v4.v1 - midx;
-        box2.v2.v1 = f.v3.v1 - midx;
-        if (screen_point_inside_face(box1, sx, sy)) {
-            return screen_point_on_floor(box1, sx, sy);
-        } else if (screen_point_inside_face(box2, sx, sy)) {
-            return screen_point_on_floor(box2, sx, sy);
-        } else {
-            printf("<<< Can't xsplit because the point is in neither box. >>>\n");
-            return {0.0, 0.0, 0.0};
-        }
-    } else {
-//        printf("Splitting done\n");
-        return {(float) round((f.v1.v1 + f.v4.v1) / 2.0), 0.0, (float) round((f.v1.v3 + f.v2.v3) / 2.0)};
-    }
 }
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)
@@ -222,12 +170,6 @@ void View::decorate_model()
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
-    if (m_mouse_vector.is_on()) {
-
-        MouseVectorShape mv_shape(m_mouse_vector, m_camz * m_zoom, m_camz * m_zoom + 2 * m_radius);
-        CadModel mv_model(mv_shape, PaintCan(0.0, 0.0, 1.0), 0.0);
-        m_model->add(mv_model, 0.0, 0.0, 0.0);
-    }
 }
 
 View::~View()
@@ -357,7 +299,7 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty() || m_vmenu.is_dirty() || m_mouse_vector.is_dirty()) {
+    if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();
@@ -376,8 +318,6 @@ void View::paint()
         }
         if (m_vmenu.is_dirty())
             m_vmenu.make_clean();
-        if (m_mouse_vector.is_dirty())
-            m_mouse_vector.make_clean();
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QVector3D axis1 = {1.0, 0.0, 0.0};
@@ -674,19 +614,6 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
     tmv.rotate_ax(m_xrot);
     tmv.rotate_ay(m_yrot);
     tmv.translate(m_center);
-    tmv.turn_on();
-    if (tmv.vector().v2 != 0) {
-        float t = -tmv.origin().v2 / tmv.vector().v2;
-        float x = tmv.origin().v1 + t * tmv.vector().v1;
-        float y = tmv.origin().v2 + t * tmv.vector().v2;
-        float z = tmv.origin().v3 + t * tmv.vector().v3;
-        printf("\nmouse origin = %f, %f, %f\n", tmv.origin().v1, tmv.origin().v2, tmv.origin().v3);
-        printf("mouse vector = %f, %f, %f\n", tmv.vector().v1, tmv.vector().v2, tmv.vector().v3);
-        printf("t = %f\n", t);
-        printf("floor point = %f, %f, %f\n", x, y, z);
-    } else {
-        printf("no floor point\n");
-    }
     return tmv;
 }
 
@@ -751,28 +678,17 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) cons
 
 bool View::no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv) const
 {
-    int tests = 0;
-    int skips = 0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-            tests += 6;
-            // the mouse_vector_intersect is intended to eliminate most candidates, but it may actually make the code
-            // below fully redundant
-
-
             for (int j = 0; j < 6; j++) {
                 Face f = e->face(j);
                 if (screen_point_inside_face(f, sx, sy)) {  // Very expensive test times 6 for each candidate
-                    printf("no_part_of_any_element_selected: early return tests = %d, skips = %d\n", tests, skips);
                     return false;
                 }
             }
-        } else {
-            skips += 6;
         }
     }
-    printf("no_part_of_any_element_selected: tests = %d, skips = %d\n", tests, skips);
     return true;
 }
 
@@ -794,19 +710,10 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
     int min_ix = -1;
     float depth;
 
-//    MouseVector mv = mouse_vector(sx, sy);
-    int tests = 0;
-    int skips = 0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-            ++tests;
-
-            // the mouse_vector_intersect is intended to eliminate most candidates, but we still have
-            // to check the remaining candidates for top face selection
-
             if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
-                printf("        screen test passed\n");
                 if (depth < min_depth || e->top_level() > max_level) {
                     if (depth < min_depth)
                         min_depth = depth;
@@ -816,11 +723,8 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
                     min_ix = i;
                 }
             }
-        } else {
-            ++skips;
         }
     }
-    printf("selected_element_ix: tests = %d, skips = %d\n", tests, skips);
     if (min_e == NULL)
         return -1;
     int sf = selected_top_subface(min_e, sx, sy);

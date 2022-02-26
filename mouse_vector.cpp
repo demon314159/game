@@ -3,9 +3,7 @@
 #include "math.h"
 
 MouseVector::MouseVector(Float3 origin, Float3 vector)
-    : m_is_on(false)
-    , m_is_dirty(true)
-    , m_origin(origin)
+    : m_origin(origin)
     , m_vector(vector)
 {
 }
@@ -24,32 +22,10 @@ Float3 MouseVector::vector() const
     return m_vector;
 }
 
-bool MouseVector::is_on() const
-{
-    return m_is_on;
-}
-
-bool MouseVector::is_dirty() const
-{
-    return m_is_dirty;
-}
-
-void MouseVector::make_clean()
-{
-    m_is_dirty = false;
-}
-
-void MouseVector::make_dirty()
-{
-    m_is_dirty = true;
-}
-
 void MouseVector::set_new_vector(Float3 origin, Float3 vector)
 {
     m_origin = origin;
     m_vector = vector;
-    m_is_on = true;
-    make_dirty();
 }
 
 void MouseVector::translate(Float3 off)
@@ -57,7 +33,6 @@ void MouseVector::translate(Float3 off)
     m_origin.v1 += off.v1;
     m_origin.v2 += off.v2;
     m_origin.v3 += off.v3;
-    make_dirty();
 }
 
 void MouseVector::rotate_ay(float deg)
@@ -71,7 +46,6 @@ void MouseVector::rotate_ay(float deg)
     t_vec.v3 = m_vector.v1 * sin(angle) + m_vector.v3 * cos(angle);
     m_origin = t_org;
     m_vector = t_vec;
-    make_dirty();
 }
 
 void MouseVector::rotate_ax(float deg)
@@ -85,18 +59,6 @@ void MouseVector::rotate_ax(float deg)
     t_vec.v3 = -m_vector.v2 * sin(angle) + m_vector.v3 * cos(angle);
     m_origin = t_org;
     m_vector = t_vec;
-    make_dirty();
 }
 
-void MouseVector::turn_on()
-{
-    m_is_on = true;
-    make_dirty();
-}
-
-void MouseVector::turn_off()
-{
-    m_is_on = false;
-    make_dirty();
-}
 

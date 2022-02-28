@@ -59,7 +59,8 @@ protected:
     void decorate_model();
     void check_storage();
     void copy_facets();
-    void sub_copy_facets(VertexData* vertices, int& vix, bool transparent);
+    void copy_aux_facets();
+    void sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent);
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
@@ -81,10 +82,12 @@ protected:
 private:
     Vmenu m_vmenu;
     Choose m_choose;
-    int m_max_vertices;
-    int m_vertices;
+    int m_max_vertex_count;
+    int m_vertex_count;
+    int m_aux_vertex_count;
     Document* m_doc;
     CadModel* m_model;
+    CadModel* m_aux_model;
     QOpenGLBuffer m_vertex_buf;
     float m_radius;
     Float3 m_center;

@@ -13,10 +13,12 @@
 View::View(Document* doc)
     : m_vmenu()
     , m_choose()
-    , m_max_vertices(1024 * 1024)
-    , m_vertices(0)
+    , m_max_vertex_count(1024 * 1024)
+    , m_vertex_count(0)
+    , m_aux_vertex_count(0)
     , m_doc(doc)
     , m_model(new CadModel(doc))
+    , m_aux_model(new CadModel())
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
     , m_width((512 * 1920) / 1080)
@@ -178,6 +180,7 @@ View::~View()
     printf("View::~View()\n");
 #endif
     delete m_model;
+    delete m_aux_model;
     delete m_doc;
     m_vertex_buf.destroy();
 }
@@ -214,32 +217,33 @@ bool View::initialize()
     resize_calc();
     m_vertex_buf.create();
     m_vertex_buf.bind();
-    m_max_vertices = std::max(m_max_vertices, 6 * m_model->facets());
-    m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
+    m_max_vertex_count = std::max(m_max_vertex_count, 6 * m_model->facets());
+    m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
     copy_facets();
+    copy_aux_facets();
     return true;
 }
 
-void View::sub_copy_facets(VertexData* vertices, int& vix, bool transparent)
+void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent)
 {
     float an_id;
     Float3 vp, vc, vn;
-    for (int i = 0; i < m_model->facets(); i++) {
-        an_id = m_model->facet_animation_id(i);
+    for (int i = 0; i < model->facets(); i++) {
+        an_id = model->facet_animation_id(i);
         if ((transparent && (an_id == 99.0)) || (!transparent && (an_id != 99.0))) {
-            vc = m_model->facet_color(i);
-            vn = m_model->facet_normal(i);
-            vp = m_model->facet_v1(i);
+            vc = model->facet_color(i);
+            vn = model->facet_normal(i);
+            vp = model->facet_v1(i);
             vertices[vix].animation_id = an_id;
             vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
             vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
             vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
-            vp = m_model->facet_v2(i);
+            vp = model->facet_v2(i);
             vertices[vix].animation_id = an_id;
             vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
             vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
             vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
-            vp = m_model->facet_v3(i);
+            vp = model->facet_v3(i);
             vertices[vix].animation_id = an_id;
             vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
             vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
@@ -250,16 +254,31 @@ void View::sub_copy_facets(VertexData* vertices, int& vix, bool transparent)
 
 void View::copy_facets()
 {
-    m_vertices = 3 * m_model->facets();
-    if (m_vertices == 0) {
+    m_vertex_count = 3 * m_model->facets();
+    if (m_vertex_count == 0) {
         return;
     }
-    VertexData* vertices = new VertexData[m_vertices];
+    VertexData* vertices = new VertexData[m_vertex_count];
     int vix = 0;
-    sub_copy_facets(vertices, vix, false);
-    sub_copy_facets(vertices, vix, true);
+    sub_copy_facets(m_model, vertices, vix, false);
+    sub_copy_facets(m_model, vertices, vix, true);
     // Transfer vertex data to VBO 0
-    m_vertex_buf.write(0, vertices, m_vertices * sizeof(VertexData));
+    m_vertex_buf.write(0, vertices, m_vertex_count * sizeof(VertexData));
+    delete [] vertices;
+}
+
+void View::copy_aux_facets()
+{
+    m_aux_vertex_count = 3 * m_aux_model->facets();
+    if (m_aux_vertex_count == 0) {
+        return;
+    }
+    VertexData* vertices = new VertexData[m_aux_vertex_count];
+    int vix = 0;
+    sub_copy_facets(m_aux_model, vertices, vix, false);
+    sub_copy_facets(m_aux_model, vertices, vix, true);
+    // Transfer vertex data to VBO 0
+    m_vertex_buf.write(m_vertex_count * sizeof(VertexData), vertices, m_aux_vertex_count * sizeof(VertexData));
     delete [] vertices;
 }
 
@@ -288,10 +307,10 @@ void View::resize_calc()
 
 void View::check_storage()
 {
-    if (m_max_vertices > (3 * m_model->facets()))
+    if (m_max_vertex_count > (3 * (m_model->facets() + m_aux_model->facets())))
         return;
-    m_max_vertices = std::max(2 * m_max_vertices, 6 * m_model->facets());
-    m_vertex_buf.allocate(m_max_vertices * sizeof(VertexData));
+    m_max_vertex_count = std::max(2 * m_max_vertex_count, 6 * (m_model->facets() + m_aux_model->facets()));
+    m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
 }
 
 void View::paint()
@@ -299,23 +318,28 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty() || m_vmenu.is_dirty()) {
+    if (m_doc->is_dirty()) {
         delete m_model;
         m_model = new CadModel(m_doc);
         decorate_model();
-        m_vmenu.add_to(m_model);
         if (m_doc->is_filthy()) {
-//            rotate_home();
             zoom_home();
             translate_home();
         }
         resize_calc();
         check_storage();
         copy_facets();
+        m_vmenu.make_dirty();
         if (m_doc->is_dirty()) {
             m_doc->make_clean();
             m_choose.select_no_choice();
         }
+    }
+    if (m_vmenu.is_dirty()) {
+        delete m_aux_model;
+        m_aux_model = new CadModel();
+        m_vmenu.add_to(m_aux_model);
+        copy_aux_facets();
         if (m_vmenu.is_dirty())
             m_vmenu.make_clean();
     }
@@ -409,7 +433,7 @@ void View::render_facets()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glDrawArrays(GL_TRIANGLES, 0, m_vertices);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertex_count + m_aux_vertex_count);
 }
 
 void View::translate_x(int x)

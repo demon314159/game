@@ -818,7 +818,6 @@ bool View::span_blocked(Float3 pos, int span, int orientation) const
             tpos.v1 = 0.5 + pos.v1 - half_width + (float) i;
         tpos.v2 += 0.25;
         if (m_doc->contains(tpos)) {
-            printf("     blocked because doc contains (%f, %f, %f)\n", tpos.v1, tpos.v2, tpos.v3);
             return true; // At least one element
         }
     }

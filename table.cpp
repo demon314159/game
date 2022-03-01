@@ -383,18 +383,29 @@ void Table::save_command()
 {
     if (!m_view->get_vmenu().menu_active()) {
         releaseKeyboard();
-        QString file_name = QFileDialog::getSaveFileName(this,
-            tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
+        QFileDialog dialog(this);
+        dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+        dialog.setViewMode(QFileDialog::List);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setWindowTitle(tr("Save Brick Model"));
+        dialog.setFileMode(QFileDialog::AnyFile);
+        dialog.setNameFilter(tr("Brick Models (*.brk)"));
+        dialog.setDefaultSuffix(tr("brk"));
+        QStringList file_names;
+        if (dialog.exec()) {
+            file_names = dialog.selectedFiles();
+            if (file_names.size() == 1) {
+                QString file_name = file_names.at(0);
+                if (file_name.length() > 0) {
+                    Document* doc = m_view->get_doc();
+                    QString error_msg;
+                    if (!doc->save(file_name, error_msg)) {
+                        printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
+                    }
+                }
+            }
+        }
         grabKeyboard();
-        if (file_name.length() == 0) {
-            printf("No file selected\n");
-            return;
-        }
-        Document* doc = m_view->get_doc();
-        QString error_msg;
-        if (!doc->save(file_name, error_msg)) {
-            printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
-        }
     }
 }
 

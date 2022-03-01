@@ -367,15 +367,29 @@ void Table::load_command()
 {
     if (!m_view->get_vmenu().menu_active()) {
         releaseKeyboard();
-        QString file_name = QFileDialog::getOpenFileName(this,
-            tr("Open Brick File"), "", tr("BRK Files (*.brk)"));
-        grabKeyboard();
-        if (file_name.length() == 0) {
-            printf("No file selected\n");
-            return;
+        QFileDialog dialog(this);
+        dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+        dialog.setViewMode(QFileDialog::List);
+        dialog.setWindowTitle(tr("Load Brick Model"));
+        dialog.setFileMode(QFileDialog::AnyFile);
+        dialog.setNameFilter(tr("Brick Models (*.brk)"));
+        dialog.setDefaultSuffix(tr("brk"));
+        QStringList file_names;
+        if (dialog.exec()) {
+            file_names = dialog.selectedFiles();
+            if (file_names.size() == 1) {
+                QString file_name = file_names.at(0);
+                if (file_name.length() > 0) {
+                    do_command(new LoadCommand(file_name, m_view));
+                    update();
+                } else {
+                    printf("No file selected\n");
+                }
+            } else {
+                printf("No file selected\n");
+            }
         }
-        do_command(new LoadCommand(file_name, m_view));
-        update();
+        grabKeyboard();
     }
 }
 

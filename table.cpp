@@ -222,6 +222,10 @@ void Table::mousePressEvent(QMouseEvent* e)
             spawn_add_element_command();
         } else {
             switch (action_id) {
+                case Vmenu::ACTION_FLIP:
+                    m_me.flip();
+                    update_morph_element();
+                    break;
                 case Vmenu::ACTION_INCREASE_HEIGHT:
                     m_me.increase_height();
                     update_morph_element();
@@ -441,6 +445,9 @@ void Table::add_morph_button()
     vmenu.add_morph({-dd, -dd, 0.0});
     if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
         float dx = Look::dimx / 2;
+
+        vmenu.add_flip(corrected_pos(m_me.pos(), 0.0, 3 * dx, 0.6, m_me.orientation()), m_me.orientation());
+
         vmenu.add_increase_height(corrected_pos(m_me.pos(), -dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
         vmenu.add_decrease_height(corrected_pos(m_me.pos(), dx, 0.5, 0.6, m_me.orientation()), m_me.orientation());
         vmenu.add_done(corrected_pos(m_me.pos(), dx + Look::dimx, 0.5, 0.6, m_me.orientation()), m_me.orientation());

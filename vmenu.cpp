@@ -12,6 +12,7 @@
 #include "bounding_box.h"
 
 #include <stdio.h>
+#include <math.h>
 
 Vmenu::Vmenu()
   : m_is_dirty(false)
@@ -26,6 +27,8 @@ Vmenu::~Vmenu()
 CadModel Vmenu::m_model_undo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_redo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);
+CadModel Vmenu::m_model_flip1 = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_LEFT), Look::blue_paint, 0.0);
+CadModel Vmenu::m_model_flip2 = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::blue_paint, 0.0);
 CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::blue_paint, 0.0);
@@ -55,6 +58,11 @@ void Vmenu::add_redo(Float3 position)
 void Vmenu::add_morph(Float3 position)
 {
     add_item(ACTION_MORPH, position, 0);
+}
+
+void Vmenu::add_flip(Float3 position, int orientation)
+{
+    add_item(ACTION_FLIP, position, orientation);
 }
 
 void Vmenu::add_increase_height(Float3 position, int orientation)
@@ -128,6 +136,12 @@ void Vmenu::add_to(CadModel* model) const
             case ACTION_MORPH:
                 cm.add(m_model_morph);
                 break;
+            case ACTION_FLIP:
+                cm.add(m_model_flip1, -0.25);
+                cm.add(m_model_flip2, 0.25);
+                cm.add(m_model_background, -0.25);
+                cm.add(m_model_background, 0.25);
+                break;
             case ACTION_INCREASE_HEIGHT:
                 cm.add(m_model_increase_height);
                 cm.add(m_model_background);
@@ -197,6 +211,8 @@ Face Vmenu::face(int ix) const
 {
     Float3 pos = m_position[ix];
     BoundingBox bb;
+    BoundingBox bb1;
+    BoundingBox bb2;
     switch (m_action[ix]) {
         case ACTION_UNDO:
             bb = m_model_undo.bounding_box();
@@ -206,6 +222,16 @@ Face Vmenu::face(int ix) const
             break;
         case ACTION_MORPH:
             bb = m_model_morph.bounding_box();
+            break;
+        case ACTION_FLIP:
+            bb1 = m_model_flip1.bounding_box();
+            bb2 = m_model_flip2.bounding_box();
+            bb.vmin.v1 = fmin(bb1.vmin.v1, bb2.vmin.v1);
+            bb.vmin.v2 = fmin(bb1.vmin.v2, bb2.vmin.v2);
+            bb.vmin.v3 = fmin(bb1.vmin.v3, bb2.vmin.v3);
+            bb.vmax.v1 = fmax(bb1.vmax.v1, bb2.vmax.v1);
+            bb.vmax.v2 = fmax(bb1.vmax.v2, bb2.vmax.v2);
+            bb.vmax.v3 = fmax(bb1.vmax.v3, bb2.vmax.v3);
             break;
         case ACTION_INCREASE_HEIGHT:
             bb = m_model_increase_height.bounding_box();

@@ -224,12 +224,13 @@ Face Vmenu::face(int ix) const
             bb = m_model_morph.bounding_box();
             break;
         case ACTION_FLIP:
+            bb = m_model_flip1.bounding_box();
             bb1 = m_model_flip1.bounding_box();
             bb2 = m_model_flip2.bounding_box();
-            bb.vmin.v1 = fmin(bb1.vmin.v1, bb2.vmin.v1);
+            bb.vmin.v1 = fmin(bb1.vmin.v1, bb2.vmin.v1) - 0.25;
             bb.vmin.v2 = fmin(bb1.vmin.v2, bb2.vmin.v2);
             bb.vmin.v3 = fmin(bb1.vmin.v3, bb2.vmin.v3);
-            bb.vmax.v1 = fmax(bb1.vmax.v1, bb2.vmax.v1);
+            bb.vmax.v1 = fmax(bb1.vmax.v1, bb2.vmax.v1) + 0.25;
             bb.vmax.v2 = fmax(bb1.vmax.v2, bb2.vmax.v2);
             bb.vmax.v3 = fmax(bb1.vmax.v3, bb2.vmax.v3);
             break;

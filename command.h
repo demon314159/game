@@ -36,7 +36,6 @@ public:
     void unexecute() override;
 private:
     int m_ix;
-    Element* m_removed_element;
     Document* m_doc;
 };
 

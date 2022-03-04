@@ -8,7 +8,8 @@
 #include <stdio.h>
 
 Element::Element(Float3 pos)
-    : m_pos(pos)
+    : m_removed(false)
+    , m_pos(pos)
 {
 }
 
@@ -20,6 +21,21 @@ void Element::save_to_file(QDataStream& ds) const
 {
     QString msg = QString("%1, %2, %3").arg(m_pos.v1).arg(m_pos.v2).arg(m_pos.v3);
     ds.writeRawData(msg.toLatin1().data(), msg.length());
+}
+
+void Element::remove()
+{
+    m_removed = true;
+}
+
+void Element::unremove()
+{
+    m_removed = false;
+}
+
+bool Element::removed() const
+{
+    return m_removed;
 }
 
 Float3 Element::pos() const

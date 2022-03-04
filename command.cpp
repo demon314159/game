@@ -21,38 +21,38 @@ AddElementCommand::~AddElementCommand()
 
 void AddElementCommand::execute()
 {
-    m_ix = m_doc->elements();
-    m_doc->add_element(m_element_to_add);
-    m_element_to_add = NULL;
+    if (m_element_to_add == NULL) {
+        m_doc->unremove_element(m_ix);
+    } else {
+        m_ix = m_doc->elements();
+        m_doc->add_element(m_element_to_add);
+        m_element_to_add = NULL;
+    }
 }
 
 void AddElementCommand::unexecute()
 {
-    m_element_to_add = m_doc->remove_element(m_ix);
+    m_doc->remove_element(m_ix);
 }
 
 RemoveElementCommand::RemoveElementCommand(int ix, View* view)
     : m_ix(ix)
-    , m_removed_element(NULL)
     , m_doc(view->get_doc())
 {
 }
 
 RemoveElementCommand::~RemoveElementCommand()
 {
-    if (m_removed_element != NULL)
-        delete m_removed_element;
 }
 
 void RemoveElementCommand::execute()
 {
-    m_removed_element = m_doc->remove_element(m_ix);
+    m_doc->remove_element(m_ix);
 }
 
 void RemoveElementCommand::unexecute()
 {
-    m_doc->add_element(m_removed_element, m_ix);
-    m_removed_element = NULL;
+    m_doc->unremove_element(m_ix);
 }
 
 LoadCommand::LoadCommand(const QString& file_name, View* view)

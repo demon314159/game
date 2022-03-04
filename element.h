@@ -44,6 +44,9 @@ public:
     Element(Float3 pos);
     Element() = delete;
     virtual ~Element();
+    void remove();
+    void unremove();
+    bool removed() const;
     Float3 pos() const;
     virtual int kind() const;
     virtual int width() const;
@@ -66,6 +69,7 @@ protected:
     Float3 face_vertex(float xf, float yf, float zf) const;
     Face common_gen_face(int ix, float xf, float yf, float zf, bool gable_flag, int orientation) const;
 private:
+    bool m_removed;
     Float3 m_pos;
     static CadModel m_default_model;
 };

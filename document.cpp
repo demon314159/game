@@ -86,18 +86,22 @@ void Document::add_element(Element* e, int ix)
     m_is_dirty = true;
 }
 
-Element* Document::remove_element(int ix)
+void Document::remove_element(int ix)
 {
     if (m_elements == 0)
-        return NULL;
+        return;
     int index = std::min(ix, m_elements - 1);
-    Element* e = m_element_ptr[index];
-    --m_elements;
-    for (int i = index; i < m_elements; i++) {
-        m_element_ptr[i] = m_element_ptr[i + 1];
-    }
+    m_element_ptr[index]->remove();
     m_is_dirty = true;
-    return e;
+}
+
+void Document::unremove_element(int ix)
+{
+    if (m_elements == 0)
+        return;
+    int index = std::min(ix, m_elements - 1);
+    m_element_ptr[index]->unremove();
+    m_is_dirty = true;
 }
 
 bool Document::load(const QString& file_name, QString& error_message)

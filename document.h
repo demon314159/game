@@ -19,7 +19,8 @@ public:
     const Element* element(int ix) const;
     void add_element(Element* e);
     void add_element(Element* e, int ix);
-    Element* remove_element(int ix);
+    void remove_element(int ix);
+    void unremove_element(int ix);
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;
     bool is_dirty() const;

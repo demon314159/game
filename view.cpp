@@ -704,11 +704,13 @@ bool View::no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv
 {
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-            for (int j = 0; j < 6; j++) {
-                Face f = e->face(j);
-                if (screen_point_inside_face(f, sx, sy)) {  // Very expensive test times 6 for each candidate
-                    return false;
+        if (!e->removed()) {
+            if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+                for (int j = 0; j < 6; j++) {
+                    Face f = e->face(j);
+                    if (screen_point_inside_face(f, sx, sy)) {  // Very expensive test times 6 for each candidate
+                        return false;
+                    }
                 }
             }
         }
@@ -736,15 +738,17 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-            if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
-                if (depth < min_depth || e->top_level() > max_level) {
-                    if (depth < min_depth)
-                        min_depth = depth;
-                    if (e->top_level() > max_level)
-                        max_level = e->top_level();
-                    min_e = e;
-                    min_ix = i;
+        if (!e->removed()) {
+            if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+                if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
+                    if (depth < min_depth || e->top_level() > max_level) {
+                        if (depth < min_depth)
+                            min_depth = depth;
+                        if (e->top_level() > max_level)
+                            max_level = e->top_level();
+                        min_e = e;
+                        min_ix = i;
+                    }
                 }
             }
         }
@@ -875,12 +879,14 @@ int View::span_clearance(Float3 pos, int span, int orientation) const // return 
     float min_height = 0.0;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
-        if (e->kind() == ELEMENT_LEDGE) {
-            if (element_is_above_span(e, pos, span, orientation)) {
-                if (min_height == 0.0)
-                    min_height = e->pos().v2;
-                else
-                    min_height = fmin(e->pos().v2, min_height);
+        if (!e->removed()) {
+            if (e->kind() == ELEMENT_LEDGE) {
+                if (element_is_above_span(e, pos, span, orientation)) {
+                    if (min_height == 0.0)
+                        min_height = e->pos().v2;
+                    else
+                        min_height = fmin(e->pos().v2, min_height);
+                }
             }
         }
     }

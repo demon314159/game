@@ -31,12 +31,14 @@ CadModel::CadModel(Document* doc)
         m_facet = new Facet[m_facet_count];
         m_facet_count = 0;
         for (int i = 0; i < doc->elements(); i++) {
-            Float3 offset = doc->element(i)->pos();
-            offset.v2 *= (2.0 / 3.0);
-            const CadModel& cm = doc->element(i)->model();
-            for (int j = 0; j < cm.facets(); j++) {
-                m_facet[m_facet_count] = translate(cm.facet(j), offset);
-                ++m_facet_count;
+            if (!doc->element(i)->removed()) {
+                Float3 offset = doc->element(i)->pos();
+                offset.v2 *= (2.0 / 3.0);
+                const CadModel& cm = doc->element(i)->model();
+                for (int j = 0; j < cm.facets(); j++) {
+                    m_facet[m_facet_count] = translate(cm.facet(j), offset);
+                    ++m_facet_count;
+                }
             }
         }
     }

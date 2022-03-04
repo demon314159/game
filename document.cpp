@@ -41,7 +41,9 @@ int Document::facets() const
     int total = 0;
     for (int i = 0; i < m_elements; i++) {
         Element* e = m_element_ptr[i];
-        total += e->model().facets();
+        if (!e->removed()) {
+            total += e->model().facets();
+        }
     }
     return total;
 }
@@ -62,24 +64,6 @@ void Document::add_element(Element* e)
         double_the_storage();
     }
     m_element_ptr[m_elements] = e;
-    if (m_elements == 0)
-        m_is_filthy = true;
-    ++m_elements;
-    m_is_dirty = true;
-}
-
-void Document::add_element(Element* e, int ix)
-{
-    if (e == NULL)
-        return;
-    if (m_elements >= m_max_elements) {
-        double_the_storage();
-    }
-    int index = std::min(ix, m_elements);
-    for (int i = index; i < m_elements; i++) {
-        m_element_ptr[m_elements - i + index] = m_element_ptr[m_elements - i + index - 1];
-    }
-    m_element_ptr[index] = e;
     if (m_elements == 0)
         m_is_filthy = true;
     ++m_elements;
@@ -277,7 +261,9 @@ bool Document::save(const QString& file_name, QString& error_message) const
     QString msg = "Bricks Document v0.1.0\n";
     ds.writeRawData(msg.toLatin1().data(), msg.length());
     for (int i = 0; i < m_elements; i++) {
-        m_element_ptr[i]->save_to_file(ds);
+        if (!m_element_ptr[i]->removed()) {
+            m_element_ptr[i]->save_to_file(ds);
+        }
     }
     ffi.close();
     return true;
@@ -405,8 +391,10 @@ bool Document::contains(Float3 pos) const
     if (m_elements < 1)
         return false;
     for (int i = 0; i < m_elements; i++) {
-        if (m_element_ptr[i]->contains(pos))
-            return true;
+        if (!m_element_ptr[i]->removed()) {
+            if (m_element_ptr[i]->contains(pos))
+                return true;
+        }
     }
     return false;
 }

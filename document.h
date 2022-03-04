@@ -18,7 +18,6 @@ public:
     int facets() const;
     const Element* element(int ix) const;
     void add_element(Element* e);
-    void add_element(Element* e, int ix);
     void remove_element(int ix);
     void unremove_element(int ix);
     bool load(const QString& file_name, QString& error_message);

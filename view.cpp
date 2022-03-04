@@ -826,7 +826,7 @@ bool View::span_blocked(Float3 pos, int span, int orientation) const
 
 bool View::element_is_above_span(const Element* e, Float3 pos, int span, int orientation) const
 {
-    if (e->get_pos().v2 <= pos.v2)
+    if (e->pos().v2 <= pos.v2)
         return false;
     if (orientation == 0 || orientation == 2) { // cases 2 and 3
         float width = span + 1;
@@ -835,15 +835,15 @@ bool View::element_is_above_span(const Element* e, Float3 pos, int span, int ori
         float span_z = pos.v3;
         if (e->orientation() == 0 || e->orientation() == 2) {  // case 3
             float ewidth = e->width();
-            float e_xlo = e->get_pos().v1 - ewidth / 2;
-            float e_xhi = e->get_pos().v1 + ewidth / 2;
-            float e_z = e->get_pos().v3;
+            float e_xlo = e->pos().v1 - ewidth / 2;
+            float e_xhi = e->pos().v1 + ewidth / 2;
+            float e_z = e->pos().v3;
             return (e_z == span_z) && (span_xhi >= e_xlo && span_xlo <= e_xhi);
         } else {                                              // case 2
             float ewidth = e->width();
-            float e_zlo = e->get_pos().v3 - ewidth / 2;
-            float e_zhi = e->get_pos().v3 + ewidth / 2;
-            float e_x = e->get_pos().v1;
+            float e_zlo = e->pos().v3 - ewidth / 2;
+            float e_zhi = e->pos().v3 + ewidth / 2;
+            float e_x = e->pos().v1;
             return (e_zlo <= span_z && e_zhi >= span_z) && (span_xlo <= e_x && span_xhi >= e_x);
         }
     } else {                                    // cases 1 and 4
@@ -853,15 +853,15 @@ bool View::element_is_above_span(const Element* e, Float3 pos, int span, int ori
         float span_x = pos.v1;
         if (e->orientation() == 0 || e->orientation() == 2) {  // case 1
             float ewidth = e->width();
-            float e_xlo = e->get_pos().v1 - ewidth / 2;
-            float e_xhi = e->get_pos().v1 + ewidth / 2;
-            float e_z = e->get_pos().v3;
+            float e_xlo = e->pos().v1 - ewidth / 2;
+            float e_xhi = e->pos().v1 + ewidth / 2;
+            float e_z = e->pos().v3;
             return (span_zlo <= e_z && span_zhi >= e_z) && (e_xlo <= span_x && e_xhi >= span_x);
         } else {                                              // case 4
             float ewidth = e->width();
-            float e_zlo = e->get_pos().v3 - ewidth / 2;
-            float e_zhi = e->get_pos().v3 + ewidth / 2;
-            float e_x = e->get_pos().v1;
+            float e_zlo = e->pos().v3 - ewidth / 2;
+            float e_zhi = e->pos().v3 + ewidth / 2;
+            float e_x = e->pos().v1;
             return (e_x == span_x) && (span_zhi >= e_zlo && span_zlo <= e_zhi);
         }
     }
@@ -878,9 +878,9 @@ int View::span_clearance(Float3 pos, int span, int orientation) const // return 
         if (e->kind() == ELEMENT_LEDGE) {
             if (element_is_above_span(e, pos, span, orientation)) {
                 if (min_height == 0.0)
-                    min_height = e->get_pos().v2;
+                    min_height = e->pos().v2;
                 else
-                    min_height = fmin(e->get_pos().v2, min_height);
+                    min_height = fmin(e->pos().v2, min_height);
             }
         }
     }

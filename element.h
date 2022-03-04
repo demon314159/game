@@ -44,7 +44,7 @@ public:
     Element(Float3 pos);
     Element() = delete;
     virtual ~Element();
-    Float3 get_pos() const;
+    Float3 pos() const;
     virtual int kind() const;
     virtual int width() const;
     virtual int orientation() const;

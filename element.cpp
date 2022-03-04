@@ -22,13 +22,9 @@ void Element::save_to_file(QDataStream& ds) const
     ds.writeRawData(msg.toLatin1().data(), msg.length());
 }
 
-Float3 Element::get_pos() const
+Float3 Element::pos() const
 {
-    Float3 pos;
-    pos.v1 = m_pos.v1;
-    pos.v2 = m_pos.v2;
-    pos.v3 = m_pos.v3;
-    return pos;
+    return m_pos;
 }
 
 int Element::orientation() const
@@ -393,19 +389,19 @@ int BrickElement::orientation() const
 BoundingBox BrickElement::bounding_box() const
 {
     BoundingBox bb;
-    Float3 pos = get_pos();
-    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0;
-    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    Float3 apos = pos();
+    bb.vmin.v2 = apos.v2 * dimh - dimh / 2.0;
+    bb.vmax.v2 = apos.v2 * dimh + dimh / 2.0;
     if (m_orientation == 0 || m_orientation == 2) {
-        bb.vmin.v1 = pos.v1 - dimx;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0;
-        bb.vmax.v1 = pos.v1 + dimx;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+        bb.vmin.v1 = apos.v1 - dimx;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0;
+        bb.vmax.v1 = apos.v1 + dimx;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0;
     } else {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0;
-        bb.vmin.v3 = pos.v3 - dimx;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0;
-        bb.vmax.v3 = pos.v3 + dimx;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0;
+        bb.vmin.v3 = apos.v3 - dimx;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0;
+        bb.vmax.v3 = apos.v3 + dimx;
     }
     return bb;
 }
@@ -518,14 +514,12 @@ const CadModel& DoorElement::model() const
 
 float DoorElement::top_level() const
 {
-    Float3 pos = get_pos();
-    return pos.v2 + m_height / 2.0;
+    return pos().v2 + m_height / 2.0;
 }
 
 float DoorElement::bottom_level() const
 {
-    Float3 pos = get_pos();
-    return pos.v2 - m_height / 2.0;
+    return pos().v2 - m_height / 2.0;
 }
 
 Face DoorElement::face(int ix) const
@@ -567,19 +561,19 @@ int DoorElement::orientation() const
 BoundingBox DoorElement::bounding_box() const
 {
     BoundingBox bb;
-    Float3 pos = get_pos();
-    bb.vmin.v2 = pos.v2 *dimh - m_height * dimh / 2.0;
-    bb.vmax.v2 = pos.v2 *dimh + m_height * dimh / 2.0;
+    Float3 apos = pos();
+    bb.vmin.v2 = apos.v2 *dimh - m_height * dimh / 2.0;
+    bb.vmax.v2 = apos.v2 *dimh + m_height * dimh / 2.0;
     if (m_orientation == 0 || m_orientation == 2) {
-        bb.vmin.v1 = pos.v1 - m_width / 2.0;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0;
-        bb.vmax.v1 = pos.v1 + m_width / 2.0;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+        bb.vmin.v1 = apos.v1 - m_width / 2.0;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0;
+        bb.vmax.v1 = apos.v1 + m_width / 2.0;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0;
     } else {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0;
-        bb.vmin.v3 = pos.v3 - m_width / 2.0;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0;
-        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0;
+        bb.vmin.v3 = apos.v3 - m_width / 2.0;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0;
+        bb.vmax.v3 = apos.v3 + m_width / 2.0;
     }
     return bb;
 }
@@ -628,14 +622,12 @@ const CadModel& WindowElement::model() const
 
 float WindowElement::top_level() const
 {
-    Float3 pos = get_pos();
-    return pos.v2 + m_height / 2.0;
+    return pos().v2 + m_height / 2.0;
 }
 
 float WindowElement::bottom_level() const
 {
-    Float3 pos = get_pos();
-    return pos.v2 - m_height / 2.0;
+    return pos().v2 - m_height / 2.0;
 }
 
 Face WindowElement::face(int ix) const
@@ -677,19 +669,19 @@ int WindowElement::orientation() const
 BoundingBox WindowElement::bounding_box() const
 {
     BoundingBox bb;
-    Float3 pos = get_pos();
-    bb.vmin.v2 = pos.v2 * dimh - m_height * dimh / 2.0;
-    bb.vmax.v2 = pos.v2 * dimh + m_height * dimh / 2.0;
+    Float3 apos = pos();
+    bb.vmin.v2 = apos.v2 * dimh - m_height * dimh / 2.0;
+    bb.vmax.v2 = apos.v2 * dimh + m_height * dimh / 2.0;
     if (m_orientation == 0 || m_orientation == 2) {
-        bb.vmin.v1 = pos.v1 - m_width / 2.0;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0;
-        bb.vmax.v1 = pos.v1 + m_width / 2.0;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+        bb.vmin.v1 = apos.v1 - m_width / 2.0;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0;
+        bb.vmax.v1 = apos.v1 + m_width / 2.0;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0;
     } else {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0;
-        bb.vmin.v3 = pos.v3 - m_width / 2.0;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0;
-        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0;
+        bb.vmin.v3 = apos.v3 - m_width / 2.0;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0;
+        bb.vmax.v3 = apos.v3 + m_width / 2.0;
     }
     return bb;
 }
@@ -738,8 +730,7 @@ const CadModel& RoofElement::model() const
 
 float RoofElement::top_level() const
 {
-    Float3 pos = get_pos();
-    return pos.v2 + 1.0;
+    return pos().v2 + 1.0;
 }
 
 Face RoofElement::face(int ix) const
@@ -781,30 +772,30 @@ int RoofElement::orientation() const
 BoundingBox RoofElement::bounding_box() const
 {
     BoundingBox bb;
-    Float3 pos = get_pos();
+    Float3 apos = pos();
     float q = dimb / 4;
-    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0 - q * dimh;
-    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    bb.vmin.v2 = apos.v2 * dimh - dimh / 2.0 - q * dimh;
+    bb.vmax.v2 = apos.v2 * dimh + dimh / 2.0;
     if (m_orientation == 0) {
-        bb.vmin.v1 = pos.v1 - m_width / 2.0 - q;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0;
-        bb.vmax.v1 = pos.v1 + m_width / 2.0 + q;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0 + q;
+        bb.vmin.v1 = apos.v1 - m_width / 2.0 - q;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0;
+        bb.vmax.v1 = apos.v1 + m_width / 2.0 + q;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0 + q;
     } else if (m_orientation == 2) {
-        bb.vmin.v1 = pos.v1 - m_width / 2.0 - q;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0 - q;
-        bb.vmax.v1 = pos.v1 + m_width / 2.0 + q;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+        bb.vmin.v1 = apos.v1 - m_width / 2.0 - q;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0 - q;
+        bb.vmax.v1 = apos.v1 + m_width / 2.0 + q;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0;
     } else if (m_orientation == 1) {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0;
-        bb.vmin.v3 = pos.v3 - m_width / 2.0 - q;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0 + q;
-        bb.vmax.v3 = pos.v3 + m_width / 2.0 + q;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0;
+        bb.vmin.v3 = apos.v3 - m_width / 2.0 - q;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0 + q;
+        bb.vmax.v3 = apos.v3 + m_width / 2.0 + q;
     } else {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0 - q;
-        bb.vmin.v3 = pos.v3 - m_width / 2.0 - q;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0;
-        bb.vmax.v3 = pos.v3 + m_width / 2.0 + q;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0 - q;
+        bb.vmin.v3 = apos.v3 - m_width / 2.0 - q;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0;
+        bb.vmax.v3 = apos.v3 + m_width / 2.0 + q;
     }
     return bb;
 }
@@ -886,19 +877,19 @@ int LedgeElement::orientation() const
 BoundingBox LedgeElement::bounding_box() const
 {
     BoundingBox bb;
-    Float3 pos = get_pos();
-    bb.vmin.v2 = pos.v2 * dimh - dimh / 2.0;
-    bb.vmax.v2 = pos.v2 * dimh + dimh / 2.0;
+    Float3 apos = pos();
+    bb.vmin.v2 = apos.v2 * dimh - dimh / 2.0;
+    bb.vmax.v2 = apos.v2 * dimh + dimh / 2.0;
     if (m_orientation == 0 || m_orientation == 2) {
-        bb.vmin.v1 = pos.v1 - m_width / 2.0;
-        bb.vmin.v3 = pos.v3 - dimx / 2.0;
-        bb.vmax.v1 = pos.v1 + m_width / 2.0;
-        bb.vmax.v3 = pos.v3 + dimx / 2.0;
+        bb.vmin.v1 = apos.v1 - m_width / 2.0;
+        bb.vmin.v3 = apos.v3 - dimx / 2.0;
+        bb.vmax.v1 = apos.v1 + m_width / 2.0;
+        bb.vmax.v3 = apos.v3 + dimx / 2.0;
     } else {
-        bb.vmin.v1 = pos.v1 - dimx / 2.0;
-        bb.vmin.v3 = pos.v3 - m_width / 2.0;
-        bb.vmax.v1 = pos.v1 + dimx / 2.0;
-        bb.vmax.v3 = pos.v3 + m_width / 2.0;
+        bb.vmin.v1 = apos.v1 - dimx / 2.0;
+        bb.vmin.v3 = apos.v3 - m_width / 2.0;
+        bb.vmax.v1 = apos.v1 + dimx / 2.0;
+        bb.vmax.v3 = apos.v3 + m_width / 2.0;
     }
     return bb;
 }

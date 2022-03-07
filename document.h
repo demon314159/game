@@ -4,7 +4,19 @@
 
 #include "element.h"
 #include "token_interface.h"
+#include "bounding_box.h"
 #include <QString>
+
+// Dirty means that one element has changed and only a small patch will be made to the vertex data
+// Filthy means that more than one element has changed and the vertex data will be rebuilt entirely
+//
+// Most user edit operations only dirty the document and the image can be maintained with no lag
+// add_element:  dirty
+// remove_element: dirty
+// unremove_element: dirty
+// new: filthy
+// load: filthy
+// save: neither because document remains unchanged
 
 class Element;
 
@@ -28,19 +40,27 @@ public:
     void make_dirty();
     void make_filthy();
     bool contains(Float3 pos) const;
+    int indexes() const;
+    void set_index(int ix, int model_ix, int glass_ix);
+    BoundingBox bounding_box(bool roof_filter = false) const;
 
 private:
     bool m_is_dirty;
     bool m_is_filthy;
     int m_max_elements;
     int m_elements;
+    int m_indexes;
     Element** m_element_ptr;
+    int* m_model_ix_ptr;
+    int* m_glass_ix_ptr;
 
     void double_the_storage();
     bool expect(TokenInterface& ti, const QString& pattern, QString& error_message);
     bool parse_float3(TokenInterface& ti, float& x, float& y, float& z, QString& error_message);
     bool parse_integer(TokenInterface& ti, int &v, QString& error_message);
     bool parse_float(TokenInterface& ti, float& v, QString& error_message);
+    BoundingBox combine_bounding_boxes(BoundingBox bb1, BoundingBox bb2) const;
+    void filter_roof(float& v) const;
 };
 
 #endif // _DOCUMENT_H_

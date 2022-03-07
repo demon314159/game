@@ -6,19 +6,12 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include "document.h"
+#include "vertex_image.h"
 #include "cad_model.h"
 #include "document.h"
 #include "choose.h"
 #include "vmenu.h"
 #include "mouse_vector.h"
-
-struct VertexData
-{
-    QVector3D position;
-    QVector3D normal;
-    QVector3D color;
-    float animation_id;
-};
 
 class View: protected QOpenGLFunctions
 {

@@ -156,6 +156,18 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
 void View::decorate_model()
 {
     BoundingBox bb = m_model->bounding_box(true);
+    printf("\nmodel bb (roof_filter)   = (%f, %f, %f) .. (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
+
+    BoundingBox bb1 = m_doc->bounding_box(true);
+    printf("doc bb (roof_filter)  = (%f, %f, %f) .. (%f, %f, %f)\n", bb1.vmin.v1, bb1.vmin.v2, bb1.vmin.v3, bb1.vmax.v1, bb1.vmax.v2, bb1.vmax.v3);
+
+    BoundingBox bb2 = m_model->bounding_box();
+    printf("model bb (raw) = (%f, %f, %f) .. (%f, %f, %f)\n", bb2.vmin.v1, bb2.vmin.v2, bb2.vmin.v3, bb2.vmax.v1, bb2.vmax.v2, bb2.vmax.v3);
+
+    BoundingBox bb3 = m_doc->bounding_box();
+    printf("doc bb (raw)  = (%f, %f, %f) .. (%f, %f, %f)\n", bb3.vmin.v1, bb3.vmin.v2, bb3.vmin.v3, bb3.vmax.v1, bb3.vmax.v2, bb3.vmax.v3);
+
+
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 4.0;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 4.0;

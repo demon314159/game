@@ -60,7 +60,7 @@ BoundingBox Element::bounding_box() const
     bb.vmin.v2 = m_pos.v2 * dimh - dimh / 2.0;
     bb.vmin.v3 = m_pos.v3 - dimx / 2.0;
     bb.vmax.v1 = m_pos.v1 + dimx / 2.0;
-    bb.vmax.v2 = m_pos.v2 *dimh + dimh / 2.0;
+    bb.vmax.v2 = m_pos.v2 * dimh + dimh / 2.0;
     bb.vmax.v3 = m_pos.v3 + dimx / 2.0;
     return bb;
 }
@@ -789,9 +789,9 @@ BoundingBox RoofElement::bounding_box() const
 {
     BoundingBox bb;
     Float3 apos = pos();
-    float q = dimb / 4;
+    float q = dimx / 4;
     bb.vmin.v2 = apos.v2 * dimh - dimh / 2.0 - q * dimh;
-    bb.vmax.v2 = apos.v2 * dimh + dimh / 2.0;
+    bb.vmax.v2 = apos.v2 * dimh + dimh / 2.0 + 2.0 * dimt;
     if (m_orientation == 0) {
         bb.vmin.v1 = apos.v1 - m_width / 2.0 - q;
         bb.vmin.v3 = apos.v3 - dimx / 2.0;

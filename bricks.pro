@@ -15,6 +15,7 @@ HEADERS      += game.h \
                 shape.h \
                 table.h \
                 paint_can.h \
+                vertex_image.h \
                 look.h \
                 cube_shape.h \
                 brick_shape.h \
@@ -49,6 +50,7 @@ SOURCES      += main.cpp \
                 game.cpp \
                 table.cpp \
                 paint_can.cpp \
+                vertex_image.cpp \
                 look.cpp \
                 cube_shape.cpp \
                 brick_shape.cpp \

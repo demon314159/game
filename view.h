@@ -16,7 +16,6 @@
 class View: protected QOpenGLFunctions
 {
 public:
-    static const int INITIAL_MAX_VERTEX_COUNT = 1024 * 1024;
     View(Document* doc);
     virtual ~View();
     Document* get_doc() const;

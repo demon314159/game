@@ -5,6 +5,7 @@
 #include "element.h"
 #include "token_interface.h"
 #include "bounding_box.h"
+#include "vertex_image.h"
 #include <QString>
 
 // Dirty means that one element has changed and only a small patch will be made to the vertex data
@@ -47,8 +48,9 @@ private:
     bool m_is_filthy;
     int m_max_elements;
     int m_elements;
-    int m_indexes;
     Element** m_element_ptr;
+    VertexImage m_building;
+    VertexImage m_glass;
 
     void double_the_storage();
     bool expect(TokenInterface& ti, const QString& pattern, QString& error_message);

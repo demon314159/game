@@ -9,6 +9,8 @@ Document::Document()
     , m_is_filthy(true)
     , m_max_elements(16384)
     , m_elements(0)
+    , m_building()
+    , m_glass()
 {
     m_element_ptr = new Element*[m_max_elements];
 }
@@ -67,6 +69,10 @@ void Document::add_element(Element* e)
     m_element_ptr[m_elements] = e;
     if (m_elements == 0)
         m_is_filthy = true;
+
+    m_building.add_element(e, false);
+    m_glass.add_element(e, true);
+
     ++m_elements;
     m_is_dirty = true;
 }
@@ -77,6 +83,11 @@ void Document::remove_element(int ix)
         return;
     int index = std::min(ix, m_elements - 1);
     m_element_ptr[index]->remove();
+
+
+// update m_building and m_glass to shift vertex data for this element out of view
+
+
     m_is_dirty = true;
 }
 
@@ -86,9 +97,15 @@ void Document::unremove_element(int ix)
         return;
     int index = std::min(ix, m_elements - 1);
     m_element_ptr[index]->unremove();
+
+
+// update m_building and m_glass to shift vertex data for this element back into view
+
+
     m_is_dirty = true;
 }
 
+// This adds to document, only used with new document so far
 bool Document::load(const QString& file_name, QString& error_message)
 {
     TokenInterface ti(file_name);

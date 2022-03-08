@@ -13,12 +13,10 @@
 View::View(Document* doc)
     : m_vmenu()
     , m_choose()
-    , m_max_vertex_count(INITIAL_MAX_VERTEX_COUNT)
+    , m_max_vertex_count(1024 * 1024)
     , m_vertex_count(0)
     , m_aux_vertex_count(0)
     , m_doc(doc)
-    , m_building(INITIAL_MAX_VERTEX_COUNT)
-    , m_glass(INITIAL_MAX_VERTEX_COUNT)
     , m_model(new CadModel(doc))
     , m_aux_model(new CadModel())
     , m_radius(2.0)
@@ -320,8 +318,6 @@ void View::check_storage()
     if (m_max_vertex_count > fc)
         return;
     m_max_vertex_count = std::max(2 * m_max_vertex_count, 2 * fc);
-    m_building.set_max_vertex_count(m_max_vertex_count);
-    m_glass.set_max_vertex_count(m_max_vertex_count);
     m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
 }
 

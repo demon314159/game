@@ -9,11 +9,8 @@ Document::Document()
     , m_is_filthy(true)
     , m_max_elements(16384)
     , m_elements(0)
-    , m_indexes(0)
 {
     m_element_ptr = new Element*[m_max_elements];
-    m_model_ix_ptr = new int[m_max_elements];
-    m_glass_ix_ptr = new int[m_max_elements];
 }
 
 Document::Document(const QString& file_name)
@@ -24,8 +21,6 @@ Document::Document(const QString& file_name)
 {
     QString error_message;
     m_element_ptr = new Element*[m_max_elements];
-    m_model_ix_ptr = new int[m_max_elements];
-    m_glass_ix_ptr = new int[m_max_elements];
     load(file_name, error_message);
 }
 
@@ -35,8 +30,6 @@ Document::~Document()
         delete m_element_ptr[i];
     }
     delete [] m_element_ptr;
-    delete [] m_model_ix_ptr;
-    delete [] m_glass_ix_ptr;
 }
 
 int Document::elements() const
@@ -284,19 +277,11 @@ void Document::double_the_storage()
     // to seamlessly keep the buffer larger than data
     m_max_elements = 2 * m_max_elements;
     Element** temp_element_ptr = new Element*[m_max_elements];
-    int* temp_model_ix_ptr = new int[m_max_elements];
-    int* temp_glass_ix_ptr = new int[m_max_elements];
     for (int i = 0; i < m_elements; i++) {
         temp_element_ptr[i] = m_element_ptr[i];
-        temp_model_ix_ptr[i] = m_model_ix_ptr[i];
-        temp_glass_ix_ptr[i] = m_glass_ix_ptr[i];
     }
     delete [] m_element_ptr;
-    delete [] m_model_ix_ptr;
-    delete [] m_glass_ix_ptr;
     m_element_ptr = temp_element_ptr;
-    m_model_ix_ptr = temp_model_ix_ptr;
-    m_glass_ix_ptr = temp_glass_ix_ptr;
 }
 
 bool Document::expect(TokenInterface& ti, const QString& pattern, QString& error_message)
@@ -413,19 +398,6 @@ bool Document::contains(Float3 pos) const
         }
     }
     return false;
-}
-
-int Document::indexes() const
-{
-    return m_indexes;
-}
-
-void Document::set_index(int ix, int model_ix, int glass_ix)
-{
-    int index = std::min(ix, m_elements - 1);
-    m_model_ix_ptr[index] = model_ix;
-    m_glass_ix_ptr[index] = glass_ix;
-    m_indexes = index + 1;
 }
 
 BoundingBox Document::combine_bounding_boxes(BoundingBox bb1, BoundingBox bb2) const

@@ -13,10 +13,12 @@
 View::View(Document* doc)
     : m_vmenu()
     , m_choose()
-    , m_max_vertex_count(1024 * 1024)
+    , m_max_vertex_count(INITIAL_MAX_VERTEX_COUNT)
     , m_vertex_count(0)
     , m_aux_vertex_count(0)
     , m_doc(doc)
+    , m_building(INITIAL_MAX_VERTEX_COUNT)
+    , m_glass(INITIAL_MAX_VERTEX_COUNT)
     , m_model(new CadModel(doc))
     , m_aux_model(new CadModel())
     , m_radius(2.0)
@@ -155,26 +157,21 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
 
 void View::decorate_model()
 {
-    BoundingBox bb = m_model->bounding_box(true);
-    printf("\nmodel bb (roof_filter)   = (%f, %f, %f) .. (%f, %f, %f)\n", bb.vmin.v1, bb.vmin.v2, bb.vmin.v3, bb.vmax.v1, bb.vmax.v2, bb.vmax.v3);
-
-    BoundingBox bb1 = m_doc->bounding_box(true);
-    printf("doc bb (roof_filter)  = (%f, %f, %f) .. (%f, %f, %f)\n", bb1.vmin.v1, bb1.vmin.v2, bb1.vmin.v3, bb1.vmax.v1, bb1.vmax.v2, bb1.vmax.v3);
-
-    BoundingBox bb2 = m_model->bounding_box();
-    printf("model bb (raw) = (%f, %f, %f) .. (%f, %f, %f)\n", bb2.vmin.v1, bb2.vmin.v2, bb2.vmin.v3, bb2.vmax.v1, bb2.vmax.v2, bb2.vmax.v3);
-
-    BoundingBox bb3 = m_doc->bounding_box();
-    printf("doc bb (raw)  = (%f, %f, %f) .. (%f, %f, %f)\n", bb3.vmin.v1, bb3.vmin.v2, bb3.vmin.v3, bb3.vmax.v1, bb3.vmax.v2, bb3.vmax.v3);
-
-
+    BoundingBox bb = m_doc->bounding_box(true);
     float tablex = bb.vmax.v1 - bb.vmin.v1 + 4.0;
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 4.0;
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
+
+
     m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, -tabley, bb.vmin.v3 + tablez / 2 - 2.0);
-    bb = m_model->bounding_box(true);
+
+    bb.vmin.v1 -= 2.0;
+    bb.vmin.v3 -= 2.0;
+    bb.vmax.v1 += 2.0;
+    bb.vmax.v3 += 2.0;
+
     add_grid(m_model, bb);
     m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
@@ -319,9 +316,12 @@ void View::resize_calc()
 
 void View::check_storage()
 {
-    if (m_max_vertex_count > (3 * (m_model->facets() + m_aux_model->facets())))
+    int fc = 3 * m_doc->facets();
+    if (m_max_vertex_count > fc)
         return;
-    m_max_vertex_count = std::max(2 * m_max_vertex_count, 6 * (m_model->facets() + m_aux_model->facets()));
+    m_max_vertex_count = std::max(2 * m_max_vertex_count, 2 * fc);
+    m_building.set_max_vertex_count(m_max_vertex_count);
+    m_glass.set_max_vertex_count(m_max_vertex_count);
     m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
 }
 
@@ -331,15 +331,25 @@ void View::paint()
     printf("View::paint()\n");
 #endif
     if (m_doc->is_dirty()) {
+
+
+// these are candidate to remove
         delete m_model;
         m_model = new CadModel(m_doc);
+
+
+
         decorate_model();
         if (m_doc->is_filthy()) {
             zoom_home();
             translate_home();
         }
+
+
+
         resize_calc();
         check_storage();
+
         copy_facets();
         m_vmenu.make_dirty();
         if (m_doc->is_dirty()) {

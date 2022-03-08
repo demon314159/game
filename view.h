@@ -16,6 +16,7 @@
 class View: protected QOpenGLFunctions
 {
 public:
+    static const int INITIAL_MAX_VERTEX_COUNT = 1024 * 1024;
     View(Document* doc);
     virtual ~View();
     Document* get_doc() const;
@@ -79,6 +80,8 @@ private:
     int m_vertex_count;
     int m_aux_vertex_count;
     Document* m_doc;
+    VertexImage m_building;
+    VertexImage m_glass;
     CadModel* m_model;
     CadModel* m_aux_model;
     QOpenGLBuffer m_vertex_buf;

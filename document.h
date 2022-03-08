@@ -40,8 +40,6 @@ public:
     void make_dirty();
     void make_filthy();
     bool contains(Float3 pos) const;
-    int indexes() const;
-    void set_index(int ix, int model_ix, int glass_ix);
     BoundingBox bounding_box(bool roof_filter = false) const;
 
 private:
@@ -51,8 +49,6 @@ private:
     int m_elements;
     int m_indexes;
     Element** m_element_ptr;
-    int* m_model_ix_ptr;
-    int* m_glass_ix_ptr;
 
     void double_the_storage();
     bool expect(TokenInterface& ti, const QString& pattern, QString& error_message);

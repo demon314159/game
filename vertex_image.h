@@ -12,18 +12,19 @@ struct VertexData
     float animation_id;
 };
 
-
 class VertexImage
 {
 public:
-    VertexImage(int initial_storage);
+    VertexImage(int initial_max_vertex_count);
     ~VertexImage();
 
-    int storage() const;
-    void set_storage(int n);
+    int max_vertex_count() const;
+    void set_max_vertex_count(int n);
 
 private:
-    int m_storage;
+    int m_max_vertex_count;
+    int m_vertex_count;
+    VertexData* m_vertex_data;
 };
 
 #endif // _VERTEX_IMAGE_H_

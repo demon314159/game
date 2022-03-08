@@ -49,6 +49,8 @@ private:
     int m_max_elements;
     int m_elements;
     Element** m_element_ptr;
+    int* m_building_index;
+    int* m_glass_index;
     VertexImage m_building;
     VertexImage m_glass;
 

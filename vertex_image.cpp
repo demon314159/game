@@ -14,6 +14,11 @@ VertexImage::~VertexImage()
     delete [] m_vertex_data;
 }
 
+int VertexImage::vertex_count() const
+{
+    return m_vertex_count;
+}
+
 void VertexImage::add_element(Element* e, bool transparent)
 {
     float an_id;

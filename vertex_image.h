@@ -21,6 +21,7 @@ public:
     ~VertexImage();
 
     void add_element(Element* e, bool transparent);
+    int vertex_count() const;
 
 private:
     int m_max_vertex_count;

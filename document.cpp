@@ -13,6 +13,8 @@ Document::Document()
     , m_glass()
 {
     m_element_ptr = new Element*[m_max_elements];
+    m_building_index = new int[m_max_elements];
+    m_glass_index = new int[m_max_elements];
 }
 
 Document::Document(const QString& file_name)
@@ -20,9 +22,13 @@ Document::Document(const QString& file_name)
     , m_is_filthy(true)
     , m_max_elements(16384)
     , m_elements(0)
+    , m_building()
+    , m_glass()
 {
     QString error_message;
     m_element_ptr = new Element*[m_max_elements];
+    m_building_index = new int[m_max_elements];
+    m_glass_index = new int[m_max_elements];
     load(file_name, error_message);
 }
 
@@ -32,6 +38,8 @@ Document::~Document()
         delete m_element_ptr[i];
     }
     delete [] m_element_ptr;
+    delete [] m_building_index;
+    delete [] m_glass_index;
 }
 
 int Document::elements() const
@@ -67,6 +75,8 @@ void Document::add_element(Element* e)
         double_the_storage();
     }
     m_element_ptr[m_elements] = e;
+    m_building_index[m_elements] = m_building.vertex_count();
+    m_glass_index[m_elements] = m_glass.vertex_count();
     if (m_elements == 0)
         m_is_filthy = true;
 
@@ -294,11 +304,20 @@ void Document::double_the_storage()
     // to seamlessly keep the buffer larger than data
     m_max_elements = 2 * m_max_elements;
     Element** temp_element_ptr = new Element*[m_max_elements];
+    int* temp_building_index = new int[m_max_elements];
+    int* temp_glass_index = new int[m_max_elements];
+
     for (int i = 0; i < m_elements; i++) {
         temp_element_ptr[i] = m_element_ptr[i];
+        temp_building_index[i] = m_building_index[i];
+        temp_glass_index[i] = m_glass_index[i];
     }
     delete [] m_element_ptr;
+    delete [] m_building_index;
+    delete [] m_glass_index;
     m_element_ptr = temp_element_ptr;
+    m_building_index = temp_building_index;
+    m_glass_index = temp_glass_index;
 }
 
 bool Document::expect(TokenInterface& ti, const QString& pattern, QString& error_message)

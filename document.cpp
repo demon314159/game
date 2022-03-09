@@ -93,11 +93,8 @@ void Document::remove_element(int ix)
         return;
     int index = std::min(ix, m_elements - 1);
     m_element_ptr[index]->remove();
-
-
-// update m_building and m_glass to shift vertex data for this element out of view
-
-
+    m_building.update_element(m_building_index[index], m_element_ptr[index], false);
+    m_glass.update_element(m_glass_index[index], m_element_ptr[index], true);
     m_is_dirty = true;
 }
 
@@ -107,11 +104,8 @@ void Document::unremove_element(int ix)
         return;
     int index = std::min(ix, m_elements - 1);
     m_element_ptr[index]->unremove();
-
-
-// update m_building and m_glass to shift vertex data for this element back into view
-
-
+    m_building.update_element(m_building_index[index], m_element_ptr[index], false);
+    m_glass.update_element(m_glass_index[index], m_element_ptr[index], true);
     m_is_dirty = true;
 }
 

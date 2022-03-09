@@ -19,9 +19,9 @@ public:
     static const int INITIAL_MAX_VERTEX_COUNT = 1024 * 1024;
     VertexImage();
     ~VertexImage();
-
-    void add_element(Element* e, bool transparent);
     int vertex_count() const;
+    void add_element(Element* e, bool transparent);
+    void update_element(int start_ix, const Element*e, bool transparent);
 
 private:
     int m_max_vertex_count;

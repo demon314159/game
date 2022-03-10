@@ -17,7 +17,6 @@ View::View(Document* doc)
     , m_vertex_count(0)
     , m_aux_vertex_count(0)
     , m_doc(doc)
-    , m_model(new CadModel(doc))
     , m_table(new CadModel())
     , m_aux_model(new CadModel())
     , m_radius(2.0)
@@ -193,7 +192,6 @@ View::~View()
 #ifdef VERBOSE
     printf("View::~View()\n");
 #endif
-    delete m_model;
     delete m_aux_model;
     delete m_doc;
     m_vertex_buf.destroy();
@@ -231,9 +229,8 @@ bool View::initialize()
     resize_calc();
     m_vertex_buf.create();
     m_vertex_buf.bind();
-    m_max_vertex_count = std::max(m_max_vertex_count, 6 * m_model->facets());
+    m_max_vertex_count = std::max(m_max_vertex_count, 2 * m_doc->building().vertex_count());
     m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
-//    copy_facets();
     copy_vertices();
 
     copy_aux_facets();
@@ -277,21 +274,6 @@ void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool
             vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
         }
     }
-}
-
-void View::copy_facets()
-{
-    m_vertex_count = 3 * m_model->facets();
-    if (m_vertex_count == 0) {
-        return;
-    }
-    VertexData* vertices = new VertexData[m_vertex_count];
-    int vix = 0;
-    sub_copy_facets(m_model, vertices, vix, false);
-    sub_copy_facets(m_model, vertices, vix, true);
-    // Transfer vertex data to VBO 0
-    m_vertex_buf.write(0, vertices, m_vertex_count * sizeof(VertexData));
-    delete [] vertices;
 }
 
 void View::copy_aux_facets()
@@ -349,11 +331,6 @@ void View::paint()
     if (m_doc->is_dirty()) {
 
 
-// these are candidate to remove
-        delete m_model;
-        m_model = new CadModel(m_doc);
-
-
 
         decorate_model();
         if (m_doc->is_filthy()) {
@@ -366,7 +343,6 @@ void View::paint()
         resize_calc();
         check_storage();
 
-//        copy_facets();
         copy_vertices();
 
 

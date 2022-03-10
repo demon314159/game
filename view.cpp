@@ -14,8 +14,9 @@ View::View(Document* doc)
     : m_vmenu()
     , m_choose()
     , m_max_vertex_count(1024 * 1024)
-    , m_vertex_count(0)
-    , m_aux_vertex_count(0)
+    , m_building_count(0)
+    , m_glass_count(0)
+    , m_aux_count(0)
     , m_doc(doc)
     , m_table(new CadModel())
     , m_aux_model(new CadModel())
@@ -239,13 +240,13 @@ bool View::initialize()
 
 void View::copy_vertices()
 {
-    m_vertex_count = m_doc->building().vertex_count();
-    if (m_vertex_count == 0) {
+    m_building_count = m_doc->building().vertex_count();
+    if (m_building_count == 0) {
         return;
     }
     const VertexData* vertices = m_doc->building().vertex_data();
     // Transfer vertex data to VBO 0
-    m_vertex_buf.write(0, vertices, m_vertex_count * sizeof(VertexData));
+    m_vertex_buf.write(0, vertices, m_building_count * sizeof(VertexData));
 }
 
 void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent)
@@ -278,17 +279,23 @@ void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool
 
 void View::copy_aux_facets()
 {
-    m_aux_vertex_count = 3 * m_aux_model->facets();
-    if (m_aux_vertex_count == 0) {
+    m_aux_count = 3 * m_aux_model->facets();
+    if (m_aux_count > 0) {
+        VertexData* vertices = new VertexData[m_aux_count];
+        int vix = 0;
+        sub_copy_facets(m_aux_model, vertices, vix, false);
+        sub_copy_facets(m_aux_model, vertices, vix, true);
+        // Transfer vertex data to VBO 0
+        m_vertex_buf.write(m_building_count * sizeof(VertexData), vertices, m_aux_count * sizeof(VertexData));
+        delete [] vertices;
+    }
+    m_glass_count = m_doc->glass().vertex_count();
+    if (m_glass_count == 0) {
         return;
     }
-    VertexData* vertices = new VertexData[m_aux_vertex_count];
-    int vix = 0;
-    sub_copy_facets(m_aux_model, vertices, vix, false);
-    sub_copy_facets(m_aux_model, vertices, vix, true);
+    const VertexData* vertices = m_doc->glass().vertex_data();
     // Transfer vertex data to VBO 0
-    m_vertex_buf.write(m_vertex_count * sizeof(VertexData), vertices, m_aux_vertex_count * sizeof(VertexData));
-    delete [] vertices;
+    m_vertex_buf.write((m_building_count + m_aux_count) * sizeof(VertexData), vertices, m_glass_count * sizeof(VertexData));
 }
 
 void View::resize(int w, int h)
@@ -329,24 +336,14 @@ void View::paint()
     printf("View::paint()\n");
 #endif
     if (m_doc->is_dirty()) {
-
-
-
         decorate_model();
         if (m_doc->is_filthy()) {
             zoom_home();
             translate_home();
         }
-
-
-
         resize_calc();
         check_storage();
-
         copy_vertices();
-
-
-
         m_vmenu.make_dirty();
         if (m_doc->is_dirty()) {
             m_doc->make_clean();
@@ -452,7 +449,7 @@ void View::render_facets()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glDrawArrays(GL_TRIANGLES, 0, m_vertex_count + m_aux_vertex_count);
+    glDrawArrays(GL_TRIANGLES, 0, m_building_count + m_aux_count + m_glass_count);
 }
 
 void View::translate_x(int x)

@@ -43,6 +43,7 @@ public:
     bool contains(Float3 pos) const;
     BoundingBox bounding_box(bool roof_filter = false) const;
     const VertexImage& building() const;
+    const VertexImage& glass() const;
 
 private:
     bool m_is_dirty;

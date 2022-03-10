@@ -76,8 +76,9 @@ private:
     Vmenu m_vmenu;
     Choose m_choose;
     int m_max_vertex_count;
-    int m_vertex_count;
-    int m_aux_vertex_count;
+    int m_building_count;
+    int m_glass_count;
+    int m_aux_count;
     Document* m_doc;
     VertexImage m_building;
     VertexImage m_glass;

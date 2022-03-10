@@ -480,3 +480,8 @@ const VertexImage& Document::building() const
 {
     return m_building;
 }
+
+const VertexImage& Document::glass() const
+{
+    return m_glass;
+}

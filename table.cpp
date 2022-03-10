@@ -97,8 +97,6 @@ void Table::keyPressEvent(QKeyEvent* e)
         m_view->mouse_unselect();
         set_history_buttons();
         update();
-    } else {
-        printf("unknown key %02x\n", a);
     }
 }
 

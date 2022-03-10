@@ -42,6 +42,7 @@ public:
     void make_filthy();
     bool contains(Float3 pos) const;
     BoundingBox bounding_box(bool roof_filter = false) const;
+    const VertexImage& building() const;
 
 private:
     bool m_is_dirty;

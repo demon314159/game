@@ -475,3 +475,8 @@ void Document::filter_roof(float& v) const
 {
     v = round(v + 0.5) - 0.5;
 }
+
+const VertexImage& Document::building() const
+{
+    return m_building;
+}

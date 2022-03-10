@@ -18,6 +18,7 @@ View::View(Document* doc)
     , m_aux_vertex_count(0)
     , m_doc(doc)
     , m_model(new CadModel(doc))
+    , m_table(new CadModel())
     , m_aux_model(new CadModel())
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -36,6 +37,7 @@ View::View(Document* doc)
     printf("View::View(doc)\n");
 #endif
     decorate_model();
+    m_aux_model->add(*m_table);
     doc->make_clean();
 }
 
@@ -84,7 +86,11 @@ bool View::mouse_select(int sx, int sy)
         return true;
     } else {
         if (tmv.vector().v2 != 0.0) {
-            BoundingBox bb = m_model->bounding_box(true);
+            BoundingBox bb = m_doc->bounding_box(true);
+            bb.vmin.v1 -= 2.0;
+            bb.vmin.v3 -= 2.0;
+            bb.vmax.v1 += 2.0;
+            bb.vmax.v3 += 2.0;
             float xlo = truncf(bb.vmin.v1);
             float xhi = truncf(bb.vmax.v1);
             float zlo = truncf(bb.vmin.v3);
@@ -162,16 +168,17 @@ void View::decorate_model()
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
 
-
-    m_model->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, -tabley, bb.vmin.v3 + tablez / 2 - 2.0);
+    delete m_table;
+    m_table = new CadModel();
+    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, -tabley, bb.vmin.v3 + tablez / 2 - 2.0);
 
     bb.vmin.v1 -= 2.0;
     bb.vmin.v3 -= 2.0;
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
 
-    add_grid(m_model, bb);
-    m_model->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
+    add_grid(m_table, bb);
+    m_table->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
     m_radius = fmax(m_radius, 2.0);
@@ -226,9 +233,22 @@ bool View::initialize()
     m_vertex_buf.bind();
     m_max_vertex_count = std::max(m_max_vertex_count, 6 * m_model->facets());
     m_vertex_buf.allocate(m_max_vertex_count * sizeof(VertexData));
-    copy_facets();
+//    copy_facets();
+    copy_vertices();
+
     copy_aux_facets();
     return true;
+}
+
+void View::copy_vertices()
+{
+    m_vertex_count = m_doc->building().vertex_count();
+    if (m_vertex_count == 0) {
+        return;
+    }
+    const VertexData* vertices = m_doc->building().vertex_data();
+    // Transfer vertex data to VBO 0
+    m_vertex_buf.write(0, vertices, m_vertex_count * sizeof(VertexData));
 }
 
 void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent)
@@ -346,7 +366,11 @@ void View::paint()
         resize_calc();
         check_storage();
 
-        copy_facets();
+//        copy_facets();
+        copy_vertices();
+
+
+
         m_vmenu.make_dirty();
         if (m_doc->is_dirty()) {
             m_doc->make_clean();
@@ -356,6 +380,7 @@ void View::paint()
     if (m_vmenu.is_dirty()) {
         delete m_aux_model;
         m_aux_model = new CadModel();
+        m_aux_model->add(*m_table);
         m_vmenu.add_to(m_aux_model);
         copy_aux_facets();
         if (m_vmenu.is_dirty())

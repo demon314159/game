@@ -51,9 +51,15 @@ protected:
     void resize_calc();
     void decorate_model();
     void check_storage();
+    void copy_vertices();
+
+    // this can be deleted?
     void copy_facets();
-    void copy_aux_facets();
+
+
+
     void sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent);
+    void copy_aux_facets();
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
@@ -82,6 +88,7 @@ private:
     VertexImage m_building;
     VertexImage m_glass;
     CadModel* m_model;
+    CadModel* m_table;
     CadModel* m_aux_model;
     QOpenGLBuffer m_vertex_buf;
     float m_radius;

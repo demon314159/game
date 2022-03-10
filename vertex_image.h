@@ -22,6 +22,7 @@ public:
     int vertex_count() const;
     void add_element(Element* e, bool transparent);
     void update_element(int start_ix, const Element*e, bool transparent);
+    const VertexData* vertex_data() const;
 
 private:
     int m_max_vertex_count;

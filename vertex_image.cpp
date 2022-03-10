@@ -27,6 +27,7 @@ void VertexImage::add_element(Element* e, bool transparent)
     if (e == NULL)
         return;
     Float3 pos = e->pos();
+    pos.v2 *= Element::dimh;
     const CadModel& model = e->model();
     for (int i = 0; i < model.facets(); i++) {
         an_id = model.facet_animation_id(i);
@@ -88,6 +89,7 @@ void VertexImage::update_element(int start_ix, const Element* e, bool transparen
     if (e == NULL)
         return;
     Float3 pos = e->pos();
+    pos.v2 *= Element::dimh;
     bool removed = e->removed();
     const CadModel& model = e->model();
     for (int i = 0; i < model.facets(); i++) {
@@ -97,29 +99,35 @@ void VertexImage::update_element(int start_ix, const Element* e, bool transparen
             vn = model.facet_normal(i);
             vd.animation_id = removed ? 3.0 : an_id;
 
-            if (removed)
-                vp = {-dx, -dd, 0.0};
-            else
+            if (removed) {
+                vp = {dx, -dd, 0.0};
+                vd.position = QVector3D(vp.v1, vp.v2, vp.v3);
+            } else {
                 vp = model.facet_v1(i);
-            vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+                vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+            }
             vd.normal = QVector3D(vn.v1, vn.v2, vn.v3);
             vd.color = QVector3D(vc.v1, vc.v2, vc.v3);
             m_vertex_data[start_ix++] = vd;
 
-            if (removed)
-                vp = {-dx - dd, -2 * dd, 0.0};
-            else
+            if (removed) {
+                vp = {dx - dd, -2 * dd, 0.0};
+                vd.position = QVector3D(vp.v1, vp.v2, vp.v3);
+            } else {
                 vp = model.facet_v2(i);
-            vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+                vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+            }
             vd.normal = QVector3D(vn.v1, vn.v2, vn.v3);
             vd.color = QVector3D(vc.v1, vc.v2, vc.v3);
             m_vertex_data[start_ix++] = vd;
 
-            if (removed)
-                vp = {-dx + dd, -2 * dd, 0.0};
-            else
+            if (removed) {
+                vp = {dx + dd, -2 * dd, 0.0};
+                vd.position = QVector3D(vp.v1, vp.v2, vp.v3);
+            } else {
                 vp = model.facet_v3(i);
-            vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+                vd.position = QVector3D(vp.v1 + pos.v1, vp.v2 + pos.v2, vp.v3 + pos.v3);
+            }
             vd.normal = QVector3D(vn.v1, vn.v2, vn.v3);
             vd.color = QVector3D(vc.v1, vc.v2, vc.v3);
             m_vertex_data[start_ix++] = vd;
@@ -127,4 +135,7 @@ void VertexImage::update_element(int start_ix, const Element* e, bool transparen
     }
 }
 
-
+const VertexData* VertexImage::vertex_data() const
+{
+    return m_vertex_data;
+}

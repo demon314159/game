@@ -35,19 +35,24 @@ public:
     void unremove_element(int ix);
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;
-    bool is_dirty() const;
-    bool is_filthy() const;
-    void make_clean();
-    void make_dirty();
-    void make_filthy();
+    bool just_one_change() const; // one and only one change
+    int changed_ix() const;       // index of element that changed
+    bool many_changes() const;    // more than one change
+    void clear_changes();
+    void note_one_change(int ix);
+    void note_many_changes();
     bool contains(Float3 pos) const;
     BoundingBox bounding_box(bool roof_filter = false) const;
     const VertexImage& building() const;
     const VertexImage& glass() const;
+    int building_index(int ix) const;
+    int glass_index(int ix) const;
 
 private:
-    bool m_is_dirty;
-    bool m_is_filthy;
+    bool m_one_change;
+    bool m_many_changes;
+    int m_changed_ix;
+
     int m_max_elements;
     int m_elements;
     Element** m_element_ptr;

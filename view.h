@@ -52,6 +52,7 @@ protected:
     void decorate_model();
     void check_storage();
     void copy_vertices();
+    void copy_changed_vertices();
     void sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent);
     void copy_aux_facets();
     void render_facets();

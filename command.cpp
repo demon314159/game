@@ -73,14 +73,14 @@ LoadCommand::~LoadCommand()
 
 void LoadCommand::execute()
 {
-    m_new_doc->make_filthy();
+    m_new_doc->note_many_changes();
     m_replaced_doc = m_view->replace_doc(m_new_doc);
     m_new_doc = NULL;
 }
 
 void LoadCommand::unexecute()
 {
-    m_replaced_doc->make_filthy();
+    m_replaced_doc->note_many_changes();
     m_new_doc = m_view->replace_doc(m_replaced_doc);
     m_replaced_doc = NULL;
 }
@@ -102,14 +102,14 @@ NewCommand::~NewCommand()
 
 void NewCommand::execute()
 {
-    m_new_doc->make_filthy();
+    m_new_doc->note_many_changes();
     m_replaced_doc = m_view->replace_doc(m_new_doc);
     m_new_doc = NULL;
 }
 
 void NewCommand::unexecute()
 {
-    m_replaced_doc->make_filthy();
+    m_replaced_doc->note_many_changes();
     m_new_doc = m_view->replace_doc(m_replaced_doc);
     m_replaced_doc = NULL;
 }

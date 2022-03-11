@@ -38,7 +38,7 @@ View::View(Document* doc)
 #endif
     decorate_model();
     m_aux_model->add(*m_table);
-    doc->make_clean();
+    doc->clear_changes();
 }
 
 void View::mouse_unselect()
@@ -241,12 +241,26 @@ bool View::initialize()
 void View::copy_vertices()
 {
     m_building_count = m_doc->building().vertex_count();
+    printf("Copying %d of %d vertices\n", m_building_count, m_building_count);
     if (m_building_count == 0) {
         return;
     }
     const VertexData* vertices = m_doc->building().vertex_data();
     // Transfer vertex data to VBO 0
     m_vertex_buf.write(0, vertices, m_building_count * sizeof(VertexData));
+}
+
+void View::copy_changed_vertices()
+{
+    m_building_count = m_doc->building().vertex_count();  // In case this has grown with add_element()
+    int ix = m_doc->changed_ix();
+    int this_start = m_doc->building_index(ix);
+    int next_start = m_doc->building_index(ix + 1); // This works when ix + 1 is beyond last element
+    int n = next_start - this_start;
+    printf("Copying %d of %d vertices\n", n, m_building_count);
+    const VertexData* vertices = m_doc->building().vertex_data();
+    // Transfer vertex data to VBO 0
+    m_vertex_buf.write(this_start * sizeof(VertexData), vertices + this_start, n * sizeof(VertexData));
 }
 
 void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent)
@@ -335,20 +349,22 @@ void View::paint()
 #ifdef VERBOSE
     printf("View::paint()\n");
 #endif
-    if (m_doc->is_dirty()) {
+    if (m_doc->just_one_change() || m_doc->many_changes()) {
         decorate_model();
-        if (m_doc->is_filthy()) {
+        if (m_doc->many_changes()) {
             zoom_home();
             translate_home();
         }
         resize_calc();
         check_storage();
-        copy_vertices();
-        m_vmenu.make_dirty();
-        if (m_doc->is_dirty()) {
-            m_doc->make_clean();
-            m_choose.select_no_choice();
+        if (m_doc->just_one_change()) {
+            copy_changed_vertices();
+        } else {
+            copy_vertices();
         }
+        m_vmenu.make_dirty();
+        m_doc->clear_changes();
+        m_choose.select_no_choice();
     }
     if (m_vmenu.is_dirty()) {
         delete m_aux_model;

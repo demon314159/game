@@ -5,8 +5,9 @@
 #include <math.h>
 
 Document::Document()
-    : m_is_dirty(true)
-    , m_is_filthy(true)
+    : m_one_change(false)
+    , m_many_changes(true)
+    , m_changed_ix(0)
     , m_max_elements(16384)
     , m_elements(0)
     , m_building()
@@ -18,8 +19,9 @@ Document::Document()
 }
 
 Document::Document(const QString& file_name)
-    : m_is_dirty(true)
-    , m_is_filthy(true)
+    : m_one_change(false)
+    , m_many_changes(true)
+    , m_changed_ix(0)
     , m_max_elements(16384)
     , m_elements(0)
     , m_building()
@@ -78,13 +80,13 @@ void Document::add_element(Element* e)
     m_building_index[m_elements] = m_building.vertex_count();
     m_glass_index[m_elements] = m_glass.vertex_count();
     if (m_elements == 0)
-        m_is_filthy = true;
+        m_many_changes = true;
 
     m_building.add_element(e, false);
     m_glass.add_element(e, true);
 
+    note_one_change(m_elements);
     ++m_elements;
-    m_is_dirty = true;
 }
 
 void Document::remove_element(int ix)
@@ -95,7 +97,7 @@ void Document::remove_element(int ix)
     m_element_ptr[index]->remove();
     m_building.update_element(m_building_index[index], m_element_ptr[index], false);
     m_glass.update_element(m_glass_index[index], m_element_ptr[index], true);
-    m_is_dirty = true;
+    note_one_change(ix);
 }
 
 void Document::unremove_element(int ix)
@@ -106,7 +108,7 @@ void Document::unremove_element(int ix)
     m_element_ptr[index]->unremove();
     m_building.update_element(m_building_index[index], m_element_ptr[index], false);
     m_glass.update_element(m_glass_index[index], m_element_ptr[index], true);
-    m_is_dirty = true;
+    note_one_change(ix);
 }
 
 // This adds to document, only used with new document so far
@@ -391,30 +393,36 @@ bool Document::parse_float(TokenInterface& ti, float& v, QString& error_message)
     return true;
 }
 
-bool Document::is_dirty() const
+void Document::note_one_change(int ix)
 {
-    return m_is_dirty || m_is_filthy;
+    if (m_one_change || m_many_changes) {
+        m_many_changes = true;
+    } else {
+        m_one_change = true;
+        m_changed_ix = ix;
+    }
 }
 
-bool Document::is_filthy() const
+void Document::note_many_changes()
 {
-    return m_is_filthy;
+    m_many_changes = true;
 }
 
-void Document::make_clean()
+bool Document::just_one_change() const
 {
-    m_is_dirty = false;
-    m_is_filthy = false;
+    return m_one_change && !m_many_changes;
 }
 
-void Document::make_dirty()
+bool Document::many_changes() const
 {
-    m_is_dirty = true;
+    return m_many_changes;
 }
 
-void Document::make_filthy()
+void Document::clear_changes()
 {
-    m_is_filthy = true;
+    m_one_change = false;
+    m_many_changes= false;
+    m_changed_ix = 0;
 }
 
 bool Document::contains(Float3 pos) const
@@ -484,4 +492,27 @@ const VertexImage& Document::building() const
 const VertexImage& Document::glass() const
 {
     return m_glass;
+}
+
+int Document::changed_ix() const
+{
+    return m_changed_ix;
+}
+
+int Document::building_index(int ix) const
+{
+    if (m_elements < 1)
+        return 0;
+    if (ix >= (m_elements))
+        return m_building.vertex_count();
+    return m_building_index[ix];
+}
+
+int Document::glass_index(int ix) const
+{
+    if (m_elements < 1)
+        return 0;
+    if (ix >= (m_elements))
+        return m_glass.vertex_count();
+    return m_glass_index[ix];
 }

@@ -19,6 +19,11 @@ int VertexImage::vertex_count() const
     return m_vertex_count;
 }
 
+void VertexImage::trim_to(int vix)
+{
+    m_vertex_count = vix;
+}
+
 void VertexImage::add_element(Element* e, bool transparent)
 {
     float an_id;

@@ -100,6 +100,19 @@ void Document::remove_element(int ix)
     note_one_change(ix);
 }
 
+Element* Document::remove_last_element()
+{
+    if (m_elements == 0)
+        return NULL;
+    int index = m_elements - 1;
+    Element* e = m_element_ptr[index];
+    --m_elements;
+    note_one_change(index);
+    m_building.trim_to(m_building_index[index]);
+    m_glass.trim_to(m_glass_index[index]);
+    return e;
+}
+
 void Document::unremove_element(int ix)
 {
     if (m_elements == 0)
@@ -395,7 +408,7 @@ bool Document::parse_float(TokenInterface& ti, float& v, QString& error_message)
 
 void Document::note_one_change(int ix)
 {
-    if (m_one_change || m_many_changes) {
+    if (m_one_change && (ix != m_elements)) {
         m_many_changes = true;
     } else {
         m_one_change = true;

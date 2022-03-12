@@ -32,6 +32,7 @@ public:
     const Element* element(int ix) const;
     void add_element(Element* e);
     void remove_element(int ix);
+    Element* remove_last_element();
     void unremove_element(int ix);
     bool load(const QString& file_name, QString& error_message);
     bool save(const QString& file_name, QString& error_message) const;

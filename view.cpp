@@ -241,7 +241,6 @@ bool View::initialize()
 void View::copy_vertices()
 {
     m_building_count = m_doc->building().vertex_count();
-    printf("Copying %d of %d vertices\n", m_building_count, m_building_count);
     if (m_building_count == 0) {
         return;
     }
@@ -254,13 +253,14 @@ void View::copy_changed_vertices()
 {
     m_building_count = m_doc->building().vertex_count();  // In case this has grown with add_element()
     int ix = m_doc->changed_ix();
-    int this_start = m_doc->building_index(ix);
-    int next_start = m_doc->building_index(ix + 1); // This works when ix + 1 is beyond last element
-    int n = next_start - this_start;
-    printf("Copying %d of %d vertices\n", n, m_building_count);
-    const VertexData* vertices = m_doc->building().vertex_data();
-    // Transfer vertex data to VBO 0
-    m_vertex_buf.write(this_start * sizeof(VertexData), vertices + this_start, n * sizeof(VertexData));
+    if (ix < m_doc->elements()) {
+        int this_start = m_doc->building_index(ix);
+        int next_start = m_doc->building_index(ix + 1); // This works when ix + 1 is beyond last element
+        int n = next_start - this_start;
+        const VertexData* vertices = m_doc->building().vertex_data();
+        // Transfer vertex data to VBO 0
+        m_vertex_buf.write(this_start * sizeof(VertexData), vertices + this_start, n * sizeof(VertexData));
+    }
 }
 
 void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix, bool transparent)

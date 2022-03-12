@@ -32,7 +32,11 @@ void AddElementCommand::execute()
 
 void AddElementCommand::unexecute()
 {
-    m_doc->remove_element(m_ix);
+    if (m_ix == (m_doc->elements() - 1)) {
+        m_element_to_add = m_doc->remove_last_element();
+    } else {
+        m_doc->remove_element(m_ix);
+    }
 }
 
 RemoveElementCommand::RemoveElementCommand(int ix, View* view)

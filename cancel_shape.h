@@ -9,13 +9,14 @@
 class CancelShape: public Shape
 {
 public:
-    CancelShape(float width);
+    CancelShape(float width, bool just_one_face = false);
     virtual ~CancelShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
 private:
     float m_width;
+    bool m_just_one_face;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;

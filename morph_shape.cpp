@@ -43,7 +43,7 @@ void MorphShape::define_shape()
 
 void MorphShape::define_arrow_shape(float degrees)
 {
-    float dz = 0.01;
+    float dz = 0.0;
     float y0 = -m_width / 4;
     float y1 = -m_width / 8;
     float y2 = m_width / 8;

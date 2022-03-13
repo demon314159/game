@@ -2,8 +2,9 @@
 #include "cancel_shape.h"
 #include <cstddef>
 
-CancelShape::CancelShape(float width)
+CancelShape::CancelShape(float width, bool just_one_face)
     : m_width(width)
+    , m_just_one_face(just_one_face)
     , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
@@ -35,7 +36,7 @@ Facet CancelShape::facet(int facet_ix) const
 
 void CancelShape::define_shape()
 {
-    float dz = 0.01;
+    float dz = m_just_one_face ? 0.0 : 0.01;
     float x0 = -m_width / 2;
     float x1 = -m_width / 2 + m_width / 6;
     float x5 = m_width / 2 - m_width / 6;
@@ -44,8 +45,10 @@ void CancelShape::define_shape()
     add_face({x0, x5, dz}, {x1, x6, dz}, {x6, x1, dz}, {x5, x0, dz}, true);
     add_face({x0, x1, dz}, {x1, x0, dz}, {x6, x5, dz}, {x5, x6, dz});
     // Back face
-    add_face({x0, x5, -dz}, {x1, x6, -dz}, {x6, x1, -dz}, {x5, x0, -dz});
-    add_face({x0, x1, -dz}, {x1, x0, -dz}, {x6, x5, -dz}, {x5, x6, -dz}, true);
+    if (!m_just_one_face) {
+        add_face({x0, x5, -dz}, {x1, x6, -dz}, {x6, x1, -dz}, {x5, x0, -dz});
+        add_face({x0, x1, -dz}, {x1, x0, -dz}, {x6, x5, -dz}, {x5, x6, -dz}, true);
+    }
 }
 
 void CancelShape::add_face(Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)

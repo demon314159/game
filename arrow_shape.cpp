@@ -2,10 +2,11 @@
 #include "arrow_shape.h"
 #include <cstddef>
 
-ArrowShape::ArrowShape(float length, float width, int orientation)
+ArrowShape::ArrowShape(float length, float width, int orientation, bool just_one_face)
     : m_length(length)
     , m_width(width)
     , m_orientation(orientation)
+    , m_just_one_face(just_one_face)
     , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
@@ -37,8 +38,8 @@ Facet ArrowShape::facet(int facet_ix) const
 
 void ArrowShape::define_shape()
 {
+    float dz = m_just_one_face ? 0.0 : 0.01;
     if (m_orientation == ARROW_UP || m_orientation == ARROW_DOWN) {
-        float dz = 0.01;
         float x0 = -m_width / 2;
         float x1 = -m_width / 4;
         float x2 = m_width / 4;
@@ -50,18 +51,21 @@ void ArrowShape::define_shape()
             add_face({x0, 0.0, dz}, {x3, 0.0, dz}, {0.0, y1, dz});
             add_face({x1, 0.0, dz}, {x1, y0, dz}, {x2, y0, dz}, {x2, 0.0, dz});
             // Back face
-            add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y1, -dz}, true);
-            add_face({x1, 0.0, -dz}, {x1, y0, -dz}, {x2, y0, -dz}, {x2, 0.0, -dz}, true);
+            if (!m_just_one_face) {
+                add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y1, -dz}, true);
+                add_face({x1, 0.0, -dz}, {x1, y0, -dz}, {x2, y0, -dz}, {x2, 0.0, -dz}, true);
+            }
         } else { // Down arrow
             // Front face
             add_face({x0, 0.0, dz}, {x3, 0.0, dz}, {0.0, y0, dz}, true);
             add_face({x1, y1, dz}, {x1, 0.0, dz}, {x2, 0.0, dz}, {x2, y1, dz});
             // Back face
-            add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y0, -dz});
-            add_face({x1, y1, -dz}, {x1, 0.0, -dz}, {x2, 0.0, -dz}, {x2, y1, -dz}, true);
+            if (!m_just_one_face) {
+                add_face({x0, 0.0, -dz}, {x3, 0.0, -dz}, {0.0, y0, -dz});
+                add_face({x1, y1, -dz}, {x1, 0.0, -dz}, {x2, 0.0, -dz}, {x2, y1, -dz}, true);
+            }
         }
     } else {
-        float dz = 0.01;
         float y0 = -m_width / 2;
         float y1 = -m_width / 4;
         float y2 = m_width / 4;
@@ -73,15 +77,19 @@ void ArrowShape::define_shape()
             add_face({0.0, y0, dz}, {0.0, y3, dz}, {x0, 0.0, dz});
             add_face({0.0, y1, dz}, {x1, y1, dz}, {x1, y2, dz}, {0.0, y2, dz});
             // Back face
-            add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x0, 0.0, -dz}, true);
-            add_face({0.0, y1, -dz}, {x1, y1, -dz}, {x1, y2, -dz}, {0.0, y2, -dz}, true);
+            if (!m_just_one_face) {
+                add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x0, 0.0, -dz}, true);
+                add_face({0.0, y1, -dz}, {x1, y1, -dz}, {x1, y2, -dz}, {0.0, y2, -dz}, true);
+            }
         } else {  // Right arrow
             // front face
             add_face({0.0, y0, dz}, {0.0, y3, dz}, {x1, 0.0, dz}, true);
             add_face({x0, y1, dz}, {0.0, y1, dz}, {0.0, y2, dz}, {x0, y2, dz});
             // Back face
-            add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x1, 0.0, -dz});
-            add_face({x0, y1, -dz}, {0.0, y1, -dz}, {0.0, y2, -dz}, {x0, y2, -dz}, true);
+            if (!m_just_one_face) {
+                add_face({0.0, y0, -dz}, {0.0, y3, -dz}, {x1, 0.0, -dz});
+                add_face({x0, y1, -dz}, {0.0, y1, -dz}, {0.0, y2, -dz}, {x0, y2, -dz}, true);
+            }
         }
     }
 }

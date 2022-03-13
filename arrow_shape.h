@@ -14,7 +14,7 @@ public:
     static const int ARROW_DOWN = 2;
     static const int ARROW_RIGHT = 3;
 
-    ArrowShape(float length, float width, int orientation);
+    ArrowShape(float length, float width, int orientation, bool just_one_face = false);
     virtual ~ArrowShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
@@ -23,6 +23,7 @@ private:
     float m_length;
     float m_width;
     float m_orientation;
+    bool m_just_one_face;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;

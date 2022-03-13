@@ -44,6 +44,7 @@ protected:
     void set_history_buttons();
     void add_morph_button();
     void update_morph_element();
+    void cancel_morph();
 private:
     View* m_view;
     History m_history;

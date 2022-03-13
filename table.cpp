@@ -74,14 +74,10 @@ void Table::keyPressEvent(QKeyEvent* e)
         }
         update();
     } else if (a == 0x1e) { // u or U
-        if (m_view->get_vmenu().menu_active()) {
-            m_history.undo_command();
-            m_history.trim();
-            set_history_buttons();
-            update();
-        } else {
+        if (m_view->get_vmenu().menu_active())
+            cancel_morph();
+        else
             undo_command();
-        }
     } else if (a == 0x1b) { // r or R
         redo_command();
     } else if (a == 0x36) { // c or C
@@ -224,6 +220,14 @@ void Table::spawn_delete_element_command(int ix)
     }
 }
 
+void Table::cancel_morph()
+{
+    m_history.undo_command();
+    m_history.trim();
+    set_history_buttons();
+    update();
+}
+
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
@@ -235,17 +239,14 @@ void Table::mousePressEvent(QMouseEvent* e)
                 update_morph_element();
                 return;
             } else if (action_id == Vmenu::ACTION_UNDO) {
-
-                if (m_view->get_vmenu().menu_active()) {
-                    m_history.undo_command();
-                    m_history.trim();
-                    set_history_buttons();
-                    update();
-                } else {
+                if (m_view->get_vmenu().menu_active())
+                    cancel_morph();
+                else
                     undo_command();
-                }
             } else if (action_id == Vmenu::ACTION_REDO) {
                 redo_command();
+            } else if (action_id == Vmenu::ACTION_NEW) {
+                new_command();
             }
         }
         if (!m_view->get_vmenu().menu_active()) {
@@ -288,10 +289,7 @@ void Table::mousePressEvent(QMouseEvent* e)
                     update();
                     break;
                 case Vmenu::ACTION_CANCEL:
-                    m_history.undo_command();
-                    m_history.trim();
-                    set_history_buttons();
-                    update();
+                    cancel_morph();
                     break;
                 default:
                     break;
@@ -395,10 +393,11 @@ void Table::redo_command()
 
 void Table::new_command()
 {
-    if (!m_view->get_vmenu().menu_active()) {
-        do_command(new NewCommand(m_view));
-        update();
-    }
+
+    if (m_view->get_vmenu().menu_active())
+        cancel_morph();
+    do_command(new NewCommand(m_view));
+    update();
 }
 
 void Table::load_command()

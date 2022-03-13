@@ -232,7 +232,7 @@ void Vmenu::make_dirty()
 
 bool Vmenu::fixed(int ix) const
 {
-    return m_action[ix] == ACTION_MORPH || m_action[ix] == ACTION_UNDO || m_action[ix] == ACTION_REDO;
+    return m_action[ix] == ACTION_MORPH || m_action[ix] == ACTION_UNDO || m_action[ix] == ACTION_REDO || m_action[ix] == ACTION_NEW;
 }
 
 Face Vmenu::face(int ix) const

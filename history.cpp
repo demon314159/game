@@ -34,6 +34,14 @@ void History::do_command(Command* c)
     c->execute();
 }
 
+void History::trim()
+{
+    for (int i = m_current; i < m_commands; i++) {
+        delete m_command_ptr[i];
+    }
+    m_commands = m_current;
+}
+
 void History::undo_command()
 {
     if (!end_of_undo()) {

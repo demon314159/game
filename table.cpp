@@ -97,6 +97,22 @@ void Table::keyPressEvent(QKeyEvent* e)
         m_view->mouse_unselect();
         set_history_buttons();
         update();
+    } else if (a == 0x0a) { // 1
+        m_view->set_mag(1.0);
+        m_view->get_vmenu().set_mag(1.0);
+        update();
+    } else if (a == 0x0b) { // 2
+        m_view->set_mag(2.0);
+        m_view->get_vmenu().set_mag(1.0 / 2.0);
+        update();
+    } else if (a == 0x0c) { // 3
+        m_view->set_mag(3.0);
+        m_view->get_vmenu().set_mag(1.0 / 3.0);
+        update();
+    } else if (a == 0x0d) { // 4
+        m_view->set_mag(4.0);
+        m_view->get_vmenu().set_mag(1.0 / 4.0);
+        update();
     }
 }
 
@@ -254,6 +270,7 @@ void Table::mousePressEvent(QMouseEvent* e)
                     break;
                 case Vmenu::ACTION_CANCEL:
                     m_history.undo_command();
+                    m_history.trim();
                     set_history_buttons();
                     update();
                     break;

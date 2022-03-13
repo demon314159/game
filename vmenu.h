@@ -36,6 +36,7 @@ public:
     bool fixed(int ix) const;
     int action_id(int ix) const;
     bool menu_active() const;
+    void set_mag(float mag);
 
     void add_undo(Float3 position);
     void add_redo(Float3 position);
@@ -50,6 +51,7 @@ public:
     void add_done(Float3 position, int orientation);
     void add_cancel(Float3 position, int orientation);
 private:
+    float m_mag;
     bool m_is_dirty;
     int m_items;
     int m_action[MAX_ITEMS];

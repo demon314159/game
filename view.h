@@ -45,6 +45,7 @@ public:
     int span_clearance(Float3 pos, int span, int orientation) const;
     int vmenu_item_chosen(int sx, int sy);
     Vmenu& get_vmenu();
+    void set_mag(float mag);
 
 protected:
     bool init_shaders();
@@ -91,6 +92,7 @@ private:
     int m_width;
     int m_height;
     float m_aspect;
+    float m_mag;
     float m_fov;
     float m_camz;
     float m_zoom;

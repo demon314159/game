@@ -14,6 +14,7 @@ public:
     void redo_command();
     bool end_of_undo() const;
     bool end_of_redo() const;
+    void trim();
 
 private:
     int m_max_commands;

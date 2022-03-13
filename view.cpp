@@ -25,6 +25,7 @@ View::View(Document* doc)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_aspect(1.0)
+    , m_mag(1.0)
     , m_fov(45.0)
     , m_camz(8.0)
     , m_zoom(1.0)
@@ -332,7 +333,7 @@ void View::resize_calc()
     float znear = 0.1;
     float zfar = m_camz * m_zoom + 2.0 * m_radius;
     m_projection.setToIdentity();
-    m_projection.perspective(m_fov, m_aspect, znear, zfar);
+    m_projection.perspective(m_fov / m_mag, m_aspect, znear, zfar);
 }
 
 void View::check_storage()
@@ -419,7 +420,7 @@ void View::paint()
     m_program.setUniformValue("marker_matrix", marker_matrix);
 
     m_fixed_matrix = QMatrix4x4();
-    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    float q = tan(m_fov * (3.1415927 / 180.0) / (2.0 * m_mag));
     float dz = 1.2;
     m_fixed_matrix.translate(dz * q * m_aspect, dz * q, -dz);
     m_fixed_matrix = m_projection * m_fixed_matrix;
@@ -659,7 +660,7 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
 
 MouseVector View::new_mouse_vector(int sx, int sy) const
 {
-    double camy = m_camz * tan((3.1415926536 / 180.0) * m_fov / 2);
+    double camy = m_camz * tan((3.1415926536 / 180.0) * m_fov / (2 * m_mag));
     double k = 2 * camy / (double) m_height;
     float v1 = k * ((double) sx - ((double) m_width) / 2);
     float v2 = k * (-(double) sy + ((double) m_height) / 2);
@@ -938,4 +939,8 @@ Vmenu& View::get_vmenu()
     return m_vmenu;
 }
 
-
+void View::set_mag(float mag)
+{
+    m_mag = fmax(1.0, mag);
+    resize_calc();
+}

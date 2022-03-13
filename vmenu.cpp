@@ -15,7 +15,8 @@
 #include <math.h>
 
 Vmenu::Vmenu()
-  : m_is_dirty(false)
+  : m_mag(1.0)
+  , m_is_dirty(false)
   , m_items(0)
 {
 }
@@ -43,6 +44,12 @@ void Vmenu::clear()
 {
     m_is_dirty = m_is_dirty || (m_items > 0);
     m_items = 0;
+}
+
+void Vmenu::set_mag(float mag)
+{
+    m_mag = mag;
+    make_dirty();
 }
 
 void Vmenu::add_undo(Float3 position)
@@ -128,13 +135,22 @@ void Vmenu::add_to(CadModel* model) const
         CadModel cm;
         switch (m_action[ix]) {
             case ACTION_UNDO:
+                p.v1 *= m_mag;
+                p.v2 *= m_mag;
                 cm.add(m_model_undo);
+                cm.magnify(m_mag);
                 break;
             case ACTION_REDO:
+                p.v1 *= m_mag;
+                p.v2 *= m_mag;
                 cm.add(m_model_redo);
+                cm.magnify(m_mag);
                 break;
             case ACTION_MORPH:
+                p.v1 *= m_mag;
+                p.v2 *= m_mag;
                 cm.add(m_model_morph);
+                cm.magnify(m_mag);
                 break;
             case ACTION_FLIP:
                 cm.add(m_model_flip1, -0.25);
@@ -213,15 +229,28 @@ Face Vmenu::face(int ix) const
     BoundingBox bb;
     BoundingBox bb1;
     BoundingBox bb2;
+    CadModel cm;
     switch (m_action[ix]) {
         case ACTION_UNDO:
-            bb = m_model_undo.bounding_box();
+            pos.v1 *= m_mag;
+            pos.v2 *= m_mag;
+            cm.add(m_model_undo);
+            cm.magnify(m_mag);
+            bb = cm.bounding_box();
             break;
         case ACTION_REDO:
-            bb = m_model_redo.bounding_box();
+            pos.v1 *= m_mag;
+            pos.v2 *= m_mag;
+            cm.add(m_model_redo);
+            cm.magnify(m_mag);
+            bb = cm.bounding_box();
             break;
         case ACTION_MORPH:
-            bb = m_model_morph.bounding_box();
+            pos.v1 *= m_mag;
+            pos.v2 *= m_mag;
+            cm.add(m_model_morph);
+            cm.magnify(m_mag);
+            bb = cm.bounding_box();
             break;
         case ACTION_FLIP:
             bb = m_model_flip1.bounding_box();

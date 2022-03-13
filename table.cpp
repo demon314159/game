@@ -65,6 +65,8 @@ void Table::keyPressEvent(QKeyEvent* e)
     } else if (a == 0x2b) { // h or H
         m_view->zoom_home();
         if (shifted) {
+            m_view->set_mag(1.0);
+            m_view->get_vmenu().set_mag(1.0);
             m_view->rotate_home();
             m_view->translate_home();
         }

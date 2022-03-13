@@ -25,6 +25,7 @@ Vmenu::~Vmenu()
 {
 }
 #define MAG1 0.10
+CadModel Vmenu::m_model_new = CadModel(CancelShape(0.5 * MAG1), Look::cancel_paint, 3.0);
 CadModel Vmenu::m_model_undo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_redo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);
@@ -50,6 +51,11 @@ void Vmenu::set_mag(float mag)
 {
     m_mag = mag;
     make_dirty();
+}
+
+void Vmenu::add_new(Float3 position)
+{
+    add_item(ACTION_NEW, position, 0);
 }
 
 void Vmenu::add_undo(Float3 position)
@@ -134,6 +140,12 @@ void Vmenu::add_to(CadModel* model) const
         Float3 p = m_position[ix];
         CadModel cm;
         switch (m_action[ix]) {
+            case ACTION_NEW:
+                p.v1 *= m_mag;
+                p.v2 *= m_mag;
+                cm.add(m_model_new);
+                cm.magnify(m_mag);
+                break;
             case ACTION_UNDO:
                 p.v1 *= m_mag;
                 p.v2 *= m_mag;
@@ -231,6 +243,13 @@ Face Vmenu::face(int ix) const
     BoundingBox bb2;
     CadModel cm;
     switch (m_action[ix]) {
+        case ACTION_NEW:
+            pos.v1 *= m_mag;
+            pos.v2 *= m_mag;
+            cm.add(m_model_new);
+            cm.magnify(m_mag);
+            bb = cm.bounding_box();
+            break;
         case ACTION_UNDO:
             pos.v1 *= m_mag;
             pos.v2 *= m_mag;

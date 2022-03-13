@@ -27,6 +27,8 @@ void Table::initializeGL()
 {
     if (!m_view->initialize())
         close();
+    set_history_buttons();
+    update();
 }
 
 void Table::resizeGL(int w, int h)
@@ -72,7 +74,14 @@ void Table::keyPressEvent(QKeyEvent* e)
         }
         update();
     } else if (a == 0x1e) { // u or U
-        undo_command();
+        if (m_view->get_vmenu().menu_active()) {
+            m_history.undo_command();
+            m_history.trim();
+            set_history_buttons();
+            update();
+        } else {
+            undo_command();
+        }
     } else if (a == 0x1b) { // r or R
         redo_command();
     } else if (a == 0x36) { // c or C
@@ -226,7 +235,15 @@ void Table::mousePressEvent(QMouseEvent* e)
                 update_morph_element();
                 return;
             } else if (action_id == Vmenu::ACTION_UNDO) {
-                undo_command();
+
+                if (m_view->get_vmenu().menu_active()) {
+                    m_history.undo_command();
+                    m_history.trim();
+                    set_history_buttons();
+                    update();
+                } else {
+                    undo_command();
+                }
             } else if (action_id == Vmenu::ACTION_REDO) {
                 redo_command();
             }
@@ -450,16 +467,18 @@ void Table::set_history_buttons()
     vmenu.clear();
     float dd = 0.04;
     if (!m_history.end_of_undo())
-        vmenu.add_undo({-5 * dd, -dd, 0.0});
+            vmenu.add_undo({-5 * dd, -dd, 0.0});
     if (!m_history.end_of_redo())
-        vmenu.add_redo({-3 * dd, -dd, 0.0});
+            vmenu.add_redo({-3 * dd, -dd, 0.0});
+    if (m_view->get_doc()->elements() != 0)
+        vmenu.add_new({-1 * dd, -dd, 0.0});
 }
 
 void Table::add_morph_button()
 {
     Vmenu& vmenu = m_view->get_vmenu();
     float dd = 0.04;
-    vmenu.add_morph({-dd, -dd, 0.0});
+    vmenu.add_morph({-7 * dd, -dd, 0.0});
     if (m_me.kind() == MorphElement::MORPH_DOOR || m_me.kind() == MorphElement::MORPH_WINDOW) {
         float dx = Look::dimx / 2;
 

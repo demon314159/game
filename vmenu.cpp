@@ -25,7 +25,7 @@ Vmenu::~Vmenu()
 {
 }
 #define MAG1 0.10
-CadModel Vmenu::m_model_new = CadModel(CancelShape(0.5 * MAG1, true), Look::cancel_paint, 3.0);
+CadModel Vmenu::m_model_new = CadModel(CancelShape(0.5 * MAG1, true), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_undo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT, true), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_redo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT, true), Look::blue_paint, 3.0);
 CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::blue_paint, 3.0);

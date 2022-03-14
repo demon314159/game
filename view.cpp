@@ -507,7 +507,7 @@ void View::rotate_home()
 #ifdef VERBOSE
     printf("View::rotate_home()\n");
 #endif
-    m_xrot = 0.0;
+    m_xrot = 30.0;
     m_yrot = 0.0;
 }
 

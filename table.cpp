@@ -62,16 +62,14 @@ void Table::keyPressEvent(QKeyEvent* e)
         m_view->rotate_ay(shifted ? 1.0 : 10.0);
         update();
     } else if (a == 0x1f) { // i or I
-        m_view->zoom(shifted ? (29.0 / 30.0) : (2.0 / 3.0));
+        m_view->zoom(3.0 / 2.0);
         update();
     } else if (a == 0x20) { // o or O
-        m_view->zoom(shifted ? (30.0 / 29.0) : (3.0 / 2.0));
+        m_view->zoom(2.0 / 3.0);
         update();
     } else if (a == 0x2b) { // h or H
         m_view->zoom_home();
         if (shifted) {
-            m_view->set_mag(1.0);
-            m_view->get_vmenu().set_mag(1.0);
             m_view->rotate_home();
             m_view->translate_home();
         }
@@ -106,22 +104,6 @@ void Table::keyPressEvent(QKeyEvent* e)
     } else if (a == 0x09) {
         m_view->mouse_unselect();
         set_history_buttons();
-        update();
-    } else if (a == 0x0a) { // 1
-        m_view->set_mag(1.0);
-        m_view->get_vmenu().set_mag(1.0);
-        update();
-    } else if (a == 0x0b) { // 2
-        m_view->set_mag(2.0);
-        m_view->get_vmenu().set_mag(1.0 / 2.0);
-        update();
-    } else if (a == 0x0c) { // 3
-        m_view->set_mag(3.0);
-        m_view->get_vmenu().set_mag(1.0 / 3.0);
-        update();
-    } else if (a == 0x0d) { // 4
-        m_view->set_mag(4.0);
-        m_view->get_vmenu().set_mag(1.0 / 4.0);
         update();
     }
 }
@@ -358,11 +340,11 @@ void Table::wheelEvent(QWheelEvent* e)
     int angle = e->angleDelta().y();
 //    printf("wheel event angle = %d\n", angle);
     if (angle > 0) {
-        m_view->zoom(2.0 / 3.0);
+        m_view->zoom(3.0 / 2.0);
         update();
     }
     if (angle < 0) {
-        m_view->zoom(3.0 / 2.0);
+        m_view->zoom(2.0 / 3.0);
         update();
     }
     e->accept();

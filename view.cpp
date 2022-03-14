@@ -28,7 +28,6 @@ View::View(Document* doc)
     , m_mag(1.0)
     , m_fov(45.0)
     , m_camz(8.0)
-    , m_zoom(1.0)
     , m_xrot(0.0)
     , m_yrot(0.0)
     , m_xoff(0.0)
@@ -183,6 +182,7 @@ void View::decorate_model()
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0 * Element::dimh));
     m_radius = fmax(m_radius, 2.0);
+    m_radius *= sqrt(2.0);
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
@@ -329,7 +329,7 @@ void View::resize_calc()
     m_camz = m_radius / q;
     m_camz -= m_radius;
     float znear = 0.1;
-    float zfar = m_camz * m_zoom + 2.0 * m_radius;
+    float zfar = m_camz + 2.0 * m_radius;
     m_projection.setToIdentity();
     m_projection.perspective(m_fov / m_mag, m_aspect, znear, zfar);
 }
@@ -385,7 +385,7 @@ void View::paint()
 
 
     QMatrix4x4 matrix;
-    matrix.translate(m_xoff, m_yoff, -m_camz * m_zoom - m_radius);
+    matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
     matrix.rotate(my_rot);
     matrix.translate(-m_center.v1, -m_center.v2, -m_center.v3);
     // Set modelview-projection matrix
@@ -511,20 +511,12 @@ void View::rotate_home()
 
 void View::zoom(float factor)
 {
-#ifdef VERBOSE
-    printf("View::zoom(%f)\n", factor);
-#endif
-    m_zoom = std::max(m_zoom * factor, (float) 0.1);
-    resize_calc();
+    set_mag(m_mag * factor);
 }
 
 void View::zoom_home()
 {
-#ifdef VERBOSE
-    printf("View::zoom_home()\n");
-#endif
-    m_zoom = 1.0;
-    resize_calc();
+    set_mag(1.0);
 }
 
 bool View::init_shaders()
@@ -665,7 +657,7 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
     Float3 vector = {v1 / m_camz, v2 / m_camz, -1.0};
     Float3 origin = {0.0, 0.0, 0.0};
     MouseVector tmv(origin, vector);
-    tmv.translate({-m_xoff, -m_yoff, m_camz * m_zoom + m_radius});
+    tmv.translate({-m_xoff, -m_yoff, m_camz + m_radius});
     tmv.rotate_ax(m_xrot);
     tmv.rotate_ay(m_yrot);
     tmv.translate(m_center);
@@ -940,5 +932,7 @@ Vmenu& View::get_vmenu()
 void View::set_mag(float mag)
 {
     m_mag = fmax(1.0, mag);
+    m_mag = fmin(10.0, m_mag);
+    m_vmenu.set_mag(1.0 / m_mag);
     resize_calc();
 }

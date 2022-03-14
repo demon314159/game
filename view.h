@@ -95,7 +95,6 @@ private:
     float m_mag;
     float m_fov;
     float m_camz;
-    float m_zoom;
     float m_xrot;
     float m_yrot;
     float m_xoff;

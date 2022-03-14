@@ -25,6 +25,7 @@ public:
     void new_command();
     void load_command();
     void save_command();
+    void save_session();
 
 protected:
     void initializeGL() override;

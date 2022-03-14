@@ -29,7 +29,7 @@ View::View(Document* doc)
     , m_fov(45.0)
     , m_camz(8.0)
     , m_zoom(1.0)
-    , m_xrot(30.0)
+    , m_xrot(0.0)
     , m_yrot(0.0)
     , m_xoff(0.0)
     , m_yoff(0.0)
@@ -181,9 +181,8 @@ void View::decorate_model()
     add_grid(m_table, bb);
     m_table->add(m_choose.marker_model(), 0.0, 0.0, 0.0);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
-    m_radius = fmax(m_radius, fabs(bb.vmax.v2 - bb.vmin.v2) / 2.0 );
+    m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0 * Element::dimh));
     m_radius = fmax(m_radius, 2.0);
-    m_radius *= 1.5;
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
@@ -329,7 +328,6 @@ void View::resize_calc()
     float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
     m_camz = m_radius / q;
     m_camz -= m_radius;
-    m_camz = 2.0 * m_camz / 3.0;
     float znear = 0.1;
     float zfar = m_camz * m_zoom + 2.0 * m_radius;
     m_projection.setToIdentity();
@@ -507,7 +505,7 @@ void View::rotate_home()
 #ifdef VERBOSE
     printf("View::rotate_home()\n");
 #endif
-    m_xrot = 30.0;
+    m_xrot = 0.0;
     m_yrot = 0.0;
 }
 

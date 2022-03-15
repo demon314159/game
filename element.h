@@ -37,6 +37,7 @@ public:
     static constexpr float dimx = 1.0;
     static constexpr float dimh = 2.0 / 3.0;
     static constexpr float dimb = 0.025;
+    static constexpr float dimt = 0.05;
     static PaintCan red_paint;
     static PaintCan roof_paint;
     static PaintCan white_paint;
@@ -187,8 +188,6 @@ private:
 class RoofElement: public Element
 {
 public:
-    static constexpr float dimb = 0.025;
-    static constexpr float dimt = 0.05;
     RoofElement(float xpos, float ypos, float zpos, int orientation, int width);
     RoofElement() = delete;
     void save_to_file(QDataStream& ds) const override;

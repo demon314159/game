@@ -148,20 +148,20 @@ Face Element::common_gen_face(int ix, float xf, float yf, float zf, bool gable_f
 
     if (gable_flag) {
         if (orientation == 0) {
-            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
-            v_ufr.v2 = v_lfr.v2 + dimb * dimh;
+            v_ufl.v2 = v_lfl.v2 + dimt;
+            v_ufr.v2 = v_lfr.v2 + dimt;
         };
         if (orientation == 1) {
-           v_ufr.v2 = v_lfr.v2 + dimb * dimh;
-           v_ubr.v2 = v_lbr.v2 + dimb * dimh;
+           v_ufr.v2 = v_lfr.v2 + dimt;
+           v_ubr.v2 = v_lbr.v2 + dimt;
         };
         if (orientation == 2) {
-            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
-            v_ubr.v2 = v_lbr.v2 + dimb * dimh;
+            v_ubl.v2 = v_lbl.v2 + dimt;
+            v_ubr.v2 = v_lbr.v2 + dimt;
         };
         if (orientation == 3) {
-            v_ubl.v2 = v_lbl.v2 + dimb * dimh;
-            v_ufl.v2 = v_lfl.v2 + dimb * dimh;
+            v_ubl.v2 = v_lbl.v2 + dimt;
+            v_ufl.v2 = v_lfl.v2 + dimt;
         };
     }
     if (ix == TOP_FACE) {
@@ -203,7 +203,8 @@ Face Element::gen_roof_face(int ix, float xf, float yf, float zf, int orientatio
     Face f;
 
     float oh = 0.25;
-    float t = RoofElement::dimt;
+    float yoh = 0.25 * dimh;
+    float t = dimt;
     Float3 v_lbl;
     Float3 v_lfl;
     Float3 v_lfr;
@@ -212,43 +213,43 @@ Face Element::gen_roof_face(int ix, float xf, float yf, float zf, int orientatio
     Float3 v_ufl;
     Float3 v_ufr;
     Float3 v_ubr;
+    yf += t;
     if (orientation == 0) {
         v_lbl = face_vertex(-xf - oh, yf, -zf);
-        v_lfl = face_vertex(-xf - oh, -yf - oh, zf + oh);
-        v_lfr = face_vertex(xf + oh, -yf - oh, zf + oh);
+        v_lfl = face_vertex(-xf - oh, -yf - yoh, zf + oh);
+        v_lfr = face_vertex(xf + oh, -yf - yoh, zf + oh);
         v_lbr = face_vertex(xf + oh, yf, -zf);
-        v_ubl = face_vertex(-xf - oh, yf + t, -zf);
-        v_ufl = face_vertex(-xf - oh, -yf - oh + t, zf + oh);
-        v_ufr = face_vertex(xf + oh, -yf - oh + t, zf + oh);
-        v_ubr = face_vertex(xf + oh, yf + t, -zf);
+        v_ubl = face_vertex(-xf - oh, yf + 2 * t, -zf);
+        v_ufl = face_vertex(-xf - oh, -yf - yoh + t, zf + oh);
+        v_ufr = face_vertex(xf + oh, -yf - yoh + t, zf + oh);
+        v_ubr = face_vertex(xf + oh, yf + 2 * t, -zf);
     } else if (orientation == 1) {
         v_lbl = face_vertex(-xf, yf, -zf - oh);
         v_lfl = face_vertex(-xf, yf, zf + oh);
-        v_lfr = face_vertex(xf + oh, -yf - oh, zf + oh);
-        v_lbr = face_vertex(xf + oh, -yf -oh, -zf - oh);
-        v_ubl = face_vertex(-xf, yf + t, -zf - oh);
-        v_ufl = face_vertex(-xf, yf + t, zf + oh);
-        v_ufr = face_vertex(xf + oh, -yf - oh + t, zf + oh);
-        v_ubr = face_vertex(xf + oh, -yf - oh + t, -zf - oh);
+        v_lfr = face_vertex(xf + oh, -yf - yoh, zf + oh);
+        v_lbr = face_vertex(xf + oh, -yf -yoh, -zf - oh);
+        v_ubl = face_vertex(-xf, yf + 2 * t, -zf - oh);
+        v_ufl = face_vertex(-xf, yf + 2 * t, zf + oh);
+        v_ufr = face_vertex(xf + oh, -yf - yoh + t, zf + oh);
+        v_ubr = face_vertex(xf + oh, -yf - yoh + t, -zf - oh);
     } else if (orientation == 2) {
-        v_lbl = face_vertex(-xf - oh, -yf - oh, -zf - oh);
+        v_lbl = face_vertex(-xf - oh, -yf - yoh, -zf - oh);
         v_lfl = face_vertex(-xf - oh, yf, zf);
         v_lfr = face_vertex(xf + oh, yf, zf);
-        v_lbr = face_vertex(xf + oh, -yf - oh, -zf - oh);
-        v_ubl = face_vertex(-xf - oh, -yf - oh + t, -zf - oh);
-        v_ufl = face_vertex(-xf - oh, yf + t, zf);
-        v_ufr = face_vertex(xf + oh, yf + t, zf);
-        v_ubr = face_vertex(xf + oh, -yf -oh + t, -zf - oh);
+        v_lbr = face_vertex(xf + oh, -yf - yoh, -zf - oh);
+        v_ubl = face_vertex(-xf - oh, -yf - yoh + t, -zf - oh);
+        v_ufl = face_vertex(-xf - oh, yf + 2 * t, zf);
+        v_ufr = face_vertex(xf + oh, yf + 2 * t, zf);
+        v_ubr = face_vertex(xf + oh, -yf -yoh + t, -zf - oh);
     } else {  // orientation = 3
-
-        v_lbl = face_vertex(-xf - oh, -yf - oh, -zf - oh);
-        v_lfl = face_vertex(-xf - oh, -yf - oh, zf + oh);
+        v_lbl = face_vertex(-xf - oh, -yf - yoh, -zf - oh);
+        v_lfl = face_vertex(-xf - oh, -yf - yoh, zf + oh);
         v_lfr = face_vertex(xf, yf, zf + oh);
         v_lbr = face_vertex(xf, yf, -zf - oh);
-        v_ubl = face_vertex(-xf - oh, -yf - oh + t, -zf - oh);
-        v_ufl = face_vertex(-xf - oh, -yf - oh + t, zf + oh);
-        v_ufr = face_vertex(xf, yf + t, zf + oh);
-        v_ubr = face_vertex(xf, yf + t, -zf - oh);
+        v_ubl = face_vertex(-xf - oh, -yf - yoh + t, -zf - oh);
+        v_ufl = face_vertex(-xf - oh, -yf - yoh + t, zf + oh);
+        v_ufr = face_vertex(xf, yf + 2 * t, zf + oh);
+        v_ubr = face_vertex(xf, yf + 2 * t, -zf - oh);
     }
     if (ix == TOP_FACE) {
         f.v1 = v_ubl;

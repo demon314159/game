@@ -757,26 +757,34 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
     float max_level = -1000000.0;
     const Element* min_e = NULL;
     int min_ix = -1;
+    int min_face = 0;
     float depth;
 
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
-                if (screen_point_inside_face(e->face(TOP_FACE), sx, sy, &depth)) {  // Very expensive test
-                    if (depth < min_depth || e->top_level() > max_level) {
-                        if (depth < min_depth)
-                            min_depth = depth;
-                        if (e->top_level() > max_level)
-                            max_level = e->top_level();
-                        min_e = e;
-                        min_ix = i;
+                for (int j = 0; j < 6; j++) {
+                    if (screen_point_inside_face(e->face(j), sx, sy, &depth)) {  // Very expensive test
+                        if (depth < min_depth) {
+                            if (depth < min_depth)
+                                min_depth = depth;
+                            if (e->top_level() > max_level)
+                                max_level = e->top_level();
+                            min_e = e;
+                            min_ix = i;
+                            min_face = j;
+                        }
                     }
+
                 }
+
             }
         }
     }
     if (min_e == NULL)
+        return -1;
+    if (min_face != TOP_FACE)
         return -1;
     int sf = selected_top_subface(min_e, sx, sy);
     return top_subface_covered(min_e, sf) ? -1 : min_ix;

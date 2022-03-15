@@ -664,6 +664,58 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
     return tmv;
 }
 
+bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f) const
+{
+    Float3 mv_org = mv.origin();
+    Float3 mv_vec = mv.vector();
+    float abs_v1 = fabs(mv_vec.v1);
+    float abs_v2 = fabs(mv_vec.v2);
+    float abs_v3 = fabs(mv_vec.v3);
+    if (abs_v3 > abs_v1 && abs_v3 > abs_v2) {        // Z is dominant axis
+        float zface = (f.v1.v3 + f.v2.v3 + f.v3.v3 + f.v4.v3) / 4.0;
+        float t = (zface - mv_org.v3) / mv_vec.v3;
+        float x = mv_org.v1 + t * mv_vec.v1;
+        float y = mv_org.v2 + t * mv_vec.v2;
+        if (x < f.v1.v1 && x < f.v2.v1 && x < f.v3.v1 && x < f.v4.v1)
+            return false;
+        if (x > f.v1.v1 && x > f.v2.v1 && x > f.v3.v1 && x > f.v4.v1)
+            return false;
+        if (y < f.v1.v2 && y < f.v2.v2 && y < f.v3.v2 && y < f.v4.v2)
+            return false;
+        if (y > f.v1.v2 && y > f.v2.v2 && y > f.v3.v2 && y > f.v4.v2)
+            return false;
+        return true;
+    } else if (abs_v2 > abs_v1 && abs_v2 > abs_v3) { // Y is dominant axis
+        float yface = (f.v1.v2 + f.v2.v2 + f.v3.v2 + f.v4.v2) / 4.0;
+        float t = (yface - mv_org.v2) / mv_vec.v2;
+        float x = mv_org.v1 + t * mv_vec.v1;
+        float z = mv_org.v3 + t * mv_vec.v3;
+        if (x < f.v1.v1 && x < f.v2.v1 && x < f.v3.v1 && x < f.v4.v1)
+            return false;
+        if (x > f.v1.v1 && x > f.v2.v1 && x > f.v3.v1 && x > f.v4.v1)
+            return false;
+        if (z < f.v1.v3 && z < f.v2.v3 && z < f.v3.v3 && z < f.v4.v3)
+            return false;
+        if (z > f.v1.v3 && z > f.v2.v3 && z > f.v3.v3 && z > f.v4.v3)
+            return false;
+        return true;
+    } else {                                         // X is dominant axis
+        float xface = (f.v1.v1 + f.v2.v1 + f.v3.v1 + f.v4.v1) / 4.0;
+        float t = (xface - mv_org.v1) / mv_vec.v1;
+        float y = mv_org.v2 + t * mv_vec.v2;
+        float z = mv_org.v3 + t * mv_vec.v3;
+        if (y < f.v1.v2 && y < f.v2.v2 && y < f.v3.v2 && y < f.v4.v2)
+            return false;
+        if (y > f.v1.v2 && y > f.v2.v2 && y > f.v3.v2 && y > f.v4.v2)
+            return false;
+        if (z < f.v1.v3 && z < f.v2.v3 && z < f.v3.v3 && z < f.v4.v3)
+            return false;
+        if (z > f.v1.v3 && z > f.v2.v3 && z > f.v3.v3 && z > f.v4.v3)
+            return false;
+        return true;
+    }
+}
+
 bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
 {
     Float3 mv_org = mv.origin();

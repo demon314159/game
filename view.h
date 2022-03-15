@@ -37,6 +37,7 @@ public:
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
     MouseVector new_mouse_vector(int sx, int sy) const;
+    bool mouse_vector_intersects(const MouseVector& mv, const Face& f) const;
     bool mouse_vector_intersects(const MouseVector& mv, const Element* e) const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation) const;

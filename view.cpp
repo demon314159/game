@@ -397,6 +397,7 @@ void View::paint()
     QMatrix4x4 marker_matrix;
     if (m_choose.marker_visible()) {
         Float3 mp = m_choose.marker_position();
+        mp.v2 += 0.025;
         marker_matrix.translate(mp.v1, mp.v2 * 2.0 / 3.0, mp.v3);
         float angle = m_choose.marker_angle();
         int orientation = m_choose.marker_orientation();
@@ -671,48 +672,89 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f) const
     float abs_v1 = fabs(mv_vec.v1);
     float abs_v2 = fabs(mv_vec.v2);
     float abs_v3 = fabs(mv_vec.v3);
-    if (abs_v3 > abs_v1 && abs_v3 > abs_v2) {        // Z is dominant axis
-        float zface = (f.v1.v3 + f.v2.v3 + f.v3.v3 + f.v4.v3) / 4.0;
-        float t = (zface - mv_org.v3) / mv_vec.v3;
-        float x = mv_org.v1 + t * mv_vec.v1;
-        float y = mv_org.v2 + t * mv_vec.v2;
-        if (x < f.v1.v1 && x < f.v2.v1 && x < f.v3.v1 && x < f.v4.v1)
+    if (abs_v3 > abs_v1 && abs_v3 > abs_v2) {        // Z is dominant axisi
+
+        float t1 = (f.v1.v3 - mv_org.v3) / mv_vec.v3;
+        float x1 = mv_org.v1 + t1 * mv_vec.v1;
+        float y1 = mv_org.v2 + t1 * mv_vec.v2;
+
+        float t2 = (f.v2.v3 - mv_org.v3) / mv_vec.v3;
+        float x2 = mv_org.v1 + t2 * mv_vec.v1;
+        float y2 = mv_org.v2 + t2 * mv_vec.v2;
+
+        float t3 = (f.v3.v3 - mv_org.v3) / mv_vec.v3;
+        float x3 = mv_org.v1 + t3 * mv_vec.v1;
+        float y3 = mv_org.v2 + t3 * mv_vec.v2;
+
+        float t4 = (f.v4.v3 - mv_org.v3) / mv_vec.v3;
+        float x4 = mv_org.v1 + t4 * mv_vec.v1;
+        float y4 = mv_org.v2 + t4 * mv_vec.v2;
+
+        if (x1 < f.v1.v1 && x2 < f.v2.v1 && x3 < f.v3.v1 && x4 < f.v4.v1)
             return false;
-        if (x > f.v1.v1 && x > f.v2.v1 && x > f.v3.v1 && x > f.v4.v1)
+        if (x1 > f.v1.v1 && x2 > f.v2.v1 && x3 > f.v3.v1 && x4 > f.v4.v1)
             return false;
-        if (y < f.v1.v2 && y < f.v2.v2 && y < f.v3.v2 && y < f.v4.v2)
+        if (y1 < f.v1.v2 && y2 < f.v2.v2 && y3 < f.v3.v2 && y4 < f.v4.v2)
             return false;
-        if (y > f.v1.v2 && y > f.v2.v2 && y > f.v3.v2 && y > f.v4.v2)
+        if (y1 > f.v1.v2 && y2 > f.v2.v2 && y3 > f.v3.v2 && y4 > f.v4.v2)
             return false;
         return true;
     } else if (abs_v2 > abs_v1 && abs_v2 > abs_v3) { // Y is dominant axis
-        float yface = (f.v1.v2 + f.v2.v2 + f.v3.v2 + f.v4.v2) / 4.0;
-        float t = (yface - mv_org.v2) / mv_vec.v2;
-        float x = mv_org.v1 + t * mv_vec.v1;
-        float z = mv_org.v3 + t * mv_vec.v3;
-        if (x < f.v1.v1 && x < f.v2.v1 && x < f.v3.v1 && x < f.v4.v1)
+
+
+        float t1 = (f.v1.v2 - mv_org.v2) / mv_vec.v2;
+        float x1 = mv_org.v1 + t1 * mv_vec.v1;
+        float z1 = mv_org.v3 + t1 * mv_vec.v3;
+
+        float t2 = (f.v2.v2 - mv_org.v2) / mv_vec.v2;
+        float x2 = mv_org.v1 + t2 * mv_vec.v1;
+        float z2 = mv_org.v3 + t2 * mv_vec.v3;
+
+        float t3 = (f.v3.v2 - mv_org.v2) / mv_vec.v2;
+        float x3 = mv_org.v1 + t3 * mv_vec.v1;
+        float z3 = mv_org.v3 + t3 * mv_vec.v3;
+
+        float t4 = (f.v4.v2 - mv_org.v2) / mv_vec.v2;
+        float x4 = mv_org.v1 + t4 * mv_vec.v1;
+        float z4 = mv_org.v3 + t4 * mv_vec.v3;
+
+        if (x1 < f.v1.v1 && x2 < f.v2.v1 && x3 < f.v3.v1 && x4 < f.v4.v1)
             return false;
-        if (x > f.v1.v1 && x > f.v2.v1 && x > f.v3.v1 && x > f.v4.v1)
+        if (x1 > f.v1.v1 && x2 > f.v2.v1 && x3 > f.v3.v1 && x4 > f.v4.v1)
             return false;
-        if (z < f.v1.v3 && z < f.v2.v3 && z < f.v3.v3 && z < f.v4.v3)
+        if (z1 < f.v1.v3 && z2 < f.v2.v3 && z3 < f.v3.v3 && z4 < f.v4.v3)
             return false;
-        if (z > f.v1.v3 && z > f.v2.v3 && z > f.v3.v3 && z > f.v4.v3)
+        if (z1 > f.v1.v3 && z2 > f.v2.v3 && z3 > f.v3.v3 && z4 > f.v4.v3)
             return false;
         return true;
     } else {                                         // X is dominant axis
-        float xface = (f.v1.v1 + f.v2.v1 + f.v3.v1 + f.v4.v1) / 4.0;
-        float t = (xface - mv_org.v1) / mv_vec.v1;
-        float y = mv_org.v2 + t * mv_vec.v2;
-        float z = mv_org.v3 + t * mv_vec.v3;
-        if (y < f.v1.v2 && y < f.v2.v2 && y < f.v3.v2 && y < f.v4.v2)
+
+        float t1 = (f.v1.v1 - mv_org.v1) / mv_vec.v1;
+        float y1 = mv_org.v2 + t1 * mv_vec.v2;
+        float z1 = mv_org.v3 + t1 * mv_vec.v3;
+
+        float t2 = (f.v2.v1 - mv_org.v1) / mv_vec.v1;
+        float y2 = mv_org.v2 + t2 * mv_vec.v2;
+        float z2 = mv_org.v3 + t2 * mv_vec.v3;
+
+        float t3 = (f.v3.v1 - mv_org.v1) / mv_vec.v1;
+        float y3 = mv_org.v2 + t3 * mv_vec.v2;
+        float z3 = mv_org.v3 + t3 * mv_vec.v3;
+
+        float t4 = (f.v4.v1 - mv_org.v1) / mv_vec.v1;
+        float y4 = mv_org.v2 + t4 * mv_vec.v2;
+        float z4 = mv_org.v3 + t4 * mv_vec.v3;
+
+        if (y1 < f.v1.v2 && y2 < f.v2.v2 && y3 < f.v3.v2 && y4 < f.v4.v2)
             return false;
-        if (y > f.v1.v2 && y > f.v2.v2 && y > f.v3.v2 && y > f.v4.v2)
+        if (y1 > f.v1.v2 && y2 > f.v2.v2 && y3 > f.v3.v2 && y4 > f.v4.v2)
             return false;
-        if (z < f.v1.v3 && z < f.v2.v3 && z < f.v3.v3 && z < f.v4.v3)
+        if (z1 < f.v1.v3 && z2 < f.v2.v3 && z3 < f.v3.v3 && z4 < f.v4.v3)
             return false;
-        if (z > f.v1.v3 && z > f.v2.v3 && z > f.v3.v3 && z > f.v4.v3)
+        if (z1 > f.v1.v3 && z2 > f.v2.v3 && z3 > f.v3.v3 && z4 > f.v4.v3)
             return false;
         return true;
+
     }
 }
 
@@ -812,22 +854,36 @@ int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
     int min_face = 0;
     float depth;
 
+    printf("\nselected_element_ix(%d, %d)\n", sx, sy);
+
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
-            if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
+            if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most elements
                 for (int j = 0; j < 6; j++) {
-                    if (screen_point_inside_face(e->face(j), sx, sy, &depth)) {  // Very expensive test
-                        if (depth < min_depth) {
-                            if (depth < min_depth)
-                                min_depth = depth;
-                            if (e->top_level() > max_level)
-                                max_level = e->top_level();
-                            min_e = e;
-                            min_ix = i;
-                            min_face = j;
+                    if (mouse_vector_intersects(mv, e->face(j))) {  // Very quick test to eliminate most faces of selected element
+                        printf("    down to element %d, face %d\n", i, j);
+
+
+
+
+                        if (screen_point_inside_face(e->face(j), sx, sy, &depth)) {  // Very expensive test
+                            if (depth < min_depth) {
+                                if (depth < min_depth)
+                                    min_depth = depth;
+                                if (e->top_level() > max_level)
+                                    max_level = e->top_level();
+                                min_e = e;
+                                min_ix = i;
+                                min_face = j;
+                            }
                         }
+
+
+
                     }
+
+
 
                 }
 

@@ -70,13 +70,19 @@ protected:
     float min4(float a, float b, float c, float d) const;
     float max4(float a, float b, float c, float d) const;
     double len(Float2 v1, Float2 v2) const;
+    double len(Float3 v1, Float3 v2) const;
     double tri_area(Float2 v1, Float2 v2, Float2 v3) const;
+    double tri_area(Float3 v1, Float3 v2, Float3 v3) const;
     double quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const;
+    double quad_area(Float3 v1, Float3 v2, Float3 v3, Float3 v4) const;
     float normalize_angle(float angle) const;
     void add_grid(CadModel* cm, const BoundingBox& bb);
     Float3 normal(const Face& f) const;
     bool a_bit_less_than_all(float x, float x1, float x2, float x3, float x4) const;
     bool a_bit_more_than_all(float x, float x1, float x2, float x3, float x4) const;
+
+    // this will change to return boolean
+    float score(Float3 pt, Float3 pt1, Float3 pt2, Float3 pt3, Float3 pt4) const;
 
 private:
     Vmenu m_vmenu;

@@ -619,13 +619,30 @@ double View::len(Float2 v1, Float2 v2) const
     return sqrt(a * a + b * b);
 }
 
+double View::len(Float3 v1, Float3 v2) const
+{
+    double a = v1.v1 - v2.v1;
+    double b = v1.v2 - v2.v2;
+    double c = v1.v3 - v2.v3;
+    return sqrt(a * a + b * b + c * c);
+}
+
 double View::tri_area(Float2 v1, Float2 v2, Float2 v3) const
 {
     double a = len(v1, v2);
     double b = len(v2, v3);
     double c = len(v3, v1);
     double s = (a + b + c) / 2.0;
-    return sqrt(s * (s - a) * (s - b) * (s - c));
+    return sqrt(fabs(s * (s - a) * (s - b) * (s - c)));
+}
+
+double View::tri_area(Float3 v1, Float3 v2, Float3 v3) const
+{
+    double a = len(v1, v2);
+    double b = len(v2, v3);
+    double c = len(v3, v1);
+    double s = (a + b + c) / 2.0;
+    return sqrt(fabs(s * (s - a) * (s - b) * (s - c)));
 }
 
 double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
@@ -637,7 +654,19 @@ double View::quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const
     double p = len(v1, v3);
     double q = len(v2, v4);
     double k = b * b + d * d - a * a - c * c;
-    return sqrt(4.0 * p * p * q * q - k * k) / 4.0;
+    return sqrt(fabs(4.0 * p * p * q * q - k * k)) / 4.0;
+}
+
+double View::quad_area(Float3 v1, Float3 v2, Float3 v3, Float3 v4) const
+{
+    double a = len(v1, v2);
+    double b = len(v2, v3);
+    double c = len(v3, v4);
+    double d = len(v4, v1);
+    double p = len(v1, v3);
+    double q = len(v2, v4);
+    double k = b * b + d * d - a * a - c * c;
+    return sqrt(fabs(4.0 * p * p * q * q - k * k)) / 4.0;
 }
 
 MouseVector View::new_mouse_vector(int sx, int sy) const
@@ -677,6 +706,13 @@ Float3 View::normal(const Face& f) const
     return xp;
 }
 
+float View::score(Float3 pt, Float3 pt1, Float3 pt2, Float3 pt3, Float3 pt4) const
+{
+    double area1 = tri_area(pt1, pt2, pt) + tri_area(pt2, pt3, pt) + tri_area(pt3, pt4, pt) + tri_area(pt4, pt1, pt);
+    double area2 = quad_area(pt1, pt2, pt3, pt4);
+    return area1 - area2;
+}
+
 bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f, float& depth) const
 {
     Float3 plane = normal(f);
@@ -691,21 +727,12 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f, float& 
     float xi = org.v1 + t * vec.v1;
     float yi = org.v2 + t * vec.v2;
     float zi = org.v3 + t * vec.v3;
-
-
-    bool hit = !a_bit_less_than_all(xi, f.v1.v1, f.v2.v1, f.v3.v1, f.v4.v1)
-            && !a_bit_more_than_all(xi, f.v1.v1, f.v2.v1, f.v3.v1, f.v4.v1)
-            && !a_bit_less_than_all(yi, f.v1.v2, f.v2.v2, f.v3.v2, f.v4.v2)
-            && !a_bit_more_than_all(yi, f.v1.v2, f.v2.v2, f.v3.v2, f.v4.v2)
-            && !a_bit_less_than_all(zi, f.v1.v3, f.v2.v3, f.v3.v3, f.v4.v3)
-            && !a_bit_more_than_all(zi, f.v1.v3, f.v2.v3, f.v3.v3, f.v4.v3);
-    if (hit) {
+    float hit_score = score({xi, yi, zi}, f.v1, f.v2, f.v3, f.v4);
+    if (hit_score < 0.000001) {
         depth = t;
-        printf("hit     face (%f, %f, %f) .. (%f, %f, %f) .. (%f, %f, %f) .. (%f, %f, %f)\n",
-               f.v1.v1, f.v1.v2, f.v1.v3, f.v2.v1, f.v2.v2, f.v2.v3, f.v3.v1, f.v3.v2, f.v3.v3, f.v4.v1, f.v4.v2, f.v4.v3);
-        printf("        intersection point (%f, %f, %f)\n", xi, yi, zi);
+        return true;
     }
-    return hit;
+    return false;
 }
 
 bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
@@ -830,17 +857,12 @@ int View::selected_element_ix(const MouseVector& mv) const
     int min_face = 0;
     float depth;
 
-    printf("\nselected_element_ix() mouse origin (%f, %f, %f), vector(%f, %f, %f)\n",
-           mv.origin().v1, mv.origin().v2, mv.origin().v3, mv.vector().v1, mv.vector().v2, mv.vector().v3);
-
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most elements
-                printf("    candidate element -- > %d <--, orientation %d, kind %d\n", i, e->orientation(), e->kind());
                 for (int j = 0; j < 6; j++) {
                         if (mouse_vector_intersects(mv, e->face(j), depth)) {  // Very quick test to eliminate most faces of selected element
-                            printf("    face %d, depth %f\n", j, depth);
                             if (depth < min_depth) {
                                 min_depth = depth;
                                 min_e = e;
@@ -854,9 +876,6 @@ int View::selected_element_ix(const MouseVector& mv) const
     }
     if (min_e == NULL)
         return -1;
-    printf("    Winner is element %d, orientation %d, face %d, kind %d, depth %f\n", min_ix, min_e->orientation(), min_face, min_e->kind(), min_depth);
-//    if (min_face != TOP_FACE && min_e->kind() != ELEMENT_ROOF && min_e->kind() != ELEMENT_GABLE_BRICK)
-//        return -1;
     if (min_face != TOP_FACE)
         return -1;
     return min_ix;

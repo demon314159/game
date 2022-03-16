@@ -37,7 +37,7 @@ public:
     int mouse_delete(int sx, int sy);
     void mouse_unselect();
     MouseVector new_mouse_vector(int sx, int sy) const;
-    bool mouse_vector_intersects(const MouseVector& mv, const Face& f) const;
+    bool mouse_vector_intersects(const MouseVector& mv, const Face& f, float& depth) const;
     bool mouse_vector_intersects(const MouseVector& mv, const Element* e) const;
     bool new_element_chosen(Float3& pos, int& span, int& orientation, bool& same_level, bool &roof);
     bool gap_below_span(Float3 pos, int span, int orientation) const;
@@ -60,12 +60,12 @@ protected:
     void render_facets();
     bool top_face_covered(const Element* e) const;
     bool top_subface_covered(const Element* e, int ix) const;
-    int selected_element_ix(int sx, int sy, const MouseVector& mv) const;
+    int selected_element_ix(const MouseVector& mv) const;
     int selected_top_subface(const Element* e, int sx, int sy) const;
-    bool no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv) const;
-    Float2 world2screen(Float3 point, float* distance = NULL) const;
+    bool no_part_of_any_element_selected(const MouseVector& mv) const;
+    Float2 world2screen(Float3 point) const;
     Float2 fixed2screen(Float3 point) const;
-    bool screen_point_inside_face(const Face& f, int sx, int sy, float* depth = NULL) const;
+    bool screen_point_inside_face(const Face& f, int sx, int sy) const;
     bool screen_point_inside_fixed_face(const Face& f, int sx, int sy) const;
     float min4(float a, float b, float c, float d) const;
     float max4(float a, float b, float c, float d) const;
@@ -74,6 +74,9 @@ protected:
     double quad_area(Float2 v1, Float2 v2, Float2 v3, Float2 v4) const;
     float normalize_angle(float angle) const;
     void add_grid(CadModel* cm, const BoundingBox& bb);
+    Float3 normal(const Face& f) const;
+    bool a_bit_less_than_all(float x, float x1, float x2, float x3, float x4) const;
+    bool a_bit_more_than_all(float x, float x1, float x2, float x3, float x4) const;
 
 private:
     Vmenu m_vmenu;

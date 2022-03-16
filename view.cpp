@@ -65,7 +65,7 @@ int View::vmenu_item_chosen(int sx, int sy)
 bool View::mouse_select(int sx, int sy)
 {
     MouseVector tmv = new_mouse_vector(sx, sy);
-    int ix = selected_element_ix(sx, sy, tmv);
+    int ix = selected_element_ix(tmv);
     if (ix >= 0) {
         int sf = selected_top_subface(m_doc->element(ix), sx, sy);
         const Element* e = m_doc->element(ix);
@@ -99,7 +99,7 @@ bool View::mouse_select(int sx, int sy)
             float x = roundf(tmv.origin().v1 + t * tmv.vector().v1);
             float z = roundf(tmv.origin().v3 + t * tmv.vector().v3);
             if (x >= xlo && x <= xhi && z >= zlo && z <= zhi) {
-                if (no_part_of_any_element_selected(sx, sy, tmv)) {
+                if (no_part_of_any_element_selected(tmv)) {
                     Choice c;
                     c.position = {x, 0.0, z};
                     c.kind = 0;
@@ -125,7 +125,7 @@ int View::mouse_delete(int sx, int sy)
 {
     m_choose.select_no_choice();
     MouseVector tmv = new_mouse_vector(sx, sy);
-    int ix = selected_element_ix(sx, sy, tmv);
+    int ix = selected_element_ix(tmv);
     if (ix < 0)
         return -1;
     const Element* e = m_doc->element(ix);
@@ -536,14 +536,12 @@ bool View::init_shaders()
     return true;
 }
 
-Float2 View::world2screen(Float3 point, float* distance) const
+Float2 View::world2screen(Float3 point) const
 {
     Float2 res;
     QVector4D sp = m_mvp_matrix * QVector4D(point.v1, point.v2, point.v3, 1.0);
     res.v1 = m_width / 2 + round((sp.x() * (float) m_width) / (2.0 * sp.w()));
     res.v2 = m_height / 2 - round((sp.y() * (float) m_height) / (2.0 * sp.w()));
-    if (distance != NULL)
-        *distance = sp.z();
     return res;
 }
 
@@ -570,20 +568,13 @@ float View::max4(float a, float b, float c, float d) const
     return std::max(u, v);
 }
 
-bool View::screen_point_inside_face(const Face& f, int sx, int sy, float* depth) const
+bool View::screen_point_inside_face(const Face& f, int sx, int sy) const
 {
     // transform the four vertices of f
-    float distance;
-    Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3}, &distance);
-    float zbuf = distance;
-    Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3}, &distance);
-    zbuf += distance;
-    Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3}, &distance);
-    zbuf += distance;
-    Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3}, &distance);
-    zbuf += distance;
-    if (depth != NULL)
-        *depth = zbuf / 4.0;
+    Float2 a = world2screen({f.v1.v1, f.v1.v2, f.v1.v3});
+    Float2 b = world2screen({f.v2.v1, f.v2.v2, f.v2.v3});
+    Float2 c = world2screen({f.v3.v1, f.v3.v2, f.v3.v3});
+    Float2 d = world2screen({f.v4.v1, f.v4.v2, f.v4.v3});
     Float2 pt = {(float) sx, (float) sy};
 
     float xmin = min4(a.v1, b.v1, c.v1, d.v1);
@@ -665,97 +656,51 @@ MouseVector View::new_mouse_vector(int sx, int sy) const
     return tmv;
 }
 
-bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f) const
+Float3 View::normal(const Face& f) const
 {
-    Float3 mv_org = mv.origin();
-    Float3 mv_vec = mv.vector();
-    float abs_v1 = fabs(mv_vec.v1);
-    float abs_v2 = fabs(mv_vec.v2);
-    float abs_v3 = fabs(mv_vec.v3);
-    if (abs_v3 > abs_v1 && abs_v3 > abs_v2) {        // Z is dominant axisi
 
-        float t1 = (f.v1.v3 - mv_org.v3) / mv_vec.v3;
-        float x1 = mv_org.v1 + t1 * mv_vec.v1;
-        float y1 = mv_org.v2 + t1 * mv_vec.v2;
-
-        float t2 = (f.v2.v3 - mv_org.v3) / mv_vec.v3;
-        float x2 = mv_org.v1 + t2 * mv_vec.v1;
-        float y2 = mv_org.v2 + t2 * mv_vec.v2;
-
-        float t3 = (f.v3.v3 - mv_org.v3) / mv_vec.v3;
-        float x3 = mv_org.v1 + t3 * mv_vec.v1;
-        float y3 = mv_org.v2 + t3 * mv_vec.v2;
-
-        float t4 = (f.v4.v3 - mv_org.v3) / mv_vec.v3;
-        float x4 = mv_org.v1 + t4 * mv_vec.v1;
-        float y4 = mv_org.v2 + t4 * mv_vec.v2;
-
-        if (x1 < f.v1.v1 && x2 < f.v2.v1 && x3 < f.v3.v1 && x4 < f.v4.v1)
-            return false;
-        if (x1 > f.v1.v1 && x2 > f.v2.v1 && x3 > f.v3.v1 && x4 > f.v4.v1)
-            return false;
-        if (y1 < f.v1.v2 && y2 < f.v2.v2 && y3 < f.v3.v2 && y4 < f.v4.v2)
-            return false;
-        if (y1 > f.v1.v2 && y2 > f.v2.v2 && y3 > f.v3.v2 && y4 > f.v4.v2)
-            return false;
-        return true;
-    } else if (abs_v2 > abs_v1 && abs_v2 > abs_v3) { // Y is dominant axis
+    Float3 p1, p2, p3;
+    p1 = f.v1;
+    p2 = f.v2;
+    p3 = f.v3;
+    Float3 va, vb;
+    va.v1 = p2.v1 - p1.v1;
+    va.v2 = p2.v2 - p1.v2;
+    va.v3 = p2.v3 - p1.v3;
+    vb.v1 = p3.v1 - p1.v1;
+    vb.v2 = p3.v2 - p1.v2;
+    vb.v3 = p3.v3 - p1.v3;
+    Float3 xp;
+    xp.v1 = va.v2 * vb.v3 - vb.v2 * va.v3;
+    xp.v2 = vb.v1 * va.v3 - va.v1 * vb.v3;
+    xp.v3 = va.v1 * vb.v2 - vb.v1 * va.v2;
+    return xp;
+}
 
 
-        float t1 = (f.v1.v2 - mv_org.v2) / mv_vec.v2;
-        float x1 = mv_org.v1 + t1 * mv_vec.v1;
-        float z1 = mv_org.v3 + t1 * mv_vec.v3;
-
-        float t2 = (f.v2.v2 - mv_org.v2) / mv_vec.v2;
-        float x2 = mv_org.v1 + t2 * mv_vec.v1;
-        float z2 = mv_org.v3 + t2 * mv_vec.v3;
-
-        float t3 = (f.v3.v2 - mv_org.v2) / mv_vec.v2;
-        float x3 = mv_org.v1 + t3 * mv_vec.v1;
-        float z3 = mv_org.v3 + t3 * mv_vec.v3;
-
-        float t4 = (f.v4.v2 - mv_org.v2) / mv_vec.v2;
-        float x4 = mv_org.v1 + t4 * mv_vec.v1;
-        float z4 = mv_org.v3 + t4 * mv_vec.v3;
-
-        if (x1 < f.v1.v1 && x2 < f.v2.v1 && x3 < f.v3.v1 && x4 < f.v4.v1)
-            return false;
-        if (x1 > f.v1.v1 && x2 > f.v2.v1 && x3 > f.v3.v1 && x4 > f.v4.v1)
-            return false;
-        if (z1 < f.v1.v3 && z2 < f.v2.v3 && z3 < f.v3.v3 && z4 < f.v4.v3)
-            return false;
-        if (z1 > f.v1.v3 && z2 > f.v2.v3 && z3 > f.v3.v3 && z4 > f.v4.v3)
-            return false;
-        return true;
-    } else {                                         // X is dominant axis
-
-        float t1 = (f.v1.v1 - mv_org.v1) / mv_vec.v1;
-        float y1 = mv_org.v2 + t1 * mv_vec.v2;
-        float z1 = mv_org.v3 + t1 * mv_vec.v3;
-
-        float t2 = (f.v2.v1 - mv_org.v1) / mv_vec.v1;
-        float y2 = mv_org.v2 + t2 * mv_vec.v2;
-        float z2 = mv_org.v3 + t2 * mv_vec.v3;
-
-        float t3 = (f.v3.v1 - mv_org.v1) / mv_vec.v1;
-        float y3 = mv_org.v2 + t3 * mv_vec.v2;
-        float z3 = mv_org.v3 + t3 * mv_vec.v3;
-
-        float t4 = (f.v4.v1 - mv_org.v1) / mv_vec.v1;
-        float y4 = mv_org.v2 + t4 * mv_vec.v2;
-        float z4 = mv_org.v3 + t4 * mv_vec.v3;
-
-        if (y1 < f.v1.v2 && y2 < f.v2.v2 && y3 < f.v3.v2 && y4 < f.v4.v2)
-            return false;
-        if (y1 > f.v1.v2 && y2 > f.v2.v2 && y3 > f.v3.v2 && y4 > f.v4.v2)
-            return false;
-        if (z1 < f.v1.v3 && z2 < f.v2.v3 && z3 < f.v3.v3 && z4 < f.v4.v3)
-            return false;
-        if (z1 > f.v1.v3 && z2 > f.v2.v3 && z3 > f.v3.v3 && z4 > f.v4.v3)
-            return false;
-        return true;
-
-    }
+bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f, float& depth) const
+{
+    Float3 plane = normal(f);
+    float D = -plane.v1 * f.v1.v1 - plane.v2 * f.v1.v2 - plane.v3 * f.v1.v3;
+    Float3 vec = mv.vector();
+    Float3 org = mv.origin();
+    float numer = -D - plane.v1 * org.v1 - plane.v2 * org.v2 - plane.v3 * org.v3;
+    float denom = plane.v1 * vec.v1 + plane.v2 * vec.v2 + plane.v3 * vec.v3;
+    if (fabs(denom) < 0.00001)
+        return false;
+    float t = numer / denom;
+    float xi = org.v1 + t * vec.v1;
+    float yi = org.v2 + t * vec.v2;
+    float zi = org.v3 + t * vec.v3;
+    bool hit = !a_bit_less_than_all(xi, f.v1.v1, f.v2.v1, f.v3.v1, f.v4.v1)
+            && !a_bit_more_than_all(xi, f.v1.v1, f.v2.v1, f.v3.v1, f.v4.v1)
+            && !a_bit_less_than_all(yi, f.v1.v2, f.v2.v2, f.v3.v2, f.v4.v2)
+            && !a_bit_more_than_all(yi, f.v1.v2, f.v2.v2, f.v3.v2, f.v4.v2)
+            && !a_bit_less_than_all(zi, f.v1.v3, f.v2.v3, f.v3.v3, f.v4.v3)
+            && !a_bit_more_than_all(zi, f.v1.v3, f.v2.v3, f.v3.v3, f.v4.v3);
+    if (hit)
+        depth = t;
+    return hit;
 }
 
 bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) const
@@ -817,17 +762,16 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Element* e) cons
     }
 }
 
-bool View::no_part_of_any_element_selected(int sx, int sy, const MouseVector& mv) const
+bool View::no_part_of_any_element_selected(const MouseVector& mv) const
 {
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most candidates
                 for (int j = 0; j < 6; j++) {
-                    Face f = e->face(j);
-                    if (screen_point_inside_face(f, sx, sy)) {  // Very expensive test times 6 for each candidate
+                    float depth;
+                    if (mouse_vector_intersects(mv, e->face(j), depth)) // Very quick test to eliminate most faces of selected element
                         return false;
-                    }
                 }
             }
         }
@@ -845,57 +789,63 @@ float View::normalize_angle(float angle) const
     return a;
 }
 
-int View::selected_element_ix(int sx, int sy, const MouseVector& mv) const
+bool View::a_bit_less_than_all(float x, float x1, float x2, float x3, float x4) const
+{
+    float eps = 0.0001;
+    if (x > (x1 - eps))
+        return false;
+    if (x > (x2 - eps))
+        return false;
+    if (x > (x3 - eps))
+        return false;
+    if (x > (x4 - eps))
+        return false;
+    return true;
+}
+
+bool View::a_bit_more_than_all(float x, float x1, float x2, float x3, float x4) const
+{
+    float eps = 0.0001;
+    if (x < (x1 + eps))
+        return false;
+    if (x < (x2 + eps))
+        return false;
+    if (x < (x3 + eps))
+        return false;
+    if (x < (x4 + eps))
+        return false;
+    return true;
+}
+
+int View::selected_element_ix(const MouseVector& mv) const
 {
     float min_depth = 1000000.0;
-    float max_level = -1000000.0;
     const Element* min_e = NULL;
     int min_ix = -1;
     int min_face = 0;
     float depth;
-
-    printf("\nselected_element_ix(%d, %d)\n", sx, sy);
-
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most elements
                 for (int j = 0; j < 6; j++) {
-                    if (mouse_vector_intersects(mv, e->face(j))) {  // Very quick test to eliminate most faces of selected element
-                        printf("    down to element %d, face %d\n", i, j);
-
-
-
-
-                        if (screen_point_inside_face(e->face(j), sx, sy, &depth)) {  // Very expensive test
+                        if (mouse_vector_intersects(mv, e->face(j), depth)) {  // Very quick test to eliminate most faces of selected element
                             if (depth < min_depth) {
-                                if (depth < min_depth)
-                                    min_depth = depth;
-                                if (e->top_level() > max_level)
-                                    max_level = e->top_level();
+                                min_depth = depth;
                                 min_e = e;
                                 min_ix = i;
                                 min_face = j;
                             }
                         }
-
-
-
-                    }
-
-
-
                 }
-
             }
         }
     }
     if (min_e == NULL)
         return -1;
-    if (min_face != TOP_FACE)
+    if (min_face != TOP_FACE && min_e->kind() != ELEMENT_ROOF && min_e->kind() != ELEMENT_GABLE_BRICK)
         return -1;
-    int sf = selected_top_subface(min_e, sx, sy);
-    return top_subface_covered(min_e, sf) ? -1 : min_ix;
+    return min_ix;
 }
 
 int View::selected_top_subface(const Element* e, int sx, int sy) const

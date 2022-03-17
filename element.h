@@ -38,10 +38,6 @@ public:
     static constexpr float dimh = 2.0 / 3.0;
     static constexpr float dimb = 0.025;
     static constexpr float dimt = 0.05;
-    static PaintCan red_paint;
-    static PaintCan roof_paint;
-    static PaintCan white_paint;
-    static PaintCan gray_paint;
     Element(Float3 pos);
     Element() = delete;
     virtual ~Element();

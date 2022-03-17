@@ -166,7 +166,7 @@ void View::decorate_model()
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 4.0;
     CubeShape table(tablex, tabley, tablez);
-    CadModel tt(table, PaintCan(0.4, 0.8, 1.0), 1.0);
+    CadModel tt(table, Look::table_paint, 1.0);
 
     delete m_table;
     m_table = new CadModel();

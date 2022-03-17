@@ -5,6 +5,7 @@
 #include "roof_shape.h"
 #include "window_model.h"
 #include "door_model.h"
+#include "look.h"
 #include <stdio.h>
 
 Element::Element(Float3 pos)
@@ -316,19 +317,15 @@ bool Element::contains(Float3 pos) const
     return gen_contains(pos, 0.5, 0.5, 0.5);
 }
 
-PaintCan Element::red_paint(1.0, 0.0, 0.0);
-PaintCan Element::roof_paint(0.0, 1.0, 0.0);
-PaintCan Element::white_paint(1.0, 1.0, 1.0);
-PaintCan Element::gray_paint(0.8, 0.8, 0.8);
-CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
+CadModel Element::m_default_model(BrickShape(1.0, Element::dimh, 1.0, Element::dimb), Look::brick_paint, 0.0);
 
-CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0, Element::dimh, 1.0, Element::dimb), Element::red_paint, 0.0);
-CadModel BrickElement::m_model_ew = CadModel(BrickShape(1.0, Element::dimh, 2.0, Element::dimb), Element::red_paint, 0.0);
+CadModel BrickElement::m_model_ns = CadModel(BrickShape(2.0, Element::dimh, 1.0, Element::dimb), Look::brick_paint, 0.0);
+CadModel BrickElement::m_model_ew = CadModel(BrickShape(1.0, Element::dimh, 2.0, Element::dimb), Look::brick_paint, 0.0);
 
-CadModel GableBrickElement::m_model_qns = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 0), Element::red_paint, 0.0);
-CadModel GableBrickElement::m_model_qew = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 1), Element::red_paint, 0.0);
-CadModel GableBrickElement::m_model_qsn = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 2), Element::red_paint, 0.0);
-CadModel GableBrickElement::m_model_qwe = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 3), Element::red_paint, 0.0);
+CadModel GableBrickElement::m_model_qns = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 0), Look::brick_paint, 0.0);
+CadModel GableBrickElement::m_model_qew = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 1), Look::brick_paint, 0.0);
+CadModel GableBrickElement::m_model_qsn = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 2), Look::brick_paint, 0.0);
+CadModel GableBrickElement::m_model_qwe = CadModel(GableBrickShape(1.0, Element::dimh, 1.0, Element::dimb, 3), Look::brick_paint, 0.0);
 
 HalfBrickElement::HalfBrickElement(float xpos, float ypos, float zpos)
     : Element({xpos, ypos, zpos})
@@ -613,7 +610,7 @@ WindowElement::WindowElement(float xpos, float ypos, float zpos, int orientation
     , m_height(height)
     , m_hgrilles(hgrilles)
     , m_vgrilles(vgrilles)
-    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, white_paint, 0.0))
+    , m_model(WindowModel(width, height * dimh, 1.0, dimb, vgrilles, hgrilles, Look::window_paint, 0.0))
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);
@@ -718,7 +715,7 @@ RoofElement::RoofElement(float xpos, float ypos, float zpos, int orientation, in
     , m_orientation(orientation)
     , m_width(width)
 {
-    CadModel rm(RoofShape(dimx, dimx, dimx, dimb, dimt), roof_paint, 0.0);
+    CadModel rm(RoofShape(dimx, dimx, dimx, dimb, dimt), Look::roof_paint, 0.0);
     for (int i = 0; i < width; i++) {
         float hw = 0.5 * (float) width;
         m_model.add(rm, 0.5 - hw + (float) i);
@@ -831,7 +828,7 @@ LedgeElement::LedgeElement(float xpos, float ypos, float zpos, int orientation, 
     : Element({xpos, ypos, zpos})
     , m_orientation(orientation)
     , m_width(width)
-    , m_model(BrickShape(width, dimh, 1.0, dimb), gray_paint, 0.0)
+    , m_model(BrickShape(width, dimh, 1.0, dimb), Look::ledge_paint, 0.0)
 {
     if (orientation == 1)
         m_model.rotate_ay(90.0);

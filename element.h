@@ -6,7 +6,6 @@
 #include "face.h"
 #include "bounding_box.h"
 #include "brick_shape.h"
-#include "paint_can.h"
 #include "cad_model.h"
 #include <QFile>
 #include <QDataStream>

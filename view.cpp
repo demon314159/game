@@ -725,10 +725,8 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f, float& 
     if (fabs(denom) < 0.00001)
         return false;
     float t = numer / denom;
-    float xi = org.v1 + t * vec.v1;
-    float yi = org.v2 + t * vec.v2;
-    float zi = org.v3 + t * vec.v3;
-    float hit_score = score({xi, yi, zi}, f.v1, f.v2, f.v3, f.v4);
+    Float3 ip = mv.intersection_point(t);
+    float hit_score = score(ip, f.v1, f.v2, f.v3, f.v4);
     if (hit_score < 0.000001) {
         depth = t;
         return true;
@@ -860,13 +858,13 @@ int View::selected_element_ix(const MouseVector& mv) const
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most elements
                 for (int j = 0; j < 6; j++) {
                     if (mouse_vector_intersects(mv, e->face(j), depth)) {  // Very quick test to eliminate most faces of selected element
-                        judge.add_candidate(i, j, e->kind(), depth);
+                        judge.add_candidate(i, j, e, depth);
                     }
                 }
             }
         }
     }
-    return judge.best_candidate();
+    return judge.best_candidate(mv);
 }
 
 int View::selected_top_subface(const Element* e, int sx, int sy) const

@@ -15,6 +15,7 @@ public:
     void translate(Float3 off);
     void rotate_ay(float deg);
     void rotate_ax(float deg);
+    Float3 intersection_point(float depth) const;
 
 private:
     Float3 m_origin;

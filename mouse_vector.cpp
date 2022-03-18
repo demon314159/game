@@ -61,4 +61,11 @@ void MouseVector::rotate_ax(float deg)
     m_vector = t_vec;
 }
 
+Float3 MouseVector::intersection_point(float depth) const
+{
+    Float3 pt = {m_origin.v1 + depth * m_vector.v1,
+                 m_origin.v2 + depth * m_vector.v2,
+                 m_origin.v3 + depth * m_vector.v3};
+    return pt;
+}
 

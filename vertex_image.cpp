@@ -1,6 +1,7 @@
 
 #include "vertex_image.h"
 #include "cad_model.h"
+#include "look.h"
 
 VertexImage::VertexImage()
     : m_max_vertex_count(INITIAL_MAX_VERTEX_COUNT)
@@ -37,7 +38,8 @@ void VertexImage::add_element(Element* e, bool transparent)
     for (int i = 0; i < model.facets(); i++) {
         an_id = model.facet_animation_id(i);
         if ((transparent && (an_id == 99.0)) || (!transparent && (an_id != 99.0))) {
-            vc = model.facet_color(i);
+            Float3 white = {1.0, 1.0, 1.0};
+            vc = Look::get_3d() ? white : model.facet_color(i);
             vn = model.facet_normal(i);
             vd.animation_id = an_id;
 

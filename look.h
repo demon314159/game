@@ -9,9 +9,10 @@ class Look
 public:
     static float dimx;
     static float dimh;
-    static PaintCan table_paint;
+    static PaintCan table_paint();
+    static PaintCan marker_paint();
+
     static PaintCan grid_paint;
-    static PaintCan marker_paint;
     static PaintCan brick_paint;
     static PaintCan ledge_paint;
     static PaintCan frame_paint;
@@ -24,6 +25,11 @@ public:
     static PaintCan cancel_paint;
     static PaintCan glass_paint;
     static float glass_animation_id;
+    static void set_3d(bool v);
+    static bool get_3d();
+
+private:
+    static bool m_3d;
 };
 
 #endif // _LOOK_H_

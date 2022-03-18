@@ -167,7 +167,7 @@ void View::decorate_model()
     float tabley = Element::dimh / 20.0;
     float tablez = bb.vmax.v3 - bb.vmin.v3 + 4.0;
     CubeShape table(tablex, tabley, tablez);
-    CadModel tt(table, Look::table_paint, 1.0);
+    CadModel tt(table, Look::table_paint(), 1.0);
 
     delete m_table;
     m_table = new CadModel();
@@ -219,7 +219,10 @@ bool View::initialize()
 #endif
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-    glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
+    if (Look::get_3d())
+        glClearColor(0.5f, 0.5f, 0.5f, 1.0f); // gray
+    else
+        glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);

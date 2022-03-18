@@ -4,9 +4,7 @@
 float Look::dimx = 1.0;
 float Look::dimh = 2.0 / 3.0;
 
-PaintCan Look::table_paint(0.4, 0.8, 1.0);
 PaintCan Look::grid_paint(0.5, 0.5, 0.5);
-PaintCan Look::marker_paint(0.0, 1.0, 0.0);
 PaintCan Look::brick_paint(1.0, 0.0, 0.0);
 PaintCan Look::ledge_paint(0.8, 0.8, 0.8);
 PaintCan Look::frame_paint(1.0, 1.0, 1.0);
@@ -19,3 +17,31 @@ PaintCan Look::done_paint(0.0, 0.7, 0.3);
 PaintCan Look::cancel_paint(1.0, 0.0, 0.0);
 PaintCan Look::glass_paint(0.96, 0.99, 1.0);
 float Look::glass_animation_id = 99.0;
+
+bool Look::m_3d = false;
+
+void Look::set_3d(bool v)
+{
+    m_3d = v;
+}
+
+bool Look::get_3d()
+{
+    return m_3d;
+}
+
+PaintCan Look::table_paint()
+{
+    if (Look::get_3d())
+        return PaintCan(0.75, 0.75, 0.75);
+    else
+        return PaintCan(0.4, 0.8, 1.0);
+}
+
+PaintCan Look::marker_paint()
+{
+    if (Look::get_3d())
+        return PaintCan(0.6, 0.6, 0.6);
+    else
+        return PaintCan(0.0, 1.8, 0.0);
+}

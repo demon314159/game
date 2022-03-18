@@ -45,6 +45,7 @@ HEADERS      += game.h \
                 window_model.h \
                 door_model.h \
                 view.h \
+                judge.h \
                 stopwatch.h
 
 SOURCES      += main.cpp \
@@ -81,6 +82,7 @@ SOURCES      += main.cpp \
                 window_model.cpp \
                 door_model.cpp \
                 view.cpp \
+                judge.cpp \
                 stopwatch.cpp
 
 RESOURCES    += shaders.qrc

@@ -4,6 +4,7 @@
 #include "cube_shape.h"
 #include "bounding_box.h"
 #include "look.h"
+#include "judge.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -851,34 +852,21 @@ bool View::a_bit_more_than_all(float x, float x1, float x2, float x3, float x4) 
 
 int View::selected_element_ix(const MouseVector& mv) const
 {
-    float min_depth = 1000000.0;
-    const Element* min_e = NULL;
-    int min_ix = -1;
-    int min_face = 0;
     float depth;
-
+    Judge judge;
     for (int i = 0; i < m_doc->elements(); i++) {
         const Element* e = m_doc->element(i);
         if (!e->removed()) {
             if (mouse_vector_intersects(mv, e)) { // Very quick test to eliminate most elements
                 for (int j = 0; j < 6; j++) {
-                        if (mouse_vector_intersects(mv, e->face(j), depth)) {  // Very quick test to eliminate most faces of selected element
-                            if (depth < min_depth) {
-                                min_depth = depth;
-                                min_e = e;
-                                min_ix = i;
-                                min_face = j;
-                            }
-                        }
+                    if (mouse_vector_intersects(mv, e->face(j), depth)) {  // Very quick test to eliminate most faces of selected element
+                        judge.add_candidate(i, j, e->kind(), depth);
+                    }
                 }
             }
         }
     }
-    if (min_e == NULL)
-        return -1;
-    if (min_face != TOP_FACE)
-        return -1;
-    return min_ix;
+    return judge.best_candidate();
 }
 
 int View::selected_top_subface(const Element* e, int sx, int sy) const

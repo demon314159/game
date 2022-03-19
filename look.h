@@ -7,6 +7,7 @@
 class Look
 {
 public:
+    static void process_options(int argv, char** args);
     static float dimx;
     static float dimh;
     static PaintCan table_paint();

@@ -1,10 +1,22 @@
 
 #include "look.h"
+#include <string.h>
+#include <stdio.h>
 
 float Look::dimx = 1.0;
 float Look::dimh = 2.0 / 3.0;
 
 bool Look::m_3d = false;
+
+void Look::process_options(int argv, char** args)
+{
+    for (int i = 0; i < argv; i++) {
+        if (0 == strncmp("-3d", args[i], 3)) {
+            set_3d(true);
+        }
+    }
+}
+
 
 void Look::set_3d(bool v)
 {

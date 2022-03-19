@@ -12,9 +12,7 @@ int main(int argv, char **args)
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
-
-    Look::set_3d(false);
-
+    Look::process_options(argv, args);
     Game game;
     game.showMaximized();
 

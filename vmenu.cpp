@@ -14,32 +14,33 @@
 #include <stdio.h>
 #include <math.h>
 
+#define MAG1 0.10
+
 Vmenu::Vmenu()
   : m_mag(1.0)
   , m_is_dirty(false)
   , m_items(0)
+  , m_model_new(CancelShape(0.5 * MAG1, true), Look::vbutton_paint(), 3.0)
+  , m_model_undo(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT, true), Look::vbutton_paint(), 3.0)
+  , m_model_redo(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT, true), Look::vbutton_paint(), 3.0)
+  , m_model_morph(MorphShape(0.5 * MAG1), Look::vbutton_paint(), 3.0)
+  , m_model_flip1(ArrowShape(0.5, 0.5, ArrowShape::ARROW_LEFT), Look::vbutton_paint(), 0.0)
+  , m_model_flip2(ArrowShape(0.5, 0.5, ArrowShape::ARROW_RIGHT), Look::vbutton_paint(), 0.0)
+  , m_model_increase_height(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::vbutton_paint(), 0.0)
+  , m_model_decrease_height(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::vbutton_paint(), 0.0)
+  , m_model_increase_vgrilles(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::vbutton_paint(), 0.0)
+  , m_model_decrease_vgrilles(ArrowShape(0.5, 0.25, ArrowShape::ARROW_LEFT), Look::vbutton_paint(), 0.0)
+  , m_model_increase_hgrilles(ArrowShape(0.5, 0.25, ArrowShape::ARROW_UP), Look::vbutton_paint(), 0.0)
+  , m_model_decrease_hgrilles(ArrowShape(0.5, 0.25, ArrowShape::ARROW_DOWN), Look::vbutton_paint(), 0.0)
+  , m_model_done(DoneShape(0.5), Look::done_paint(), 0.0)
+  , m_model_cancel(CancelShape(0.5), Look::cancel_paint(), 0.0)
+  , m_model_background(BackgroundShape(0.5), Look::vbackground_paint(), 0.0)
 {
 }
 
 Vmenu::~Vmenu()
 {
 }
-#define MAG1 0.10
-CadModel Vmenu::m_model_new = CadModel(CancelShape(0.5 * MAG1, true), Look::vbutton_paint, 3.0);
-CadModel Vmenu::m_model_undo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_LEFT, true), Look::vbutton_paint, 3.0);
-CadModel Vmenu::m_model_redo = CadModel(ArrowShape(0.5 * MAG1, 0.5 * MAG1, ArrowShape::ARROW_RIGHT, true), Look::vbutton_paint, 3.0);
-CadModel Vmenu::m_model_morph = CadModel(MorphShape(0.5 * MAG1), Look::vbutton_paint, 3.0);
-CadModel Vmenu::m_model_flip1 = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_LEFT), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_flip2 = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_RIGHT), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_increase_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_UP), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_decrease_height = CadModel(ArrowShape(0.5, 0.5, ArrowShape::ARROW_DOWN), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_increase_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_RIGHT), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_decrease_vgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_LEFT), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_increase_hgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_UP), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_decrease_hgrilles = CadModel(ArrowShape(0.5, 0.25, ArrowShape::ARROW_DOWN), Look::vbutton_paint, 0.0);
-CadModel Vmenu::m_model_done = CadModel(DoneShape(0.5), Look::done_paint, 0.0);
-CadModel Vmenu::m_model_cancel = CadModel(CancelShape(0.5), Look::cancel_paint, 0.0);
-CadModel Vmenu::m_model_background = CadModel(BackgroundShape(0.5), Look::vbackground_paint, 0.0);
 
 void Vmenu::clear()
 {

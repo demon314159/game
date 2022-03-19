@@ -25,17 +25,17 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     float upper_sash_dy = m_dimy - f_mid + f_stile - m_dimb;
     float lower_sash_dy = f_mid - m_dimb;
 
-    FrameModel frame(m_dimx, m_dimy, m_dimz, m_dimb, f_sill, f_head, f_jamb, Look::frame_paint, animation_id);
+    FrameModel frame(m_dimx, m_dimy, m_dimz, m_dimb, f_sill, f_head, f_jamb, Look::frame_paint(), animation_id);
     add(frame, 0.0, 0.0, 0.0);
-    FrameModel upper_sash(m_dimx - m_dimb, upper_sash_dy, f_thickness, m_dimb, f_stile, f_stile, f_stile, Look::door_paint, animation_id);
+    FrameModel upper_sash(m_dimx - m_dimb, upper_sash_dy, f_thickness, m_dimb, f_stile, f_stile, f_stile, Look::door_paint(), animation_id);
     add(upper_sash, 0.0, (m_dimy - upper_sash_dy) / 2 - m_dimb, sill_zoffset);
-    FrameModel lower_sash(m_dimx - m_dimb, lower_sash_dy, f_thickness, m_dimb, f_stile, f_stile, f_stile, Look::door_paint, animation_id);
+    FrameModel lower_sash(m_dimx - m_dimb, lower_sash_dy, f_thickness, m_dimb, f_stile, f_stile, f_stile, Look::door_paint(), animation_id);
     add(lower_sash, 0.0, -(m_dimy - lower_sash_dy) / 2 + m_dimb, sill_zoffset);
     CubeShape pane(m_dimx - m_dimb, upper_sash_dy, f_jamb / 2);
-    CadModel pane_model(pane, Look::glass_paint, Look::glass_animation_id);
+    CadModel pane_model(pane, Look::glass_paint(), Look::glass_animation_id());
     add(pane_model, 0.0, (m_dimy - upper_sash_dy) / 2 - m_dimb, sill_zoffset);
     CubeShape cube(m_dimx - m_dimb, f_mid, f_jamb);
-    CadModel cube_model(cube, Look::door_paint, animation_id);
+    CadModel cube_model(cube, Look::door_paint(), animation_id);
     add(cube_model, 0.0, -(m_dimy - f_mid) / 2, sill_zoffset);
 
     float f_upper_grille = 0.7 * f_jamb;
@@ -43,8 +43,8 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     if (vgrills > 0) {
         BrickShape upper_vs(f_upper_grille, upper_sash_dy, f_upper_grille, m_dimb);
         BrickShape lower_vs(f_lower_grille, lower_sash_dy, f_lower_grille, m_dimb);
-        CadModel upper_vgrille(upper_vs, Look::door_paint, animation_id);
-        CadModel lower_vgrille(lower_vs, Look::door_paint, animation_id);
+        CadModel upper_vgrille(upper_vs, Look::door_paint(), animation_id);
+        CadModel lower_vgrille(lower_vs, Look::door_paint(), animation_id);
 
         float dx = m_dimx - 2.0 * f_stile;
         float upper_space = (dx - f_upper_grille * (float) vgrills) / (float) (vgrills + 1);
@@ -56,7 +56,7 @@ DoorModel::DoorModel(float dimx, float dimy, float dimz, float dimb, int vgrills
     }
     if (hgrills > 0) {
         BrickShape hs(m_dimx - m_dimb, f_upper_grille, f_upper_grille, m_dimb);
-        CadModel hgrille(hs, Look::door_paint, animation_id);
+        CadModel hgrille(hs, Look::door_paint(), animation_id);
         float dy = m_dimy -f_stile - f_mid;
         float space = (dy - f_upper_grille * (float) hgrills) / (float) (hgrills + 1);
         for (int i = 0; i < hgrills; i++) {

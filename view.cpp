@@ -150,12 +150,12 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
     int nz = round(dz);
     for (int i = 0; i <= nx; i++) {
         CubeShape ls(db, dy, dz);
-        CadModel line_model(ls, Look::grid_paint, 1.0);
+        CadModel line_model(ls, Look::grid_paint(), 1.0);
         cm->add(line_model, bb.vmin.v1 + (float) i, -tabley, (bb.vmin.v3 + bb.vmax.v3) / 2);
     }
     for (int i = 0; i <= nz; i++) {
         CubeShape ls(dx, dy, db);
-        CadModel line_model(ls, Look::grid_paint, 1.0);
+        CadModel line_model(ls, Look::grid_paint(), 1.0);
         cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, -tabley, bb.vmin.v3 + (float) i);
     }
 }

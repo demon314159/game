@@ -415,44 +415,46 @@ void View::paint()
     float dz = 1.2;
     m_fixed_matrix.translate(dz * q * m_aspect, dz * q, -dz);
     m_fixed_matrix = m_projection * m_fixed_matrix;
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if (Look::get_3d()) {
-        glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); // creates a soft red image when background is white
-    }
+    // Set up "between the eyes matrices
     QQuaternion my_rot = rot1 * rot2;
-
     QMatrix4x4 matrix;
     matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
     matrix.rotate(my_rot);
     matrix.translate(-m_center.v1, -m_center.v2, -m_center.v3);
-    // Set modelview-projection matrix
     m_mvp_matrix = m_projection * matrix;
     m_rot_matrix = matrix;
-    m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-    m_program.setUniformValue("rot_matrix", matrix);
-    m_program.setUniformValue("marker_matrix", marker_matrix);
-    m_program.setUniformValue("fixed_matrix", m_fixed_matrix);
-    render_facets();
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (Look::get_3d()) {
+        glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); // creates a soft red image when background is white
         QVector3D axis_y = {0.0, 1.0, 0.0};
-        QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
-
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); // creates a cyan image when background is white
-
+        QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, -1);
         QQuaternion my_rot2 = eye_rot * rot1 * rot2;
-
         QMatrix4x4 matrix2;
         matrix2.translate(m_xoff, m_yoff, -m_camz - m_radius);
         matrix2.rotate(my_rot2);
         matrix2.translate(-m_center.v1, -m_center.v2, -m_center.v3);
-        // Set modelview-projection matrix
-        m_mvp_matrix = m_projection * matrix2;
-        m_rot_matrix = matrix2;
+        m_program.setUniformValue("mvp_matrix", m_projection * matrix2);
+        m_program.setUniformValue("rot_matrix", matrix2);
+    } else {
+        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+        m_program.setUniformValue("rot_matrix", matrix);
+    }
+    m_program.setUniformValue("marker_matrix", marker_matrix);
+    m_program.setUniformValue("fixed_matrix", m_fixed_matrix);
+    render_facets();
+    if (Look::get_3d()) {
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    }
+    if (Look::get_3d()) {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); // creates a cyan image when background is white
+        QVector3D axis_y = {0.0, 1.0, 0.0};
+        QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
+        QQuaternion my_rot2 = eye_rot * rot1 * rot2;
+        QMatrix4x4 matrix2;
+        matrix2.translate(m_xoff, m_yoff, -m_camz - m_radius);
+        matrix2.rotate(my_rot2);
+        matrix2.translate(-m_center.v1, -m_center.v2, -m_center.v3);
         m_program.setUniformValue("mvp_matrix", m_projection * matrix2);
         m_program.setUniformValue("rot_matrix", matrix2);
         m_program.setUniformValue("marker_matrix", marker_matrix);

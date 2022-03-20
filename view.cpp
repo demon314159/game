@@ -760,7 +760,7 @@ bool View::mouse_vector_intersects(const MouseVector& mv, const Face& f, float& 
     float t = numer / denom;
     Float3 ip = mv.intersection_point(t);
     float hit_score = score(ip, f.v1, f.v2, f.v3, f.v4);
-    if (hit_score < 0.000001) {
+    if (hit_score < 0.01) {
         depth = t;
         return true;
     }

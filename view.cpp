@@ -506,12 +506,20 @@ void View::render_facets()
 
 void View::translate_x(int x)
 {
-    m_xoff += (((float) x) / 64.0);
+    float q = tan(m_fov * (3.1415927 / 180.0) / (2.0 * m_mag));
+    float wx = m_aspect * (m_camz + m_radius) * q;
+    float ratio = (float) x / fmax(1.0, (float) m_width);
+    float dx = wx * ratio;
+    m_xoff += (      dx        );
 }
 
 void View::translate_y(int y)
 {
-    m_yoff -= (((float) y) / 64.0);
+    float q = tan(m_fov * (3.1415927 / 180.0) / (2.0 * m_mag));
+    float wy = (m_camz + m_radius) * q;
+    float ratio = (float) y / fmax(1.0, (float) m_height);
+    float dy = wy * ratio;
+    m_yoff -= (      dy        );
 }
 
 void View::translate_home()

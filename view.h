@@ -23,8 +23,6 @@ public:
     bool initialize();
     void resize(int w, int h);
     void paint();
-    void translate_x(float dx);
-    void translate_y(float dy);
     void rotate_ax(float degrees);
     void rotate_ay(float degrees);
     void rotate_home();

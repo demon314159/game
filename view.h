@@ -45,6 +45,8 @@ public:
     int vmenu_item_chosen(int sx, int sy);
     Vmenu& get_vmenu();
     void set_mag(float mag);
+    int width() const;
+    int height() const;
 
 protected:
     bool init_shaders();

@@ -1064,3 +1064,14 @@ void View::set_mag(float mag)
     m_vmenu.set_mag(1.0 / m_mag);
     resize_calc();
 }
+
+int View::width() const
+{
+    return m_width;
+}
+
+int View::height() const
+{
+    return m_height;
+}
+

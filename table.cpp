@@ -48,16 +48,32 @@ void Table::keyPressEvent(QKeyEvent* e)
     unsigned int a = e->nativeScanCode();
     bool shifted = (e->modifiers() & Qt::ShiftModifier) ? true : false;
     if (a == 0x6f) { // up
-        m_view->rotate_ax(-(shifted ? 1.0 : 10.0));
+        if (shifted) {
+            m_view->translate_y(-m_view->height() / 10);
+        } else {
+            m_view->rotate_ax(-10.0);
+        }
         update();
     } else if (a == 0x74) { // down
-        m_view->rotate_ax(shifted ? 1.0 : 10.0);
+        if (shifted) {
+            m_view->translate_y(m_view->height() / 10);
+        } else {
+            m_view->rotate_ax(10.0);
+        }
         update();
     } else if (a == 0x71) { // left
-        m_view->rotate_ay(-(shifted ? 1.0 : 10.0));
+        if (shifted) {
+            m_view->translate_x(-m_view->width() / 10);
+        } else {
+            m_view->rotate_ay(-10.0);
+        }
         update();
     } else if (a == 0x72) { // right
-        m_view->rotate_ay(shifted ? 1.0 : 10.0);
+        if (shifted) {
+            m_view->translate_x(m_view->width() / 10);
+        } else {
+            m_view->rotate_ay(10.0);
+        }
         update();
     } else if (a == 0x1f) { // i or I
         m_view->zoom(3.0 / 2.0);
@@ -71,6 +87,7 @@ void Table::keyPressEvent(QKeyEvent* e)
             m_view->rotate_home();
             m_view->translate_home();
         }
+        m_navigate.stop();
         update();
     } else if (a == 0x1e) { // u or U
         if (m_view->get_vmenu().menu_active())
@@ -79,20 +96,6 @@ void Table::keyPressEvent(QKeyEvent* e)
             undo_command();
     } else if (a == 0x1b) { // r or R
         redo_command();
-    } else if (a == 0x36) { // c or C
-        if (!m_view->get_vmenu().menu_active()) {
-            if (shifted) {
-                int n = m_view->get_doc()->elements();
-                if (n > 0) {
-                    do_command(new RemoveElementCommand(n - 1, m_view));
-                } else {
-                    printf("no more elements\n");
-                }
-            }
-            else
-              do_command(new AddElementCommand(new BrickElement(0.0, 10.0, 0.0, 0), m_view));
-            update();
-        }
     } else if (a == 0x39) { // n or N
         new_command();
     } else if (a == 0x2e) { // l or L
@@ -213,7 +216,13 @@ void Table::cancel_morph()
 
 void Table::mousePressEvent(QMouseEvent* e)
 {
-    if (e->button() == Qt::LeftButton) {
+    if (e->button() == Qt::MiddleButton) {
+        m_view->zoom_home();
+        m_view->rotate_home();
+        m_view->translate_home();
+        m_navigate.stop();
+        update();
+    } else if (e->button() == Qt::LeftButton) {
         m_navigate.start_rotate(e->pos().x(), e->pos().y());
         int action_id = m_view->vmenu_item_chosen(e->pos().x(), e->pos().y());
         if (action_id != Vmenu::ACTION_NONE) {
@@ -336,7 +345,6 @@ void Table::mouseReleaseEvent(QMouseEvent* e)
 void Table::wheelEvent(QWheelEvent* e)
 {
     int angle = e->angleDelta().y();
-//    printf("wheel event angle = %d\n", angle);
     if (angle > 0) {
         m_view->zoom(3.0 / 2.0);
         update();

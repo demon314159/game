@@ -3,6 +3,7 @@
 #define _LOOK_H_
 
 #include "paint_can.h"
+#include <QString>
 
 class Look
 {
@@ -27,9 +28,13 @@ public:
     static float glass_animation_id();
     static void set_3d(bool v);
     static bool get_3d();
+    static QString startup_name();
+    static QString session_name();
 
 private:
     static bool m_3d;
+    static QString m_startup_name;
+    static QString m_session_name;
 };
 
 #endif // _LOOK_H_

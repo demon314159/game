@@ -6,11 +6,9 @@
 #include <QMouseEvent>
 #include <QFileDialog>
 
-#define DEFAULT_DOCUMENT_NAME ".house.brk"
-
 Table::Table(QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_view(new View(new Document(QString(DEFAULT_DOCUMENT_NAME))))
+    , m_view(new View(new Document(Look::startup_name())))
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
@@ -419,7 +417,7 @@ void Table::save_session()
 {
     Document* doc = m_view->get_doc();
     QString error_msg;
-    QString file_name(DEFAULT_DOCUMENT_NAME);
+    QString file_name(Look::session_name());
     if (!doc->save(file_name, error_msg)) {
         printf("<<< error saving file '%s': %s >>>\n", file_name.toLatin1().data(), error_msg.toLatin1().data());
     }

@@ -7,16 +7,39 @@ float Look::dimx = 1.0;
 float Look::dimh = 2.0 / 3.0;
 
 bool Look::m_3d = false;
+QString Look::m_startup_name(".default.brk");
+QString Look::m_session_name(".default.brk");
 
 void Look::process_options(int argv, char** args)
 {
-    for (int i = 0; i < argv; i++) {
+    for (int i = 1; i < argv; i++) {
         if (0 == strncmp("-3d", args[i], 3)) {
             set_3d(true);
         }
     }
+    for (int i = 1; i < argv; i++) {
+        QString s(args[i]);
+        if (!s.contains('-')) {
+            if (s.contains('.')) {
+                m_startup_name = s;
+            } else {
+                m_startup_name = s + QString(".brk");
+            }
+            printf("file name = '%s'\n", m_startup_name.toLatin1().data());
+            return;
+        }
+    }
 }
 
+QString Look::startup_name()
+{
+    return m_startup_name;
+}
+
+QString Look::session_name()
+{
+    return m_session_name;
+}
 
 void Look::set_3d(bool v)
 {

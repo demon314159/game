@@ -7,8 +7,8 @@ float Look::dimx = 1.0;
 float Look::dimh = 2.0 / 3.0;
 
 bool Look::m_3d = false;
-QString Look::m_startup_name(".default.brk");
-QString Look::m_session_name(".default.brk");
+QString Look::m_startup_name(".session.brk");
+QString Look::m_session_name(".session.brk");
 
 void Look::process_options(int argv, char** args)
 {

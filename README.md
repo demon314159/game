@@ -1,2 +1,2 @@
-# game
-Platform for goofing with game elements
+# hexominos
+Tiling puzzle game using hexominos

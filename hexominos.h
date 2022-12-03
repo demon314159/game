@@ -1,8 +1,8 @@
 //
-// game.h
+// hexominos.h
 //
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _HEXOMINOS_H_
+#define _HEXOMINOS_H_
 
 #include <QMainWindow>
 #include <QObject>
@@ -11,13 +11,13 @@
 #include <QWidget>
 #include "table.h"
 
-class Game: public QMainWindow
+class Hexominos: public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Game();
-    ~Game();
+    Hexominos();
+    ~Hexominos();
 
 private:
     void initializeWindow();
@@ -39,4 +39,4 @@ private:
     QPushButton *m_pb5 = nullptr;
 };
 
-#endif // _GAME_H
+#endif // _HEXOMINOS_H

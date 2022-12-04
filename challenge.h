@@ -4,7 +4,7 @@
 #if !defined(_CHALLENGE_H_)
 #define _CHALLENGE_H_
 
-#define MAX_PIECES 32
+#define MAX_CHALLENGE_PIECES 32
 
 #include "moverec.h"
 
@@ -21,8 +21,8 @@ protected:
     int m_dimv;
     int m_pieces;
     int m_hints;
-    int m_piece_list[MAX_PIECES];
-    MoveRec m_hint_list[MAX_PIECES];
+    int m_piece_list[MAX_CHALLENGE_PIECES];
+    MoveRec m_hint_list[MAX_CHALLENGE_PIECES];
 };
 
 #endif // _CHALLENGE_H_

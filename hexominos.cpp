@@ -9,8 +9,9 @@
 #include <QVBoxLayout>
 #include "table.h"
 
-Hexominos::Hexominos(const Puzzle& puzzle)
+Hexominos::Hexominos(const Puzzle& puzzle, const FullSet& fullset)
     : m_puzzle(puzzle)
+    , m_fullset(fullset)
 {
     initializeWindow();
 }

@@ -18,7 +18,7 @@ Challenge::~Challenge()
 Challenge Challenge::p(int pid)
 {
     Challenge a = *this;
-    if (m_pieces < MAX_PIECES) {
+    if (m_pieces < MAX_CHALLENGE_PIECES) {
         a.m_piece_list[m_pieces] = pid;
         ++a.m_pieces;
     }
@@ -28,10 +28,10 @@ Challenge Challenge::p(int pid)
 Challenge Challenge::p(int pid, int orientation, int posh, int posv)
 {
     Challenge a = *this;
-    if (m_pieces < MAX_PIECES) {
+    if (m_pieces < MAX_CHALLENGE_PIECES) {
         a.m_piece_list[m_pieces] = pid;
         ++a.m_pieces;
-        if (m_hints < MAX_PIECES) {
+        if (m_hints < MAX_CHALLENGE_PIECES) {
             a.m_hint_list[m_hints] = {pid, orientation, posh, posv};
             ++a.m_hints;
         }

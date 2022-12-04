@@ -7,13 +7,18 @@ QT += multimedia widgets
 
 HEADERS       = hexominos.h \
                 moverec.h \
+                posrec.h \
                 table.h \
                 challenge.h \
-                puzzle.h
+                piece.h \
+                puzzle.h \
+                fullset.h
 
 SOURCES       = main.cpp \
                 hexominos.cpp \
                 table.cpp \
                 challenge.cpp \
-                puzzle.cpp
+                piece.cpp \
+                puzzle.cpp \
+                fullset.cpp
 

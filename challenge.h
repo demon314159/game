@@ -6,18 +6,23 @@
 
 #define MAX_PIECES 32
 
+#include "moverec.h"
+
 class Challenge
 {
 public:
-    Challenge(int dimv, int dimh);
-    Challenge p(int v);
+    Challenge(int dimh, int dimv);
+    Challenge p(int pid);
+    Challenge h(int pid, int orientation, int posh, int posv);
     void show();
 
 protected:
-    int m_dimv;
     int m_dimh;
+    int m_dimv;
     int m_pieces;
-    int m_list[MAX_PIECES];
+    int m_hints;
+    int m_piece_list[MAX_PIECES];
+    MoveRec m_hint_list[MAX_PIECES];
 };
 
 #endif // _CHALLENGE_H_

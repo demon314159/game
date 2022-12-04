@@ -6,6 +6,7 @@ QT += multimedia widgets
 ## CONFIG += qt debug
 
 HEADERS       = hexominos.h \
+                moverec.h \
                 table.h \
                 challenge.h
 

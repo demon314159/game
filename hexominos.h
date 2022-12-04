@@ -10,13 +10,14 @@
 #include <QPushButton>
 #include <QWidget>
 #include "table.h"
+#include "puzzle.h"
 
 class Hexominos: public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Hexominos();
+    Hexominos(const Puzzle& puzzle);
     ~Hexominos();
 
 private:
@@ -30,6 +31,7 @@ private slots:
     void pb5();
 
 private:
+    const Puzzle& m_puzzle;
     // Owned by layout
     Table *m_table = nullptr;
     QPushButton *m_pb1 = nullptr;

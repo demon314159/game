@@ -9,7 +9,8 @@
 #include <QVBoxLayout>
 #include "table.h"
 
-Hexominos::Hexominos()
+Hexominos::Hexominos(const Puzzle& puzzle)
+    : m_puzzle(puzzle)
 {
     initializeWindow();
 }

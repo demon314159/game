@@ -12,9 +12,9 @@ class Challenge
 {
 public:
     Challenge(int dimh, int dimv);
+    ~Challenge();
     Challenge p(int pid);
-    Challenge h(int pid, int orientation, int posh, int posv);
-    void show();
+    Challenge p(int pid, int orientation, int posh, int posv);
 
 protected:
     int m_dimh;

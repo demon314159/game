@@ -11,7 +11,7 @@
 #include <QWidget>
 #include "table.h"
 #include "puzzle.h"
-#include "fullset.h"
+#include "full_set.h"
 
 class Hexominos: public QMainWindow
 {
@@ -33,7 +33,7 @@ private slots:
 
 private:
     const Puzzle& m_puzzle;
-    const FullSet& m_fullset;
+    const FullSet& m_full_set;
     // Owned by layout
     Table *m_table = nullptr;
     QPushButton *m_pb1 = nullptr;

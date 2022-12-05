@@ -3,7 +3,7 @@
 
 #include "hexominos.h"
 #include "puzzle.h"
-#include "fullset.h"
+#include "full_set.h"
 
 int main(int argv, char **args)
 {
@@ -11,8 +11,8 @@ int main(int argv, char **args)
     app.setApplicationName("Hexominos");
 
     Puzzle puzzle;
-    FullSet fullset;
-    Hexominos game(puzzle, fullset);
+    FullSet full_set;
+    Hexominos game(puzzle, full_set);
     game.show();
 
     return app.exec();

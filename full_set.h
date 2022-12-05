@@ -4,7 +4,7 @@
 #if !defined(_FULL_SET_H_)
 #define _FULL_SET_H_
 
-#define MAX_FULL_SET_PIECES 128
+#define MAX_FULL_SET_PIECES 36
 
 #include "piece.h"
 

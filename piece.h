@@ -4,7 +4,7 @@
 #if !defined(_PIECE_H_)
 #define _PIECE_H_
 
-#define MAX_PIECE_TILES  32
+#define MAX_PIECE_TILES  6
 
 #include "posrec.h"
 

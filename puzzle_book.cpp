@@ -1,9 +1,9 @@
 //
-// puzzle.cpp
+// puzzle_book.cpp
 //
-#include "puzzle.h"
+#include "puzzle_book.h"
 
-Puzzle::Puzzle(void)
+PuzzleBook::PuzzleBook(void)
     : m_challenges(0)
 {
     add(Challenge(8, 6).p(4, 0, 0, 0).p(5).p(7).p(11).p(13, 5, 4, 2).p(14).p(14).p(28));
@@ -12,14 +12,14 @@ Puzzle::Puzzle(void)
     add(Challenge(8, 6).p(2, 0, 0, 1).p(4).p(8).p(8).p(15).p(16).p(22).p(31, 6, 6, 2));
 }
 
-Puzzle::~Puzzle()
+PuzzleBook::~PuzzleBook()
 {
     for (int i = 0; i < m_challenges; i++) {
         delete m_list[i];
     }
 }
 
-void Puzzle::add(const Challenge& challenge)
+void PuzzleBook::add(const Challenge& challenge)
 {
     if (m_challenges < MAX_CHALLENGES) {
         m_list[m_challenges] = new Challenge(challenge);

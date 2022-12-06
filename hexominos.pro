@@ -11,7 +11,7 @@ HEADERS       = hexominos.h \
                 table.h \
                 challenge.h \
                 piece.h \
-                puzzle.h \
+                puzzle_book.h \
                 full_set.h
 
 SOURCES       = main.cpp \
@@ -19,6 +19,6 @@ SOURCES       = main.cpp \
                 table.cpp \
                 challenge.cpp \
                 piece.cpp \
-                puzzle.cpp \
+                puzzle_book.cpp \
                 full_set.cpp
 

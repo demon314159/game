@@ -1,18 +1,18 @@
 //
-// puzzle.h
+// puzzle_book.h
 //
-#if !defined(_PUZZLE_H_)
-#define _PUZZLE_H_
+#if !defined(_PUZZLE_BOOK_H_)
+#define _PUZZLE_BOOK_H_
 
 #define MAX_CHALLENGES 100
 
 #include "challenge.h"
 
-class Puzzle
+class PuzzleBook
 {
 public:
-    Puzzle(void);
-    ~Puzzle();
+    PuzzleBook(void);
+    ~PuzzleBook();
     void add(const Challenge& challenge);
 
 protected:
@@ -20,4 +20,4 @@ protected:
     Challenge* m_list[MAX_CHALLENGES];
 };
 
-#endif // _PUZZLE_H_
+#endif // _PUZZLE_BOOK_H_

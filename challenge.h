@@ -4,13 +4,14 @@
 #if !defined(_CHALLENGE_H_)
 #define _CHALLENGE_H_
 
-#define MAX_CHALLENGE_PIECES 32
+#define MAX_CHALLENGE_PIECES 10
 
 #include "moverec.h"
 
 class Challenge
 {
 public:
+    Challenge(void);
     Challenge(int dimh, int dimv);
     ~Challenge();
     Challenge p(int pid);

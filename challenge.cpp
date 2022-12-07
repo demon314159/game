@@ -3,6 +3,15 @@
 //
 #include "challenge.h"
 
+Challenge::Challenge(void)
+    : m_dimh(0)
+    , m_dimv(0)
+    , m_pieces(0)
+    , m_hints(0)
+{
+
+}
+
 Challenge::Challenge(int dimh, int dimv)
     : m_dimh(dimh)
     , m_dimv(dimv)

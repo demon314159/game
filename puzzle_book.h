@@ -4,7 +4,7 @@
 #if !defined(_PUZZLE_BOOK_H_)
 #define _PUZZLE_BOOK_H_
 
-#define MAX_CHALLENGES 100
+#define MAX_CHALLENGES 48
 
 #include "challenge.h"
 
@@ -17,7 +17,7 @@ public:
 
 protected:
     int m_challenges;
-    Challenge* m_list[MAX_CHALLENGES];
+    Challenge m_list[MAX_CHALLENGES];
 };
 
 #endif // _PUZZLE_BOOK_H_

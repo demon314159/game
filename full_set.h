@@ -17,7 +17,7 @@ public:
 
 protected:
     int m_pieces;
-    Piece* m_list[MAX_FULL_SET_PIECES];
+    Piece m_list[MAX_FULL_SET_PIECES];
 };
 
 #endif // _FULL_SET_H_

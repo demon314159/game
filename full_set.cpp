@@ -3,8 +3,6 @@
 //
 #include "full_set.h"
 
-#include "stdio.h"
-
 FullSet::FullSet(void)
     : m_pieces(0)
 {
@@ -44,10 +42,6 @@ FullSet::FullSet(void)
     add(Piece().t(0, 0).t(0, 1).t(0, 2).t(0, 3).t(-1, 2).t(1, 3));   // pid = 33
     add(Piece().t(0, 0).t(0, 1).t(0, 2).t(0, 3).t(-1, 1).t(1, 2));   // pid = 34
     add(Piece().t(0, 0).t(0, 1).t(0, 2).t(-1, 1).t(1, 2).t(1, 3));   // pid = 35
-
-
-    printf("size of piecee = %ld bytes\n", sizeof(Piece));
-    printf("size of full_set = %ld bytes\n", sizeof(FullSet));
 }
 
 FullSet::~FullSet()

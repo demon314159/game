@@ -5,17 +5,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-PuzzleBook::PuzzleBook(void)
-    : m_challenges(0)
-{
-    printf("PuzzleBook()\n");
-    add_challenges();
-}
-
 PuzzleBook::PuzzleBook(const char* name)
     : m_challenges(0)
 {
-    printf("PuzzleBook(%s)\n", name);
     FILE* ffi = fopen(name, "r");
     if (ffi == NULL) {
         add_challenges();

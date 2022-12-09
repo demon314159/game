@@ -42,3 +42,21 @@ Challenge Challenge::p(int pid, int orientation, int posh, int posv)
     }
     return a;
 }
+
+int Challenge::pieces() const
+{
+    return m_pieces;
+}
+
+MoveRec Challenge::get_piece_info(int pix) const
+{
+    return m_piece_list[pix];
+}
+
+bool Challenge::set_piece_info(int pix, const MoveRec& info)
+{
+    return... ....
+}
+
+
+

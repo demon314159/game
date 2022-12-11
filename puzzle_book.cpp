@@ -87,6 +87,41 @@ bool PuzzleBook::go_to_previous_challenge()
     return true;
 }
 
+int PuzzleBook::pieces() const
+{
+    return m_list[m_current_challenge].pieces();
+}
+
+int PuzzleBook::shape_id(int pix) const
+{
+    return m_list[m_current_challenge].shape_id(pix);
+}
+
+bool PuzzleBook::locked(int pix) const
+{
+    return m_list[m_current_challenge].locked(pix);
+}
+
+bool PuzzleBook::on_board(int pix) const
+{
+    return m_list[m_current_challenge].on_board(pix);
+}
+
+int PuzzleBook::orientation(int pix) const
+{
+    return m_list[m_current_challenge].orientation(pix);
+}
+
+int PuzzleBook::posh(int pix) const
+{
+    return m_list[m_current_challenge].posh(pix);
+}
+
+int PuzzleBook::posv(int pix) const
+{
+    return m_list[m_current_challenge].posv(pix);
+}
+
 bool PuzzleBook::drop_piece(int pix, int orientation, int posh, int posv)
 {
     return m_list[m_current_challenge].drop_piece(pix, orientation, posh, posv);

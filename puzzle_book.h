@@ -21,6 +21,13 @@ public:
     int current_challenge() const;
     bool go_to_next_challenge();
     bool go_to_previous_challenge();
+    int pieces() const;
+    int shape_id(int pix) const;
+    bool locked(int pix) const;
+    bool on_board(int pix) const;
+    int orientation(int pix) const;
+    int posh(int pix) const;
+    int posv(int pix) const;
     bool drop_piece(int pix, int orientation, int posh, int posv);
     bool lift_piece(int pix);
 

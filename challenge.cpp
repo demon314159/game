@@ -54,17 +54,43 @@ int Challenge::pieces() const
     return m_pieces;
 }
 
+int Challenge::shape_id(int pix) const
+{
+    return m_piece_list[pix].shape_id();
+}
+
+bool Challenge::locked(int pix) const
+{
+    return m_piece_list[pix].locked();
+}
+
+bool Challenge::on_board(int pix) const
+{
+    return m_piece_list[pix].on_board();
+}
+
+int Challenge::orientation(int pix) const
+{
+    return m_piece_list[pix].orientation();
+}
+
+int Challenge::posh(int pix) const
+{
+    return m_piece_list[pix].posh();
+}
+
+int Challenge::posv(int pix) const
+{
+    return m_piece_list[pix].posv();
+}
+
 bool Challenge::drop_piece(int pix, int orientation, int posh, int posv)
 {
-    if (pix >= m_pieces)
-        return false;
     return m_piece_list[pix].drop_piece(orientation, posh, posv);
 }
 
 bool Challenge::lift_piece(int pix)
 {
-    if (pix >= m_pieces)
-        return false;
     return m_piece_list[pix].lift_piece();
 }
 

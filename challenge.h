@@ -16,10 +16,9 @@ public:
     ~Challenge();
     Challenge p(int pid);
     Challenge p(int pid, int orientation, int posh, int posv);
+    bool solved() const;
 
     int pieces() const;
-    MoveRec get_piece_info(int pix) const;
-    bool set_piece_info(int pix, const MoveRec& info);
 
 protected:
     int m_dimh;

@@ -11,14 +11,14 @@
 #include <QWidget>
 #include "table.h"
 #include "puzzle_book.h"
-#include "full_set.h"
+#include "shape_set.h"
 
 class Hexominos: public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Hexominos(const FullSet* full_set, const PuzzleBook* puzzle_book);
+    Hexominos(const ShapeSet* fshape_set, const PuzzleBook* puzzle_book);
     ~Hexominos();
 
 private:
@@ -32,7 +32,7 @@ private slots:
     void pb5();
 
 private:
-    const FullSet* m_full_set;
+    const ShapeSet* m_shape_set;
     const PuzzleBook* m_puzzle_book;
     // Owned by layout
     Table *m_table = nullptr;

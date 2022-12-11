@@ -48,15 +48,11 @@ int Challenge::pieces() const
     return m_pieces;
 }
 
-MoveRec Challenge::get_piece_info(int pix) const
+bool Challenge::solved() const
 {
-    return m_piece_list[pix];
+    for (int i = 0; i < m_pieces; i++) {
+        if (!m_piece_list[i].on_board)
+            return false;
+    }
+    return true;
 }
-
-bool Challenge::set_piece_info(int pix, const MoveRec& info)
-{
-    return... ....
-}
-
-
-

@@ -4,14 +4,11 @@
 
 #include "challenge.h"
 
-#include "stdio.h"
-
 Challenge::Challenge(void)
     : m_dimh(0)
     , m_dimv(0)
     , m_pieces(0)
 {
-    printf("Challenge::Challenge()\n");
 }
 
 Challenge::Challenge(int dimh, int dimv)
@@ -19,20 +16,10 @@ Challenge::Challenge(int dimh, int dimv)
     , m_dimv(dimv)
     , m_pieces(0)
 {
-    printf("Challenge::Challenge(%d, %d)\n", dimh, dimv);
 }
 
 Challenge::~Challenge()
 {
-    if (m_pieces == 0) {
-        printf("Challenge::~Challenge(): no pieces\n");
-    } else {
-        printf("Challenge::~Challenge(): %d pieces:", m_pieces);
-            for (int i = 0; i < m_pieces; i++) {
-                printf("%d ", m_piece_list[i].shape_id());
-            }
-        printf("\n");
-    }
 }
 
 Challenge& Challenge::p(int shape_id)
@@ -53,11 +40,6 @@ Challenge& Challenge::p(int shape_id, int orientation, int posh, int posv)
     return *this;
 }
 
-int Challenge::pieces() const
-{
-    return m_pieces;
-}
-
 bool Challenge::solved() const
 {
     for (int i = 0; i < m_pieces; i++) {
@@ -67,8 +49,22 @@ bool Challenge::solved() const
     return true;
 }
 
-Piece Challenge::get_piece(int pix) const
+int Challenge::pieces() const
 {
-    return m_piece_list[pix];
+    return m_pieces;
+}
+
+bool Challenge::drop_piece(int pix, int orientation, int posh, int posv)
+{
+    if (pix >= m_pieces)
+        return false;
+    return m_piece_list[pix].drop_piece(orientation, posh, posv);
+}
+
+bool Challenge::lift_piece(int pix)
+{
+    if (pix >= m_pieces)
+        return false;
+    return m_piece_list[pix].lift_piece();
 }
 

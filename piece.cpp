@@ -51,3 +51,27 @@ int Piece::posv() const
     return m_posv;
 }
 
+bool Piece::drop_piece(int orientation, int posh, int posv)
+{
+    if (m_locked)
+        return false;
+    if (m_on_board)
+        return false;
+    m_orientation = orientation;
+    m_posh = posh;
+    m_posv = posv;
+    return true;
+}
+
+bool Piece::lift_piece()
+{
+    if (m_locked)
+        return false;
+    if (!m_on_board)
+        return false;
+    m_on_board = false;
+    m_posh = 0;
+    m_posv = 0;
+    return true;
+}
+

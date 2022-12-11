@@ -21,6 +21,8 @@ public:
     int orientation() const;
     int posh() const;
     int posv() const;
+    bool drop_piece(int orientation, int posh, int posv);
+    bool lift_piece();
 
 protected:
     int m_shape_id;

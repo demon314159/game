@@ -2,7 +2,7 @@
 // puzzle_book.cpp
 //
 #include "puzzle_book.h"
-#include <stdio.h>
+#include "stdio.h"
 #include <sys/stat.h>
 
 PuzzleBook::PuzzleBook(const char* name)
@@ -51,7 +51,7 @@ void PuzzleBook::save(const char* name)
 
 bool PuzzleBook::puzzle_solved() const
 {
-    return ((m_current_challenge == (m_challenges + 1)) && current_challenge_solved());
+    return ((m_current_challenge == (m_challenges - 1)) && current_challenge_solved());
 }
 
 bool PuzzleBook::current_challenge_solved() const
@@ -87,17 +87,14 @@ bool PuzzleBook::go_to_previous_challenge()
     return true;
 }
 
-bool PuzzleBook::add_piece(int pix, int orientation, int posh, int posv)
+bool PuzzleBook::drop_piece(int pix, int orientation, int posh, int posv)
 {
-    Challenge* ch = m_list + m_current_challenge;
-    if (pix >= ch->pieces())
-        return false;
-
-//... left off here, draw it out to find borders
+    return m_list[m_current_challenge].drop_piece(pix, orientation, posh, posv);
 }
 
-bool PuzzleBook::remove_piece(int pix)
+bool PuzzleBook::lift_piece(int pix)
 {
+    return m_list[m_current_challenge].lift_piece(pix);
 }
 
 

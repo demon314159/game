@@ -5,37 +5,37 @@ Command::~Command()
 {
 }
 
-AddPieceCommand::AddPieceCommand(int pix, int orientation, int posh, int posv)
+DropPieceCommand::DropPieceCommand(int pix, int orientation, int posh, int posv)
     : m_pix(pix)
 {
 }
 
-AddPieceCommand::~AddPieceCommand()
+DropPieceCommand::~DropPieceCommand()
 {
 }
 
-void AddPieceCommand::execute()
+void DropPieceCommand::execute()
 {
 }
 
-void AddPieceCommand::unexecute()
+void DropPieceCommand::unexecute()
 {
 }
 
-RemovePieceCommand::RemovePieceCommand(int pix)
+LiftPieceCommand::LiftPieceCommand(int pix)
     : m_pix(pix)
 {
 }
 
-RemovePieceCommand::~RemovePieceCommand()
+LiftPieceCommand::~LiftPieceCommand()
 {
 }
 
-void RemovePieceCommand::execute()
+void LiftPieceCommand::execute()
 {
 }
 
-void RemovePieceCommand::unexecute()
+void LiftPieceCommand::unexecute()
 {
 }
 

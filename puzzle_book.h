@@ -21,8 +21,8 @@ public:
     int current_challenge() const;
     bool go_to_next_challenge();
     bool go_to_previous_challenge();
-    bool add_piece(int pix, int orientation, int posh, int posv);
-    bool remove_piece(int pix);
+    bool drop_piece(int pix, int orientation, int posh, int posv);
+    bool lift_piece(int pix);
 
 protected:
     int m_challenges;

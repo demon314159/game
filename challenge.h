@@ -19,7 +19,8 @@ public:
     bool solved() const;
 
     int pieces() const;
-    Piece get_piece(int pix) const;
+    bool drop_piece(int pix, int orientation, int posh, int posv);
+    bool lift_piece(int pix);
 
 protected:
     int m_dimh;

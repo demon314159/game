@@ -10,22 +10,22 @@ public:
     virtual void unexecute() = 0;
 };
 
-class AddPieceCommand: public Command
+class DropPieceCommand: public Command
 {
 public:
-    AddPieceCommand(int pix, int orientation, int posh, int posv);
-    ~AddPieceCommand();
+    DropPieceCommand(int pix, int orientation, int posh, int posv);
+    ~DropPieceCommand();
     void execute() override;
     void unexecute() override;
 private:
     int m_pix;
 };
 
-class RemovePieceCommand: public Command
+class LiftPieceCommand: public Command
 {
 public:
-    RemovePieceCommand(int pix);
-    ~RemovePieceCommand();
+    LiftPieceCommand(int pix);
+    ~LiftPieceCommand();
     void execute() override;
     void unexecute() override;
 private:

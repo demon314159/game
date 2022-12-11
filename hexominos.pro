@@ -6,13 +6,13 @@ QT += multimedia widgets
 ## CONFIG += qt debug
 
 HEADERS       = hexominos.h \
-                move_rec.h \
                 pos_rec.h \
                 table.h \
                 challenge.h \
                 shape.h \
+                piece.h \
                 puzzle_book.h \
-                full_set.h \
+                shape_set.h \
                 command.h \
                 history.h
 
@@ -21,8 +21,9 @@ SOURCES       = main.cpp \
                 table.cpp \
                 challenge.cpp \
                 shape.cpp \
+                piece.cpp \
                 puzzle_book.cpp \
-                full_set.cpp \
+                shape_set.cpp \
                 command.cpp \
                 history.cpp
 

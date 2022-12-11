@@ -5,7 +5,7 @@ Command::~Command()
 {
 }
 
-AddPieceCommand::AddPieceCommand(int pix, int pid, int orientation, int posh, int posv)
+AddPieceCommand::AddPieceCommand(int pix, int orientation, int posh, int posv)
     : m_pix(pix)
 {
 }

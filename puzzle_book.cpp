@@ -87,12 +87,13 @@ bool PuzzleBook::go_to_previous_challenge()
     return true;
 }
 
-bool PuzzleBook::add_piece(int pix, int pid, int orientation, int posh, int posv)
+bool PuzzleBook::add_piece(int pix, int orientation, int posh, int posv)
 {
     Challenge* ch = m_list + m_current_challenge;
     if (pix >= ch->pieces())
         return false;
-... left off here, draw it out to find borders
+
+//... left off here, draw it out to find borders
 }
 
 bool PuzzleBook::remove_piece(int pix)

@@ -13,7 +13,7 @@ public:
 class AddPieceCommand: public Command
 {
 public:
-    AddPieceCommand(int pix, int pid, int orientation, int posh, int posv);
+    AddPieceCommand(int pix, int orientation, int posh, int posv);
     ~AddPieceCommand();
     void execute() override;
     void unexecute() override;

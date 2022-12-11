@@ -13,7 +13,7 @@ class Shape
 public:
     Shape();
     ~Shape();
-    Shape t(int posh, int posv);
+    Shape& t(int posh, int posv);
 
 protected:
     int m_tiles;

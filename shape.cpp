@@ -12,13 +12,12 @@ Shape::~Shape()
 {
 }
 
-Shape Shape::t(int posh, int posv)
+Shape& Shape::t(int posh, int posv)
 {
-    Shape a = *this;
     if (m_tiles < MAX_SHAPE_TILES) {
-        a.m_tile_list[m_tiles] = {posh, posv};
-        ++a.m_tiles;
+        m_tile_list[m_tiles] = {posh, posv};
+        ++m_tiles;
     }
-    return a;
+    return *this;
 }
 

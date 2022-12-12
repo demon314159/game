@@ -86,6 +86,8 @@ int Challenge::posv(int pix) const
 
 bool Challenge::drop_piece(int pix, int orientation, int posh, int posv)
 {
+    if (!piece_fits(pix, orientation, posh, posv))
+        return false;
     return m_piece_list[pix].drop_piece(orientation, posh, posv);
 }
 
@@ -94,3 +96,15 @@ bool Challenge::lift_piece(int pix)
     return m_piece_list[pix].lift_piece();
 }
 
+bool Challenge::piece_fits(int pix, int orientation, int posh, int posv) const
+{
+//    if piece[pix].(sid, orient, pos) is not contained
+//        return false;
+//    for (int p = 0; p < m_pieces; p++) {
+//        if (p != pix) {
+//            if shapes_collide piece[p].(sid, orient, pos) vs piece[pix].(sid, orient, pos)
+//                return false;
+//        }
+//    }
+    return true;
+}

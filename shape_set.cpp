@@ -56,4 +56,17 @@ void ShapeSet::add_shape(const Shape& shape)
     }
 }
 
+int ShapeSet::tiles(int shape_id) const
+{
+    return m_list[shape_id].tiles();
+}
 
+int ShapeSet::posh(int shape_id, int tix, int orientation) const
+{
+    return m_list[shape_id].posh(tix, orientation);
+}
+
+int ShapeSet::posv(int shape_id, int tix, int orientation) const
+{
+    return m_list[shape_id].posv(tix, orientation);
+}

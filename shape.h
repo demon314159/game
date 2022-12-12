@@ -14,6 +14,9 @@ public:
     Shape();
     ~Shape();
     Shape& t(int posh, int posv);
+    int tiles() const;
+    int posh(int tix, int orientation) const;
+    int posv(int tix, int orientation) const;
 
 protected:
     int m_tiles;

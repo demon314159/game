@@ -13,6 +13,9 @@ class ShapeSet
 public:
     ShapeSet(void);
     ~ShapeSet();
+    int tiles(int shape_id) const;
+    int posh(int shape_id, int tix, int orientation) const;
+    int posv(int shape_id, int tix, int orientation) const;
 
 protected:
     int m_shapes;

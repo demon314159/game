@@ -70,3 +70,31 @@ int ShapeSet::posv(int shape_id, int tix, int orientation) const
 {
     return m_list[shape_id].posv(tix, orientation);
 }
+
+bool ShapeSet::shape_contained(int shape_id, int orientation, int ph, int pv, int dimh, int dimv) const
+{
+    for (int i = 0; i < tiles(shape_id); i++) {
+        int hpos = ph + posh(shape_id, i, orientation);
+        if (hpos < 0 || hpos >= dimh)
+            return false;
+        int vpos = pv + posv(shape_id, i, orientation);
+        if (vpos < 0 || vpos >= dimv)
+            return false;
+    }
+    return true;
+}
+
+bool ShapeSet::shape_collision(int shape_id1, int orientation1, int ph1, int pv1, int shape_id2, int orientation2, int ph2, int pv2) const
+{
+    for (int i = 0; i < tiles(shape_id1); i++) {
+        int hpos1 = ph1 + posh(shape_id1, i, orientation1);
+        int vpos1 = pv1 + posv(shape_id1, i, orientation1);
+        for (int j = 0; j < tiles(shape_id2); j++) {
+            int hpos2 = ph2 + posh(shape_id2, j, orientation2);
+            int vpos2 = pv2 + posv(shape_id2, j, orientation2);
+            if (hpos1 == hpos2 && vpos1 == vpos2)
+                return false;
+        }
+    }
+    return true;
+}

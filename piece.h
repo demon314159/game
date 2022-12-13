@@ -9,6 +9,8 @@
 #if !defined(_PIECE_H_)
 #define _PIECE_H_
 
+#include "shape_set.h"
+
 class Piece
 {
 public:

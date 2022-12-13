@@ -84,9 +84,9 @@ int Challenge::posv(int pix) const
     return m_piece_list[pix].posv();
 }
 
-bool Challenge::drop_piece(int pix, int orientation, int posh, int posv)
+bool Challenge::drop_piece(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv)
 {
-    if (!piece_fits(pix, orientation, posh, posv))
+    if (!piece_fits(shape_set, pix, orientation, posh, posv))
         return false;
     return m_piece_list[pix].drop_piece(orientation, posh, posv);
 }
@@ -96,15 +96,18 @@ bool Challenge::lift_piece(int pix)
     return m_piece_list[pix].lift_piece();
 }
 
-bool Challenge::piece_fits(int pix, int orientation, int posh, int posv) const
+bool Challenge::piece_fits(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv) const
 {
-//    if piece[pix].(sid, orient, pos) is not contained
-//        return false;
-//    for (int p = 0; p < m_pieces; p++) {
-//        if (p != pix) {
-//            if shapes_collide piece[p].(sid, orient, pos) vs piece[pix].(sid, orient, pos)
-//                return false;
-//        }
-//    }
+    int shape_id = m_piece_list[pix].shape_id();
+    if (!shape_set.shape_contained(shape_id, orientation, posh, posv, m_dimh, m_dimv))
+        return false;
+    for (int i = 0; i < m_pieces; i++) {
+        if (i != pix) {
+            if (m_piece_list[i].on_board()) {
+                if (shape_set.shape_collision(shape_id, orientation, posh, posv, m_piece_list[i].shape_id(), m_piece_list[i].orientation(), m_piece_list[i].posh(), m_piece_list[i].posv()))
+                    return false;
+            }
+        }
+    }
     return true;
 }

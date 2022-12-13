@@ -16,6 +16,8 @@ public:
     int tiles(int shape_id) const;
     int posh(int shape_id, int tix, int orientation) const;
     int posv(int shape_id, int tix, int orientation) const;
+    bool shape_contained(int shape_id, int orientation, int ph, int pv, int dimh, int dimv) const;
+    bool shape_collision(int shape_id1, int orientation1, int ph1, int pv1, int shape_id2, int orientation2, int ph2, int pv2) const;
 
 protected:
     int m_shapes;

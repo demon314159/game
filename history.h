@@ -3,11 +3,13 @@
 #define _HISTORY_H_
 
 #include "command.h"
+#include "puzzle_book.h"
+#include "shape_set.h"
 
 class History
 {
 public:
-    History();
+    History(PuzzleBook* puzzle_book, ShapeSet* shape_set);
     ~History();
     void do_command(Command* c);
     void undo_command();
@@ -16,6 +18,8 @@ public:
     bool end_of_redo() const;
 
 private:
+    PuzzleBook* m_puzzle_book;
+    ShapeSet* m_shape_set;
     int m_max_commands;
     int m_commands;
     int m_current;

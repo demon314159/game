@@ -12,7 +12,7 @@ int main(int argv, char **args)
 
     ShapeSet* shape_set = new ShapeSet;
     PuzzleBook*puzzle_book = new PuzzleBook(PUZZLE_BOOK_FILE_NAME);
-    Hexominos game(shape_set, puzzle_book);
+    Hexominos game(puzzle_book, shape_set);
     game.show();
 
     int res = app.exec();

@@ -2,8 +2,10 @@
 #include "history.h"
 #include <stdio.h>
 
-History::History()
-    : m_max_commands(16384)
+History::History(PuzzleBook* puzzle_book, ShapeSet* shape_set)
+    : m_puzzle_book(puzzle_book)
+    , m_shape_set(shape_set)
+    , m_max_commands(16384)
     , m_commands(0)
     , m_current(0)
 {
@@ -29,21 +31,21 @@ void History::do_command(Command* c)
     m_command_ptr[m_current] = c;
     ++m_current;
     m_commands = m_current;
-    c->execute();
+    c->execute(m_puzzle_book, m_shape_set);
 }
 
 void History::undo_command()
 {
     if (!end_of_undo()) {
         --m_current;
-        m_command_ptr[m_current]->unexecute();
+        m_command_ptr[m_current]->unexecute(m_puzzle_book, m_shape_set);
     }
 }
 
 void History::redo_command()
 {
     if (!end_of_redo()) {
-        m_command_ptr[m_current]->execute();
+        m_command_ptr[m_current]->execute(m_puzzle_book, m_shape_set);
         ++m_current;
     }
 }

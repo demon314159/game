@@ -29,7 +29,7 @@ public:
     int orientation(int pix) const;
     int posh(int pix) const;
     int posv(int pix) const;
-    bool drop_piece(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv);
+    bool drop_piece(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv);
     bool lift_piece(int pix);
 
 protected:

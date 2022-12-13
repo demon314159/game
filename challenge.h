@@ -26,7 +26,7 @@ public:
     int orientation(int pix) const;
     int posh(int pix) const;
     int posv(int pix) const;
-    bool drop_piece(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv);
+    bool drop_piece(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv);
     bool lift_piece(int pix);
 
 protected:
@@ -35,7 +35,7 @@ protected:
     int m_pieces;
     Piece m_piece_list[MAX_CHALLENGE_PIECES];
 
-    bool piece_fits(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv) const;
+    bool piece_fits(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv) const;
 };
 
 #endif // _CHALLENGE_H_

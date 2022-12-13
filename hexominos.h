@@ -12,13 +12,14 @@
 #include "table.h"
 #include "puzzle_book.h"
 #include "shape_set.h"
+#include "history.h"
 
 class Hexominos: public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Hexominos(const ShapeSet* fshape_set, const PuzzleBook* puzzle_book);
+    Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set);
     ~Hexominos();
 
 private:
@@ -32,8 +33,9 @@ private slots:
     void pb5();
 
 private:
-    const ShapeSet* m_shape_set;
-    const PuzzleBook* m_puzzle_book;
+    PuzzleBook* m_puzzle_book;
+    ShapeSet* m_shape_set;
+    History m_history;
     // Owned by layout
     Table *m_table = nullptr;
     QPushButton *m_pb1 = nullptr;

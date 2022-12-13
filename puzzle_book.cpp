@@ -122,7 +122,7 @@ int PuzzleBook::posv(int pix) const
     return m_list[m_current_challenge].posv(pix);
 }
 
-bool PuzzleBook::drop_piece(const ShapeSet& shape_set, int pix, int orientation, int posh, int posv)
+bool PuzzleBook::drop_piece(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv)
 {
     return m_list[m_current_challenge].drop_piece(shape_set, pix, orientation, posh, posv);
 }

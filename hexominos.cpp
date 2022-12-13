@@ -9,9 +9,10 @@
 #include <QVBoxLayout>
 #include "table.h"
 
-Hexominos::Hexominos(const ShapeSet* shape_set, const PuzzleBook* puzzle_book)
-    : m_shape_set(shape_set)
-    , m_puzzle_book(puzzle_book)
+Hexominos::Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set)
+    : m_puzzle_book(puzzle_book)
+    , m_shape_set(shape_set)
+    , m_history(puzzle_book, shape_set)
 {
     initializeWindow();
 }

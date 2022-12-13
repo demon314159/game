@@ -28,10 +28,12 @@ void History::do_command(Command* c)
     for (int i = m_current; i < m_commands; i++) {
         delete m_command_ptr[i];
     }
-    m_command_ptr[m_current] = c;
-    ++m_current;
-    m_commands = m_current;
-    c->execute(m_puzzle_book, m_shape_set);
+
+    if (c->execute(m_puzzle_book, m_shape_set)) {
+        m_command_ptr[m_current] = c;
+        ++m_current;
+        m_commands = m_current;
+    }
 }
 
 void History::undo_command()

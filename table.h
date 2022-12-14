@@ -6,9 +6,9 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QPixmap>
 #include <QPainter>
-#include <QMouseEvent>
+
+#include "scene.h"
 
 class Table: public QWidget
 {
@@ -23,11 +23,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 private:
-    int m_x_base;
-    int m_y_base;
-    int m_width;
-    int m_height;
-    QPixmap m_pixmap;
+    Scene m_scene;
 };
 
 #endif // _TABLE_H_

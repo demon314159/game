@@ -14,7 +14,8 @@ HEADERS       = hexominos.h \
                 puzzle_book.h \
                 shape_set.h \
                 command.h \
-                history.h
+                history.h \
+                scene.h
 
 SOURCES       = main.cpp \
                 hexominos.cpp \
@@ -25,5 +26,6 @@ SOURCES       = main.cpp \
                 puzzle_book.cpp \
                 shape_set.cpp \
                 command.cpp \
-                history.cpp
+                history.cpp \
+                scene.cpp
 

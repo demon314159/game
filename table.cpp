@@ -8,15 +8,12 @@
 
 Table::Table(QWidget *parent)
     : QWidget(parent)
-    , m_x_base(0)
-    , m_y_base(0)
-    , m_width(100)
-    , m_height(100)
+    , m_scene()
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
-    setMinimumHeight(162);
-    setMinimumWidth(512);
+    setMinimumHeight(480);
+    setMinimumWidth(640);
 }
 
 int Table::text_width(QPainter& painter, const QString &s)
@@ -36,18 +33,8 @@ void Table::paintEvent(QPaintEvent* /* event */)
     QPainter painter(this);
 //    int th = text_height(painter, QString("0"));
 
-    painter.setPen(Qt::black);
-
-    m_width = painter.viewport().width();
-    m_height = painter.viewport().height();
-    m_x_base = painter.viewport().left();
-    m_y_base = painter.viewport().top();
-
-    painter.setPen(Qt::black);
-    painter.drawRect(QRect(m_x_base,
-                           m_y_base,
-                           m_width - 1,
-                           m_height - 1));
+    m_scene.draw(painter, painter.viewport().left(), painter.viewport().top(),
+                          painter.viewport().width(), painter.viewport().height());
 }
 
 

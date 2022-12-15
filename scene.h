@@ -6,8 +6,8 @@
 
 #include <QPainter>
 
-#define HORZ_UNITS 32
-#define VERT_UNITS 24
+#define HORZ_UNITS 24
+#define VERT_UNITS 18
 
 class Scene
 {
@@ -21,7 +21,8 @@ protected:
     int m_ybase;
     int m_unit;
 
-    void determine_size(QPainter& painter);
+    void determine_layout(QPainter& painter);
+    QRect dock(int dix) const;
 };
 
 #endif // _SCENE_H_

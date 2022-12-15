@@ -3,7 +3,9 @@
 //
 #include "scene.h"
 
-Scene::Scene()
+Scene::Scene(const ShapeSet* shape_set)
+    : m_shape_set(shape_set)
+    , m_current_shape(1)
 {
 }
 
@@ -77,4 +79,45 @@ void Scene::draw(QPainter& painter)
     painter.drawRect(dock(8));
     painter.drawRect(dock(9));
     painter.drawRect(dock(10));
+    int shape_id = m_current_shape;
+    draw_shape(painter, dock(7), shape_id, 0);
+    draw_shape(painter, dock(1), shape_id, 1);
+    draw_shape(painter, dock(2), shape_id, 2);
+    draw_shape(painter, dock(8), shape_id, 3);
+    draw_shape(painter, dock(9), shape_id, 4);
+    draw_shape(painter, dock(3), shape_id, 5);
+    draw_shape(painter, dock(4), shape_id, 6);
+    draw_shape(painter, dock(10), shape_id, 7);
+}
+
+
+void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
+{
+    int cx = 0;
+    int cy = 0;
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        cx += m_shape_set->posh(shape_id, i, orientation);
+        cy += m_shape_set->posv(shape_id, i, orientation);
+    }
+    cx = m_unit * cx / 6;
+    cy = m_unit * cy / 6;
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int x1 = rect.center().x() + m_shape_set->posh(shape_id, i, orientation) * m_unit - cx;
+        int y1 = rect.center().y() - m_shape_set->posv(shape_id, i, orientation) * m_unit + cy;
+        painter.drawRect(QRect(x1 - m_unit/2, y1-m_unit/2, m_unit - 1, m_unit - 1));
+    }
+}
+
+void Scene::next_shape()
+{
+    if ((m_current_shape + 1) < MAX_SHAPES) {
+        ++m_current_shape;
+    }
+}
+
+void Scene::prev_shape()
+{
+    if (m_current_shape > 1) {
+        --m_current_shape;
+    }
 }

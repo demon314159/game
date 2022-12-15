@@ -6,9 +6,9 @@
 #include <math.h>
 #include <algorithm>
 
-Table::Table(QWidget *parent)
+Table::Table(const ShapeSet* shape_set, QWidget *parent)
     : QWidget(parent)
-    , m_scene()
+    , m_scene(shape_set)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -36,4 +36,15 @@ void Table::paintEvent(QPaintEvent* /* event */)
     m_scene.draw(painter);
 }
 
+void Table::next_shape()
+{
+    m_scene.next_shape();
+    update();
+}
+
+void Table::prev_shape()
+{
+    m_scene.prev_shape();
+    update();
+}
 

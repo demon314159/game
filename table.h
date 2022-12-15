@@ -9,13 +9,16 @@
 #include <QPainter>
 
 #include "scene.h"
+#include "shape_set.h"
 
 class Table: public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Table(QWidget *parent = nullptr);
+    explicit Table(const ShapeSet* shape_set, QWidget *parent = nullptr);
+    void next_shape();
+    void prev_shape();
 
 protected:
     int text_width(QPainter& painter, const QString &s);

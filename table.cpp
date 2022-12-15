@@ -33,8 +33,7 @@ void Table::paintEvent(QPaintEvent* /* event */)
     QPainter painter(this);
 //    int th = text_height(painter, QString("0"));
 
-    m_scene.draw(painter, painter.viewport().left(), painter.viewport().top(),
-                          painter.viewport().width(), painter.viewport().height());
+    m_scene.draw(painter);
 }
 
 

@@ -93,14 +93,18 @@ void Scene::draw(QPainter& painter)
 
 void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
 {
-    int cx = 0;
-    int cy = 0;
+    int maxx = -1000;
+    int minx = 1000;
+    int maxy = -1000;
+    int miny = 1000;
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        cx += m_shape_set->posh(shape_id, i, orientation);
-        cy += m_shape_set->posv(shape_id, i, orientation);
+        maxx = std::max(maxx, m_shape_set->posh(shape_id, i, orientation));
+        minx = std::min(minx, m_shape_set->posh(shape_id, i, orientation));
+        maxy = std::max(maxy, m_shape_set->posv(shape_id, i, orientation));
+        miny = std::min(miny, m_shape_set->posv(shape_id, i, orientation));
     }
-    cx = m_unit * cx / 6;
-    cy = m_unit * cy / 6;
+    int cx = m_unit * (maxx + minx) / 2;
+    int cy = m_unit * (maxy + miny) / 2;
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
         int x1 = rect.center().x() + m_shape_set->posh(shape_id, i, orientation) * m_unit - cx;
         int y1 = rect.center().y() - m_shape_set->posv(shape_id, i, orientation) * m_unit + cy;

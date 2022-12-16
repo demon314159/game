@@ -98,3 +98,13 @@ bool ShapeSet::shape_collision(int shape_id1, int orientation1, int ph1, int pv1
     }
     return true;
 }
+
+bool ShapeSet::tile_at(int shape_id, int orientation, int x, int y) const
+{
+    for (int i = 0; i < tiles(shape_id); i++) {
+        if (posh(shape_id, i, orientation) == x && posv(shape_id, i, orientation) == y)
+            return true;
+    }
+    return false;
+}
+

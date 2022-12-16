@@ -5,7 +5,7 @@
 
 Scene::Scene(const ShapeSet* shape_set)
     : m_shape_set(shape_set)
-    , m_current_shape(1)
+    , m_current_shape(2)
 {
 }
 
@@ -65,9 +65,12 @@ void Scene::draw(QPainter& painter)
 {
     determine_layout(painter);
 
-//    painter.drawRect(QRect(m_xbase, m_ybase, m_unit * HORZ_UNITS - 1, m_unit * VERT_UNITS - 1));
-    painter.setPen(Qt::red);
+    QPen pen(Qt::black);
+    pen.setWidth(3);
+    painter.setPen(pen);
+    painter.fillRect(dock(0), Qt::red);
     painter.drawRect(dock(0));
+
 //    painter.drawRect(dock(1));
 //    painter.drawRect(dock(2));
 //    painter.drawRect(dock(3));
@@ -113,45 +116,27 @@ void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int o
         int x1 = rect.center().x() + posh * m_unit - cx;
         int y1 = rect.center().y() - posv * m_unit + cy;
         painter.fillRect(QRect(x1 - m_unit / 2, y1-m_unit / 2, m_unit - 1, m_unit - 1), brush);
-        if (neighbour(shape_id, orientation, posh, posv + 1)) {
+        if (m_shape_set->tile_at(shape_id, orientation, posh, posv + 1))
             painter.setPen(inside_pen);
-        } else {
+        else
             painter.setPen(outside_pen);
-        }
         painter.drawLine(x1 - m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 - m_unit / 2 - 1);
-
-        if (neighbour(shape_id, orientation, posh + 1, posv)) {
+        if (m_shape_set->tile_at(shape_id, orientation, posh + 1, posv))
             painter.setPen(inside_pen);
-        } else {
+        else
             painter.setPen(outside_pen);
-        }
         painter.drawLine(x1 + m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 + m_unit / 2 - 1);
-
-        if (neighbour(shape_id, orientation, posh, posv - 1)) {
+        if (m_shape_set->tile_at(shape_id, orientation, posh, posv - 1))
             painter.setPen(inside_pen);
-        } else {
+        else
             painter.setPen(outside_pen);
-        }
         painter.drawLine(x1 + m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 + m_unit / 2 - 1);
-
-        if (neighbour(shape_id, orientation, posh - 1, posv)) {
+        if (m_shape_set->tile_at(shape_id, orientation, posh - 1, posv))
             painter.setPen(inside_pen);
-        } else {
+        else
             painter.setPen(outside_pen);
-        }
         painter.drawLine(x1 - m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 - m_unit / 2 - 1);
     }
-}
-
-bool Scene::neighbour(int shape_id, int orientation, int x, int y) const
-{
-    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        int posh = m_shape_set->posh(shape_id, i, orientation);
-        int posv = m_shape_set->posv(shape_id, i, orientation);
-        if (posh == x && posv == y)
-            return true;
-    }
-    return false;
 }
 
 void Scene::next_shape()

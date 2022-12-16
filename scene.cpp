@@ -65,20 +65,19 @@ void Scene::draw(QPainter& painter)
 {
     determine_layout(painter);
 
+//    painter.drawRect(QRect(m_xbase, m_ybase, m_unit * HORZ_UNITS - 1, m_unit * VERT_UNITS - 1));
     painter.setPen(Qt::red);
-    painter.drawRect(QRect(m_xbase, m_ybase, m_unit * HORZ_UNITS - 1, m_unit * VERT_UNITS - 1));
-    painter.setPen(Qt::black);
     painter.drawRect(dock(0));
-    painter.drawRect(dock(1));
-    painter.drawRect(dock(2));
-    painter.drawRect(dock(3));
-    painter.drawRect(dock(4));
-    painter.drawRect(dock(5));
-    painter.drawRect(dock(6));
-    painter.drawRect(dock(7));
-    painter.drawRect(dock(8));
-    painter.drawRect(dock(9));
-    painter.drawRect(dock(10));
+//    painter.drawRect(dock(1));
+//    painter.drawRect(dock(2));
+//    painter.drawRect(dock(3));
+//    painter.drawRect(dock(4));
+//    painter.drawRect(dock(5));
+//    painter.drawRect(dock(6));
+//    painter.drawRect(dock(7));
+//    painter.drawRect(dock(8));
+//    painter.drawRect(dock(9));
+//    painter.drawRect(dock(10));
     int shape_id = m_current_shape;
     draw_shape(painter, dock(7), shape_id, 0);
     draw_shape(painter, dock(1), shape_id, 1);
@@ -89,7 +88,6 @@ void Scene::draw(QPainter& painter)
     draw_shape(painter, dock(4), shape_id, 6);
     draw_shape(painter, dock(10), shape_id, 7);
 }
-
 
 void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
 {
@@ -105,11 +103,55 @@ void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int o
     }
     int cx = m_unit * (maxx + minx) / 2;
     int cy = m_unit * (maxy + miny) / 2;
+    QBrush brush(Qt::yellow);
+    QPen inside_pen(Qt::darkYellow);
+    QPen outside_pen(Qt::black);
+    outside_pen.setWidth(3);
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        int x1 = rect.center().x() + m_shape_set->posh(shape_id, i, orientation) * m_unit - cx;
-        int y1 = rect.center().y() - m_shape_set->posv(shape_id, i, orientation) * m_unit + cy;
-        painter.drawRect(QRect(x1 - m_unit/2, y1-m_unit/2, m_unit - 1, m_unit - 1));
+        int posh = m_shape_set->posh(shape_id, i, orientation);
+        int posv = m_shape_set->posv(shape_id, i, orientation);
+        int x1 = rect.center().x() + posh * m_unit - cx;
+        int y1 = rect.center().y() - posv * m_unit + cy;
+        painter.fillRect(QRect(x1 - m_unit / 2, y1-m_unit / 2, m_unit - 1, m_unit - 1), brush);
+        if (neighbour(shape_id, orientation, posh, posv + 1)) {
+            painter.setPen(inside_pen);
+        } else {
+            painter.setPen(outside_pen);
+        }
+        painter.drawLine(x1 - m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 - m_unit / 2 - 1);
+
+        if (neighbour(shape_id, orientation, posh + 1, posv)) {
+            painter.setPen(inside_pen);
+        } else {
+            painter.setPen(outside_pen);
+        }
+        painter.drawLine(x1 + m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 + m_unit / 2 - 1);
+
+        if (neighbour(shape_id, orientation, posh, posv - 1)) {
+            painter.setPen(inside_pen);
+        } else {
+            painter.setPen(outside_pen);
+        }
+        painter.drawLine(x1 + m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 + m_unit / 2 - 1);
+
+        if (neighbour(shape_id, orientation, posh - 1, posv)) {
+            painter.setPen(inside_pen);
+        } else {
+            painter.setPen(outside_pen);
+        }
+        painter.drawLine(x1 - m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 - m_unit / 2 - 1);
     }
+}
+
+bool Scene::neighbour(int shape_id, int orientation, int x, int y) const
+{
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int posh = m_shape_set->posh(shape_id, i, orientation);
+        int posv = m_shape_set->posv(shape_id, i, orientation);
+        if (posh == x && posv == y)
+            return true;
+    }
+    return false;
 }
 
 void Scene::next_shape()

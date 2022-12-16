@@ -30,6 +30,7 @@ protected:
     QRect dock(int dix) const;
 
     void draw_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);
+    bool neighbour(int shape_id, int orientation, int x, int y) const;
 };
 
 #endif // _SCENE_H_

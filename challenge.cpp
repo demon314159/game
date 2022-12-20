@@ -111,3 +111,14 @@ bool Challenge::piece_fits(const ShapeSet* shape_set, int pix, int orientation, 
     }
     return true;
 }
+
+int Challenge::dimh() const
+{
+    return m_dimh;
+}
+
+int Challenge::dimv() const
+{
+    return m_dimv;
+}
+

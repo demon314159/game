@@ -3,9 +3,10 @@
 //
 #include "scene.h"
 
-Scene::Scene(const ShapeSet* shape_set)
-    : m_shape_set(shape_set)
-    , m_current_shape(2)
+Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
+    : m_puzzle_book(puzzle_book)
+    , m_shape_set(shape_set)
+    , m_docks(0)
 {
 }
 
@@ -30,125 +31,121 @@ void Scene::determine_layout(QPainter& painter)
         m_ybase = vy + (vh - ygx) / 2;
         m_unit = vw / HORZ_UNITS;
     }
+    m_scx = vx + vw / 2;
+    m_scy = vy + vh / 2;
 }
 
-QRect Scene::dock(int dix) const
+QRect Scene::rack_rect() const
 {
-    switch(dix) {
-        case 1:
-            return QRect(m_xbase + 6 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 2:
-            return QRect(m_xbase + 12 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 3:
-            return QRect(m_xbase + 6 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 4:
-            return QRect(m_xbase + 12 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 5:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 6:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 7:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 8:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 9:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
-        case 10:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+    int dimh = m_puzzle_book->dimh();
+    int dimv = m_puzzle_book->dimv();
+    int w = dimh * m_unit;
+    int h = dimv * m_unit;
+    int x1 = m_scx - w / 2;
+    int y1 = m_scy - h / 2;
 
-        default:
-            return QRect(m_xbase + 7 * m_unit, m_ybase + 6 * m_unit, 10 * m_unit - 1, 6 * m_unit - 1);
+    return QRect(x1, y1, w, h);
+}
+
+QRect Scene::dock_rect(int dock_ix) const
+{
+    switch(dock_ix) {
+        case 1:
+            return QRect(m_xbase + 12 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 2:
+            return QRect(m_xbase + 6 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 3:
+            return QRect(m_xbase + 12 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 4:
+            return QRect(m_xbase + 0 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 5:
+            return QRect(m_xbase + 18 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 6:
+            return QRect(m_xbase + 0 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 7:
+            return QRect(m_xbase + 18 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 8:
+            return QRect(m_xbase + 0 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        case 9:
+            return QRect(m_xbase + 18 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+        default: // and case 0
+            return QRect(m_xbase + 6 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
     }
 }
 
 void Scene::draw(QPainter& painter)
 {
     determine_layout(painter);
-
-    QPen pen(Qt::black);
-    pen.setWidth(3);
-    painter.setPen(pen);
-    painter.fillRect(dock(0), Qt::red);
-    painter.drawRect(dock(0));
-
-//    painter.drawRect(dock(1));
-//    painter.drawRect(dock(2));
-//    painter.drawRect(dock(3));
-//    painter.drawRect(dock(4));
-//    painter.drawRect(dock(5));
-//    painter.drawRect(dock(6));
-//    painter.drawRect(dock(7));
-//    painter.drawRect(dock(8));
-//    painter.drawRect(dock(9));
-//    painter.drawRect(dock(10));
-    int shape_id = m_current_shape;
-    draw_shape(painter, dock(7), shape_id, 0);
-    draw_shape(painter, dock(1), shape_id, 1);
-    draw_shape(painter, dock(2), shape_id, 2);
-    draw_shape(painter, dock(8), shape_id, 3);
-    draw_shape(painter, dock(9), shape_id, 4);
-    draw_shape(painter, dock(3), shape_id, 5);
-    draw_shape(painter, dock(4), shape_id, 6);
-    draw_shape(painter, dock(10), shape_id, 7);
+    QPen thick_pen(Qt::black);
+    thick_pen.setWidth(3);
+    painter.setPen(thick_pen);
+    painter.fillRect(rack_rect(), Qt::red);
+    painter.drawRect(rack_rect());
+    map_docks();
+    const PuzzleBook* pb = m_puzzle_book;
+    for (int i = 0; i < m_docks; i++) {
+        int pix = m_dock_list[i];
+        if (m_puzzle_book->on_board(pix)) {
+            draw_on_board_shape(painter, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix));
+        } else {
+            draw_off_board_shape(painter, dock_rect(i), pb->shape_id(pix), pb->orientation(pix));
+        }
+    }
 }
 
-void Scene::draw_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
+void Scene::draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv)
 {
-    int maxx = -1000;
-    int minx = 1000;
-    int maxy = -1000;
-    int miny = 1000;
-    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        maxx = std::max(maxx, m_shape_set->posh(shape_id, i, orientation));
-        minx = std::min(minx, m_shape_set->posh(shape_id, i, orientation));
-        maxy = std::max(maxy, m_shape_set->posv(shape_id, i, orientation));
-        miny = std::min(miny, m_shape_set->posv(shape_id, i, orientation));
-    }
-    int cx = m_unit * (maxx + minx) / 2;
-    int cy = m_unit * (maxy + miny) / 2;
+
     QBrush brush(Qt::yellow);
     QPen inside_pen(Qt::darkYellow);
     QPen outside_pen(Qt::black);
     outside_pen.setWidth(3);
+    painter.fillRect(QRect(sx, sy, m_unit, m_unit), brush);
+    painter.setPen(m_shape_set->tile_at(shape_id, orientation, tposh, tposv + 1) ? inside_pen : outside_pen);
+    painter.drawLine(sx, sy, sx + m_unit, sy);
+    painter.setPen(m_shape_set->tile_at(shape_id, orientation, tposh + 1, tposv) ? inside_pen : outside_pen);
+    painter.drawLine(sx + m_unit, sy, sx + m_unit, sy + m_unit);
+    painter.setPen(m_shape_set->tile_at(shape_id, orientation, tposh, tposv - 1) ? inside_pen : outside_pen);
+    painter.drawLine(sx + m_unit, sy + m_unit, sx, sy + m_unit);
+    painter.setPen(m_shape_set->tile_at(shape_id, orientation, tposh - 1, tposv) ? inside_pen : outside_pen);
+    painter.drawLine(sx, sy + m_unit, sx, sy);
+}
+
+void Scene::draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv)
+{
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        int posh = m_shape_set->posh(shape_id, i, orientation);
-        int posv = m_shape_set->posv(shape_id, i, orientation);
-        int x1 = rect.center().x() + posh * m_unit - cx;
-        int y1 = rect.center().y() - posv * m_unit + cy;
-        painter.fillRect(QRect(x1 - m_unit / 2, y1-m_unit / 2, m_unit - 1, m_unit - 1), brush);
-        if (m_shape_set->tile_at(shape_id, orientation, posh, posv + 1))
-            painter.setPen(inside_pen);
-        else
-            painter.setPen(outside_pen);
-        painter.drawLine(x1 - m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 - m_unit / 2 - 1);
-        if (m_shape_set->tile_at(shape_id, orientation, posh + 1, posv))
-            painter.setPen(inside_pen);
-        else
-            painter.setPen(outside_pen);
-        painter.drawLine(x1 + m_unit / 2, y1 - m_unit / 2, x1 + m_unit / 2 - 1, y1 + m_unit / 2 - 1);
-        if (m_shape_set->tile_at(shape_id, orientation, posh, posv - 1))
-            painter.setPen(inside_pen);
-        else
-            painter.setPen(outside_pen);
-        painter.drawLine(x1 + m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 + m_unit / 2 - 1);
-        if (m_shape_set->tile_at(shape_id, orientation, posh - 1, posv))
-            painter.setPen(inside_pen);
-        else
-            painter.setPen(outside_pen);
-        painter.drawLine(x1 - m_unit / 2, y1 + m_unit / 2, x1 - m_unit / 2 - 1, y1 - m_unit / 2 - 1);
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = rect.left() + (tposh + posh) * m_unit;
+        int y = rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
+        draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
     }
 }
 
-void Scene::next_shape()
+void Scene::draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
 {
-    if ((m_current_shape + 1) < MAX_SHAPES) {
-        ++m_current_shape;
+    int cx = m_shape_set->horz_center(shape_id, orientation, m_unit);
+    int cy = m_shape_set->vert_center(shape_id, orientation, m_unit);
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = rect.center().x() + tposh * m_unit - cx;
+        int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
+        draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
     }
 }
 
-void Scene::prev_shape()
+void Scene::map_docks()
 {
-    if (m_current_shape > 1) {
-        --m_current_shape;
+    m_docks = 0;
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
+        if (!m_puzzle_book->locked(i)) {
+            m_dock_list[m_docks++] = i;
+        }
+    }
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
+        if (m_puzzle_book->locked(i)) {
+            m_dock_list[m_docks++] = i;
+        }
     }
 }

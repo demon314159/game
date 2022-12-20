@@ -46,7 +46,7 @@ void Hexominos::initializeWindow()
     m_pb4->setText(tr("Button 4"));
     m_pb5->setText(tr("Button 5"));
 
-    m_table = new Table(m_shape_set, this);
+    m_table = new Table(m_puzzle_book, m_shape_set, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 
@@ -57,12 +57,10 @@ void Hexominos::initializeWindow()
 
 void Hexominos::pb1()
 {
-    m_table->prev_shape();
 }
 
 void Hexominos::pb2()
 {
-    m_table->next_shape();
 }
 
 void Hexominos::pb3()

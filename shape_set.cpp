@@ -2,6 +2,7 @@
 // shape_set.cpp
 //
 #include "shape_set.h"
+#include <algorithm>
 
 ShapeSet::ShapeSet(void)
     : m_shapes(0)
@@ -107,4 +108,27 @@ bool ShapeSet::tile_at(int shape_id, int orientation, int x, int y) const
     }
     return false;
 }
+
+int ShapeSet::horz_center(int shape_id, int orientation, int unit_length) const
+{
+    int maxh = -1000;
+    int minh = 1000;
+    for (int i = 0; i < tiles(shape_id); i++) {
+        maxh = std::max(maxh, posh(shape_id, i, orientation));
+        minh = std::min(minh, posh(shape_id, i, orientation));
+    }
+    return (unit_length * (maxh + minh)) / 2;
+}
+
+int ShapeSet::vert_center(int shape_id, int orientation, int unit_length) const
+{
+    int maxv = -1000;
+    int minv = 1000;
+    for (int i = 0; i < tiles(shape_id); i++) {
+        maxv = std::max(maxv, posv(shape_id, i, orientation));
+        minv = std::min(minv, posv(shape_id, i, orientation));
+    }
+    return (unit_length * (maxv + minv)) / 2;
+}
+
 

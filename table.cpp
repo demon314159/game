@@ -6,9 +6,9 @@
 #include <math.h>
 #include <algorithm>
 
-Table::Table(const ShapeSet* shape_set, QWidget *parent)
+Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent)
     : QWidget(parent)
-    , m_scene(shape_set)
+    , m_scene(puzzle_book, shape_set)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -36,15 +36,23 @@ void Table::paintEvent(QPaintEvent* /* event */)
     m_scene.draw(painter);
 }
 
-void Table::next_shape()
+void Table::mousePressEvent(QMouseEvent* e)
 {
-    m_scene.next_shape();
-    update();
+    if (e->button() == Qt::LeftButton) {
+        printf("Left Button press (%d, %d)\n", e->pos().x(), e->pos().y());
+    } else if (e->button() == Qt::RightButton) {
+        printf("Right Button press\n");
+    }
+    QWidget::mousePressEvent(e);
 }
 
-void Table::prev_shape()
+void Table::mouseReleaseEvent(QMouseEvent* e)
 {
-    m_scene.prev_shape();
-    update();
+    if (e->button() == Qt::LeftButton) {
+        printf("Left Button release\n");
+    } else if (e->button() == Qt::RightButton) {
+        printf("Right Button release\n");
+    }
+    QWidget::mouseReleaseEvent(e);
 }
 

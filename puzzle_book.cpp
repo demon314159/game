@@ -132,4 +132,12 @@ bool PuzzleBook::lift_piece(int pix)
     return m_list[m_current_challenge].lift_piece(pix);
 }
 
+int PuzzleBook::dimh() const
+{
+    return m_list[m_current_challenge].dimh();
+}
 
+int PuzzleBook::dimv() const
+{
+    return m_list[m_current_challenge].dimv();
+}

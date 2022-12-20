@@ -7,23 +7,25 @@
 #include <QObject>
 #include <QWidget>
 #include <QPainter>
+#include <QMouseEvent>
 
 #include "scene.h"
 #include "shape_set.h"
+#include "puzzle_book.h"
 
 class Table: public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Table(const ShapeSet* shape_set, QWidget *parent = nullptr);
-    void next_shape();
-    void prev_shape();
+    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent = nullptr);
 
 protected:
     int text_width(QPainter& painter, const QString &s);
     int text_height(QPainter& painter, const QString &s);
     void paintEvent(QPaintEvent* event) override;
+    void mousePressEvent(QMouseEvent* e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
 
 private:
     Scene m_scene;

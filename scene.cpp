@@ -43,7 +43,6 @@ QRect Scene::rack_rect() const
     int h = dimv * m_unit;
     int x1 = m_scx - w / 2;
     int y1 = m_scy - h / 2;
-
     return QRect(x1, y1, w, h);
 }
 
@@ -76,12 +75,31 @@ QRect Scene::dock_rect(int dock_ix) const
 void Scene::draw(QPainter& painter)
 {
     determine_layout(painter);
-    QPen thick_pen(Qt::black);
-    thick_pen.setWidth(3);
-    painter.setPen(thick_pen);
-    painter.fillRect(rack_rect(), Qt::red);
-    painter.drawRect(rack_rect());
     map_docks();
+    draw_rack(painter);
+    draw_pieces(painter);
+}
+
+void Scene::draw_rack(QPainter& painter)
+{
+    const PuzzleBook* pb = m_puzzle_book;
+    QPen inside_pen(Qt::darkRed);
+    QPen outside_pen(Qt::black);
+    outside_pen.setWidth(3);
+    painter.fillRect(rack_rect(), Qt::red);
+    painter.setPen(outside_pen);
+    painter.drawRect(rack_rect());
+    painter.setPen(inside_pen);
+    for (int i = 1; i < pb->dimh(); i++) {
+        painter.drawLine(rack_rect().left() + m_unit * i, rack_rect().top(), rack_rect().left() + m_unit * i, rack_rect().bottom());
+    }
+    for (int i = 1; i < pb->dimv(); i++) {
+        painter.drawLine(rack_rect().left(), rack_rect().top() + m_unit * i, rack_rect().right(), rack_rect().top() + m_unit * i);
+    }
+}
+
+void Scene::draw_pieces(QPainter& painter)
+{
     const PuzzleBook* pb = m_puzzle_book;
     for (int i = 0; i < m_docks; i++) {
         int pix = m_dock_list[i];
@@ -95,7 +113,6 @@ void Scene::draw(QPainter& painter)
 
 void Scene::draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv)
 {
-
     QBrush brush(Qt::yellow);
     QPen inside_pen(Qt::darkYellow);
     QPen outside_pen(Qt::black);

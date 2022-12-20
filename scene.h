@@ -33,6 +33,8 @@ protected:
     QRect rack_rect() const;
     QRect dock_rect(int dock_ix) const;
 
+    void draw_rack(QPainter& painter);
+    void draw_pieces(QPainter& painter);
     void draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv);
     void draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv);
     void draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);

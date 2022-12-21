@@ -166,3 +166,70 @@ void Scene::map_docks()
         }
     }
 }
+
+void Scene::mouse_press(int mx, int my)
+{
+    printf("mouse_press(%d, %d)\n", mx, my);
+    if (mouse_test_pieces(mx, my))
+        printf("Done with hit\n");
+    else
+        printf("Done without hit\n");
+}
+
+bool Scene::mouse_test_pieces(int mx, int my) const
+{
+    const PuzzleBook* pb = m_puzzle_book;
+    for (int i = 0; i < m_docks; i++) {
+        int pix = m_dock_list[i];
+        if (m_puzzle_book->on_board(pix)) {
+            if (mouse_test_on_board_shape(mx, my, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix))) {
+                printf("Mouse hit om board dock %d, pix %d\n", i, pix);
+                return true;
+            }
+        } else {
+            if (mouse_test_off_board_shape(mx, my, dock_rect(i), pb->shape_id(pix), pb->orientation(pix))) {
+                printf("Mouse hit off board dock %d, pix %d\n", i, pix);
+                return true;
+            }
+        }
+    }
+    printf("no hits\n");
+    return false;
+}
+
+bool Scene::mouse_test_on_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation, int posh, int posv) const
+{
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = rect.left() + (tposh + posh) * m_unit;
+        int y = rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
+        if (mouse_test_tile(mx, my, x, y)) {
+            printf("Mouse hit on tile %d\n", i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Scene::mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const
+{
+    int cx = m_shape_set->horz_center(shape_id, orientation, m_unit);
+    int cy = m_shape_set->vert_center(shape_id, orientation, m_unit);
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = rect.center().x() + tposh * m_unit - cx;
+        int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
+        if (mouse_test_tile(mx, my, x, y)) {
+            printf("Mouse hit on tile %d\n", i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Scene::mouse_test_tile(int mx, int my, int sx, int sy) const
+{
+    return QRect(sx, sy, m_unit, m_unit).contains(mx, my);
+}

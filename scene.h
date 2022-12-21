@@ -17,6 +17,7 @@ public:
     Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set);
     ~Scene();
     void draw(QPainter& painter);
+    void mouse_press(int mx, int my);
 
 protected:
     const PuzzleBook* m_puzzle_book;
@@ -39,6 +40,11 @@ protected:
     void draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv);
     void draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);
     void map_docks();
+
+    bool mouse_test_pieces(int mx, int my) const;
+    bool mouse_test_on_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation, int posh, int posv) const;
+    bool mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const;
+    bool mouse_test_tile(int mx, int my, int sx, int sy) const;
 };
 
 #endif // _SCENE_H_

@@ -39,9 +39,10 @@ void Table::paintEvent(QPaintEvent* /* event */)
 void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        printf("Left Button press (%d, %d)\n", e->pos().x(), e->pos().y());
+        m_scene.mouse_press(e->pos().x(), e->pos().y());
+//        printf("Left Button press (%d, %d)\n", e->pos().x(), e->pos().y());
     } else if (e->button() == Qt::RightButton) {
-        printf("Right Button press\n");
+//        printf("Right Button press\n");
     }
     QWidget::mousePressEvent(e);
 }
@@ -49,9 +50,9 @@ void Table::mousePressEvent(QMouseEvent* e)
 void Table::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-        printf("Left Button release\n");
+//        printf("Left Button release\n");
     } else if (e->button() == Qt::RightButton) {
-        printf("Right Button release\n");
+//        printf("Right Button release\n");
     }
     QWidget::mouseReleaseEvent(e);
 }

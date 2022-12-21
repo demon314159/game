@@ -9,6 +9,7 @@ Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     , m_lb_pressed(false)
     , m_lb_x(0)
     , m_lb_y(0)
+    , m_lb_dock(0)
     , m_docks(0)
 {
 }
@@ -121,7 +122,10 @@ void Scene::draw_cursor(QPainter& painter)
         QPen inside_pen(Qt::blue);
         painter.setPen(inside_pen);
 
-        painter.drawRect(QRect(m_lb_x - m_unit / 2, m_lb_y - m_unit / 2, m_unit, m_unit));
+        int pix = m_dock_list[m_lb_dock];
+        int shape_id = m_puzzle_book->shape_id(pix);
+        int orientation = m_puzzle_book->orientation(pix);
+        draw_shape(painter, shape_id, orientation, m_lb_x, m_lb_y);
 
     }
 }
@@ -141,6 +145,17 @@ void Scene::draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orien
     painter.drawLine(sx + m_unit, sy + m_unit, sx, sy + m_unit);
     painter.setPen(m_shape_set->tile_at(shape_id, orientation, tposh - 1, tposv) ? inside_pen : outside_pen);
     painter.drawLine(sx, sy + m_unit, sx, sy);
+}
+
+void Scene::draw_shape(QPainter& painter, int shape_id, int orientation, int sx, int sy)
+{
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = sx + tposh * m_unit;
+        int y = sy - tposv * m_unit - m_unit + 1;
+        draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
+    }
 }
 
 void Scene::draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv)
@@ -204,19 +219,21 @@ void Scene::mouse_move(int mx, int my)
     }
 }
 
-bool Scene::mouse_test_pieces(int mx, int my) const
+bool Scene::mouse_test_pieces(int mx, int my)
 {
     const PuzzleBook* pb = m_puzzle_book;
     for (int i = 0; i < m_docks; i++) {
         int pix = m_dock_list[i];
         if (m_puzzle_book->on_board(pix)) {
             if (mouse_test_on_board_shape(mx, my, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix))) {
+                m_lb_dock = i;
                 printf("Mouse hit om board dock %d, pix %d\n", i, pix);
                 return true;
             }
         } else {
             if (mouse_test_off_board_shape(mx, my, dock_rect(i), pb->shape_id(pix), pb->orientation(pix))) {
                 printf("Mouse hit off board dock %d, pix %d\n", i, pix);
+                m_lb_dock = i;
                 return true;
             }
         }

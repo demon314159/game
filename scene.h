@@ -27,6 +27,7 @@ protected:
     bool m_lb_pressed;
     int  m_lb_x;
     int  m_lb_y;
+    int m_lb_dock;
     int m_xbase;
     int m_ybase;
     int m_scx;
@@ -43,11 +44,12 @@ protected:
     void draw_pieces(QPainter& painter);
     void draw_cursor(QPainter& painter);
     void draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv);
+    void draw_shape(QPainter& painter, int shape_id, int orientation, int sx, int sy);
     void draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv);
     void draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);
     void map_docks();
 
-    bool mouse_test_pieces(int mx, int my) const;
+    bool mouse_test_pieces(int mx, int my);
     bool mouse_test_on_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation, int posh, int posv) const;
     bool mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const;
     bool mouse_test_tile(int mx, int my, int sx, int sy) const;

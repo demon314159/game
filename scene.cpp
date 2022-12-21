@@ -6,6 +6,9 @@
 Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
+    , m_lb_pressed(false)
+    , m_lb_x(0)
+    , m_lb_y(0)
     , m_docks(0)
 {
 }
@@ -78,6 +81,7 @@ void Scene::draw(QPainter& painter)
     map_docks();
     draw_rack(painter);
     draw_pieces(painter);
+    draw_cursor(painter);
 }
 
 void Scene::draw_rack(QPainter& painter)
@@ -108,6 +112,17 @@ void Scene::draw_pieces(QPainter& painter)
         } else {
             draw_off_board_shape(painter, dock_rect(i), pb->shape_id(pix), pb->orientation(pix));
         }
+    }
+}
+
+void Scene::draw_cursor(QPainter& painter)
+{
+    if (m_lb_pressed) {
+        QPen inside_pen(Qt::blue);
+        painter.setPen(inside_pen);
+
+        painter.drawRect(QRect(m_lb_x - m_unit / 2, m_lb_y - m_unit / 2, m_unit, m_unit));
+
     }
 }
 
@@ -169,11 +184,24 @@ void Scene::map_docks()
 
 void Scene::mouse_press(int mx, int my)
 {
-    printf("mouse_press(%d, %d)\n", mx, my);
-    if (mouse_test_pieces(mx, my))
-        printf("Done with hit\n");
-    else
-        printf("Done without hit\n");
+    m_lb_pressed = mouse_test_pieces(mx, my);
+    m_lb_x = mx;
+    m_lb_y = my;
+}
+
+void Scene::mouse_release(int mx, int my)
+{
+    m_lb_pressed = false;
+    m_lb_x = mx;
+    m_lb_y = my;
+}
+
+void Scene::mouse_move(int mx, int my)
+{
+    if (m_lb_pressed) {
+        m_lb_x = mx;
+        m_lb_y = my;
+    }
 }
 
 bool Scene::mouse_test_pieces(int mx, int my) const

@@ -18,10 +18,15 @@ public:
     ~Scene();
     void draw(QPainter& painter);
     void mouse_press(int mx, int my);
+    void mouse_release(int mx, int my);
+    void mouse_move(int mx, int my);
 
 protected:
     const PuzzleBook* m_puzzle_book;
     const ShapeSet* m_shape_set;
+    bool m_lb_pressed;
+    int  m_lb_x;
+    int  m_lb_y;
     int m_xbase;
     int m_ybase;
     int m_scx;
@@ -36,6 +41,7 @@ protected:
 
     void draw_rack(QPainter& painter);
     void draw_pieces(QPainter& painter);
+    void draw_cursor(QPainter& painter);
     void draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv);
     void draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv);
     void draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);

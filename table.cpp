@@ -40,20 +40,25 @@ void Table::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
         m_scene.mouse_press(e->pos().x(), e->pos().y());
-//        printf("Left Button press (%d, %d)\n", e->pos().x(), e->pos().y());
     } else if (e->button() == Qt::RightButton) {
-//        printf("Right Button press\n");
     }
+    update();
     QWidget::mousePressEvent(e);
 }
 
 void Table::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton) {
-//        printf("Left Button release\n");
+        m_scene.mouse_release(e->pos().x(), e->pos().y());
     } else if (e->button() == Qt::RightButton) {
-//        printf("Right Button release\n");
     }
+    update();
     QWidget::mouseReleaseEvent(e);
 }
 
+void Table::mouseMoveEvent(QMouseEvent* e)
+{
+    m_scene.mouse_move(e->pos().x(), e->pos().y());
+    update();
+    QWidget::mouseMoveEvent(e);
+}

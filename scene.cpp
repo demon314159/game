@@ -25,19 +25,15 @@ void Scene::determine_layout(QPainter& painter)
     int vy = painter.viewport().top();
     int vw = painter.viewport().width();
     int vh = painter.viewport().height();
-    int xgy = (vh * 4) / 3;
-    int ygx = (vw * 3) / 4;
-    if (xgy <= vw) {
-        m_xbase = vx + (vw - xgy) / 2;
-        m_ybase = vy;
-        m_unit = vh / VERT_UNITS;
-    } else {
-        m_xbase = vx;
-        m_ybase = vy + (vh - ygx) / 2;
-        m_unit = vw / HORZ_UNITS;
-    }
+    float ux = (float) vw / ((float) HORZ_UNITS + 4.0 / (float) BORDER_F);
+    float uy = (float) vh / ((float) VERT_UNITS + 3.0 / (float) BORDER_F);
+    m_unit = std::min((int) ux, (int) uy);
     m_scx = vx + vw / 2;
     m_scy = vy + vh / 2;
+    int ib = m_unit / BORDER_F;
+    int ob = m_unit / (2 * BORDER_F);
+    m_xbase = m_scx - (12 * m_unit + ob + ib + ib / 2);
+    m_ybase = m_scy - (9 * m_unit + ob + ib);
 }
 
 QRect Scene::rack_rect() const
@@ -53,27 +49,29 @@ QRect Scene::rack_rect() const
 
 QRect Scene::dock_rect(int dock_ix) const
 {
+    int ib = m_unit / BORDER_F;
+    int ob = m_unit / (2 * BORDER_F);
     switch(dock_ix) {
         case 1:
-            return QRect(m_xbase + 12 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 12 * m_unit + ob + 2 * ib, m_ybase + ob, 6 * m_unit - 1, 6 * m_unit - 1);
         case 2:
-            return QRect(m_xbase + 6 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 6 * m_unit + ob + ib, m_ybase + 12 * m_unit + ob + 2 * ib, 6 * m_unit - 1, 6 * m_unit - 1);
         case 3:
-            return QRect(m_xbase + 12 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 12 * m_unit + ob + 2 * ib, m_ybase + 12 * m_unit + ob + 2 * ib, 6 * m_unit - 1, 6 * m_unit - 1);
         case 4:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + ob, m_ybase + 6 * m_unit + ob + ib, 6 * m_unit - 1, 6 * m_unit - 1);
         case 5:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 18 * m_unit + ob + 3 * ib, m_ybase + 6 * m_unit + ob + ib, 6 * m_unit - 1, 6 * m_unit - 1);
         case 6:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + ob, m_ybase + ob, 6 * m_unit - 1, 6 * m_unit - 1);
         case 7:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 18 * m_unit + ob + 3 * ib, m_ybase + ob, 6 * m_unit - 1, 6 * m_unit - 1);
         case 8:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + ob, m_ybase + 12 * m_unit + ob + 2 * ib, 6 * m_unit - 1, 6 * m_unit - 1);
         case 9:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 18 * m_unit + ob + 3 * ib, m_ybase + 12 * m_unit + ob + 2 * ib, 6 * m_unit - 1, 6 * m_unit - 1);
         default: // and case 0
-            return QRect(m_xbase + 6 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 6 * m_unit + ob + ib, m_ybase + ob, 6 * m_unit - 1, 6 * m_unit - 1);
     }
 }
 

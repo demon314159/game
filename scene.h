@@ -10,6 +10,7 @@
 
 #define HORZ_UNITS 24
 #define VERT_UNITS 18
+#define BORDER_F 4
 
 class Scene
 {

@@ -17,17 +17,19 @@ public:
     Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set);
     ~Scene();
     void draw(QPainter& painter);
-    void mouse_press(int mx, int my);
-    void mouse_release(int mx, int my);
+    void mouse_left_press(int mx, int my);
+    void mouse_left_release(int mx, int my);
+    void mouse_right_press(int mx, int my);
     void mouse_move(int mx, int my);
 
 protected:
     const PuzzleBook* m_puzzle_book;
     const ShapeSet* m_shape_set;
-    bool m_lb_pressed;
-    int  m_lb_x;
-    int  m_lb_y;
-    int m_lb_dock;
+    bool m_left_down;
+    int  m_mouse_x;
+    int  m_mouse_y;
+    int m_mouse_dock;
+    bool m_show_context;
     int m_xbase;
     int m_ybase;
     int m_scx;
@@ -42,6 +44,7 @@ protected:
 
     void draw_rack(QPainter& painter);
     void draw_pieces(QPainter& painter);
+    void draw_context(QPainter& painter);
     void draw_cursor(QPainter& painter);
     void draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv);
     void draw_shape(QPainter& painter, int shape_id, int orientation, int sx, int sy);
@@ -49,7 +52,7 @@ protected:
     void draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation);
     void map_docks();
 
-    bool mouse_test_pieces(int mx, int my);
+    bool mouse_test_pieces(int mx, int my, int& dock) const;
     bool mouse_test_on_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation, int posh, int posv) const;
     bool mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const;
     bool mouse_test_tile(int mx, int my, int sx, int sy) const;

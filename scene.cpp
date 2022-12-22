@@ -6,10 +6,11 @@
 Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
-    , m_lb_pressed(false)
-    , m_lb_x(0)
-    , m_lb_y(0)
-    , m_lb_dock(0)
+    , m_left_down(false)
+    , m_mouse_x(0)
+    , m_mouse_y(0)
+    , m_mouse_dock(0)
+    , m_show_context(false)
     , m_docks(0)
 {
 }
@@ -56,9 +57,9 @@ QRect Scene::dock_rect(int dock_ix) const
         case 1:
             return QRect(m_xbase + 12 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
         case 2:
-            return QRect(m_xbase + 6 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 6 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
         case 3:
-            return QRect(m_xbase + 12 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 12 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
         case 4:
             return QRect(m_xbase + 0 * m_unit, m_ybase + 6 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
         case 5:
@@ -68,9 +69,9 @@ QRect Scene::dock_rect(int dock_ix) const
         case 7:
             return QRect(m_xbase + 18 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
         case 8:
-            return QRect(m_xbase + 0 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 0 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
         case 9:
-            return QRect(m_xbase + 18 * m_unit, m_ybase + 12 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
+            return QRect(m_xbase + 18 * m_unit, m_ybase + (25 * m_unit) / 2 - 1, 6 * m_unit - 1, 6 * m_unit - 1);
         default: // and case 0
             return QRect(m_xbase + 6 * m_unit, m_ybase + 0 * m_unit, 6 * m_unit - 1, 6 * m_unit - 1);
     }
@@ -82,6 +83,7 @@ void Scene::draw(QPainter& painter)
     map_docks();
     draw_rack(painter);
     draw_pieces(painter);
+    draw_context(painter);
     draw_cursor(painter);
 }
 
@@ -116,16 +118,25 @@ void Scene::draw_pieces(QPainter& painter)
     }
 }
 
+void Scene::draw_context(QPainter& painter)
+{
+    if (m_show_context) {
+        QPen pen(Qt::black);
+        painter.setPen(pen);
+        painter.drawRect(dock_rect(m_mouse_dock));
+    }
+}
+
 void Scene::draw_cursor(QPainter& painter)
 {
-    if (m_lb_pressed) {
+    if (m_left_down) {
         QPen inside_pen(Qt::blue);
         painter.setPen(inside_pen);
 
-        int pix = m_dock_list[m_lb_dock];
+        int pix = m_dock_list[m_mouse_dock];
         int shape_id = m_puzzle_book->shape_id(pix);
         int orientation = m_puzzle_book->orientation(pix);
-        draw_shape(painter, shape_id, orientation, m_lb_x, m_lb_y);
+        draw_shape(painter, shape_id, orientation, m_mouse_x, m_mouse_y);
 
     }
 }
@@ -197,48 +208,63 @@ void Scene::map_docks()
     }
 }
 
-void Scene::mouse_press(int mx, int my)
+void Scene::mouse_left_press(int mx, int my)
 {
-    m_lb_pressed = mouse_test_pieces(mx, my);
-    m_lb_x = mx;
-    m_lb_y = my;
+    m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
+    if (m_left_down) {
+        m_show_context = false;
+    }
+    m_mouse_x = mx;
+    m_mouse_y = my;
 }
 
-void Scene::mouse_release(int mx, int my)
+void Scene::mouse_left_release(int mx, int my)
 {
-    m_lb_pressed = false;
-    m_lb_x = mx;
-    m_lb_y = my;
+    m_left_down = false;
+    m_mouse_x = mx;
+    m_mouse_y = my;
+}
+
+void Scene::mouse_right_press(int mx, int my)
+{
+    bool hit = mouse_test_pieces(mx, my, m_mouse_dock);
+    if (hit) {
+        int pix = m_dock_list[m_mouse_dock];
+        printf("pix = %d\n", pix);
+        m_show_context = !m_puzzle_book->on_board(pix);
+        if (m_show_context) {
+             printf("Show context\n");
+        }
+    }
+    m_mouse_x = mx;
+    m_mouse_y = my;
 }
 
 void Scene::mouse_move(int mx, int my)
 {
-    if (m_lb_pressed) {
-        m_lb_x = mx;
-        m_lb_y = my;
+    if (m_left_down) {
+        m_mouse_x = mx;
+        m_mouse_y = my;
     }
 }
 
-bool Scene::mouse_test_pieces(int mx, int my)
+bool Scene::mouse_test_pieces(int mx, int my, int& dock) const
 {
     const PuzzleBook* pb = m_puzzle_book;
     for (int i = 0; i < m_docks; i++) {
         int pix = m_dock_list[i];
         if (m_puzzle_book->on_board(pix)) {
             if (mouse_test_on_board_shape(mx, my, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix))) {
-                m_lb_dock = i;
-                printf("Mouse hit om board dock %d, pix %d\n", i, pix);
+                dock = i;
                 return true;
             }
         } else {
             if (mouse_test_off_board_shape(mx, my, dock_rect(i), pb->shape_id(pix), pb->orientation(pix))) {
-                printf("Mouse hit off board dock %d, pix %d\n", i, pix);
-                m_lb_dock = i;
+                dock = i;
                 return true;
             }
         }
     }
-    printf("no hits\n");
     return false;
 }
 
@@ -250,7 +276,6 @@ bool Scene::mouse_test_on_board_shape(int mx, int my, const QRect& rect, int sha
         int x = rect.left() + (tposh + posh) * m_unit;
         int y = rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
         if (mouse_test_tile(mx, my, x, y)) {
-            printf("Mouse hit on tile %d\n", i);
             return true;
         }
     }
@@ -267,7 +292,6 @@ bool Scene::mouse_test_off_board_shape(int mx, int my, const QRect& rect, int sh
         int x = rect.center().x() + tposh * m_unit - cx;
         int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
         if (mouse_test_tile(mx, my, x, y)) {
-            printf("Mouse hit on tile %d\n", i);
             return true;
         }
     }

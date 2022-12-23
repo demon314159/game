@@ -22,6 +22,7 @@ public:
     void mouse_left_release(int mx, int my);
     void mouse_right_press(int mx, int my);
     void mouse_move(int mx, int my);
+    int vmenu_choice(int mx, int my) const;
 
 protected:
     const PuzzleBook* m_puzzle_book;
@@ -30,7 +31,7 @@ protected:
     int  m_mouse_x;
     int  m_mouse_y;
     int m_mouse_dock;
-    bool m_show_context;
+    bool m_show_vmenu;
     int m_xbase;
     int m_ybase;
     int m_scx;
@@ -45,7 +46,7 @@ protected:
 
     void draw_rack(QPainter& painter);
     void draw_pieces(QPainter& painter);
-    void draw_context(QPainter& painter);
+    void draw_vmenu(QPainter& painter);
     void draw_cursor(QPainter& painter);
     void draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv);
     void draw_shape(QPainter& painter, int shape_id, int orientation, int sx, int sy);

@@ -10,7 +10,7 @@ Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     , m_mouse_x(0)
     , m_mouse_y(0)
     , m_mouse_dock(0)
-    , m_show_context(false)
+    , m_show_vmenu(false)
     , m_docks(0)
 {
 }
@@ -81,7 +81,7 @@ void Scene::draw(QPainter& painter)
     map_docks();
     draw_rack(painter);
     draw_pieces(painter);
-    draw_context(painter);
+    draw_vmenu(painter);
     draw_cursor(painter);
 }
 
@@ -116,12 +116,16 @@ void Scene::draw_pieces(QPainter& painter)
     }
 }
 
-void Scene::draw_context(QPainter& painter)
+void Scene::draw_vmenu(QPainter& painter)
 {
-    if (m_show_context) {
+    if (m_show_vmenu) {
         QPen pen(Qt::black);
         painter.setPen(pen);
-        painter.drawRect(dock_rect(m_mouse_dock));
+        QRect r = dock_rect(m_mouse_dock);
+        painter.drawRect(QRect(r.left(), r.top(), m_unit - 1, m_unit - 1));
+        painter.drawRect(QRect(r.right() - m_unit, r.top(), m_unit - 1, m_unit - 1));
+        painter.drawRect(QRect(r.left(), r.bottom() - m_unit, m_unit - 1, m_unit - 1));
+        painter.drawRect(QRect(r.right() - m_unit, r.bottom() - m_unit, m_unit - 1, m_unit - 1));
     }
 }
 
@@ -185,7 +189,7 @@ void Scene::draw_off_board_shape(QPainter& painter, const QRect& rect, int shape
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
         int tposh = m_shape_set->posh(shape_id, i, orientation);
         int tposv = m_shape_set->posv(shape_id, i, orientation);
-        int x = rect.center().x() + tposh * m_unit - cx;
+        int x = rect.center().x() + tposh * m_unit - cx - m_unit / 2;
         int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
         draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
     }
@@ -208,12 +212,20 @@ void Scene::map_docks()
 
 void Scene::mouse_left_press(int mx, int my)
 {
-    m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
-    if (m_left_down) {
-        m_show_context = false;
-    }
+    int choice = vmenu_choice(mx, my);
     m_mouse_x = mx;
     m_mouse_y = my;
+    if (choice != 0) {
+        printf("Choice = %d\n", choice);
+    }
+//    if (action != VMENU_NO_ACTION) {
+
+//    } else {
+        m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
+        if (m_left_down) {
+            m_show_vmenu = false;
+        }
+//    }
 }
 
 void Scene::mouse_left_release(int mx, int my)
@@ -229,9 +241,9 @@ void Scene::mouse_right_press(int mx, int my)
     if (hit) {
         int pix = m_dock_list[m_mouse_dock];
         printf("pix = %d\n", pix);
-        m_show_context = !m_puzzle_book->on_board(pix);
-        if (m_show_context) {
-             printf("Show context\n");
+        m_show_vmenu = !m_puzzle_book->on_board(pix);
+        if (m_show_vmenu) {
+             printf("Show vmenu\n");
         }
     }
     m_mouse_x = mx;
@@ -244,6 +256,27 @@ void Scene::mouse_move(int mx, int my)
         m_mouse_x = mx;
         m_mouse_y = my;
     }
+}
+
+int Scene::vmenu_choice(int mx, int my) const
+{
+    if (!m_show_vmenu) {
+        return 0;
+    }
+    QRect r = dock_rect(m_mouse_dock);
+    if (QRect(r.left(), r.top(), m_unit - 1, m_unit - 1).contains(mx, my)) {
+        return 1;
+    }
+    if (QRect(r.right() - m_unit, r.top(), m_unit - 1, m_unit - 1).contains(mx, my)) {
+        return 2;
+    }
+    if (QRect(r.left(), r.bottom() - m_unit, m_unit - 1, m_unit - 1).contains(mx, my)) {
+        return 3;
+    }
+    if (QRect(r.right() - m_unit, r.bottom() - m_unit, m_unit - 1, m_unit - 1).contains(mx, my)) {
+        return 4;
+    }
+    return 0;
 }
 
 bool Scene::mouse_test_pieces(int mx, int my, int& dock) const
@@ -287,7 +320,7 @@ bool Scene::mouse_test_off_board_shape(int mx, int my, const QRect& rect, int sh
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
         int tposh = m_shape_set->posh(shape_id, i, orientation);
         int tposv = m_shape_set->posv(shape_id, i, orientation);
-        int x = rect.center().x() + tposh * m_unit - cx;
+        int x = rect.center().x() + tposh * m_unit - cx - m_unit / 2;
         int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
         if (mouse_test_tile(mx, my, x, y)) {
             return true;

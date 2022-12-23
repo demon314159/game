@@ -147,3 +147,8 @@ int PuzzleBook::dimv() const
 {
     return m_list[m_current_challenge].dimv();
 }
+
+void PuzzleBook::set_orientation(int pix, int orientation)
+{
+    m_list[m_current_challenge].set_orientation(pix, orientation);
+}

@@ -75,3 +75,9 @@ bool Piece::lift_piece()
     return true;
 }
 
+void Piece::set_orientation(int new_orientation)
+{
+    m_orientation = new_orientation;
+}
+
+

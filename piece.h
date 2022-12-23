@@ -25,6 +25,7 @@ public:
     int posv() const;
     bool drop_piece(int orientation, int posh, int posv);
     bool lift_piece();
+    void set_orientation(int new_orientation);
 
 protected:
     int m_shape_id;

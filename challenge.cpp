@@ -122,3 +122,7 @@ int Challenge::dimv() const
     return m_dimv;
 }
 
+void Challenge::set_orientation(int pix, int orientation)
+{
+    m_piece_list[pix].set_orientation(orientation);
+}

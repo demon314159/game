@@ -3,7 +3,7 @@
 //
 #include "scene.h"
 
-Scene::Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set)
+Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
     , m_left_down(false)
@@ -210,6 +210,36 @@ void Scene::map_docks()
     }
 }
 
+void Scene::vmenu_action(int choice)
+{
+    int pix = m_dock_list[m_mouse_dock];
+    int z = m_puzzle_book->orientation(pix);
+    switch (choice) {
+        case 1:
+            z = (z & 4) | ((z - 1) & 3);
+            m_puzzle_book->set_orientation(pix, z);
+            break;
+        case 2:
+            z = (z & 4) | ((z + 1) & 3);
+            m_puzzle_book->set_orientation(pix, z);
+            break;
+        case 3:
+            z = z ^ 4;
+            if (z & 1) {
+                z = z ^ 2;
+            }
+            m_puzzle_book->set_orientation(pix, z);
+            break;
+        case 4:
+            z = z ^ 6;
+            if ((z & 3) == 1 || (z & 3) == 3)
+                z = z ^ 2;
+            m_puzzle_book->set_orientation(pix, z);
+            break;
+    }
+
+}
+
 void Scene::mouse_left_press(int mx, int my)
 {
     int choice = vmenu_choice(mx, my);
@@ -218,14 +248,14 @@ void Scene::mouse_left_press(int mx, int my)
     if (choice != 0) {
         printf("Choice = %d\n", choice);
     }
-//    if (action != VMENU_NO_ACTION) {
-
-//    } else {
+    if (choice != 0) {
+        vmenu_action(choice);
+    } else {
         m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
         if (m_left_down) {
             m_show_vmenu = false;
         }
-//    }
+    }
 }
 
 void Scene::mouse_left_release(int mx, int my)

@@ -15,7 +15,7 @@
 class Scene
 {
 public:
-    Scene(const PuzzleBook* puzzle_book, const ShapeSet* shape_set);
+    Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set);
     ~Scene();
     void draw(QPainter& painter);
     void mouse_left_press(int mx, int my);
@@ -23,9 +23,10 @@ public:
     void mouse_right_press(int mx, int my);
     void mouse_move(int mx, int my);
     int vmenu_choice(int mx, int my) const;
+    void vmenu_action(int choice);
 
 protected:
-    const PuzzleBook* m_puzzle_book;
+    PuzzleBook* m_puzzle_book;
     const ShapeSet* m_shape_set;
     bool m_left_down;
     int  m_mouse_x;

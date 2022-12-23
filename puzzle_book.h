@@ -33,6 +33,7 @@ public:
     bool lift_piece(int pix);
     int dimh() const;
     int dimv() const;
+    void set_orientation(int pix, int orientation);
 
 protected:
     int m_challenges;

@@ -10,7 +10,6 @@ Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     , m_mouse_x(0)
     , m_mouse_y(0)
     , m_mouse_dock(0)
-    , m_show_vmenu(false)
     , m_docks(0)
 {
 }
@@ -81,7 +80,6 @@ void Scene::draw(QPainter& painter)
     map_docks();
     draw_rack(painter);
     draw_pieces(painter);
-    draw_vmenu(painter);
     draw_cursor(painter);
 }
 
@@ -113,19 +111,6 @@ void Scene::draw_pieces(QPainter& painter)
         } else {
             draw_off_board_shape(painter, dock_rect(i), pb->shape_id(pix), pb->orientation(pix));
         }
-    }
-}
-
-void Scene::draw_vmenu(QPainter& painter)
-{
-    if (m_show_vmenu) {
-        QPen pen(Qt::black);
-        painter.setPen(pen);
-        QRect r = dock_rect(m_mouse_dock);
-        painter.drawRect(QRect(r.left(), r.top(), m_unit - 1, m_unit - 1));
-        painter.drawRect(QRect(r.right() - m_unit, r.top(), m_unit - 1, m_unit - 1));
-        painter.drawRect(QRect(r.left(), r.bottom() - m_unit, m_unit - 1, m_unit - 1));
-        painter.drawRect(QRect(r.right() - m_unit, r.bottom() - m_unit, m_unit - 1, m_unit - 1));
     }
 }
 
@@ -210,72 +195,16 @@ void Scene::map_docks()
     }
 }
 
-void Scene::vmenu_action(int choice)
-{
-    int pix = m_dock_list[m_mouse_dock];
-    int z = m_puzzle_book->orientation(pix);
-    switch (choice) {
-        case 1:
-            z = (z & 4) | ((z - 1) & 3);
-            m_puzzle_book->set_orientation(pix, z);
-            break;
-        case 2:
-            z = (z & 4) | ((z + 1) & 3);
-            m_puzzle_book->set_orientation(pix, z);
-            break;
-        case 3:
-            z = z ^ 4;
-            if (z & 1) {
-                z = z ^ 2;
-            }
-            m_puzzle_book->set_orientation(pix, z);
-            break;
-        case 4:
-            z = z ^ 6;
-            if ((z & 3) == 1 || (z & 3) == 3)
-                z = z ^ 2;
-            m_puzzle_book->set_orientation(pix, z);
-            break;
-    }
-
-}
-
 void Scene::mouse_left_press(int mx, int my)
 {
-    int choice = vmenu_choice(mx, my);
     m_mouse_x = mx;
     m_mouse_y = my;
-    if (choice != 0) {
-        printf("Choice = %d\n", choice);
-    }
-    if (choice != 0) {
-        vmenu_action(choice);
-    } else {
-        m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
-        if (m_left_down) {
-            m_show_vmenu = false;
-        }
-    }
+    m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
 }
 
 void Scene::mouse_left_release(int mx, int my)
 {
     m_left_down = false;
-    m_mouse_x = mx;
-    m_mouse_y = my;
-}
-
-void Scene::mouse_right_press(int mx, int my)
-{
-    bool hit = mouse_test_pieces(mx, my, m_mouse_dock);
-    if (hit) {
-        int pix = m_dock_list[m_mouse_dock];
-        printf("pix = %d\n", pix);
-        m_show_vmenu = !m_puzzle_book->on_board(pix);
-        if (m_show_vmenu) {
-             printf("Show vmenu\n");
-        }
-    }
     m_mouse_x = mx;
     m_mouse_y = my;
 }
@@ -288,25 +217,16 @@ void Scene::mouse_move(int mx, int my)
     }
 }
 
-int Scene::vmenu_choice(int mx, int my) const
+void Scene::mouse_wheel(int mx, int my, bool clockwise)
 {
-    if (!m_show_vmenu) {
-        return 0;
+    for (int i = 0; i < m_docks; i++) {
+        if (dock_rect(i).contains(mx, my)) {
+            int pix = m_dock_list[i];
+            int orientation = m_puzzle_book->orientation(pix);
+            orientation = (orientation & 4) | ((orientation + (clockwise ? 1 : -1)) & 3);
+            m_puzzle_book->set_orientation(pix, orientation);
+        }
     }
-    QRect r = dock_rect(m_mouse_dock);
-    if (QRect(r.left(), r.top(), m_unit - 1, m_unit - 1).contains(mx, my)) {
-        return 1;
-    }
-    if (QRect(r.right() - m_unit, r.top(), m_unit - 1, m_unit - 1).contains(mx, my)) {
-        return 2;
-    }
-    if (QRect(r.left(), r.bottom() - m_unit, m_unit - 1, m_unit - 1).contains(mx, my)) {
-        return 3;
-    }
-    if (QRect(r.right() - m_unit, r.bottom() - m_unit, m_unit - 1, m_unit - 1).contains(mx, my)) {
-        return 4;
-    }
-    return 0;
 }
 
 bool Scene::mouse_test_pieces(int mx, int my, int& dock) const

@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QWheelEvent>
 
 #include "scene.h"
 #include "shape_set.h"
@@ -27,6 +28,7 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
+    void wheelEvent(QWheelEvent *e) override;
 
 private:
     Scene m_scene;

@@ -209,6 +209,22 @@ void Scene::mouse_left_release(int mx, int my)
     m_mouse_y = my;
 }
 
+void Scene::mouse_right_press(int mx, int my)
+{
+    for (int i = 0; i < m_docks; i++) {
+        if (dock_rect(i).contains(mx, my)) {
+            int pix = m_dock_list[i];
+            int orientation = m_puzzle_book->orientation(pix);
+            orientation = (orientation ^ 4);
+            if (((orientation & 3) == 0) || ((orientation & 3) == 3))
+                orientation &= 5;
+            else
+                orientation |= 2;
+            m_puzzle_book->set_orientation(pix, orientation);
+        }
+    }
+}
+
 void Scene::mouse_move(int mx, int my)
 {
     if (m_left_down) {

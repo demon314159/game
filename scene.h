@@ -20,6 +20,7 @@ public:
     void draw(QPainter& painter);
     void mouse_left_press(int mx, int my);
     void mouse_left_release(int mx, int my);
+    void mouse_right_press(int mx, int my);
     void mouse_move(int mx, int my);
     void mouse_wheel(int mx, int my, bool clockwise);
 

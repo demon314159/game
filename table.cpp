@@ -41,6 +41,7 @@ void Table::mousePressEvent(QMouseEvent* e)
     if (e->button() == Qt::LeftButton) {
         m_scene.mouse_left_press(e->pos().x(), e->pos().y());
     } else if (e->button() == Qt::RightButton) {
+        m_scene.mouse_right_press(e->pos().x(), e->pos().y());
     }
     update();
     QWidget::mousePressEvent(e);

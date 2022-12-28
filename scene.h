@@ -30,6 +30,8 @@ protected:
     bool m_left_down;
     int  m_mouse_x;
     int  m_mouse_y;
+    int  m_offset_x;
+    int  m_offset_y;
     int m_mouse_dock;
     int m_xbase;
     int m_ybase;
@@ -43,6 +45,8 @@ protected:
     QRect rack_rect() const;
     QRect dock_rect(int dock_ix) const;
 
+    int off_board_tile_pos_x(const QRect& rect, int shape_id, int orientation, int tposh) const;
+    int off_board_tile_pos_y(const QRect& rect, int shape_id, int orientation, int tposv) const;
     void draw_rack(QPainter& painter);
     void draw_pieces(QPainter& painter);
     void draw_cursor(QPainter& painter);

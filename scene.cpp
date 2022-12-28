@@ -9,6 +9,8 @@ Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     , m_left_down(false)
     , m_mouse_x(0)
     , m_mouse_y(0)
+    , m_offset_x(0)
+    , m_offset_y(0)
     , m_mouse_dock(0)
     , m_docks(0)
 {
@@ -117,14 +119,10 @@ void Scene::draw_pieces(QPainter& painter)
 void Scene::draw_cursor(QPainter& painter)
 {
     if (m_left_down) {
-        QPen inside_pen(Qt::blue);
-        painter.setPen(inside_pen);
-
         int pix = m_dock_list[m_mouse_dock];
         int shape_id = m_puzzle_book->shape_id(pix);
         int orientation = m_puzzle_book->orientation(pix);
-        draw_shape(painter, shape_id, orientation, m_mouse_x, m_mouse_y);
-
+        draw_shape(painter, shape_id, orientation, m_mouse_x + m_offset_x, m_mouse_y + m_offset_y);
     }
 }
 
@@ -167,17 +165,41 @@ void Scene::draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_
     }
 }
 
-void Scene::draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
+int Scene::off_board_tile_pos_x(const QRect& rect, int shape_id, int orientation, int tposh) const
 {
     int cx = m_shape_set->horz_center(shape_id, orientation, m_unit);
+    return rect.center().x() + tposh * m_unit - cx - m_unit / 2;
+}
+
+int Scene::off_board_tile_pos_y(const QRect& rect, int shape_id, int orientation, int tposv) const
+{
     int cy = m_shape_set->vert_center(shape_id, orientation, m_unit);
+    return rect.center().y() - tposv * m_unit + cy - m_unit / 2;
+}
+
+void Scene::draw_off_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation)
+{
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
         int tposh = m_shape_set->posh(shape_id, i, orientation);
         int tposv = m_shape_set->posv(shape_id, i, orientation);
-        int x = rect.center().x() + tposh * m_unit - cx - m_unit / 2;
-        int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
+        int x = off_board_tile_pos_x(rect, shape_id, orientation, tposh);
+        int y = off_board_tile_pos_y(rect, shape_id, orientation, tposv);
         draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
     }
+}
+
+bool Scene::mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const
+{
+    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
+        int tposh = m_shape_set->posh(shape_id, i, orientation);
+        int tposv = m_shape_set->posv(shape_id, i, orientation);
+        int x = off_board_tile_pos_x(rect, shape_id, orientation, tposh);
+        int y = off_board_tile_pos_y(rect, shape_id, orientation, tposv);
+        if (mouse_test_tile(mx, my, x, y)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Scene::map_docks()
@@ -200,6 +222,13 @@ void Scene::mouse_left_press(int mx, int my)
     m_mouse_x = mx;
     m_mouse_y = my;
     m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
+    if (m_left_down) {
+        int pix = m_dock_list[m_mouse_dock];
+        int shape_id = m_puzzle_book->shape_id(pix);
+        int orientation = m_puzzle_book->orientation(pix);
+        m_offset_x = off_board_tile_pos_x(dock_rect(m_mouse_dock), shape_id, orientation, 0) - mx;
+        m_offset_y = off_board_tile_pos_y(dock_rect(m_mouse_dock), shape_id, orientation, 0) - my + m_unit - 1;
+    }
 }
 
 void Scene::mouse_left_release(int mx, int my)
@@ -272,22 +301,6 @@ bool Scene::mouse_test_on_board_shape(int mx, int my, const QRect& rect, int sha
         int tposv = m_shape_set->posv(shape_id, i, orientation);
         int x = rect.left() + (tposh + posh) * m_unit;
         int y = rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
-        if (mouse_test_tile(mx, my, x, y)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool Scene::mouse_test_off_board_shape(int mx, int my, const QRect& rect, int shape_id, int orientation) const
-{
-    int cx = m_shape_set->horz_center(shape_id, orientation, m_unit);
-    int cy = m_shape_set->vert_center(shape_id, orientation, m_unit);
-    for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
-        int tposh = m_shape_set->posh(shape_id, i, orientation);
-        int tposv = m_shape_set->posv(shape_id, i, orientation);
-        int x = rect.center().x() + tposh * m_unit - cx - m_unit / 2;
-        int y = rect.center().y() - tposv * m_unit + cy - m_unit / 2;
         if (mouse_test_tile(mx, my, x, y)) {
             return true;
         }

@@ -154,13 +154,23 @@ void Scene::draw_shape(QPainter& painter, int shape_id, int orientation, int sx,
     }
 }
 
+int Scene::on_board_tile_pos_x(const QRect& rect, int posh, int tposh) const
+{
+    return rect.left() + (tposh + posh) * m_unit;
+}
+
+int Scene::on_board_tile_pos_y(const QRect& rect, int posv, int tposv) const
+{
+    return rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
+}
+
 void Scene::draw_on_board_shape(QPainter& painter, const QRect& rect, int shape_id, int orientation, int posh, int posv)
 {
     for (int i = 0; i < m_shape_set->tiles(shape_id); i++) {
         int tposh = m_shape_set->posh(shape_id, i, orientation);
         int tposv = m_shape_set->posv(shape_id, i, orientation);
-        int x = rect.left() + (tposh + posh) * m_unit;
-        int y = rect.bottom() - (tposv + posv) * m_unit - m_unit + 1;
+        int x = on_board_tile_pos_x(rect, posh, tposh);
+        int y = on_board_tile_pos_y(rect, posv, tposv);
         draw_tile(painter, x, y, shape_id, orientation, tposh, tposv);
     }
 }
@@ -221,13 +231,25 @@ void Scene::mouse_left_press(int mx, int my)
 {
     m_mouse_x = mx;
     m_mouse_y = my;
-    m_left_down = mouse_test_pieces(mx, my, m_mouse_dock);
-    if (m_left_down) {
+    m_left_down = false;
+    bool left_down = mouse_test_pieces(mx, my, m_mouse_dock);
+    if (left_down) {
         int pix = m_dock_list[m_mouse_dock];
         int shape_id = m_puzzle_book->shape_id(pix);
         int orientation = m_puzzle_book->orientation(pix);
-        m_offset_x = off_board_tile_pos_x(dock_rect(m_mouse_dock), shape_id, orientation, 0) - mx;
-        m_offset_y = off_board_tile_pos_y(dock_rect(m_mouse_dock), shape_id, orientation, 0) - my + m_unit - 1;
+        if (m_puzzle_book->on_board(pix)) {
+            if (!m_puzzle_book->locked(pix)) {
+                int posh = m_puzzle_book->posh(pix);
+                int posv = m_puzzle_book->posv(pix);
+                m_offset_x = on_board_tile_pos_x(rack_rect(), posh, 0) - mx;
+                m_offset_y = on_board_tile_pos_y(rack_rect(), posv, 0) - my + m_unit - 1;
+                m_left_down = true;
+            }
+        } else {
+            m_offset_x = off_board_tile_pos_x(dock_rect(m_mouse_dock), shape_id, orientation, 0) - mx;
+            m_offset_y = off_board_tile_pos_y(dock_rect(m_mouse_dock), shape_id, orientation, 0) - my + m_unit - 1;
+            m_left_down = true;
+        }
     }
 }
 

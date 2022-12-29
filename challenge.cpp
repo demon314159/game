@@ -99,8 +99,9 @@ bool Challenge::lift_piece(int pix)
 bool Challenge::piece_fits(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv) const
 {
     int shape_id = m_piece_list[pix].shape_id();
-    if (!shape_set->shape_contained(shape_id, orientation, posh, posv, m_dimh, m_dimv))
+    if (!shape_set->shape_contained(shape_id, orientation, posh, posv, m_dimh, m_dimv)) {
         return false;
+    }
     for (int i = 0; i < m_pieces; i++) {
         if (i != pix) {
             if (m_piece_list[i].on_board()) {

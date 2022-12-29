@@ -60,6 +60,7 @@ bool Piece::drop_piece(int orientation, int posh, int posv)
     m_orientation = orientation;
     m_posh = posh;
     m_posv = posv;
+    m_on_board = true;
     return true;
 }
 

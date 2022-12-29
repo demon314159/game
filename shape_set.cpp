@@ -94,10 +94,10 @@ bool ShapeSet::shape_collision(int shape_id1, int orientation1, int ph1, int pv1
             int hpos2 = ph2 + posh(shape_id2, j, orientation2);
             int vpos2 = pv2 + posv(shape_id2, j, orientation2);
             if (hpos1 == hpos2 && vpos1 == vpos2)
-                return false;
+                return true;
         }
     }
-    return true;
+    return false;
 }
 
 bool ShapeSet::tile_at(int shape_id, int orientation, int x, int y) const

@@ -123,6 +123,12 @@ void Scene::draw_cursor(QPainter& painter)
         int shape_id = m_puzzle_book->shape_id(pix);
         int orientation = m_puzzle_book->orientation(pix);
         draw_shape(painter, shape_id, orientation, m_mouse_x + m_offset_x, m_mouse_y + m_offset_y);
+        painter.setPen(Qt::black);
+        int cx = m_mouse_x + m_offset_x + m_unit / 2;
+        int cy = m_mouse_y + m_offset_y + m_unit / 2 - m_unit + 1;
+        painter.drawRect(cx - m_unit / 4, cy - m_unit / 4, m_unit / 2, m_unit / 2);
+//        painter.drawLine(m_mouse_x + m_offset_x, m_mouse_y + m_offset_y, m_mouse_x + m_offset_x + m_unit - 1, m_mouse_y + m_offset_y - m_unit + 1);
+//        painter.drawLine(m_mouse_x + m_offset_x, m_mouse_y + m_offset_y - m_unit + 1, m_mouse_x + m_offset_x + m_unit - 1, m_mouse_y + m_offset_y);
     }
 }
 
@@ -255,6 +261,23 @@ void Scene::mouse_left_press(int mx, int my)
 
 void Scene::mouse_left_release(int mx, int my)
 {
+    if (m_left_down) {
+        int pix = m_dock_list[m_mouse_dock];
+        if (!m_puzzle_book->on_board(pix)) {
+            int cx = m_mouse_x + m_offset_x + m_unit / 2;
+            int cy = m_mouse_y + m_offset_y + m_unit / 2 - m_unit + 1;
+            if (rack_rect().contains(cx, cy)) {
+                int tposx = (cx - rack_rect().left()) / m_unit;
+                int tposy = (rack_rect().bottom() - cy) / m_unit;
+                int orientation = m_puzzle_book->orientation(pix);
+                if (m_puzzle_book->drop_piece(m_shape_set, pix, orientation, tposx, tposy)) {
+                  printf("dropped piece at (%d, %d)\n", tposx, tposy);
+                } else {
+                  printf("failed at (%d, %d)\n", tposx, tposy);
+                }
+            }
+        }
+    }
     m_left_down = false;
     m_mouse_x = mx;
     m_mouse_y = my;
@@ -289,9 +312,11 @@ void Scene::mouse_wheel(int mx, int my, bool clockwise)
     for (int i = 0; i < m_docks; i++) {
         if (dock_rect(i).contains(mx, my)) {
             int pix = m_dock_list[i];
-            int orientation = m_puzzle_book->orientation(pix);
-            orientation = (orientation & 4) | ((orientation + (clockwise ? 1 : -1)) & 3);
-            m_puzzle_book->set_orientation(pix, orientation);
+            if (!m_puzzle_book->on_board(pix)) {
+                int orientation = m_puzzle_book->orientation(pix);
+                orientation = (orientation & 4) | ((orientation + (clockwise ? 1 : -1)) & 3);
+                m_puzzle_book->set_orientation(pix, orientation);
+            }
         }
     }
 }

@@ -41,6 +41,16 @@ private:
     int m_posv;
 };
 
+class PreviousChallengeCommand: public Command
+{
+public:
+    PreviousChallengeCommand();
+    ~PreviousChallengeCommand();
+    bool execute(PuzzleBook* puzzle_book, ShapeSet* shape_set) override;
+    bool unexecute(PuzzleBook* puzzle_book, ShapeSet* shape_set) override;
+private:
+};
+
 class NextChallengeCommand: public Command
 {
 public:

@@ -108,10 +108,12 @@ void Scene::draw_pieces(QPainter& painter)
     const PuzzleBook* pb = m_puzzle_book;
     for (int i = 0; i < m_docks; i++) {
         int pix = m_dock_list[i];
-        if (m_puzzle_book->on_board(pix)) {
-            draw_on_board_shape(painter, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix));
-        } else {
-            draw_off_board_shape(painter, dock_rect(i), pb->shape_id(pix), pb->orientation(pix));
+        if (!(m_left_down && i == m_mouse_dock)) {
+            if (m_puzzle_book->on_board(pix)) {
+                draw_on_board_shape(painter, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix));
+            } else {
+                draw_off_board_shape(painter, dock_rect(i), pb->shape_id(pix), pb->orientation(pix));
+            }
         }
     }
 }
@@ -249,6 +251,11 @@ void Scene::mouse_left_press(int mx, int my)
                 int posv = m_puzzle_book->posv(pix);
                 m_offset_x = on_board_tile_pos_x(rack_rect(), posh, 0) - mx;
                 m_offset_y = on_board_tile_pos_y(rack_rect(), posv, 0) - my + m_unit - 1;
+                if (m_puzzle_book->lift_piece(pix)) {
+                    printf("lift piece\n");
+                } else {
+                    printf("failed to lift piece\n");
+                }
                 m_left_down = true;
             }
         } else {
@@ -271,9 +278,9 @@ void Scene::mouse_left_release(int mx, int my)
                 int tposy = (rack_rect().bottom() - cy) / m_unit;
                 int orientation = m_puzzle_book->orientation(pix);
                 if (m_puzzle_book->drop_piece(m_shape_set, pix, orientation, tposx, tposy)) {
-                  printf("dropped piece at (%d, %d)\n", tposx, tposy);
+                  printf("drop piece at (%d, %d)\n", tposx, tposy);
                 } else {
-                  printf("failed at (%d, %d)\n", tposx, tposy);
+                  printf("failed to drop piece (%d, %d)\n", tposx, tposy);
                 }
             }
         }

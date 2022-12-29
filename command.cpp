@@ -55,6 +55,26 @@ bool LiftPieceCommand::unexecute(PuzzleBook* puzzle_book, ShapeSet* shape_set)
     return puzzle_book->drop_piece(shape_set, m_pix, m_orientation, m_posh, m_posv);
 }
 
+PreviousChallengeCommand::PreviousChallengeCommand()
+{
+}
+
+PreviousChallengeCommand::~PreviousChallengeCommand()
+{
+}
+
+bool PreviousChallengeCommand::execute(PuzzleBook* puzzle_book, ShapeSet* shape_set)
+{
+    (void) shape_set;
+    return puzzle_book->go_to_previous_challenge();
+}
+
+bool PreviousChallengeCommand::unexecute(PuzzleBook* puzzle_book, ShapeSet* shape_set)
+{
+    (void) shape_set;
+    return puzzle_book->go_to_next_challenge();
+}
+
 NextChallengeCommand::NextChallengeCommand()
 {
 }
@@ -74,5 +94,4 @@ bool NextChallengeCommand::unexecute(PuzzleBook* puzzle_book, ShapeSet* shape_se
     (void) shape_set;
     return puzzle_book->go_to_previous_challenge();
 }
-
 

@@ -37,7 +37,6 @@ protected:
     int m_dimv;
     int m_pieces;
     Piece m_piece_list[MAX_CHALLENGE_PIECES];
-
     bool piece_fits(const ShapeSet* shape_set, int pix, int orientation, int posh, int posv) const;
 };
 

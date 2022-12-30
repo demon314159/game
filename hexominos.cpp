@@ -47,7 +47,7 @@ void Hexominos::initializeWindow()
     m_pb4->setText(tr("Undo"));
     m_pb5->setText(tr("Redo"));
 
-    m_table = new Table(m_puzzle_book, m_shape_set, this);
+    m_table = new Table(m_puzzle_book, m_shape_set, &m_history, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 

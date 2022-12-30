@@ -3,9 +3,10 @@
 //
 #include "scene.h"
 
-Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set)
+Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set, History* history)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
+    , m_history(history)
     , m_left_down(false)
     , m_mouse_x(0)
     , m_mouse_y(0)
@@ -106,7 +107,7 @@ void Scene::draw_rack(QPainter& painter)
 void Scene::draw_pieces(QPainter& painter)
 {
     const PuzzleBook* pb = m_puzzle_book;
-    for (int i = 0; i < m_docks; i++) {
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
         int pix = m_dock_list[i];
         if (!(m_left_down && i == m_mouse_dock)) {
             if (m_puzzle_book->on_board(pix)) {
@@ -126,11 +127,6 @@ void Scene::draw_cursor(QPainter& painter)
         int orientation = m_puzzle_book->orientation(pix);
         draw_shape(painter, shape_id, orientation, m_mouse_x + m_offset_x, m_mouse_y + m_offset_y);
         painter.setPen(Qt::black);
-        int cx = m_mouse_x + m_offset_x + m_unit / 2;
-        int cy = m_mouse_y + m_offset_y + m_unit / 2 - m_unit + 1;
-        painter.drawRect(cx - m_unit / 4, cy - m_unit / 4, m_unit / 2, m_unit / 2);
-//        painter.drawLine(m_mouse_x + m_offset_x, m_mouse_y + m_offset_y, m_mouse_x + m_offset_x + m_unit - 1, m_mouse_y + m_offset_y - m_unit + 1);
-//        painter.drawLine(m_mouse_x + m_offset_x, m_mouse_y + m_offset_y - m_unit + 1, m_mouse_x + m_offset_x + m_unit - 1, m_mouse_y + m_offset_y);
     }
 }
 
@@ -251,11 +247,7 @@ void Scene::mouse_left_press(int mx, int my)
                 int posv = m_puzzle_book->posv(pix);
                 m_offset_x = on_board_tile_pos_x(rack_rect(), posh, 0) - mx;
                 m_offset_y = on_board_tile_pos_y(rack_rect(), posv, 0) - my + m_unit - 1;
-                if (m_puzzle_book->lift_piece(pix)) {
-                    printf("lift piece\n");
-                } else {
-                    printf("failed to lift piece\n");
-                }
+                m_history->do_command(new LiftPieceCommand(pix));
                 m_left_down = true;
             }
         } else {
@@ -277,11 +269,7 @@ void Scene::mouse_left_release(int mx, int my)
                 int tposx = (cx - rack_rect().left()) / m_unit;
                 int tposy = (rack_rect().bottom() - cy) / m_unit;
                 int orientation = m_puzzle_book->orientation(pix);
-                if (m_puzzle_book->drop_piece(m_shape_set, pix, orientation, tposx, tposy)) {
-                  printf("drop piece at (%d, %d)\n", tposx, tposy);
-                } else {
-                  printf("failed to drop piece (%d, %d)\n", tposx, tposy);
-                }
+                m_history->do_command(new DropPieceCommand(pix, orientation, tposx, tposy));
             }
         }
     }
@@ -292,7 +280,7 @@ void Scene::mouse_left_release(int mx, int my)
 
 void Scene::mouse_right_press(int mx, int my)
 {
-    for (int i = 0; i < m_docks; i++) {
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
         if (dock_rect(i).contains(mx, my)) {
             int pix = m_dock_list[i];
             int orientation = m_puzzle_book->orientation(pix);
@@ -316,7 +304,7 @@ void Scene::mouse_move(int mx, int my)
 
 void Scene::mouse_wheel(int mx, int my, bool clockwise)
 {
-    for (int i = 0; i < m_docks; i++) {
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
         if (dock_rect(i).contains(mx, my)) {
             int pix = m_dock_list[i];
             if (!m_puzzle_book->on_board(pix)) {
@@ -331,7 +319,7 @@ void Scene::mouse_wheel(int mx, int my, bool clockwise)
 bool Scene::mouse_test_pieces(int mx, int my, int& dock) const
 {
     const PuzzleBook* pb = m_puzzle_book;
-    for (int i = 0; i < m_docks; i++) {
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
         int pix = m_dock_list[i];
         if (m_puzzle_book->on_board(pix)) {
             if (mouse_test_on_board_shape(mx, my, rack_rect(), pb->shape_id(pix), pb->orientation(pix), pb->posh(pix), pb->posv(pix))) {

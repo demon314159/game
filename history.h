@@ -11,7 +11,7 @@ class History
 public:
     History(PuzzleBook* puzzle_book, ShapeSet* shape_set);
     ~History();
-    void do_command(Command* c);
+    bool do_command(Command* c);
     void undo_command();
     void redo_command();
     bool end_of_undo() const;

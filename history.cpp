@@ -20,7 +20,7 @@ History::~History()
     delete [] m_command_ptr;
 }
 
-void History::do_command(Command* c)
+bool History::do_command(Command* c)
 {
     if (m_commands >= m_max_commands) {
         double_the_storage();
@@ -28,11 +28,14 @@ void History::do_command(Command* c)
     for (int i = m_current; i < m_commands; i++) {
         delete m_command_ptr[i];
     }
-
     if (c->execute(m_puzzle_book, m_shape_set)) {
         m_command_ptr[m_current] = c;
         ++m_current;
         m_commands = m_current;
+        return true;
+    } else {
+        delete c;
+        return false;
     }
 }
 

@@ -11,7 +11,6 @@ DropPieceCommand::DropPieceCommand(int pix, int orientation, int posh, int posv)
     , m_posh(posh)
     , m_posv(posv)
 {
-
 }
 
 DropPieceCommand::~DropPieceCommand()

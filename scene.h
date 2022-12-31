@@ -7,8 +7,6 @@
 #include <QPainter>
 #include "shape_set.h"
 #include "puzzle_book.h"
-#include "history.h"
-
 
 #define HORZ_UNITS 24
 #define VERT_UNITS 18
@@ -17,7 +15,7 @@
 class Scene
 {
 public:
-    Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set, History* history);
+    Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set);
     ~Scene();
     void draw(QPainter& painter);
     void mouse_left_press(int mx, int my);
@@ -29,8 +27,6 @@ public:
 protected:
     PuzzleBook* m_puzzle_book;
     const ShapeSet* m_shape_set;
-    History* m_history;
-
     bool m_left_down;
     int m_mouse_x;
     int m_mouse_y;

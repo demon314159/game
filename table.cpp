@@ -6,9 +6,9 @@
 #include <math.h>
 #include <algorithm>
 
-Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, History* history, QWidget *parent)
+Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent)
     : QWidget(parent)
-    , m_scene(puzzle_book, shape_set, history)
+    , m_scene(puzzle_book, shape_set)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);

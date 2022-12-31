@@ -3,10 +3,9 @@
 //
 #include "scene.h"
 
-Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set, History* history)
+Scene::Scene(PuzzleBook* puzzle_book, const ShapeSet* shape_set)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
-    , m_history(history)
     , m_left_down(false)
     , m_mouse_x(0)
     , m_mouse_y(0)
@@ -247,7 +246,7 @@ void Scene::mouse_left_press(int mx, int my)
                 int posv = m_puzzle_book->posv(pix);
                 m_offset_x = on_board_tile_pos_x(rack_rect(), posh, 0) - mx;
                 m_offset_y = on_board_tile_pos_y(rack_rect(), posv, 0) - my + m_unit - 1;
-                m_history->do_command(new LiftPieceCommand(pix));
+                m_puzzle_book->lift_piece(pix);
                 m_left_down = true;
             }
         } else {
@@ -269,7 +268,7 @@ void Scene::mouse_left_release(int mx, int my)
                 int tposx = (cx - rack_rect().left()) / m_unit;
                 int tposy = (rack_rect().bottom() - cy) / m_unit;
                 int orientation = m_puzzle_book->orientation(pix);
-                m_history->do_command(new DropPieceCommand(pix, orientation, tposx, tposy));
+                m_puzzle_book->drop_piece(m_shape_set, pix, orientation, tposx, tposy);
             }
         }
     }
@@ -309,7 +308,7 @@ void Scene::mouse_wheel(int mx, int my, bool clockwise)
             int pix = m_dock_list[i];
             if (!m_puzzle_book->on_board(pix)) {
                 int orientation = m_puzzle_book->orientation(pix);
-                orientation = (orientation & 4) | ((orientation + (clockwise ? 1 : -1)) & 3);
+                orientation = (orientation & 4) | ((orientation + (clockwise ? -1 : 1)) & 3);
                 m_puzzle_book->set_orientation(pix, orientation);
             }
         }

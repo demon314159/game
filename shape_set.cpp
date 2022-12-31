@@ -40,7 +40,7 @@ ShapeSet::ShapeSet(void)
     add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(1, 1).t(2, 1).t(2, 2));    // shape_id = 30
     add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(-1, 2).t(1, 1).t(1, 2));   // shape_id = 31
     add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(-1, 2).t(1, 2).t(1, 3));   // shape_id = 32
-    add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(0, 3).t(-1, 2).t(1, 3));   // shape_id = 33
+    add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(0, 3).t(-1, 1).t(1, 3));   // shape_id = 33
     add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(0, 3).t(-1, 1).t(1, 2));   // shape_id = 34
     add_shape(Shape().t(0, 0).t(0, 1).t(0, 2).t(-1, 1).t(1, 2).t(1, 3));   // shape_id = 35
 }

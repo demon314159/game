@@ -12,7 +12,6 @@
 Hexominos::Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set)
     : m_puzzle_book(puzzle_book)
     , m_shape_set(shape_set)
-    , m_history(puzzle_book, shape_set)
 {
     initializeWindow();
 }
@@ -44,10 +43,12 @@ void Hexominos::initializeWindow()
     m_pb2->setText(tr("Next Challenge"));
     m_pb3->setText(tr(" "));
     m_pb3->hide();
-    m_pb4->setText(tr("Undo"));
-    m_pb5->setText(tr("Redo"));
+    m_pb4->setText(tr(""));
+    m_pb4->hide();
+    m_pb5->setText(tr(""));
+    m_pb5->hide();
 
-    m_table = new Table(m_puzzle_book, m_shape_set, &m_history, this);
+    m_table = new Table(m_puzzle_book, m_shape_set, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 

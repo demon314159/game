@@ -13,14 +13,13 @@
 #include "scene.h"
 #include "shape_set.h"
 #include "puzzle_book.h"
-#include "history.h"
 
 class Table: public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, History* history, QWidget *parent = nullptr);
+    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent = nullptr);
 
 protected:
     int text_width(QPainter& painter, const QString &s);

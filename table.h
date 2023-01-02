@@ -20,6 +20,8 @@ class Table: public QWidget
 
 public:
     explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent = nullptr);
+    void pb_next_challenge();
+    void pb_previous_challenge();
 
 protected:
     int text_width(QPainter& painter, const QString &s);
@@ -29,6 +31,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void wheelEvent(QWheelEvent *e) override;
+
 
 private:
     Scene m_scene;

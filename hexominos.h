@@ -23,6 +23,7 @@ public:
 
 private:
     void initializeWindow();
+    void pb_update();
 
 private slots:
     void pb1();

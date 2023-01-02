@@ -27,9 +27,7 @@ PuzzleBook::~PuzzleBook()
 void PuzzleBook::add_challenges()
 {
 
-    add_challenge(Challenge(10, 6).p(23).p(5).p(12).p(21).p(1).p(25).p(26).p(28).p(32).p(33)); // 48
-//    add_challenge(Challenge(8, 6).p(4, 0, 0, 0).p(5).p(7).p(11).p(13, 5, 4, 2).p(14).p(14).p(28));
-    add_challenge(Challenge(8, 6).p(4, 0, 0, 0).p(5).p(7).p(11).p(13, 5, 4, 2).p(14, 5, 4, 3).p(14).p(28));
+    add_challenge(Challenge(8, 6).p(4, 0, 0, 0).p(5).p(7).p(11).p(13, 5, 4, 2).p(14).p(14).p(28));
 
     add_challenge(Challenge(8, 6).p(3).p(8).p(12, 0, 5, 4).p(17).p(23).p(25).p(28, 4, 7, 0).p(31));
     add_challenge(Challenge(8, 6).p(3).p(6).p(7).p(8, 4, 7, 2).p(11, 2, 4, 3).p(13).p(25).p(26));
@@ -80,8 +78,8 @@ bool PuzzleBook::go_to_next_challenge()
 {
     if ((m_current_challenge + 1) >= m_challenges)
         return false;
-    if (!m_list[m_current_challenge].solved())
-        return false;
+//    if (!m_list[m_current_challenge].solved())
+//        return false;
     ++m_current_challenge;
     return true;
 }

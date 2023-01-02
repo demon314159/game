@@ -72,3 +72,15 @@ void Table::wheelEvent(QWheelEvent* e)
     e->accept();
 }
 
+void Table::pb_next_challenge()
+{
+    m_scene.pb_next_challenge();
+    update();
+}
+
+void Table::pb_previous_challenge()
+{
+    m_scene.pb_previous_challenge();
+    update();
+}
+

@@ -23,6 +23,8 @@ public:
     void mouse_right_press(int mx, int my);
     void mouse_move(int mx, int my);
     void mouse_wheel(int mx, int my, bool clockwise);
+    void pb_next_challenge();
+    void pb_previous_challenge();
 
 protected:
     PuzzleBook* m_puzzle_book;

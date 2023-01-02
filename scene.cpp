@@ -353,3 +353,13 @@ bool Scene::mouse_test_tile(int mx, int my, int sx, int sy) const
 {
     return QRect(sx, sy, m_unit, m_unit).contains(mx, my);
 }
+
+void Scene::pb_next_challenge()
+{
+    m_puzzle_book->go_to_next_challenge();
+}
+
+void Scene::pb_previous_challenge()
+{
+    m_puzzle_book->go_to_previous_challenge();
+}

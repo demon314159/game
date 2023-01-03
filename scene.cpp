@@ -234,6 +234,8 @@ void Scene::mouse_left_press(int mx, int my)
 {
     m_mouse_x = mx;
     m_mouse_y = my;
+    m_first_mx = mx;
+    m_first_my = my;
     m_left_down = false;
     bool left_down = mouse_test_pieces(mx, my, m_mouse_dock);
     if (left_down) {
@@ -241,14 +243,14 @@ void Scene::mouse_left_press(int mx, int my)
         int shape_id = m_puzzle_book->shape_id(pix);
         int orientation = m_puzzle_book->orientation(pix);
         if (m_puzzle_book->on_board(pix)) {
-            if (!m_puzzle_book->locked(pix)) {
+//            if (!m_puzzle_book->locked(pix)) {
                 int posh = m_puzzle_book->posh(pix);
                 int posv = m_puzzle_book->posv(pix);
                 m_offset_x = on_board_tile_pos_x(rack_rect(), posh, 0) - mx;
                 m_offset_y = on_board_tile_pos_y(rack_rect(), posv, 0) - my + m_unit - 1;
                 m_puzzle_book->lift_piece(pix);
                 m_left_down = true;
-            }
+//            }
         } else {
             m_offset_x = off_board_tile_pos_x(dock_rect(m_mouse_dock), shape_id, orientation, 0) - mx;
             m_offset_y = off_board_tile_pos_y(dock_rect(m_mouse_dock), shape_id, orientation, 0) - my + m_unit - 1;
@@ -298,6 +300,11 @@ void Scene::mouse_move(int mx, int my)
     if (m_left_down) {
         m_mouse_x = mx;
         m_mouse_y = my;
+        int pix = m_dock_list[m_mouse_dock];
+        if (m_puzzle_book->locked(pix)) {
+            int thresh = 2 * m_unit;
+            m_left_down = (abs(mx - m_first_mx) <= thresh) && (abs(my - m_first_my) <= thresh);
+        }
     }
 }
 

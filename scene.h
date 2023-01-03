@@ -31,6 +31,8 @@ protected:
     PuzzleBook* m_puzzle_book;
     const ShapeSet* m_shape_set;
     bool m_left_down;
+    int m_first_mx;
+    int m_first_my;
     int m_mouse_x;
     int m_mouse_y;
     int m_offset_x;

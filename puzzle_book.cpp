@@ -26,7 +26,6 @@ PuzzleBook::~PuzzleBook()
 
 void PuzzleBook::add_challenges()
 {
-
     add_challenge(Challenge(8, 6).p(4, 0, 0, 0).p(5).p(7).p(11).p(13, 5, 4, 2).p(14).p(14).p(28)); // 1
     add_challenge(Challenge(8, 6).p(3).p(8).p(12, 1, 5, 5).p(17).p(23).p(25).p(28, 4, 7, 0).p(31)); // 2
     add_challenge(Challenge(8, 6).p(3).p(6).p(7).p(8, 4, 7, 2).p(11, 2, 4, 3).p(13).p(25).p(26)); // 3
@@ -67,19 +66,14 @@ void PuzzleBook::add_challenges()
     add_challenge(Challenge(10, 6).p(7).p(14).p(15).p(22).p(23).p(26).p(26).p(29, 0, 0, 0).p(31).p(33, 2, 5, 4)); // 38
     add_challenge(Challenge(10, 6).p(7).p(8).p(10).p(13).p(15, 3, 7, 0).p(16).p(20).p(22, 1, 1, 5).p(26).p(33)); // 39
     add_challenge(Challenge(10, 6).p(8).p(8, 3, 7, 0).p(12).p(16).p(17).p(25).p(26).p(27).p(31).p(35, 6, 5, 4)); // 40
-
     add_challenge(Challenge(10, 6).p(2).p(3, 3, 7, 3).p(4).p(6).p(12).p(17).p(18).p(21).p(28).p(30, 3, 9, 0)); // 41
-
-
-
-
-// add these in at the end
-//    add_challenge(Challenge(10, 6).p(3).p(11).p(20).p(22).p(25).p(25).p(26).p(28).p(31).p(32)); // 47
-//    add_challenge(Challenge(10, 6).p(23).p(5).p(12).p(21).p(1).p(25).p(26).p(28).p(32).p(33)); // 48
-
-// temporarily force challenge to last one so it wan be built easily
-    m_current_challenge = m_challenges - 1;
-
+    add_challenge(Challenge(10, 6).p(2).p(3).p(8, 5, 6, 0).p(17).p(21).p(23).p(26).p(27).p(34).p(35, 1, 1, 4)); // 42
+    add_challenge(Challenge(10, 6).p(3).p(11).p(12).p(15).p(20).p(22).p(25).p(26).p(28, 3, 6, 1).p(32)); // 43
+    add_challenge(Challenge(10, 6).p(3).p(7).p(8).p(9, 1, 3, 4).p(11).p(12).p(15).p(17).p(23).p(31)); // 44
+    add_challenge(Challenge(10, 6).p(3).p(5).p(8).p(8).p(13).p(21).p(22).p(28).p(29, 1, 1, 3).p(32)); // 45
+    add_challenge(Challenge(10, 6).p(8).p(8).p(13, 3, 8, 0).p(17).p(21).p(22).p(23).p(28).p(29).p(31)); // 46
+    add_challenge(Challenge(10, 6).p(3).p(11).p(20).p(22).p(25).p(25).p(26).p(28).p(31).p(32)); // 47
+    add_challenge(Challenge(10, 6).p(23).p(5).p(12).p(21).p(1).p(25).p(26).p(28).p(32).p(33)); // 48
 }
 
 void PuzzleBook::add_challenge(const Challenge& challenge)

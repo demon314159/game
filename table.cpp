@@ -93,11 +93,6 @@ void Table::full_update()
 {
     update();
     m_parent->setWindowTitle(QString("Hexominos: Challenge %1 of %2").arg(m_puzzle_book->current_challenge() + 1).arg(m_puzzle_book->challenges()));
-#ifdef NEVERMORE
     m_previous_button->setEnabled(m_puzzle_book->current_challenge() > 0);
     m_next_button->setEnabled(m_puzzle_book->current_challenge_solved() && (m_puzzle_book->current_challenge() < (m_puzzle_book->challenges() - 1)));
-#else
-    m_previous_button->setEnabled(true);
-    m_next_button->setEnabled(true);
-#endif
 }

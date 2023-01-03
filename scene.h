@@ -25,6 +25,7 @@ public:
     void mouse_wheel(int mx, int my, bool clockwise);
     void pb_next_challenge();
     void pb_previous_challenge();
+    void clear_board();
 
 protected:
     PuzzleBook* m_puzzle_book;

@@ -96,3 +96,9 @@ void Table::full_update()
     m_previous_button->setEnabled(m_puzzle_book->current_challenge() > 0);
     m_next_button->setEnabled(m_puzzle_book->current_challenge_solved() && (m_puzzle_book->current_challenge() < (m_puzzle_book->challenges() - 1)));
 }
+
+void Table::clear_board()
+{
+    m_scene.clear_board();
+    full_update();
+}

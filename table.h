@@ -23,6 +23,7 @@ public:
     explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QWidget *parent);
     void pb_next_challenge();
     void pb_previous_challenge();
+    void clear_board();
 
 protected:
     int text_width(QPainter& painter, const QString &s);

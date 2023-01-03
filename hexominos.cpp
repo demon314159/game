@@ -45,8 +45,7 @@ void Hexominos::initializeWindow()
     m_pb3->hide();
     m_pb4->setText(tr(""));
     m_pb4->hide();
-    m_pb5->setText(tr(""));
-    m_pb5->hide();
+    m_pb5->setText(tr("Clear Board"));
 
     m_table = new Table(m_puzzle_book, m_shape_set, m_pb1, m_pb2, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
@@ -77,5 +76,6 @@ void Hexominos::pb4()
 
 void Hexominos::pb5()
 {
+    m_table->clear_board();
 }
 

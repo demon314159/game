@@ -363,3 +363,15 @@ void Scene::pb_previous_challenge()
 {
     m_puzzle_book->go_to_previous_challenge();
 }
+
+void Scene::clear_board()
+{
+    for (int i = 0; i < m_puzzle_book->pieces(); i++) {
+        if (m_puzzle_book->on_board(i) && !m_puzzle_book->locked(i)) {
+            m_puzzle_book->lift_piece(i);
+            if (!m_puzzle_book->on_board(i)) {
+                m_puzzle_book->set_orientation(i, 0);
+            }
+        }
+    }
+}

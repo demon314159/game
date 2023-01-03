@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QPushButton>
 
 #include "scene.h"
 #include "shape_set.h"
@@ -19,7 +20,7 @@ class Table: public QWidget
     Q_OBJECT
 
 public:
-    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QWidget *parent = nullptr);
+    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QWidget *parent);
     void pb_next_challenge();
     void pb_previous_challenge();
 
@@ -31,9 +32,14 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void wheelEvent(QWheelEvent *e) override;
+    void full_update();
 
 
 private:
+    QWidget* m_parent;
+    QPushButton* m_previous_button;
+    QPushButton* m_next_button;
+    PuzzleBook* m_puzzle_book;
     Scene m_scene;
 };
 

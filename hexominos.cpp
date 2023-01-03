@@ -47,9 +47,8 @@ void Hexominos::initializeWindow()
     m_pb4->hide();
     m_pb5->setText(tr(""));
     m_pb5->hide();
-    pb_update();
 
-    m_table = new Table(m_puzzle_book, m_shape_set, this);
+    m_table = new Table(m_puzzle_book, m_shape_set, m_pb1, m_pb2, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 
@@ -58,28 +57,18 @@ void Hexominos::initializeWindow()
     window->show();
 }
 
-void Hexominos::pb_update()
-{
-    m_pb1->setEnabled(m_puzzle_book->current_challenge() > 0);
-    m_pb2->setEnabled(m_puzzle_book->current_challenge() < (m_puzzle_book->challenges() - 1));
-    setWindowTitle(QString("Hexominos: Challenge %1 of %2").arg(m_puzzle_book->current_challenge() + 1).arg(m_puzzle_book->challenges()));
-}
-
 void Hexominos::pb1()
 {
     m_table->pb_previous_challenge();
-    pb_update();
 }
 
 void Hexominos::pb2()
 {
     m_table->pb_next_challenge();
-    pb_update();
 }
 
 void Hexominos::pb3()
 {
-    pb_update();
 }
 
 void Hexominos::pb4()

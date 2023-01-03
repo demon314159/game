@@ -43,8 +43,11 @@ void PuzzleBook::add_challenges()
     add_challenge(Challenge(8, 6).p(4).p(8).p(12, 1, 2, 4).p(19).p(22).p(28).p(30).p(31)); // 14
     add_challenge(Challenge(8, 6).p(2).p(5).p(8).p(12).p(18).p(21).p(30).p(31)); // 15
     add_challenge(Challenge(8, 6).p(2).p(7).p(12).p(14).p(14).p(26).p(31).p(35)); // 16
+    add_challenge(Challenge(9, 6).p(6).p(9).p(11, 5, 5, 0).p(12).p(13).p(20).p(25).p(25, 7, 2, 5).p(26, 2, 8, 5)); // 17
+    add_challenge(Challenge(9, 6).p(3, 3, 5, 0).p(4).p(8).p(8).p(14).p(15, 0, 0, 0).p(23, 4, 8, 0).p(30).p(31)); // 18
+    add_challenge(Challenge(9, 6).p(3).p(6).p(13, 2, 7, 4).p(14).p(15).p(19).p(24).p(25, 4, 8, 3).p(26, 4, 8, 0)); // 19
 
-
+    add_challenge(Challenge(9, 6).p(1, 1, 0, 0).p(10).p(11, 0, 0, 2).p(16).p(19).p(24).p(25).p(25).p(29, 3, 8, 0)); // 20
 
 // add these in at the end
 //    add_challenge(Challenge(10, 6).p(3).p(11).p(20).p(22).p(25).p(25).p(26).p(28).p(31).p(32)); // 47

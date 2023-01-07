@@ -91,7 +91,7 @@ void Scene::draw_rack(QPainter& painter)
     QPen inside_pen(Qt::darkRed);
     QPen outside_pen(Qt::black);
     outside_pen.setWidth(3);
-    painter.fillRect(rack_rect(), Qt::red);
+    painter.fillRect(rack_rect(), QColor(223, 0, 0));
     painter.setPen(outside_pen);
     painter.drawRect(rack_rect());
     painter.setPen(inside_pen);
@@ -131,7 +131,7 @@ void Scene::draw_cursor(QPainter& painter)
 
 void Scene::draw_tile(QPainter& painter, int sx, int sy, int shape_id, int orientation, int tposh, int tposv)
 {
-    QBrush brush(Qt::yellow);
+    QBrush brush(QColor(239, 239, 0));
     QPen inside_pen(Qt::darkYellow);
     QPen outside_pen(Qt::black);
     outside_pen.setWidth(3);
@@ -376,9 +376,9 @@ void Scene::clear_board()
     for (int i = 0; i < m_puzzle_book->pieces(); i++) {
         if (m_puzzle_book->on_board(i) && !m_puzzle_book->locked(i)) {
             m_puzzle_book->lift_piece(i);
-            if (!m_puzzle_book->on_board(i)) {
-                m_puzzle_book->set_orientation(i, 0);
-            }
+        }
+        if (!m_puzzle_book->on_board(i)) {
+            m_puzzle_book->set_orientation(i, 0);
         }
     }
 }

@@ -91,7 +91,11 @@ void Scene::draw_rack(QPainter& painter)
     QPen inside_pen(Qt::darkRed);
     QPen outside_pen(Qt::black);
     outside_pen.setWidth(3);
-    painter.fillRect(rack_rect(), QColor(223, 0, 0));
+
+//    painter.fillRect(rack_rect(), QColor(223, 0, 0));
+    painter.fillRect(rack_rect(), QColor(255, 63, 63));
+
+
     painter.setPen(outside_pen);
     painter.drawRect(rack_rect());
     painter.setPen(inside_pen);

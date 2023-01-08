@@ -14,6 +14,7 @@ Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* pr
     , m_puzzle_book(puzzle_book)
     , m_scene(puzzle_book, shape_set)
 {
+    setCursor(Qt::PointingHandCursor);
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
     setMinimumHeight(480);

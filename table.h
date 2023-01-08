@@ -24,6 +24,7 @@ public:
     void pb_next_challenge();
     void pb_previous_challenge();
     void clear_board();
+    void show_help();
 
 protected:
     int text_width(QPainter& painter, const QString &s);

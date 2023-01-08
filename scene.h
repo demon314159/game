@@ -54,6 +54,7 @@ protected:
     int off_board_tile_pos_y(const QRect& rect, int shape_id, int orientation, int tposv) const;
     int on_board_tile_pos_x(const QRect& rect, int posh, int tposh) const;
     int on_board_tile_pos_y(const QRect& rect, int posv, int tposv) const;
+    void draw_completion_message(QPainter& painter, const QString& msg);
     void draw_rack(QPainter& painter);
     void draw_pieces(QPainter& painter);
     void draw_cursor(QPainter& painter);

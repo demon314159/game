@@ -73,7 +73,7 @@ void PuzzleBook::add_challenges()
     add_challenge(Challenge(10, 6).p(3).p(5).p(8).p(8).p(13).p(21).p(22).p(28).p(29, 1, 1, 3).p(32)); // 45
     add_challenge(Challenge(10, 6).p(8).p(8).p(13, 3, 8, 0).p(17).p(21).p(22).p(23).p(28).p(29).p(31)); // 46
     add_challenge(Challenge(10, 6).p(3).p(11).p(20).p(22).p(25).p(25).p(26).p(28).p(31).p(32)); // 47
-    add_challenge(Challenge(10, 6).p(23).p(5).p(12).p(21).p(1).p(25).p(26).p(28).p(32).p(33)); // 48
+    add_challenge(Challenge(10, 6).p(23).p(5).p(12).p(21).p(1).p(25).p(26).p(28).p(32).p(33)); // 48i
 }
 
 void PuzzleBook::add_challenge(const Challenge& challenge)

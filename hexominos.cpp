@@ -7,7 +7,6 @@
 #include <QDebug>
 #include <QPainter>
 #include <QVBoxLayout>
-#include <QMessageBox>
 #include "table.h"
 
 Hexominos::Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set)
@@ -77,23 +76,6 @@ void Hexominos::pb4()
 
 void Hexominos::pb5()
 {
-    QMessageBox msg_box;
-    msg_box.setText(
-"<h2>Basic Rules</h2>"
-"<p>Use the <b>left</b> mouse button to <b>drag</b> pieces on and off the red tray.</p>"
-"<p>A piece may be <b>rotated</b> or <b>reflected</b> when it is not on the tray.</p>"
-"<p>The <b>scroll wheel</b> will <b>rotate</b> a nearby piece.</p>"
-"<p>The <b>right</b> mouse button will <b>reflect</b> a nearby piecee.</p>"
-"<p>Each <b>challenge</b> is solved when all of the pieces have been placed in the red tray.</p>"
-"<p>Once a <b>challenge</b> has been solved, the <b>next challenge</b> becomes available.</p>"
-"<p>Complete all 48 <b>challenges</b> to finish the game.</p>"
-"<p>Some <b>challenges</b> are made easier by having pre-assigned <b>hint</b> pieces that can't be removed from the red tray</p>"
-"<h2>About</h2>"
-"<p>These puzzles are drawn from a 1960's game called <i><b>Spear's Multipuzzle.</b></i>"
-"  The physical game is still available at auction sites but it is very tedious to set up each challenge."
-"  This software removes the tedious set-up and offers the user only the fun puzzle solving."
-"<p>Created 2023-Jan-8 by Andy Summers (<i>demon314159@github)</i><p>"
-);
-    msg_box.exec();
+    m_table->show_help();
 }
 

@@ -83,6 +83,24 @@ void Scene::draw(QPainter& painter)
     draw_rack(painter);
     draw_pieces(painter);
     draw_cursor(painter);
+    if (m_puzzle_book->puzzle_solved()) {
+        draw_completion_message(painter, QString("Game Completed"));
+    } else if (m_puzzle_book->current_challenge_solved()) {
+        draw_completion_message(painter, QString("Go To Next Challenge"));
+    }
+}
+
+void Scene::draw_completion_message(QPainter& painter, const QString& msg)
+{
+    QFont font = painter.font();
+    font.setPixelSize(48);
+    painter.setFont(font);
+    int vx = painter.viewport().left();
+    int vy = painter.viewport().top();
+    int vw = painter.viewport().width();
+    int vh = painter.viewport().height();
+    painter.setPen(Qt::white);
+    painter.drawText(vx, vy, vw, vh / 3, Qt::AlignHCenter|Qt::AlignVCenter, msg);
 }
 
 void Scene::draw_rack(QPainter& painter)

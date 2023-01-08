@@ -20,7 +20,7 @@ class Table: public QWidget
     Q_OBJECT
 
 public:
-    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QWidget *parent);
+    explicit Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QPushButton* clear_button, QWidget *parent);
     void pb_next_challenge();
     void pb_previous_challenge();
     void clear_board();
@@ -41,6 +41,7 @@ private:
     QWidget* m_parent;
     QPushButton* m_previous_button;
     QPushButton* m_next_button;
+    QPushButton* m_clear_button;
     PuzzleBook* m_puzzle_book;
     Scene m_scene;
 };

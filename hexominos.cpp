@@ -46,7 +46,7 @@ void Hexominos::initializeWindow()
     m_pb4->setText(tr("Clear Board"));
     m_pb5->setText(tr("Help"));
 
-    m_table = new Table(m_puzzle_book, m_shape_set, m_pb1, m_pb2, this);
+    m_table = new Table(m_puzzle_book, m_shape_set, m_pb1, m_pb2, m_pb4, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 

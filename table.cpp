@@ -7,11 +7,12 @@
 #include <math.h>
 #include <algorithm>
 
-Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QWidget *parent)
+Table::Table(PuzzleBook* puzzle_book, const ShapeSet* shape_set, QPushButton* previous_button, QPushButton* next_button, QPushButton* clear_button, QWidget *parent)
     : QWidget(parent)
     , m_parent(parent)
     , m_previous_button(previous_button)
     , m_next_button(next_button)
+    , m_clear_button(clear_button)
     , m_puzzle_book(puzzle_book)
     , m_scene(puzzle_book, shape_set)
 {
@@ -98,6 +99,7 @@ void Table::full_update()
     m_parent->setWindowTitle(QString("Hexominos: Challenge %1 of %2").arg(m_puzzle_book->current_challenge() + 1).arg(m_puzzle_book->challenges()));
     m_previous_button->setEnabled(m_puzzle_book->current_challenge() > 0);
     m_next_button->setEnabled(m_puzzle_book->current_challenge_solved() && (m_puzzle_book->current_challenge() < (m_puzzle_book->challenges() - 1)));
+    m_clear_button->setEnabled(!m_puzzle_book->current_challenge_solved());
 }
 
 void Table::clear_board()

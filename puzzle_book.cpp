@@ -52,8 +52,8 @@ void PuzzleBook::add_challenges()
     add_challenge(Challenge(9, 6).p(2).p(8).p(10).p(11, 3, 3, 0).p(15).p(18).p(26).p(29).p(33, 2, 5, 3)); // 24
     add_challenge(Challenge(9, 6).p(2).p(3).p(4).p(8).p(16, 0, 6, 1).p(22, 2, 3, 4).p(26).p(28).p(29)); // 25
     add_challenge(Challenge(9, 6).p(3).p(5).p(8, 0, 0, 0).p(8).p(12).p(25).p(27).p(29, 5, 1, 0).p(35)); // 26
-    add_challenge(Challenge(9, 6).p(1).p(4).p(10).p(11).p(12).p(13).p(26).p(27, 3, 6, 3).p(29)); // 27
-    add_challenge(Challenge(9, 6).p(1).p(6).p(8).p(10).p(11).p(12, 1, 3, 3).p(15).p(17).p(19)); // 28
+    add_challenge(Challenge(9, 6).p(12).p(4).p(10).p(11).p(1).p(13).p(26).p(27, 3, 6, 3).p(29)); // 27
+    add_challenge(Challenge(9, 6).p(11).p(6).p(8).p(10).p(1).p(12, 1, 3, 3).p(15).p(17).p(19)); // 28
     add_challenge(Challenge(9, 6).p(2).p(3).p(5, 3, 8, 1).p(8).p(13).p(17).p(22).p(29).p(30)); // 29
     add_challenge(Challenge(9, 6).p(2).p(3).p(5).p(6).p(7).p(10).p(13).p(14, 0, 2, 0).p(14)); // 30
     add_challenge(Challenge(9, 6).p(3).p(5).p(8).p(10).p(12).p(13).p(14).p(14).p(19)); // 31

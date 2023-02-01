@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = baseline
+TARGET = race
 
 QT += widgets
 

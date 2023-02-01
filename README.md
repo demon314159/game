@@ -1,9 +1,8 @@
-# airplane-3d
+# bricks
 
-Steroscopic rendering of airplanes.
-Hit arrow keys to move planes.
+Brick building toy with windows, doors and roof and optional steroscopic feature.
 
 To build this program:
 
-This is a Qt application so run `qmake airplane3d.pro` to generate the Makefile, then run `make`
+This is a Qt application so run `qmake bricks.pro` to generate the Makefile, then run `make`
 

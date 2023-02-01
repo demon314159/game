@@ -1,8 +1,8 @@
-# opengl-baseline
+# race
 
-Baseline for 3d model rendering with optional steroscopic feature.
+Race program with optional steroscopic feature.
 
 To build this program:
 
-This is a Qt application so run `qmake baseline.pro` to generate the Makefile, then run `make`
+This is a Qt application so run `qmake race.pro` to generate the Makefile, then run `make`
 

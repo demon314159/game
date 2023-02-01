@@ -43,7 +43,7 @@ public:
     Float3 facet_v3(int facet_ix) const;
     Float3 facet_color(int facet_ix) const;
     Float3 facet_normal(int facet_ix) const;
-    BoundingBox bounding_box(bool roof_filter = false) const;
+    BoundingBox bounding_box() const;
 
 protected:
     void rotate_vertex(Float3& vertex, const QMatrix4x4& matrix);

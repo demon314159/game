@@ -39,11 +39,11 @@ void Game::initializeWindow()
     layout->addWidget(m_pb4, 0, 3, 1, 1);
     layout->addWidget(m_pb5, 0, 4, 1, 1);
 
-    m_pb1->setText(tr("(N)ew"));
-    m_pb2->setText(tr("(L)oad"));
-    m_pb3->setText(tr("(S)ave"));
-    m_pb4->setText(tr("(U)ndo"));
-    m_pb5->setText(tr("(R)edo"));
+    m_pb1->setText(tr("Button 1"));
+    m_pb2->setText(tr("Button 2"));
+    m_pb3->setText(tr("Button 3"));
+    m_pb4->setText(tr("Button 4"));
+    m_pb5->setText(tr("Button 5"));
 
     m_table = new Table(this);
     layout->addWidget(m_table, 1, 0, 1, 5);
@@ -57,27 +57,22 @@ void Game::initializeWindow()
 
 void Game::pb1()
 {
-    m_table->new_command();
 }
 
 void Game::pb2()
 {
-    m_table->load_command();
 }
 
 void Game::pb3()
 {
-    m_table->save_command();
 }
 
 void Game::pb4()
 {
-    m_table->undo_command();
 }
 
 void Game::pb5()
 {
-    m_table->redo_command();
 }
 
 

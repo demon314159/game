@@ -11,6 +11,8 @@ public:
     static void process_options(int argv, char** args);
     static float dimx;
     static float dimh;
+    static float dimb;
+    static float dimt;
     static PaintCan table_paint();
     static PaintCan marker_paint();
     static PaintCan grid_paint();

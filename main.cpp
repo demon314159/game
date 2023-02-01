@@ -7,7 +7,7 @@
 int main(int argv, char **args)
 {
     QApplication app(argv, args);
-    app.setApplicationName("Bricks");
+    app.setApplicationName("OpenGL Baseline");
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);

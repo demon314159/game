@@ -6,7 +6,6 @@
 #include <QVector3D>
 #include <QVector4D>
 #include <QQuaternion>
-#include "document.h"
 
 #define notVERBOSE
 
@@ -17,31 +16,6 @@ CadModel::CadModel()
 #ifdef VERBOSE
     printf("CadModel::CadModel()\n");
 #endif
-}
-
-CadModel::CadModel(Document* doc)
-    : m_facet_count(0)
-    , m_facet(NULL)
-{
-#ifdef VERBOSE
-    printf("CadModel::CadModel(%d facets in  list)\n", facets);
-#endif
-    m_facet_count = doc->facets();
-    if (m_facet_count > 0) {
-        m_facet = new Facet[m_facet_count];
-        m_facet_count = 0;
-        for (int i = 0; i < doc->elements(); i++) {
-            if (!doc->element(i)->removed()) {
-                Float3 offset = doc->element(i)->pos();
-                offset.v2 *= (2.0 / 3.0);
-                const CadModel& cm = doc->element(i)->model();
-                for (int j = 0; j < cm.facets(); j++) {
-                    m_facet[m_facet_count] = translate(cm.facet(j), offset);
-                    ++m_facet_count;
-                }
-            }
-        }
-    }
 }
 
 CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
@@ -381,7 +355,7 @@ CadModel::~CadModel()
         delete [] m_facet;
 }
 
-BoundingBox CadModel::bounding_box(bool roof_filter) const
+BoundingBox CadModel::bounding_box() const
 {
     BoundingBox bb;
     if (m_facet_count == 0) {
@@ -389,7 +363,7 @@ BoundingBox CadModel::bounding_box(bool roof_filter) const
         bb.vmin.v2 = 0.0;
         bb.vmin.v3 = -0.5;
         bb.vmax.v1 = 0.5;
-        bb.vmax.v2 = Element::dimh;
+        bb.vmax.v2 = 1.0;
         bb.vmax.v3 = 0.5;
         return bb;
     }
@@ -418,17 +392,7 @@ BoundingBox CadModel::bounding_box(bool roof_filter) const
         bb.vmax.v2 = fmax(bb.vmax.v2, v.v2);
         bb.vmax.v3 = fmax(bb.vmax.v3, v.v3);
     }
-    if (roof_filter) {
-        filter_roof(bb.vmin.v1);
-        filter_roof(bb.vmin.v3);
-        filter_roof(bb.vmax.v1);
-        filter_roof(bb.vmax.v3);
-    }
     return bb;
 }
 
-void CadModel::filter_roof(float& v) const
-{
-    v = round(v + 0.5) - 0.5;
-}
 

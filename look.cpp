@@ -4,7 +4,9 @@
 #include <stdio.h>
 
 float Look::dimx = 1.0;
-float Look::dimh = 2.0 / 3.0;
+float Look::dimh = 1.0;
+float Look::dimb = 0.025;
+float Look::dimt = 0.05;
 
 bool Look::m_3d = false;
 QString Look::m_startup_name(".session.brk");
@@ -74,7 +76,10 @@ PaintCan Look::grid_paint()
 
 PaintCan Look::brick_paint()
 {
-    return PaintCan(1.0, 0.0, 0.0);
+    if (Look::get_3d())
+        return PaintCan(1.0, 1.0, 1.0);
+    else
+        return PaintCan(1.0, 0.0, 0.0);
 }
 
 PaintCan Look::ledge_paint()

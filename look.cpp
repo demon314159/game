@@ -37,29 +37,9 @@ PaintCan Look::table_paint()
         return PaintCan(0.4, 0.8, 1.0);
 }
 
-PaintCan Look::slot_paint()
-{
-    if (Look::get_3d())
-        return PaintCan(1.0, 1.0, 1.0);
-    else
-        return PaintCan(1.0, 0.0, 0.0);
-}
-
-PaintCan Look::rail_paint()
-{
-    return PaintCan(0.75, 0.75, 0.75);
-}
-
 PaintCan Look::grid_paint()
 {
     return PaintCan(0.5, 0.5, 0.5);
 }
 
-PaintCan Look::track_paint()
-{
-    if (Look::get_3d())
-        return PaintCan(1.0, 1.0, 1.0);
-    else
-        return PaintCan(0.25, 0.25, 0.25);
-}
 

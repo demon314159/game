@@ -16,10 +16,7 @@ public:
     static float dimb;
     static float dimt;
     static PaintCan table_paint();
-    static PaintCan slot_paint();
-    static PaintCan rail_paint();
     static PaintCan grid_paint();
-    static PaintCan track_paint();
 
 private:
     static bool m_3d;

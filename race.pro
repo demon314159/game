@@ -14,6 +14,7 @@ HEADERS      += game.h \
                 paint_can.h \
                 bounding_box.h \
                 look.h \
+                track_style.h \
                 shape.h \
                 table.h \
                 navigate.h \
@@ -32,6 +33,7 @@ SOURCES      += main.cpp \
                 game.cpp \
                 paint_can.cpp \
                 look.cpp \
+                track_style.cpp \
                 table.cpp \
                 navigate.cpp \
                 bin_interface.cpp \

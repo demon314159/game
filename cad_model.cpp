@@ -88,7 +88,7 @@ CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id
     , m_facet(NULL)
 {
 #ifdef VERBOSE
-    printf("CadModel::CadModel(shape), paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
+    printf("CadModel::CadModel(shape), paint = (%8.6f, %8.6f, %8.6f), animation_id = %7.3f\n",
            paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
            animation_id);
 #endif
@@ -101,6 +101,26 @@ CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id
             m_facet[i].v2 = s.facet(i).v2;
             m_facet[i].v3 = s.facet(i).v3;
             m_facet[i].color = paint_can.ambient_color();
+        }
+    }
+}
+
+CadModel::CadModel(const Shape& s)
+    : m_facet_count(0)
+    , m_facet(NULL)
+{
+#ifdef VERBOSE
+    printf("CadModel::CadModel(shape)\n");
+#endif
+    m_facet_count = s.facets();
+    if (m_facet_count > 0) {
+        m_facet = new Facet[m_facet_count];
+        for (int i = 0; i < m_facet_count; i++) {
+            m_facet[i].animation_id = s.facet(i).animation_id;
+            m_facet[i].v1 = s.facet(i).v1;
+            m_facet[i].v2 = s.facet(i).v2;
+            m_facet[i].v3 = s.facet(i).v3;
+            m_facet[i].color = s.facet(i).color;
         }
     }
 }

@@ -2,6 +2,7 @@
 #include "paint_can.h"
 #include "cube_shape.h"
 #include "brick_shape.h"
+#include "track_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 #include <math.h>
@@ -13,7 +14,7 @@ View::View()
     : m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
     , m_table(new CadModel())
-    , m_aux_model(new CadModel(BrickShape(1.0, 1.0, 1.0, 0.2), Look::brick_paint(), 0.0))
+    , m_aux_model(new CadModel(TrackShape(2.0, 1.0 / 8.0, 6.0, 0.025, 1.0/8.0, 1.0 / 32.0, 1.0 / 32.0, 1.0)))
     , m_change(true)
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -48,12 +49,12 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
     for (int i = 0; i <= nx; i++) {
         CubeShape ls(db, dy, dz);
         CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, bb.vmin.v1 + (float) i, bb.vmin.v2 - tabley, (bb.vmin.v3 + bb.vmax.v3) / 2);
+        cm->add(line_model, bb.vmin.v1 + (float) i, bb.vmin.v2 - tabley - 1.0, (bb.vmin.v3 + bb.vmax.v3) / 2);
     }
     for (int i = 0; i <= nz; i++) {
         CubeShape ls(dx, dy, db);
         CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, bb.vmin.v2 - tabley, bb.vmin.v3 + (float) i);
+        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, bb.vmin.v2 - tabley - 1.0, bb.vmin.v3 + (float) i);
     }
 }
 
@@ -67,14 +68,14 @@ void View::decorate_model()
     CadModel tt(table, Look::table_paint(), 1.0);
 
     m_table = new CadModel();
-    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2.0 - 2.0);
+    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, bb.vmin.v2 - tabley - 1.0, bb.vmin.v3 + tablez / 2.0 - 2.0);
 
     bb.vmin.v1 -= 2.0;
     bb.vmin.v3 -= 2.0;
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
 
-    add_grid(m_table, bb);
+//    add_grid(m_table, bb);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0));
     m_radius = fmax(m_radius, 2.0);
@@ -107,7 +108,7 @@ bool View::initialize()
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     resize_calc();

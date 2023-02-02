@@ -27,6 +27,7 @@ public:
     CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     CadModel(const Shape& s, const PaintCan& paint_can, float animation_id = 0.0);
+    CadModel(const Shape& s);
     ~CadModel();
     void add(const VrmlInterface& vrml_interface, float animation_id = 0.0);
     void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);

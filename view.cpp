@@ -15,8 +15,8 @@ View::View()
     : m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
     , m_table(new CadModel())
-//    , m_aux_model(new CadModel(StraightTrackShape(2, 12.0)))
-    , m_aux_model(new CadModel(CurvedTrackShape(2, 6.0, 180)))
+    , m_aux_model(new CadModel())
+//    , m_aux_model(new CadModel(CurvedTrackShape(2, 6.0, 180)))
     , m_change(true)
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -34,9 +34,28 @@ View::View()
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
+    build_track();
     decorate_model();
     m_aux_model->add(*m_table);
     m_change = false;
+}
+
+void View::build_track()
+{
+    float length = 12.0;
+    float radius = 6.0;
+    int lanes = 2;
+    CadModel s1 = CadModel(StraightTrackShape(lanes, length));
+    CadModel c1 = CadModel(CurvedTrackShape(lanes, radius, 180));
+    CadModel c2 = CadModel(CurvedTrackShape(lanes, radius, 180));
+    s1.rotate_ay(-90);
+    c1.rotate_ay(90);
+    c2.rotate_ay(-90);
+
+    m_aux_model->add(s1, 0.0, 0.0, 0.0);
+    m_aux_model->add(s1, 0.0, 0.0, -2.0 * radius);
+    m_aux_model->add(c1, 0.0, 0.0, 0.0);
+    m_aux_model->add(c2, length, 0.0, -2.0 * radius);
 }
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)
@@ -77,7 +96,7 @@ void View::decorate_model()
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
 
-//    add_grid(m_table, bb);
+    add_grid(m_table, bb);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0));
     m_radius = fmax(m_radius, 2.0);
@@ -110,7 +129,7 @@ bool View::initialize()
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     resize_calc();

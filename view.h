@@ -39,6 +39,7 @@ protected:
     void sub_copy_facets(CadModel* model, VertexData* vertices, int& vix);
     void copy_aux_facets();
     void render_facets();
+    void build_track();
 
 private:
     int m_max_vertex_count;

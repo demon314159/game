@@ -1,16 +1,16 @@
 
-#ifndef _TRACK_SHAPE_H_
-#define _TRACK_SHAPE_H_
+#ifndef _STRAIGHT_TRACK_SHAPE_H_
+#define _STRAIGHT_TRACK_SHAPE_H_
 
 #include "shape.h"
 #include "float3.h"
 #include "facet.h"
 
-class TrackShape: public Shape
+class StraightTrackShape: public Shape
 {
 public:
-    TrackShape(int lanes, float length);
-    virtual ~TrackShape();
+    StraightTrackShape(int lanes, float length);
+    virtual ~StraightTrackShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
@@ -25,4 +25,4 @@ private:
     void add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };
 
-#endif // _TRACK_SHAPE_
+#endif // _STRAIGHT_TRACK_SHAPE_

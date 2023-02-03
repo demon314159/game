@@ -28,7 +28,7 @@ HEADERS      += game.h \
                 brick_shape.h \
                 cube_shape.h \
                 straight_track_shape.h \
-##                curved_track_shape.h \
+                curved_track_shape.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
@@ -47,7 +47,7 @@ SOURCES      += main.cpp \
                 brick_shape.cpp \
                 cube_shape.cpp \
                 straight_track_shape.cpp \
-##                curved_track_shape.cpp \
+                curved_track_shape.cpp \
 
 RESOURCES    += shaders.qrc
 

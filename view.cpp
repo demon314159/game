@@ -3,7 +3,7 @@
 #include "cube_shape.h"
 #include "brick_shape.h"
 #include "straight_track_shape.h"
-//#include "curved_track_shape.h"
+#include "curved_track_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 #include <math.h>
@@ -15,8 +15,8 @@ View::View()
     : m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
     , m_table(new CadModel())
-    , m_aux_model(new CadModel(StraightTrackShape(2, 12.0)))
-//    , m_aux_model(new CadModel(CurvedTrackShape(2, 6.0, 180)))
+//    , m_aux_model(new CadModel(StraightTrackShape(2, 12.0)))
+    , m_aux_model(new CadModel(CurvedTrackShape(2, 6.0, 180)))
     , m_change(true)
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})

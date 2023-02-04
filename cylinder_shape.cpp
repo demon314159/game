@@ -2,9 +2,11 @@
 #include "cylinder_shape.h"
 #include "math.h"
 
-CylinderShape::CylinderShape(float radius, float height)
+CylinderShape::CylinderShape(float radius, float height, float upper_bevel, float lower_bevel)
     : m_radius(radius)
     , m_height(height)
+    , m_upper_bevel(upper_bevel)
+    , m_lower_bevel(lower_bevel)
     , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
@@ -40,19 +42,39 @@ void CylinderShape::define_shape()
     int steps = round(360.0 / approx_dangle);
     float dangle = 360.0 / (float) steps;
     float dy = m_height / 2.0;
+    float ub = m_upper_bevel;
+    float lb = m_lower_bevel;
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
         float cosa = cos(angle * 3.1415926535 / 180.0);
         float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
         float sina = sin(angle * 3.1415926535 / 180.0);
         float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
-        float xa0 = m_radius * cosa;
-        float xb0 = m_radius * cosb;
-        float za0 = m_radius * sina;
-        float zb0 = m_radius * sinb;
-        add_face({xa0, -dy, za0}, {xb0, -dy, zb0}, {xb0, dy, zb0}, {xa0, dy, za0}, true);
+
+
+        float xa1 = m_radius * cosa;
+        float xb1 = m_radius * cosb;
+        float za1 = m_radius * sina;
+        float zb1 = m_radius * sinb;
+        add_face({xa1, -dy + lb, za1}, {xb1, -dy + lb, zb1}, {xb1, dy - ub, zb1}, {xa1, dy - ub, za1}, true);
+
+        float xa0 = (m_radius - lb) * cosa;
+        float xb0 = (m_radius - lb) * cosb;
+        float za0 = (m_radius - lb) * sina;
+        float zb0 = (m_radius - lb) * sinb;
         add_face({xa0, -dy, za0}, {0.0, -dy, 0.0}, {xb0, -dy, zb0}, true);
-        add_face({xa0, dy, za0}, {0.0, dy, 0.0}, {xb0, dy, zb0}, false);
+        if (lb != 0.0) {
+            add_face({xa0, -dy, za0}, {xa1, -dy + lb, za1}, {xb1, -dy + lb, zb1}, {xb0, -dy, zb0}, false);
+        }
+
+        float xa2 = (m_radius - ub) * cosa;
+        float xb2 = (m_radius - ub) * cosb;
+        float za2 = (m_radius - ub) * sina;
+        float zb2 = (m_radius - ub) * sinb;
+        add_face({xa2, dy, za2}, {0.0, dy, 0.0}, {xb2, dy, zb2}, false);
+        if (ub != 0.0) {
+            add_face({xa2, dy, za2}, {xa1, dy - ub, za1}, {xb1, dy - ub, zb1}, {xb2, dy, zb2}, true);
+        }
     }
 }
 

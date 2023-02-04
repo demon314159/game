@@ -9,7 +9,7 @@
 class CylinderShape: public Shape
 {
 public:
-    CylinderShape(float radius, float height);
+    CylinderShape(float radius, float height, float upper_bevel = 0.0, float lower_bevel = 0.0);
     virtual ~CylinderShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
@@ -17,6 +17,8 @@ public:
 private:
     float m_radius;
     float m_height;
+    float m_upper_bevel;
+    float m_lower_bevel;
     bool m_count_mode;
     int m_facet_count;
     Facet *m_facet;

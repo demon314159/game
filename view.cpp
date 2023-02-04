@@ -19,7 +19,6 @@ View::View()
     , m_aux_count(0)
     , m_table(new CadModel())
     , m_aux_model(new CadModel())
-//    , m_aux_model(new CadModel(CurvedTrackShape(2, 6.0, 180)))
     , m_change(true)
     , m_radius(2.0)
     , m_center({0.0, 0.0, 0.0})
@@ -55,7 +54,7 @@ void View::build_car()
 
 void View::build_wheel()
 {
-    CadModel tire = CadModel(RingShape(1.0, 0.8, 0.2));
+    CadModel tire = CadModel(RingShape(1.0, 0.5, 0.2, 0.05, 0.05, 0.05, 0.05));
     m_aux_model->add(tire, 0.0, 0.0, 0.0);
 }
 

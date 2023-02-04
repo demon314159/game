@@ -27,6 +27,9 @@ HEADERS      += game.h \
                 view.h \
                 brick_shape.h \
                 cube_shape.h \
+                car_shape.h \
+                ring_shape.h \
+                cylinder_shape.h \
                 straight_track_shape.h \
                 curved_track_shape.h \
 
@@ -46,6 +49,9 @@ SOURCES      += main.cpp \
                 view.cpp \
                 brick_shape.cpp \
                 cube_shape.cpp \
+                car_shape.cpp \
+                ring_shape.cpp \
+                cylinder_shape.cpp \
                 straight_track_shape.cpp \
                 curved_track_shape.cpp \
 

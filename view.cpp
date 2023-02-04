@@ -2,6 +2,9 @@
 #include "paint_can.h"
 #include "cube_shape.h"
 #include "brick_shape.h"
+#include "car_shape.h"
+#include "ring_shape.h"
+#include "cylinder_shape.h"
 #include "straight_track_shape.h"
 #include "curved_track_shape.h"
 #include "bounding_box.h"
@@ -34,10 +37,26 @@ View::View()
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-    build_track();
+//    build_track();
+//    build_car();
+    build_wheel();
     decorate_model();
     m_aux_model->add(*m_table);
     m_change = false;
+}
+
+void View::build_car()
+{
+    float width = 1.0;
+    float length = 1.618;
+    CadModel car= CadModel(CarShape(width, length));
+    m_aux_model->add(car, 0.0, 0.0, 0.0);
+}
+
+void View::build_wheel()
+{
+    CadModel tire = CadModel(RingShape(1.0, 0.8, 0.2));
+    m_aux_model->add(tire, 0.0, 0.0, 0.0);
 }
 
 void View::build_track()

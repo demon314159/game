@@ -40,6 +40,8 @@ protected:
     void copy_aux_facets();
     void render_facets();
     void build_track();
+    void build_car();
+    void build_wheel();
 
 private:
     int m_max_vertex_count;

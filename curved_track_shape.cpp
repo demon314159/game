@@ -56,119 +56,113 @@ void CurvedTrackShape::define_shape()
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
 
-// start of loop
-
-    float x0 = -dimx / 2.0;
-    float x1 = x0 + TrackStyle::track_bevel;
-    float x2 = x0 + TrackStyle::car_shoulder + TrackStyle::car_width / 2.0
+        float x0 = -dimx / 2.0;
+        float x1 = x0 + TrackStyle::track_bevel;
+        float x2 = x0 + TrackStyle::car_shoulder + TrackStyle::car_width / 2.0
              - TrackStyle::slot_width / 2.0 - TrackStyle::rail_width;
-    float x3 = x2 + TrackStyle::rail_width;
-    float x4 = x3 + TrackStyle::slot_width;
-    float x5 = x4 + TrackStyle::rail_width;
+        float x3 = x2 + TrackStyle::rail_width;
+        float x4 = x3 + TrackStyle::slot_width;
+        float x5 = x4 + TrackStyle::rail_width;
 
-    float cosa = cos(angle * 3.1415926535 / 180.0);
-    float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
-    float sina = sin(angle * 3.1415926535 / 180.0);
-    float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
+        float cosa = cos(angle * 3.1415926535 / 180.0);
+        float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
+        float sina = sin(angle * 3.1415926535 / 180.0);
+        float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
 
-    float xa0 = m_radius - (-x0 + m_radius) * cosa;
-    float xb0 = m_radius - (-x0 + m_radius) * cosb;
-    float za0 = - (-x0 + m_radius) * sina;
-    float zb0 = - (-x0 + m_radius) * sinb;
+        float xa0 = m_radius - (-x0 + m_radius) * cosa;
+        float xb0 = m_radius - (-x0 + m_radius) * cosb;
+        float za0 = - (-x0 + m_radius) * sina;
+        float zb0 = - (-x0 + m_radius) * sinb;
 
-    float xa1 = m_radius - (-x1 + m_radius) * cosa;
-    float xb1 = m_radius - (-x1 + m_radius) * cosb;
-    float za1 = - (-x1 + m_radius) * sina;
-    float zb1 = - (-x1 + m_radius) * sinb;
+        float xa1 = m_radius - (-x1 + m_radius) * cosa;
+        float xb1 = m_radius - (-x1 + m_radius) * cosb;
+        float za1 = - (-x1 + m_radius) * sina;
+        float zb1 = - (-x1 + m_radius) * sinb;
 
-    float xa2 = m_radius - (-x2 + m_radius) * cosa;
-    float xb2 = m_radius - (-x2 + m_radius) * cosb;
-    float za2 = - (-x2 + m_radius) * sina;
-    float zb2 = - (-x2 + m_radius) * sinb;
+        float xa2 = m_radius - (-x2 + m_radius) * cosa;
+        float xb2 = m_radius - (-x2 + m_radius) * cosb;
+        float za2 = - (-x2 + m_radius) * sina;
+        float zb2 = - (-x2 + m_radius) * sinb;
 
-    float xa3 = m_radius - (-x3 + m_radius) * cosa;
-    float xb3 = m_radius - (-x3 + m_radius) * cosb;
-    float za3 = - (-x3 + m_radius) * sina;
-    float zb3 = - (-x3 + m_radius) * sinb;
+        float xa3 = m_radius - (-x3 + m_radius) * cosa;
+        float xb3 = m_radius - (-x3 + m_radius) * cosb;
+        float za3 = - (-x3 + m_radius) * sina;
+        float zb3 = - (-x3 + m_radius) * sinb;
 
-    float xa4 = m_radius - (-x4 + m_radius) * cosa;
-    float xb4 = m_radius - (-x4 + m_radius) * cosb;
-    float za4 = - (-x4 + m_radius) * sina;
-    float zb4 = - (-x4 + m_radius) * sinb;
+        float xa4 = m_radius - (-x4 + m_radius) * cosa;
+        float xb4 = m_radius - (-x4 + m_radius) * cosb;
+        float za4 = - (-x4 + m_radius) * sina;
+        float zb4 = - (-x4 + m_radius) * sinb;
 
-    float xa5 = m_radius - (-x5 + m_radius) * cosa;
-    float xb5 = m_radius - (-x5 + m_radius) * cosb;
-    float za5 = - (-x5 + m_radius) * sina;
-    float zb5 = - (-x5 + m_radius) * sinb;
+        float xa5 = m_radius - (-x5 + m_radius) * cosa;
+        float xb5 = m_radius - (-x5 + m_radius) * cosb;
+        float za5 = - (-x5 + m_radius) * sina;
+        float zb5 = - (-x5 + m_radius) * sinb;
 
-    add_face(0.0, tp, {xa0, -dy, za0}, {xb0, -dy, zb0}, {xb0, dy - db, zb0}, {xa0, dy - db, za0}, true);
-    add_face(0.0, tp, {xa0, dy - db, za0}, {xb0, dy - db, zb0}, {xb1, dy, zb1}, {xa1, dy, za1}, true);
-    add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
-    add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
-    add_face(0.0, tp, {xa3, dy, za3}, {xb3, dy, zb3}, {xb3, dy - sh, zb3}, {xa3, dy - sh, za3}, true);
-    add_face(1.0, sp, {xa3, dy - sh, za3}, {xb3, dy - sh, zb3}, {xb4, dy - sh, zb4}, {xa4, dy - sh, za4}, true);
-    add_face(0.0, tp, {xa4, dy - sh, za4}, {xb4, dy - sh, zb4}, {xb4, dy, zb4}, {xa4, dy, za4}, true);
-    add_face(1.0, rp, {xa4, dy, za4}, {xb4, dy, zb4}, {xb5, dy, zb5}, {xa5, dy, za5}, true);
-
-    for (int i = 1; i < m_lanes; i++) {
-        x1 = x5;
-        x2 = x2 + TrackStyle::car_gap + TrackStyle::car_width;
-        x3 = x3 + TrackStyle::car_gap + TrackStyle::car_width;
-        x4 = x4 + TrackStyle::car_gap + TrackStyle::car_width;
-        x5 = x5 + TrackStyle::car_gap + TrackStyle::car_width;
-
-        xa1 = m_radius - (-x1 + m_radius) * cosa;
-        xb1 = m_radius - (-x1 + m_radius) * cosb;
-        za1 = - (-x1 + m_radius) * sina;
-        zb1 = - (-x1 + m_radius) * sinb;
-
-        xa2 = m_radius - (-x2 + m_radius) * cosa;
-        xb2 = m_radius - (-x2 + m_radius) * cosb;
-        za2 = - (-x2 + m_radius) * sina;
-        zb2 = - (-x2 + m_radius) * sinb;
-
-        xa3 = m_radius - (-x3 + m_radius) * cosa;
-        xb3 = m_radius - (-x3 + m_radius) * cosb;
-        za3 = - (-x3 + m_radius) * sina;
-        zb3 = - (-x3 + m_radius) * sinb;
-
-        xa4 = m_radius - (-x4 + m_radius) * cosa;
-        xb4 = m_radius - (-x4 + m_radius) * cosb;
-        za4 = - (-x4 + m_radius) * sina;
-        zb4 = - (-x4 + m_radius) * sinb;
-
-        xa5 = m_radius - (-x5 + m_radius) * cosa;
-        xb5 = m_radius - (-x5 + m_radius) * cosb;
-        za5 = - (-x5 + m_radius) * sina;
-        zb5 = - (-x5 + m_radius) * sinb;
-
+        add_face(0.0, tp, {xa0, -dy, za0}, {xb0, -dy, zb0}, {xb0, dy - db, zb0}, {xa0, dy - db, za0}, true);
+        add_face(0.0, tp, {xa0, dy - db, za0}, {xb0, dy - db, zb0}, {xb1, dy, zb1}, {xa1, dy, za1}, true);
         add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
         add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
         add_face(0.0, tp, {xa3, dy, za3}, {xb3, dy, zb3}, {xb3, dy - sh, zb3}, {xa3, dy - sh, za3}, true);
         add_face(1.0, sp, {xa3, dy - sh, za3}, {xb3, dy - sh, zb3}, {xb4, dy - sh, zb4}, {xa4, dy - sh, za4}, true);
         add_face(0.0, tp, {xa4, dy - sh, za4}, {xb4, dy - sh, zb4}, {xb4, dy, zb4}, {xa4, dy, za4}, true);
         add_face(1.0, rp, {xa4, dy, za4}, {xb4, dy, zb4}, {xb5, dy, zb5}, {xa5, dy, za5}, true);
-    }
-    float x6 = dimx / 2.0 - TrackStyle::track_bevel;
-    float x7 = dimx / 2.0;
 
-    float xa6 = m_radius - (-x6 + m_radius) * cosa;
-    float xb6 = m_radius - (-x6 + m_radius) * cosb;
-    float za6 = - (-x6 + m_radius) * sina;
-    float zb6 = - (-x6 + m_radius) * sinb;
+        for (int i = 1; i < m_lanes; i++) {
+            x1 = x5;
+            x2 = x2 + TrackStyle::car_gap + TrackStyle::car_width;
+            x3 = x3 + TrackStyle::car_gap + TrackStyle::car_width;
+            x4 = x4 + TrackStyle::car_gap + TrackStyle::car_width;
+            x5 = x5 + TrackStyle::car_gap + TrackStyle::car_width;
 
-    float xa7 = m_radius - (-x7 + m_radius) * cosa;
-    float xb7 = m_radius - (-x7 + m_radius) * cosb;
-    float za7 = - (-x7 + m_radius) * sina;
-    float zb7 = - (-x7 + m_radius) * sinb;
+            xa1 = m_radius - (-x1 + m_radius) * cosa;
+            xb1 = m_radius - (-x1 + m_radius) * cosb;
+            za1 = - (-x1 + m_radius) * sina;
+            zb1 = - (-x1 + m_radius) * sinb;
 
-    add_face(0.0, tp, {xa5, dy, za5}, {xb5, dy, zb5}, {xb6, dy, zb6}, {xa6, dy, za6}, true);
-    add_face(0.0, tp, {xa6, dy, za6}, {xb6, dy, zb6}, {xb7, dy - db, zb7}, {xa7, dy - db, za7}, true);
-    add_face(0.0, tp, {xa7, dy - db, za7}, {xb7, dy - db, zb7}, {xb7, -dy, zb7}, {xa7, -dy, za7}, true);
+            xa2 = m_radius - (-x2 + m_radius) * cosa;
+            xb2 = m_radius - (-x2 + m_radius) * cosb;
+            za2 = - (-x2 + m_radius) * sina;
+            zb2 = - (-x2 + m_radius) * sinb;
 
+            xa3 = m_radius - (-x3 + m_radius) * cosa;
+            xb3 = m_radius - (-x3 + m_radius) * cosb;
+            za3 = - (-x3 + m_radius) * sina;
+            zb3 = - (-x3 + m_radius) * sinb;
 
-// end of loop
+            xa4 = m_radius - (-x4 + m_radius) * cosa;
+            xb4 = m_radius - (-x4 + m_radius) * cosb;
+            za4 = - (-x4 + m_radius) * sina;
+            zb4 = - (-x4 + m_radius) * sinb;
 
+            xa5 = m_radius - (-x5 + m_radius) * cosa;
+            xb5 = m_radius - (-x5 + m_radius) * cosb;
+            za5 = - (-x5 + m_radius) * sina;
+            zb5 = - (-x5 + m_radius) * sinb;
+
+            add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
+            add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
+            add_face(0.0, tp, {xa3, dy, za3}, {xb3, dy, zb3}, {xb3, dy - sh, zb3}, {xa3, dy - sh, za3}, true);
+            add_face(1.0, sp, {xa3, dy - sh, za3}, {xb3, dy - sh, zb3}, {xb4, dy - sh, zb4}, {xa4, dy - sh, za4}, true);
+            add_face(0.0, tp, {xa4, dy - sh, za4}, {xb4, dy - sh, zb4}, {xb4, dy, zb4}, {xa4, dy, za4}, true);
+            add_face(1.0, rp, {xa4, dy, za4}, {xb4, dy, zb4}, {xb5, dy, zb5}, {xa5, dy, za5}, true);
+        }
+        float x6 = dimx / 2.0 - TrackStyle::track_bevel;
+        float x7 = dimx / 2.0;
+
+        float xa6 = m_radius - (-x6 + m_radius) * cosa;
+        float xb6 = m_radius - (-x6 + m_radius) * cosb;
+        float za6 = - (-x6 + m_radius) * sina;
+        float zb6 = - (-x6 + m_radius) * sinb;
+
+        float xa7 = m_radius - (-x7 + m_radius) * cosa;
+        float xb7 = m_radius - (-x7 + m_radius) * cosb;
+        float za7 = - (-x7 + m_radius) * sina;
+        float zb7 = - (-x7 + m_radius) * sinb;
+
+        add_face(0.0, tp, {xa5, dy, za5}, {xb5, dy, zb5}, {xb6, dy, zb6}, {xa6, dy, za6}, true);
+        add_face(0.0, tp, {xa6, dy, za6}, {xb6, dy, zb6}, {xb7, dy - db, zb7}, {xa7, dy - db, za7}, true);
+        add_face(0.0, tp, {xa7, dy - db, za7}, {xb7, dy - db, zb7}, {xb7, -dy, zb7}, {xa7, -dy, za7}, true);
     }
 }
 

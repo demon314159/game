@@ -37,8 +37,8 @@ View::View()
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-    build_wheel();
-    build_track();
+    build_wheels(TrackStyle::car_width);
+//    build_track();
 //    build_car();
     decorate_model();
     m_aux_model->add(*m_table);
@@ -53,47 +53,47 @@ void View::build_car()
     m_aux_model->add(car, 0.0, 0.0, 0.0);
 }
 
-void View::build_wheel()
+CadModel View::build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width)
 {
-    float width = 1.0;
-    float spacing_b = width * 0.825;
-    float spacing_f = width * 0.775;
-    float axle_spacing = width * 1.25;
-    float r_tire_b = width * 0.1875;
-    float r_rim_b = width * 0.1125;
-    float r_inner_b = width * 0.1;
-    float height_b = width * 0.2;
-    float bevel_b = height_b / 10.0;
-    PaintCan tire_p(0.0, 0.0, 0.25);
+    float bevel = width / 10.0;
+//    PaintCan tire_p(0.0, 0.0, 0.25);
+    PaintCan tire_p(1.0, 0.0, 0.0);
     PaintCan rim_p(0.75, 0.75, 0.75);
-    CadModel tire_b = CadModel(RingShape(r_tire_b, r_rim_b, height_b, bevel_b, 0.0, bevel_b, 0.0), tire_p, 0.0);
-    bevel_b = (r_rim_b - r_inner_b) / 5.0;
-    CadModel rim_b = CadModel(RingShape(r_rim_b, r_inner_b, height_b, 0.0, bevel_b, 0.0, bevel_b), rim_p, 0.0);
-    CadModel hub_b = CadModel(CylinderShape(r_inner_b, height_b * 0.8), rim_p, 0.0);
+    PaintCan hub_p(1.0, 0.922, 0.0);
+    PaintCan knob_p(0.25, 0.25, 0.25);
+    CadModel tire = CadModel(RingShape(r_tire, r_rim, width, bevel, 0.0, bevel, 0.0), tire_p, 0.0);
+    bevel = (r_rim - r_inner) / 5.0;
+    CadModel rim = CadModel(RingShape(r_rim, r_inner, width, 0.0, bevel, 0.0, bevel), rim_p, 0.0);
+    CadModel spacer = CadModel(RingShape(r_inner, r_spacer, width * 0.9), rim_p, 0.0);
+    CadModel hub = CadModel(CylinderShape(r_spacer, width * 0.2), hub_p, 0.0);
+    CadModel knob = CadModel(CylinderShape(r_rim * 0.25, width * 0.3, r_rim * 0.25 * 0.2, r_rim * 0.25 * 0.2), knob_p, 0.0);
+    tire.add(rim, 0.0, 0.0, 0.0);
+    tire.add(spacer, 0.0, 0.0, 0.0);
+    tire.add(hub, 0.0, 0.0, 0.0);
+    tire.add(knob, 0.0, 0.0, 0.0);
+    return tire;
+}
+
+void View::build_wheels(float car_width)
+{
     float th = TrackStyle::track_height;
     float ofs = TrackStyle::car_gap / 2.0 + TrackStyle::car_width / 2.0;
     float xofs = 3.0;
-    m_aux_model->add(tire_b, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, r_tire_b + th);
-    m_aux_model->add(rim_b, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, r_tire_b + th);
-    m_aux_model->add(hub_b, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, r_tire_b + th);
-    m_aux_model->add(tire_b, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, r_tire_b + th);
-    m_aux_model->add(rim_b, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, r_tire_b + th);
-    m_aux_model->add(hub_b, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, r_tire_b + th);
-    float r_tire_f = width * 0.16875;
-    float r_rim_f = width * 0.1125;
-    float r_inner_f = width * 0.1;
-    float height_f = width * 0.1375;
-    float bevel_f = height_f / 10.0;
-    CadModel tire_f = CadModel(RingShape(r_tire_f, r_rim_f, height_f, bevel_f, 0.0, bevel_f, 0.0), tire_p, 0.0);
-    bevel_f = (r_rim_f - r_inner_f) / 5.0;
-    CadModel rim_f = CadModel(RingShape(r_rim_f, r_inner_f, height_f, 0.0, bevel_f, 0.0, bevel_f), rim_p, 0.0);
-    CadModel hub_f = CadModel(CylinderShape(r_inner_f, height_f * 0.8), rim_p, 0.0);
-    m_aux_model->add(tire_f, -axle_spacing / 2.0 + xofs, -spacing_f / 2.0 + ofs, r_tire_f + th);
-    m_aux_model->add(rim_f, -axle_spacing / 2.0 + xofs, -spacing_f / 2.0 + ofs, r_tire_f + th);
-    m_aux_model->add(hub_f, -axle_spacing / 2.0 + xofs, -spacing_f / 2.0 + ofs, r_tire_f + th);
-    m_aux_model->add(tire_f, -axle_spacing / 2.0 + xofs, spacing_f / 2.0 + ofs, r_tire_f + th);
-    m_aux_model->add(rim_f, -axle_spacing / 2.0 + xofs, spacing_f / 2.0 + ofs, r_tire_f + th);
-    m_aux_model->add(hub_f, -axle_spacing / 2.0 + xofs, spacing_f / 2.0 + ofs, r_tire_f + th);
+    float spacing_b = car_width * 0.825;
+    float spacing_f = car_width * 0.775;
+    float axle_spacing = car_width * 1.25;
+    float back_radius = car_width * 0.1875;
+    float front_radius = car_width * 0.16875;
+    float rim_radius = car_width * 0.1125;
+    float inner_radius = car_width * 0.1;
+    float spacer_radius = car_width * 0.09;
+
+    CadModel back_wheel = build_wheel(back_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.2);
+    CadModel front_wheel = build_wheel(front_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.1375);
+    m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, back_radius + th);
+    m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, back_radius + th);
+    m_aux_model->add(front_wheel, -axle_spacing / 2.0 + xofs, -spacing_f / 2.0 + ofs, front_radius + th);
+    m_aux_model->add(front_wheel, -axle_spacing / 2.0 + xofs, spacing_f / 2.0 + ofs, front_radius + th);
     m_aux_model->rotate_ax(-90.0);
 }
 
@@ -153,7 +153,7 @@ void View::decorate_model()
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
 
-    add_grid(m_table, bb);
+//    add_grid(m_table, bb);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0));
     m_radius = fmax(m_radius, 2.0);

@@ -15,6 +15,7 @@
 #include "paint_can.h"
 #include "shape.h"
 #include "face.h"
+#include "curve.h"
 
 class Document;
 

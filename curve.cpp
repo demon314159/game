@@ -36,8 +36,7 @@ double Curve::x(int step) const
         if (step >= m_radial[i].steps()) {
             step -= m_radial[i].steps();
         } else {
-            double v = m_radial[i].x(step);
-            return v;
+            return m_radial[i].x(step);
         }
     }
     return 0.0;
@@ -49,8 +48,7 @@ double Curve::y(int step) const
         if (step >= m_radial[i].steps()) {
             step -= m_radial[i].steps();
         } else {
-            double v = m_radial[i].y(step);
-            return v;
+            return m_radial[i].y(step);
         }
     }
     return 0.0;

@@ -73,19 +73,20 @@ void CarShape::define_shape()
     top_rad = top_rad.shrunk(top_shrink, 1.0 - top_shrink);
     bottom_rad = bottom_rad.shrunk(bottom_shrink, 1.0 - bottom_shrink);
     right_rad = right_rad.shrunk(side_top_shrink, 1.0 - side_bottom_shrink);
+    left_rad = left_rad.shrunk(side_bottom_shrink, 1.0 - side_top_shrink);
     Radial top_right_rad(top_rad, right_rad, fillet_steps);
     Radial top_left_rad(left_rad, top_rad, fillet_steps);
     Radial bottom_right_rad(right_rad, bottom_rad, fillet_steps);
     Radial bottom_left_rad(bottom_rad, left_rad, fillet_steps);
     Curve curve;
-//    curve.add(bottom_left_rad);
+    curve.add(bottom_left_rad);
     curve.add(left_rad);
     curve.add(top_left_rad);
-//    curve.add(top_rad);
-//    curve.add(top_right_rad);
-//    curve.add(right_rad);
-//    curve.add(bottom_right_rad);
-//    curve.add(bottom_rad);
+    curve.add(top_rad);
+    curve.add(top_right_rad);
+    curve.add(right_rad);
+    curve.add(bottom_right_rad);
+    curve.add(bottom_rad);
 
     float z0 = 0.0;
     float z1 = 5.0;
@@ -95,7 +96,7 @@ void CarShape::define_shape()
         float y0 = curve.y(i - 1);
         float x1 = curve.x(i);
         float y1 = curve.y(i);
-        add_face(0.0, cp, {x0, y0, z0}, {x0, y0, z1}, {x1, y1, z1}, {x1, y1, z0}, true);
+        add_face(0.0, cp, {x0, y0, z0}, {x0, y0, z1}, {x1, y1, z1}, {x1, y1, z0});
     }
 }
 

@@ -37,7 +37,6 @@ double Curve::x(int step) const
             step -= m_radial[i].steps();
         } else {
             double v = m_radial[i].x(step);
-            printf("    radial[%d].x(%d) = %5.2lf\n", i, step, v);
             return v;
         }
     }
@@ -51,7 +50,6 @@ double Curve::y(int step) const
             step -= m_radial[i].steps();
         } else {
             double v = m_radial[i].y(step);
-            printf("    radial[%d].x(%d) = %5.2lf\n", i, step, v);
             return v;
         }
     }

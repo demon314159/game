@@ -78,14 +78,14 @@ void CarShape::define_shape()
     Radial bottom_right_rad(right_rad, bottom_rad, fillet_steps);
     Radial bottom_left_rad(bottom_rad, left_rad, fillet_steps);
     Curve curve;
-    curve.add(bottom_left_rad);
+//    curve.add(bottom_left_rad);
     curve.add(left_rad);
     curve.add(top_left_rad);
-    curve.add(top_rad);
-    curve.add(top_right_rad);
-    curve.add(right_rad);
-    curve.add(bottom_right_rad);
-    curve.add(bottom_rad);
+//    curve.add(top_rad);
+//    curve.add(top_right_rad);
+//    curve.add(right_rad);
+//    curve.add(bottom_right_rad);
+//    curve.add(bottom_rad);
 
     float z0 = 0.0;
     float z1 = 5.0;

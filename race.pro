@@ -1,3 +1,4 @@
+E
 TEMPLATE = app
 TARGET = race
 
@@ -8,9 +9,13 @@ QT += widgets
 HEADERS      += game.h \
                 int3.h \
                 float3.h \
+                double3.h \
+                matrix.h \
                 facet.h \
                 face.h \
                 vertex_data.h \
+                radial.h \
+                curve.h \
                 paint_can.h \
                 bounding_box.h \
                 look.h \
@@ -35,6 +40,9 @@ HEADERS      += game.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
+                matrix.cpp \
+                radial.cpp \
+                curve.cpp \
                 paint_can.cpp \
                 look.cpp \
                 track_style.cpp \

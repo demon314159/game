@@ -1,7 +1,11 @@
 
 #include "car_shape.h"
+#include "radial.h"
+#include "curve.h"
 #include "track_style.h"
 #include <cstddef>
+
+#include "stdio.h"
 
 CarShape::CarShape(float width, float length)
     : m_width(width)
@@ -37,71 +41,62 @@ Facet CarShape::facet(int facet_ix) const
 
 void CarShape::define_shape()
 {
-    float dx0 = m_width / 5.0;
-    float dx1 = m_width / 2.0;
-    float dy0 = m_width / 5.0;
-    float dy1 = m_width / 2.0;
-    float dz0 = 0.0;
-    float dz1 = -3.0 * m_length / 4.0;
+    int np = 4;
+    Matrix given(np, 2);
+    given.set(0, 0, 0.0); given.set(0, 1, 5.0);
+    given.set(1, 0, 10.0); given.set(1, 1, 4.0);
+    given.set(2, 0, 9.0); given.set(2, 1, 0.5);
+    given.set(3, 0, 0.0); given.set(3, 1, 0.0);
+    int top_steps = 9;
+    int bottom_steps = 9;
+    int side_steps = 9;
+    int fillet_steps = 9;
+    double top_shrink = 0.05;
+    double bottom_shrink = 0.05;
+    double side_top_shrink = 0.2;
+    double side_bottom_shrink = 0.2;
+    // Find top radial
+    Double2 p1 = {-given.get(1, 0), given.get(1, 1)};
+    Double2 p2 = {given.get(0, 0), given.get(0, 1)};
+    Double2 p3 = {given.get(1, 0), given.get(1, 1)};
+    Radial top_rad(p1, p2, p3, top_steps);
+    p1 = {given.get(2, 0), given.get(2, 1)};
+    p2 = {given.get(3, 0), given.get(3, 1)};
+    p3 = {-given.get(2, 0), given.get(2, 1)};
+    Radial bottom_rad(p1, p2, p3, bottom_steps);
+    p1 = {given.get(1, 0), given.get(1, 1)};
+    p2 = {given.get(2, 0), given.get(2, 1)};
+    Radial right_rad(p1, p2, 10.0, side_steps);
+    p2 = {-given.get(1, 0), given.get(1, 1)};
+    p1 = {-given.get(2, 0), given.get(2, 1)};
+    Radial left_rad(p1, p2, 10.0, side_steps);
+    top_rad = top_rad.shrunk(top_shrink, 1.0 - top_shrink);
+    bottom_rad = bottom_rad.shrunk(bottom_shrink, 1.0 - bottom_shrink);
+    right_rad = right_rad.shrunk(side_top_shrink, 1.0 - side_bottom_shrink);
+    Radial top_right_rad(top_rad, right_rad, fillet_steps);
+    Radial top_left_rad(left_rad, top_rad, fillet_steps);
+    Radial bottom_right_rad(right_rad, bottom_rad, fillet_steps);
+    Radial bottom_left_rad(bottom_rad, left_rad, fillet_steps);
+    Curve curve;
+    curve.add(bottom_left_rad);
+    curve.add(left_rad);
+    curve.add(top_left_rad);
+    curve.add(top_rad);
+    curve.add(top_right_rad);
+    curve.add(right_rad);
+    curve.add(bottom_right_rad);
+    curve.add(bottom_rad);
 
-
-    Float3 cp = TrackStyle::slot_paint().ambient_color();
-    add_face(0.0, cp, {-dx0, 0.0, dz0}, {-dx0, dy0, dz0}, {dx0, dy0, dz0}, {dx0, 0.0, dz0}, true);
-    add_face(0.0, cp, {-dx0, 0.0, dz0}, {-dx1, 0.0, dz1}, {dx1, 0.0, dz1}, {dx0, 0.0, dz0}, false);
-    add_face(0.0, cp, {-dx0, 0.0, dz0}, {-dx1, 0.0, dz1}, {-dx1, dy1, dz1}, {-dx0, dy0, dz0}, true);
-    add_face(0.0, cp, {dx0, 0.0, dz0}, {dx1, 0.0, dz1}, {dx1, dy1, dz1}, {dx0, dy0, dz0}, false);
-    add_face(0.0, cp, {-dx0, dy0, dz0}, {-dx1, dy1, dz1}, {dx1, dy1, dz1}, {dx0, dy0, dz0}, true);
-
-
-#ifdef NEVERMORE
-    float dy = TrackStyle::track_height;
     float z0 = 0.0;
-    float z1 = -m_length;
-    float db = TrackStyle::track_bevel;
-    float sh = TrackStyle::slot_height;
-    Float3 tp = TrackStyle::track_paint().ambient_color();
-    Float3 sp = TrackStyle::slot_paint().ambient_color();
-    Float3 rp = TrackStyle::rail_paint().ambient_color();
-
-    float dimx = 2.0 * TrackStyle::car_shoulder
-               + (float) m_lanes * TrackStyle::car_width
-               + (float) (m_lanes - 1) * TrackStyle::car_gap;
-
-    float x0 = -dimx / 2.0;
-    float x1 = x0 + TrackStyle::track_bevel;
-    float x2 = x0 + TrackStyle::car_shoulder + TrackStyle::car_width / 2.0
-             - TrackStyle::slot_width / 2.0 - TrackStyle::rail_width;
-    float x3 = x2 + TrackStyle::rail_width;
-    float x4 = x3 + TrackStyle::slot_width;
-    float x5 = x4 + TrackStyle::rail_width;
-
-    add_face(0.0, tp, {x0, -dy, z0}, {x0, -dy, z1}, {x0, dy - db, z1}, {x0, dy - db, z0}, true);
-    add_face(0.0, tp, {x0, dy - db, z0}, {x0, dy - db, z1}, {x1, dy, z1}, {x1, dy, z0}, true);
-    add_face(0.0, tp, {x1, dy, z0}, {x1, dy, z1}, {x2, dy, z1}, {x2, dy, z0}, true);
-    add_face(1.0, rp, {x2, dy, z0}, {x2, dy, z1}, {x3, dy, z1}, {x3, dy, z0}, true);
-    add_face(0.0, tp, {x3, dy, z0}, {x3, dy, z1}, {x3, dy - sh, z1}, {x3, dy - sh, z0}, true);
-    add_face(1.0, sp, {x3, dy - sh, z0}, {x3, dy - sh, z1}, {x4, dy - sh, z1}, {x4, dy - sh, z0}, true);
-    add_face(0.0, tp, {x4, dy - sh, z0}, {x4, dy - sh, z1}, {x4, dy, z1}, {x4, dy, z0}, true);
-    add_face(1.0, rp, {x4, dy, z0}, {x4, dy, z1}, {x5, dy, z1}, {x5, dy, z0}, true);
-    for (int i = 1; i < m_lanes; i++) {
-        x1 = x5;
-        x2 = x2 + TrackStyle::car_gap + TrackStyle::car_width;
-        x3 = x3 + TrackStyle::car_gap + TrackStyle::car_width;
-        x4 = x4 + TrackStyle::car_gap + TrackStyle::car_width;
-        x5 = x5 + TrackStyle::car_gap + TrackStyle::car_width;
-        add_face(0.0, tp, {x1, dy, z0}, {x1, dy, z1}, {x2, dy, z1}, {x2, dy, z0}, true);
-        add_face(1.0, rp, {x2, dy, z0}, {x2, dy, z1}, {x3, dy, z1}, {x3, dy, z0}, true);
-        add_face(0.0, tp, {x3, dy, z0}, {x3, dy, z1}, {x3, dy - sh, z1}, {x3, dy - sh, z0}, true);
-        add_face(1.0, sp, {x3, dy - sh, z0}, {x3, dy - sh, z1}, {x4, dy - sh, z1}, {x4, dy - sh, z0}, true);
-        add_face(0.0, tp, {x4, dy - sh, z0}, {x4, dy - sh, z1}, {x4, dy, z1}, {x4, dy, z0}, true);
-        add_face(1.0, rp, {x4, dy, z0}, {x4, dy, z1}, {x5, dy, z1}, {x5, dy, z0}, true);
+    float z1 = 5.0;
+    Float3 cp = TrackStyle::slot_paint().ambient_color();
+    for (int i = 1; i < curve.steps(); i++) {
+        float x0 = curve.x(i - 1);
+        float y0 = curve.y(i - 1);
+        float x1 = curve.x(i);
+        float y1 = curve.y(i);
+        add_face(0.0, cp, {x0, y0, z0}, {x0, y0, z1}, {x1, y1, z1}, {x1, y1, z0}, true);
     }
-    float x6 = dimx / 2.0 - TrackStyle::track_bevel;
-    float x7 = dimx / 2.0;
-    add_face(0.0, tp, {x5, dy, z0}, {x5, dy, z1}, {x6, dy, z1}, {x6, dy, z0}, true);
-    add_face(0.0, tp, {x6, dy, z0}, {x6, dy, z1}, {x7, dy - db, z1}, {x7, dy - db, z0}, true);
-    add_face(0.0, tp, {x7, dy - db, z0}, {x7, dy - db, z1}, {x7, -dy, z1}, {x7, -dy, z0}, true);
-#endif
 }
 
 void CarShape::add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)

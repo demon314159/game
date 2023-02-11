@@ -37,9 +37,9 @@ View::View()
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-    build_wheels(TrackStyle::car_width);
+//    build_wheels(TrackStyle::car_width);
 //    build_track();
-//    build_car();
+    build_car();
     decorate_model();
     m_aux_model->add(*m_table);
     m_change = false;
@@ -186,7 +186,9 @@ bool View::initialize()
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+
+//    glEnable(GL_CULL_FACE);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     resize_calc();

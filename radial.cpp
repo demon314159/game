@@ -42,6 +42,9 @@ Radial::Radial(Double2 p1, Double2 p2, Double2 p3, int steps)
     m_end_radius = m_start_radius;
     m_start_angle = atan2(p1.v2 - m_center.v2, p1.v1 - m_center.v1);
     m_end_angle = atan2(p3.v2 - m_center.v2, p3.v1 - m_center.v1);
+    if (m_end_angle > m_start_angle) {
+        m_start_angle += (2.0 * PI);
+    }
 }
 
 Radial::Radial(Double2 p1, Double2 p2, double c, int steps)
@@ -60,6 +63,9 @@ Radial::Radial(Double2 p1, Double2 p2, double c, int steps)
     m_end_radius = m_start_radius;
     m_start_angle = atan2(p1.v2 - m_center.v2, p1.v1 - m_center.v1);
     m_end_angle = atan2(p2.v2 - m_center.v2, p2.v1 - m_center.v1);
+    if (m_end_angle > m_start_angle) {
+        m_start_angle += (2.0 * PI);
+    }
 }
 
 Radial::Radial(const Radial& rad1, const Radial& rad2, int steps)

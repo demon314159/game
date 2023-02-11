@@ -45,6 +45,7 @@ protected:
     void build_wheels(float car_width);
     CadModel build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width);
     Curve front_curve() const;
+    Curve back_curve() const;
 
 private:
     int m_max_vertex_count;

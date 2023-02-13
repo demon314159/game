@@ -101,9 +101,9 @@ Curve View::back_curve() const
     int np = 4;
     Matrix given(np, 2);
     given.set(0, 0, 0.0); given.set(0, 1, 10.0);
-    given.set(1, 0, 13.0); given.set(1, 1, 8.0);
-    given.set(2, 0, 12.0); given.set(2, 1, 0.0);
-    given.set(3, 0, 0.0); given.set(3, 1, -1.0);
+    given.set(1, 0, 8.0); given.set(1, 1, 9.0);
+    given.set(2, 0, 7.0); given.set(2, 1, 1.0);
+    given.set(3, 0, 0.0); given.set(3, 1, 0.0);
     int top_steps = 9;
     int bottom_steps = 9;
     int side_steps = 9;
@@ -148,14 +148,15 @@ Curve View::back_curve() const
 
 void View::build_car()
 {
-    Curve fc = front_curve();
+//    Curve fc = front_curve();
     Curve bc = back_curve();
-    CurveShape body1(bc, -40.0, bc, -20.0);
-    CurveShape body2(bc, -20.0, fc, 0.0);
-    CurveShape front(fc, 0.0);
-    CurveShape back(bc, -40.0, true);
+    CurveShape body1(bc, -50.0, bc, -0.0);
+//    CurveShape body2(bc, -20.0, fc, 0.0);
+//    CurveShape front(fc, 0.0);
+    CurveShape front(bc, 0.0);
+    CurveShape back(bc, -50.0, true);
     m_aux_model->add(body1, 0.0, 0.0, 0.0);
-    m_aux_model->add(body2, 0.0, 0.0, 0.0);
+//    m_aux_model->add(body2, 0.0, 0.0, 0.0);
     m_aux_model->add(front, 0.0, 0.0, 0.0);
     m_aux_model->add(back, 0.0, 0.0, 0.0);
 }

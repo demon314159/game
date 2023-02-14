@@ -1,8 +1,8 @@
 #include "view.h"
 #include "paint_can.h"
 #include "cube_shape.h"
+#include "box_shape.h"
 #include "brick_shape.h"
-#include "curve_shape.h"
 #include "ring_shape.h"
 #include "cylinder_shape.h"
 #include "straight_track_shape.h"
@@ -37,7 +37,7 @@ View::View()
 #ifdef VERBOSE
     printf("View::View(doc)\n");
 #endif
-//    build_wheels(TrackStyle::car_width);
+    build_wheels(TrackStyle::car_width);
 //    build_track();
     build_car();
     decorate_model();
@@ -45,120 +45,46 @@ View::View()
     m_change = false;
 }
 
-
-Curve View::front_curve() const
-{
-    int np = 4;
-    Matrix given(np, 2);
-    given.set(0, 0, 0.0); given.set(0, 1, 5.0);
-    given.set(1, 0, 10.0); given.set(1, 1, 4.0);
-    given.set(2, 0, 9.0); given.set(2, 1, 0.5);
-    given.set(3, 0, 0.0); given.set(3, 1, 0.0);
-    int top_steps = 9;
-    int bottom_steps = 9;
-    int side_steps = 9;
-    int fillet_steps = 9;
-    double top_shrink = 0.05;
-    double bottom_shrink = 0.05;
-    double side_top_shrink = 0.2;
-    double side_bottom_shrink = 0.2;
-    Double2 p1 = {-given.get(1, 0), given.get(1, 1)};
-    Double2 p2 = {given.get(0, 0), given.get(0, 1)};
-    Double2 p3 = {given.get(1, 0), given.get(1, 1)};
-    Radial top_rad(p1, p2, p3, top_steps);
-    p1 = {given.get(2, 0), given.get(2, 1)};
-    p2 = {given.get(3, 0), given.get(3, 1)};
-    p3 = {-given.get(2, 0), given.get(2, 1)};
-    Radial bottom_rad(p1, p2, p3, bottom_steps);
-    p1 = {given.get(1, 0), given.get(1, 1)};
-    p2 = {given.get(2, 0), given.get(2, 1)};
-    Radial right_rad(p1, p2, 10.0, side_steps);
-    p2 = {-given.get(1, 0), given.get(1, 1)};
-    p1 = {-given.get(2, 0), given.get(2, 1)};
-    Radial left_rad(p1, p2, 10.0, side_steps);
-    top_rad = top_rad.shrunk(top_shrink, 1.0 - top_shrink);
-    bottom_rad = bottom_rad.shrunk(bottom_shrink, 1.0 - bottom_shrink);
-    right_rad = right_rad.shrunk(side_top_shrink, 1.0 - side_bottom_shrink);
-    left_rad = left_rad.shrunk(side_bottom_shrink, 1.0 - side_top_shrink);
-    Radial top_right_rad(top_rad, right_rad, fillet_steps);
-    Radial top_left_rad(left_rad, top_rad, fillet_steps);
-    Radial bottom_right_rad(right_rad, bottom_rad, fillet_steps);
-    Radial bottom_left_rad(bottom_rad, left_rad, fillet_steps);
-    Curve curve;
-    curve.add(bottom_left_rad);
-    curve.add(left_rad);
-    curve.add(top_left_rad);
-    curve.add(top_rad);
-    curve.add(top_right_rad);
-    curve.add(right_rad);
-    curve.add(bottom_right_rad);
-    curve.add(bottom_rad);
-    return curve;
-}
-
-Curve View::back_curve() const
-{
-    int np = 4;
-    Matrix given(np, 2);
-    given.set(0, 0, 0.0); given.set(0, 1, 10.0);
-    given.set(1, 0, 8.0); given.set(1, 1, 9.0);
-    given.set(2, 0, 7.0); given.set(2, 1, 1.0);
-    given.set(3, 0, 0.0); given.set(3, 1, 0.0);
-    int top_steps = 9;
-    int bottom_steps = 9;
-    int side_steps = 9;
-    int fillet_steps = 9;
-    double top_shrink = 0.05;
-    double bottom_shrink = 0.05;
-    double side_top_shrink = 0.2;
-    double side_bottom_shrink = 0.2;
-    Double2 p1 = {-given.get(1, 0), given.get(1, 1)};
-    Double2 p2 = {given.get(0, 0), given.get(0, 1)};
-    Double2 p3 = {given.get(1, 0), given.get(1, 1)};
-    Radial top_rad(p1, p2, p3, top_steps);
-    p1 = {given.get(2, 0), given.get(2, 1)};
-    p2 = {given.get(3, 0), given.get(3, 1)};
-    p3 = {-given.get(2, 0), given.get(2, 1)};
-    Radial bottom_rad(p1, p2, p3, bottom_steps);
-    p1 = {given.get(1, 0), given.get(1, 1)};
-    p2 = {given.get(2, 0), given.get(2, 1)};
-    Radial right_rad(p1, p2, 10.0, side_steps);
-    p2 = {-given.get(1, 0), given.get(1, 1)};
-    p1 = {-given.get(2, 0), given.get(2, 1)};
-    Radial left_rad(p1, p2, 10.0, side_steps);
-    top_rad = top_rad.shrunk(top_shrink, 1.0 - top_shrink);
-    bottom_rad = bottom_rad.shrunk(bottom_shrink, 1.0 - bottom_shrink);
-    right_rad = right_rad.shrunk(side_top_shrink, 1.0 - side_bottom_shrink);
-    left_rad = left_rad.shrunk(side_bottom_shrink, 1.0 - side_top_shrink);
-    Radial top_right_rad(top_rad, right_rad, fillet_steps);
-    Radial top_left_rad(left_rad, top_rad, fillet_steps);
-    Radial bottom_right_rad(right_rad, bottom_rad, fillet_steps);
-    Radial bottom_left_rad(bottom_rad, left_rad, fillet_steps);
-    Curve curve;
-    curve.add(bottom_left_rad);
-    curve.add(left_rad);
-    curve.add(top_left_rad);
-    curve.add(top_rad);
-    curve.add(top_right_rad);
-    curve.add(right_rad);
-    curve.add(bottom_right_rad);
-    curve.add(bottom_rad);
-    return curve;
-}
-
 void View::build_car()
 {
-//    Curve fc = front_curve();
-    Curve bc = back_curve();
-    CurveShape body1(bc, -50.0, bc, -0.0);
-//    CurveShape body2(bc, -20.0, fc, 0.0);
-//    CurveShape front(fc, 0.0);
-    CurveShape front(bc, 0.0);
-    CurveShape back(bc, -50.0, true);
+    float F = 2.16;
+    float H = 0.2;
+    float dz = (1.0 / 3.0) / 2.0; // width / 2
+    float px0 = 0.0;
+    float py0 = 0.15 * H;
+    float px1 = 0.439 * F + px0;
+    float py1 = 1.0 * H;
+    float px2 = 0.122 * F + px1;
+    float py2 = 1.0 * H;
+    float px3 = 0.05 * F + px2;
+    float py3 = 1.75 * H;
+    float px4 = 0.122 * F + px3;
+    float py4 = 1.75 * H;
+    float px5 = 0.195 * F + px4;
+    float py5 = 1.0 * H;
+    float px6 = 0.098 * F + px5;
+    float py6 = 1.0 * H;
+
+    CadModel body1 = CadModel(BoxShape({px0, 0.0, -dz}, {px0, 0.0, dz}, {px1, 0.0, dz}, {px1, 0.0, -dz},
+                                       {px0, py0, -dz}, {px0, py0, dz}, {px1, py1, dz}, {px1, py1, -dz}));
+    CadModel body2 = CadModel(BoxShape({px1, 0.0, -dz}, {px1, 0.0, dz}, {px2, 0.0, dz}, {px2, 0.0, -dz},
+                                       {px1, py1, -dz}, {px1, py1, dz}, {px2, py2, dz}, {px2, py2, -dz}));
+    CadModel body3 = CadModel(BoxShape({px2, 0.0, -dz}, {px2, 0.0, dz}, {px3, 0.0, dz}, {px3, 0.0, -dz},
+                                       {px2, py2, -dz}, {px2, py2, dz}, {px3, py3, dz}, {px3, py3, -dz}));
+    CadModel body4 = CadModel(BoxShape({px3, 0.0, -dz}, {px3, 0.0, dz}, {px4, 0.0, dz}, {px4, 0.0, -dz},
+                                       {px3, py3, -dz}, {px3, py3, dz}, {px4, py4, dz}, {px4, py4, -dz}));
+    CadModel body5 = CadModel(BoxShape({px4, 0.0, -dz}, {px4, 0.0, dz}, {px5, 0.0, dz}, {px5, 0.0, -dz},
+                                       {px4, py4, -dz}, {px4, py4, dz}, {px5, py5, dz}, {px5, py5, -dz}));
+    CadModel body6 = CadModel(BoxShape({px5, 0.0, -dz}, {px5, 0.0, dz}, {px6, 0.0, dz}, {px6, 0.0, -dz},
+                                       {px5, py5, -dz}, {px5, py5, dz}, {px6, py6, dz}, {px6, py6, -dz}));
+//    CadModel body6 = CadModel(BoxShape(px5, 0.0, py5, -dz, px6, 0.0, py6, dz));
+
     m_aux_model->add(body1, 0.0, 0.0, 0.0);
-//    m_aux_model->add(body2, 0.0, 0.0, 0.0);
-    m_aux_model->add(front, 0.0, 0.0, 0.0);
-    m_aux_model->add(back, 0.0, 0.0, 0.0);
+    m_aux_model->add(body2, 0.0, 0.0, 0.0);
+    m_aux_model->add(body3, 0.0, 0.0, 0.0);
+    m_aux_model->add(body4, 0.0, 0.0, 0.0);
+    m_aux_model->add(body5, 0.0, 0.0, 0.0);
+    m_aux_model->add(body6, 0.0, 0.0, 0.0);
 }
 
 CadModel View::build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width)
@@ -185,8 +111,10 @@ CadModel View::build_wheel(float r_tire, float r_rim, float r_inner, float r_spa
 void View::build_wheels(float car_width)
 {
     float th = TrackStyle::track_height;
-    float ofs = TrackStyle::car_gap / 2.0 + TrackStyle::car_width / 2.0;
-    float xofs = 3.0;
+//    float ofs = TrackStyle::car_gap / 2.0 + TrackStyle::car_width / 2.0;
+    float ofs = 0.0;
+//    float xofs = 3.0;
+    float xofs = 0.0;
     float spacing_b = car_width * 0.825;
     float spacing_f = car_width * 0.775;
     float axle_spacing = car_width * 1.25;
@@ -294,7 +222,11 @@ bool View::initialize()
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);
+
+
     glEnable(GL_CULL_FACE);
+
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     resize_calc();

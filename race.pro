@@ -14,8 +14,6 @@ HEADERS      += game.h \
                 facet.h \
                 face.h \
                 vertex_data.h \
-                radial.h \
-                curve.h \
                 paint_can.h \
                 bounding_box.h \
                 look.h \
@@ -32,7 +30,7 @@ HEADERS      += game.h \
                 view.h \
                 brick_shape.h \
                 cube_shape.h \
-                curve_shape.h \
+                box_shape.h \
                 ring_shape.h \
                 cylinder_shape.h \
                 straight_track_shape.h \
@@ -41,8 +39,6 @@ HEADERS      += game.h \
 SOURCES      += main.cpp \
                 game.cpp \
                 matrix.cpp \
-                radial.cpp \
-                curve.cpp \
                 paint_can.cpp \
                 look.cpp \
                 track_style.cpp \
@@ -57,7 +53,7 @@ SOURCES      += main.cpp \
                 view.cpp \
                 brick_shape.cpp \
                 cube_shape.cpp \
-                curve_shape.cpp \
+                box_shape.cpp \
                 ring_shape.cpp \
                 cylinder_shape.cpp \
                 straight_track_shape.cpp \

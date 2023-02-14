@@ -6,7 +6,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include "vertex_data.h"
-#include "curve.h"
 #include "cad_model.h"
 
 class View: protected QOpenGLFunctions
@@ -44,8 +43,6 @@ protected:
     void build_car();
     void build_wheels(float car_width);
     CadModel build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width);
-    Curve front_curve() const;
-    Curve back_curve() const;
 
 private:
     int m_max_vertex_count;

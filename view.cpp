@@ -68,18 +68,19 @@ void View::build_car()
     float px6 = 0.098 * F + px5;
     float py6 = hb + 1.0 * H;
 
+    PaintCan body_p(1.0, 0.0, 0.0);
     CadModel body1 = CadModel(BoxShape({px0, hb, -dz1}, {px0, hb, dz1}, {px1, hb, dz}, {px1, hb, -dz},
-                                       {px0, py0, -dz1}, {px0, py0, dz1}, {px1, py1, dz}, {px1, py1, -dz}));
+                                       {px0, py0, -dz1}, {px0, py0, dz1}, {px1, py1, dz}, {px1, py1, -dz}), body_p, 0.0);
     CadModel body2 = CadModel(BoxShape({px1, hb, -dz}, {px1, hb, dz}, {px2, hb, dz}, {px2, hb, -dz},
-                                       {px1, py1, -dz}, {px1, py1, dz}, {px2, py2, dz}, {px2, py2, -dz}));
+                                       {px1, py1, -dz}, {px1, py1, dz}, {px2, py2, dz}, {px2, py2, -dz}), body_p, 0.0);
     CadModel body3 = CadModel(BoxShape({px2, hb, -dz}, {px2, hb, dz}, {px3, hb, dz}, {px3, hb, -dz},
-                                       {px2, py2, -dz}, {px2, py2, dz}, {px3, py3, dz}, {px3, py3, -dz}));
+                                       {px2, py2, -dz}, {px2, py2, dz}, {px3, py3, dz}, {px3, py3, -dz}), body_p, 0.0);
     CadModel body4 = CadModel(BoxShape({px3, hb, -dz}, {px3, hb, dz}, {px4, hb, dz}, {px4, hb, -dz},
-                                       {px3, py3, -dz}, {px3, py3, dz}, {px4, py4, dz}, {px4, py4, -dz}));
+                                       {px3, py3, -dz}, {px3, py3, dz}, {px4, py4, dz}, {px4, py4, -dz}), body_p, 0.0);
     CadModel body5 = CadModel(BoxShape({px4, hb, -dz}, {px4, hb, dz}, {px5, hb, dz}, {px5, hb, -dz},
-                                       {px4, py4, -dz}, {px4, py4, dz}, {px5, py5, dz}, {px5, py5, -dz}));
+                                       {px4, py4, -dz}, {px4, py4, dz}, {px5, py5, dz}, {px5, py5, -dz}), body_p, 0.0);
     CadModel body6 = CadModel(BoxShape({px5, hb, -dz}, {px5, hb, dz}, {px6, hb, dz}, {px6, hb, -dz},
-                                       {px5, py5, -dz}, {px5, py5, dz}, {px6, py6, dz}, {px6, py6, -dz}));
+                                       {px5, py5, -dz}, {px5, py5, dz}, {px6, py6, dz}, {px6, py6, -dz}), body_p, 0.0);
 
     m_aux_model->add(body1, 0.0, 0.0, 0.0);
     m_aux_model->add(body2, 0.0, 0.0, 0.0);

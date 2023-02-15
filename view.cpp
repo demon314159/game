@@ -38,7 +38,7 @@ View::View()
     printf("View::View(doc)\n");
 #endif
     build_wheels(TrackStyle::car_width);
-//    build_track();
+    build_track();
     build_car();
     decorate_model();
     m_aux_model->add(*m_table);
@@ -47,37 +47,39 @@ View::View()
 
 void View::build_car()
 {
+    float th = TrackStyle::track_height;
     float F = 2.16;
     float H = 0.2;
-    float dz = (1.0 / 3.0) / 2.0; // width / 2
+    float hb = 0.1 + th;
+    float dz1 = (1.0 / 3.0) / 2.0; // width / 2
+    float dz = (1.0 / 2.0) / 2.0; // width / 2
     float px0 = 0.0;
-    float py0 = 0.15 * H;
+    float py0 = hb + 0.15 * H;
     float px1 = 0.439 * F + px0;
-    float py1 = 1.0 * H;
+    float py1 = hb + 1.0 * H;
     float px2 = 0.122 * F + px1;
-    float py2 = 1.0 * H;
+    float py2 = hb + 1.0 * H;
     float px3 = 0.05 * F + px2;
-    float py3 = 1.75 * H;
+    float py3 = hb + 1.75 * H;
     float px4 = 0.122 * F + px3;
-    float py4 = 1.75 * H;
+    float py4 = hb + 1.75 * H;
     float px5 = 0.195 * F + px4;
-    float py5 = 1.0 * H;
+    float py5 = hb + 1.0 * H;
     float px6 = 0.098 * F + px5;
-    float py6 = 1.0 * H;
+    float py6 = hb + 1.0 * H;
 
-    CadModel body1 = CadModel(BoxShape({px0, 0.0, -dz}, {px0, 0.0, dz}, {px1, 0.0, dz}, {px1, 0.0, -dz},
-                                       {px0, py0, -dz}, {px0, py0, dz}, {px1, py1, dz}, {px1, py1, -dz}));
-    CadModel body2 = CadModel(BoxShape({px1, 0.0, -dz}, {px1, 0.0, dz}, {px2, 0.0, dz}, {px2, 0.0, -dz},
+    CadModel body1 = CadModel(BoxShape({px0, hb, -dz1}, {px0, hb, dz1}, {px1, hb, dz}, {px1, hb, -dz},
+                                       {px0, py0, -dz1}, {px0, py0, dz1}, {px1, py1, dz}, {px1, py1, -dz}));
+    CadModel body2 = CadModel(BoxShape({px1, hb, -dz}, {px1, hb, dz}, {px2, hb, dz}, {px2, hb, -dz},
                                        {px1, py1, -dz}, {px1, py1, dz}, {px2, py2, dz}, {px2, py2, -dz}));
-    CadModel body3 = CadModel(BoxShape({px2, 0.0, -dz}, {px2, 0.0, dz}, {px3, 0.0, dz}, {px3, 0.0, -dz},
+    CadModel body3 = CadModel(BoxShape({px2, hb, -dz}, {px2, hb, dz}, {px3, hb, dz}, {px3, hb, -dz},
                                        {px2, py2, -dz}, {px2, py2, dz}, {px3, py3, dz}, {px3, py3, -dz}));
-    CadModel body4 = CadModel(BoxShape({px3, 0.0, -dz}, {px3, 0.0, dz}, {px4, 0.0, dz}, {px4, 0.0, -dz},
+    CadModel body4 = CadModel(BoxShape({px3, hb, -dz}, {px3, hb, dz}, {px4, hb, dz}, {px4, hb, -dz},
                                        {px3, py3, -dz}, {px3, py3, dz}, {px4, py4, dz}, {px4, py4, -dz}));
-    CadModel body5 = CadModel(BoxShape({px4, 0.0, -dz}, {px4, 0.0, dz}, {px5, 0.0, dz}, {px5, 0.0, -dz},
+    CadModel body5 = CadModel(BoxShape({px4, hb, -dz}, {px4, hb, dz}, {px5, hb, dz}, {px5, hb, -dz},
                                        {px4, py4, -dz}, {px4, py4, dz}, {px5, py5, dz}, {px5, py5, -dz}));
-    CadModel body6 = CadModel(BoxShape({px5, 0.0, -dz}, {px5, 0.0, dz}, {px6, 0.0, dz}, {px6, 0.0, -dz},
+    CadModel body6 = CadModel(BoxShape({px5, hb, -dz}, {px5, hb, dz}, {px6, hb, dz}, {px6, hb, -dz},
                                        {px5, py5, -dz}, {px5, py5, dz}, {px6, py6, dz}, {px6, py6, -dz}));
-//    CadModel body6 = CadModel(BoxShape(px5, 0.0, py5, -dz, px6, 0.0, py6, dz));
 
     m_aux_model->add(body1, 0.0, 0.0, 0.0);
     m_aux_model->add(body2, 0.0, 0.0, 0.0);
@@ -114,9 +116,10 @@ void View::build_wheels(float car_width)
 //    float ofs = TrackStyle::car_gap / 2.0 + TrackStyle::car_width / 2.0;
     float ofs = 0.0;
 //    float xofs = 3.0;
-    float xofs = 0.0;
+    float xofs = 2.16 / 2.0;
     float spacing_b = car_width * 0.825;
-    float spacing_f = car_width * 0.775;
+//    float spacing_f = car_width * 0.775;
+    float spacing_f = car_width * 0.675;
     float axle_spacing = car_width * 1.25;
     float back_radius = car_width * 0.1875;
     float front_radius = car_width * 0.16875;
@@ -126,10 +129,16 @@ void View::build_wheels(float car_width)
 
     CadModel back_wheel = build_wheel(back_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.2);
     CadModel front_wheel = build_wheel(front_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.1375);
+    PaintCan axle_p(0.75, 0.75, 0.75);
+    CadModel front_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_f), axle_p, 0.0);
+    CadModel back_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_b), axle_p, 0.0);
+
     m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, back_radius + th);
     m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, back_radius + th);
     m_aux_model->add(front_wheel, -axle_spacing / 2.0 + xofs, -spacing_f / 2.0 + ofs, front_radius + th);
     m_aux_model->add(front_wheel, -axle_spacing / 2.0 + xofs, spacing_f / 2.0 + ofs, front_radius + th);
+    m_aux_model->add(front_axle, -axle_spacing / 2.0 + xofs, 0.0, front_radius + th);
+    m_aux_model->add(back_axle, axle_spacing / 2.0 + xofs, 0.0, back_radius + th);
     m_aux_model->rotate_ax(-90.0);
 }
 

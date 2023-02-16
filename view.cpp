@@ -15,6 +15,8 @@
 
 #define notVERBOSE
 
+#define ANI_ID_CAR 2.0
+
 View::View()
     : m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
@@ -33,6 +35,8 @@ View::View()
     , m_yrot(0.0)
     , m_xoff(0.0)
     , m_yoff(0.0)
+    , m_car_angle(0.0)
+    , m_car_position({3.0, 0.0, (TrackStyle::car_width + TrackStyle::car_gap) / (float) 2.0})
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
@@ -68,19 +72,21 @@ void View::build_car()
     float px6 = 0.098 * F + px5;
     float py6 = hb + 1.0 * H;
 
-    PaintCan body_p(1.0, 0.0, 0.0);
-    CadModel body1 = CadModel(BoxShape({px0, hb, -dz1}, {px0, hb, dz1}, {px1, hb, dz}, {px1, hb, -dz},
-                                       {px0, py0, -dz1}, {px0, py0, dz1}, {px1, py1, dz}, {px1, py1, -dz}), body_p, 0.0);
-    CadModel body2 = CadModel(BoxShape({px1, hb, -dz}, {px1, hb, dz}, {px2, hb, dz}, {px2, hb, -dz},
-                                       {px1, py1, -dz}, {px1, py1, dz}, {px2, py2, dz}, {px2, py2, -dz}), body_p, 0.0);
-    CadModel body3 = CadModel(BoxShape({px2, hb, -dz}, {px2, hb, dz}, {px3, hb, dz}, {px3, hb, -dz},
-                                       {px2, py2, -dz}, {px2, py2, dz}, {px3, py3, dz}, {px3, py3, -dz}), body_p, 0.0);
-    CadModel body4 = CadModel(BoxShape({px3, hb, -dz}, {px3, hb, dz}, {px4, hb, dz}, {px4, hb, -dz},
-                                       {px3, py3, -dz}, {px3, py3, dz}, {px4, py4, dz}, {px4, py4, -dz}), body_p, 0.0);
-    CadModel body5 = CadModel(BoxShape({px4, hb, -dz}, {px4, hb, dz}, {px5, hb, dz}, {px5, hb, -dz},
-                                       {px4, py4, -dz}, {px4, py4, dz}, {px5, py5, dz}, {px5, py5, -dz}), body_p, 0.0);
-    CadModel body6 = CadModel(BoxShape({px5, hb, -dz}, {px5, hb, dz}, {px6, hb, dz}, {px6, hb, -dz},
-                                       {px5, py5, -dz}, {px5, py5, dz}, {px6, py6, dz}, {px6, py6, -dz}), body_p, 0.0);
+    float xc = (px0 + px6) / 2.0;
+
+    PaintCan body_p(1.0, 0.25, 0.5);
+    CadModel body1 = CadModel(BoxShape({px0 - xc, hb, -dz1}, {px0 - xc, hb, dz1}, {px1 - xc, hb, dz}, {px1 - xc, hb, -dz},
+                                       {px0 - xc, py0, -dz1}, {px0 - xc, py0, dz1}, {px1 - xc, py1, dz}, {px1 - xc, py1, -dz}), body_p, ANI_ID_CAR);
+    CadModel body2 = CadModel(BoxShape({px1 - xc, hb, -dz}, {px1 - xc, hb, dz}, {px2 - xc, hb, dz}, {px2 - xc, hb, -dz},
+                                       {px1 - xc, py1, -dz}, {px1 - xc, py1, dz}, {px2 - xc, py2, dz}, {px2 - xc, py2, -dz}), body_p, ANI_ID_CAR);
+    CadModel body3 = CadModel(BoxShape({px2 - xc, hb, -dz}, {px2 - xc, hb, dz}, {px3 - xc, hb, dz}, {px3 - xc, hb, -dz},
+                                       {px2 - xc, py2, -dz}, {px2 - xc, py2, dz}, {px3 - xc, py3, dz}, {px3 - xc, py3, -dz}), body_p, ANI_ID_CAR);
+    CadModel body4 = CadModel(BoxShape({px3 - xc, hb, -dz}, {px3 - xc, hb, dz}, {px4 - xc, hb, dz}, {px4 - xc, hb, -dz},
+                                       {px3 - xc, py3, -dz}, {px3 - xc, py3, dz}, {px4 - xc, py4, dz}, {px4 - xc, py4, -dz}), body_p, ANI_ID_CAR);
+    CadModel body5 = CadModel(BoxShape({px4 - xc, hb, -dz}, {px4 - xc, hb, dz}, {px5 - xc, hb, dz}, {px5 - xc, hb, -dz},
+                                       {px4 - xc, py4, -dz}, {px4 - xc, py4, dz}, {px5 - xc, py5, dz}, {px5 - xc, py5, -dz}), body_p, ANI_ID_CAR);
+    CadModel body6 = CadModel(BoxShape({px5 - xc, hb, -dz}, {px5 - xc, hb, dz}, {px6 - xc, hb, dz}, {px6 - xc, hb, -dz},
+                                       {px5 - xc, py5, -dz}, {px5 - xc, py5, dz}, {px6 - xc, py6, dz}, {px6 - xc, py6, -dz}), body_p, ANI_ID_CAR);
 
     m_aux_model->add(body1, 0.0, 0.0, 0.0);
     m_aux_model->add(body2, 0.0, 0.0, 0.0);
@@ -93,17 +99,16 @@ void View::build_car()
 CadModel View::build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width)
 {
     float bevel = width / 10.0;
-//    PaintCan tire_p(0.0, 0.0, 0.25);
     PaintCan tire_p(1.0, 0.0, 0.0);
     PaintCan rim_p(0.75, 0.75, 0.75);
     PaintCan hub_p(1.0, 0.922, 0.0);
     PaintCan knob_p(0.25, 0.25, 0.25);
-    CadModel tire = CadModel(RingShape(r_tire, r_rim, width, bevel, 0.0, bevel, 0.0), tire_p, 0.0);
+    CadModel tire = CadModel(RingShape(r_tire, r_rim, width, bevel, 0.0, bevel, 0.0), tire_p, ANI_ID_CAR);
     bevel = (r_rim - r_inner) / 5.0;
-    CadModel rim = CadModel(RingShape(r_rim, r_inner, width, 0.0, bevel, 0.0, bevel), rim_p, 0.0);
-    CadModel spacer = CadModel(RingShape(r_inner, r_spacer, width * 0.9), rim_p, 0.0);
-    CadModel hub = CadModel(CylinderShape(r_spacer, width * 0.2), hub_p, 0.0);
-    CadModel knob = CadModel(CylinderShape(r_rim * 0.25, width * 0.3, r_rim * 0.25 * 0.2, r_rim * 0.25 * 0.2), knob_p, 0.0);
+    CadModel rim = CadModel(RingShape(r_rim, r_inner, width, 0.0, bevel, 0.0, bevel), rim_p, ANI_ID_CAR);
+    CadModel spacer = CadModel(RingShape(r_inner, r_spacer, width * 0.9), rim_p, ANI_ID_CAR);
+    CadModel hub = CadModel(CylinderShape(r_spacer, width * 0.2), hub_p, ANI_ID_CAR);
+    CadModel knob = CadModel(CylinderShape(r_rim * 0.25, width * 0.3, r_rim * 0.25 * 0.2, r_rim * 0.25 * 0.2), knob_p, ANI_ID_CAR);
     tire.add(rim, 0.0, 0.0, 0.0);
     tire.add(spacer, 0.0, 0.0, 0.0);
     tire.add(hub, 0.0, 0.0, 0.0);
@@ -116,8 +121,8 @@ void View::build_wheels(float car_width)
     float th = TrackStyle::track_height;
 //    float ofs = TrackStyle::car_gap / 2.0 + TrackStyle::car_width / 2.0;
     float ofs = 0.0;
-//    float xofs = 3.0;
-    float xofs = 2.16 / 2.0;
+    float xofs = 0.0;
+//    float xofs = 2.16 / 2.0;
     float spacing_b = car_width * 0.825;
 //    float spacing_f = car_width * 0.775;
     float spacing_f = car_width * 0.675;
@@ -131,8 +136,8 @@ void View::build_wheels(float car_width)
     CadModel back_wheel = build_wheel(back_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.2);
     CadModel front_wheel = build_wheel(front_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.1375);
     PaintCan axle_p(0.75, 0.75, 0.75);
-    CadModel front_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_f), axle_p, 0.0);
-    CadModel back_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_b), axle_p, 0.0);
+    CadModel front_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_f), axle_p, ANI_ID_CAR);
+    CadModel back_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_b), axle_p, ANI_ID_CAR);
 
     m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, back_radius + th);
     m_aux_model->add(back_wheel, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, back_radius + th);
@@ -327,15 +332,11 @@ void View::paint()
         copy_aux_facets();
         m_change = false;
     }
-//
-// Some common things for left and right eye
-//
     // Prepare rotations
     QVector3D axis1 = {1.0, 0.0, 0.0};
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
     QVector3D axis2 = {0.0, 1.0, 0.0};
     QQuaternion rot2 = QQuaternion::fromAxisAndAngle(axis2, m_yrot);
-    // Set up "between the eyes matrices
     QQuaternion my_rot = rot1 * rot2;
     QMatrix4x4 matrix;
     matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
@@ -346,6 +347,17 @@ void View::paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
+
+
+    QVector3D ani_axis1 = {0.0, 1.0, 0.0};
+    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_car_angle);
+    QMatrix4x4 car_matrix;
+    car_matrix.translate(m_car_position.v1, m_car_position.v2, m_car_position.v3);
+    car_matrix.rotate(ani_rot1);
+//    car_matrix.translate(-BAT_PIVOT_X, 0.0, -BAT_PIVOT_Z);
+    m_program.setUniformValue("car_matrix", car_matrix);
+
+
     render_facets();
 }
 

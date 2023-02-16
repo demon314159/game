@@ -225,10 +225,7 @@ bool View::initialize()
 #endif
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-    if (Look::get_3d())
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f); // gray
-    else
-        glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
+    glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
     if (!init_shaders())
         return false;
     glEnable(GL_DEPTH_TEST);
@@ -347,40 +344,9 @@ void View::paint()
     m_mvp_matrix = m_projection * matrix;
     m_rot_matrix = matrix;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if (Look::get_3d()) {
-        glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); // creates a soft red image when background is white
-        QVector3D axis_y = {0.0, 1.0, 0.0};
-        QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, -1);
-        QQuaternion my_rot2 = eye_rot * rot1 * rot2;
-        QMatrix4x4 matrix2;
-        matrix2.translate(m_xoff, m_yoff, -m_camz - m_radius);
-        matrix2.rotate(my_rot2);
-        matrix2.translate(-m_center.v1, -m_center.v2, -m_center.v3);
-        m_program.setUniformValue("mvp_matrix", m_projection * matrix2);
-        m_program.setUniformValue("rot_matrix", matrix2);
-    } else {
-        m_program.setUniformValue("mvp_matrix", m_projection * matrix);
-        m_program.setUniformValue("rot_matrix", matrix);
-    }
+    m_program.setUniformValue("mvp_matrix", m_projection * matrix);
+    m_program.setUniformValue("rot_matrix", matrix);
     render_facets();
-    if (Look::get_3d()) {
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    }
-    if (Look::get_3d()) {
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); // creates a cyan image when background is white
-        QVector3D axis_y = {0.0, 1.0, 0.0};
-        QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
-        QQuaternion my_rot2 = eye_rot * rot1 * rot2;
-        QMatrix4x4 matrix2;
-        matrix2.translate(m_xoff, m_yoff, -m_camz - m_radius);
-        matrix2.rotate(my_rot2);
-        matrix2.translate(-m_center.v1, -m_center.v2, -m_center.v3);
-        m_program.setUniformValue("mvp_matrix", m_projection * matrix2);
-        m_program.setUniformValue("rot_matrix", matrix2);
-        render_facets();
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    }
 }
 
 void View::render_facets()

@@ -12,7 +12,6 @@ int main(int argv, char **args)
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
-    Look::process_options(argv, args);
     Game game;
     game.showMaximized();
 

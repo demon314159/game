@@ -27,6 +27,7 @@ public:
     void set_mag(float mag);
     int width() const;
     int height() const;
+    void timer_event();
 
 protected:
     bool init_shaders();

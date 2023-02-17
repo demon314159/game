@@ -494,3 +494,9 @@ int View::height() const
     return m_height;
 }
 
+void View::timer_event()
+{
+    m_car_angle += 5.0;
+}
+
+

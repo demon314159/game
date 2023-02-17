@@ -28,6 +28,7 @@ void Table::initializeGL()
     if (!m_view->initialize())
         close();
     update();
+    m_timer.start(33, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -173,4 +174,8 @@ void Table::wheelEvent(QWheelEvent* e)
     e->accept();
 }
 
-
+void Table::timerEvent(QTimerEvent *)
+{
+    m_view->timer_event();
+    update();
+}

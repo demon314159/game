@@ -18,7 +18,8 @@
 #define ANI_ID_CAR 2.0
 
 View::View()
-    : m_max_vertex_count(1024 * 1024)
+    : m_time_at_start(high_resolution_clock::now())
+    , m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
     , m_table(new CadModel())
     , m_aux_model(new CadModel())
@@ -332,6 +333,12 @@ void View::paint()
         copy_aux_facets();
         m_change = false;
     }
+    high_resolution_clock::time_point time_in = high_resolution_clock::now();
+    high_resolution_clock::duration total_period = time_in - m_time_at_start;
+    m_time_at_start = time_in;
+    int tp = duration_cast<nanoseconds>(total_period).count();
+    float turns_per_second = 20.0 / 20.0;
+    m_car_angle += ((360.0 * turns_per_second / 1000000000.0) * (double) tp);
     // Prepare rotations
     QVector3D axis1 = {1.0, 0.0, 0.0};
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
@@ -347,18 +354,21 @@ void View::paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
-
-
     QVector3D ani_axis1 = {0.0, 1.0, 0.0};
     QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_car_angle);
     QMatrix4x4 car_matrix;
     car_matrix.translate(m_car_position.v1, m_car_position.v2, m_car_position.v3);
     car_matrix.rotate(ani_rot1);
-//    car_matrix.translate(-BAT_PIVOT_X, 0.0, -BAT_PIVOT_Z);
     m_program.setUniformValue("car_matrix", car_matrix);
-
-
     render_facets();
+    glFlush();
+//    glFinish();
+    //
+    high_resolution_clock::time_point time_now = high_resolution_clock::now();
+    high_resolution_clock::duration render_time = time_now - time_in;
+    int rt = duration_cast<nanoseconds>(render_time).count();
+    m_qa.add_sample(tp, rt);
+
 }
 
 void View::render_facets()
@@ -494,9 +504,5 @@ int View::height() const
     return m_height;
 }
 
-void View::timer_event()
-{
-    m_car_angle += 5.0;
-}
 
 

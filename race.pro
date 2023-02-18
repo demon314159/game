@@ -35,6 +35,7 @@ HEADERS      += game.h \
                 cylinder_shape.h \
                 straight_track_shape.h \
                 curved_track_shape.h \
+                qa.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
@@ -58,6 +59,7 @@ SOURCES      += main.cpp \
                 cylinder_shape.cpp \
                 straight_track_shape.cpp \
                 curved_track_shape.cpp \
+                qa.cpp \
 
 RESOURCES    += shaders.qrc
 

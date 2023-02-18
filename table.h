@@ -9,7 +9,7 @@
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include <QWheelEvent>
-#include <QBasicTimer>
+#include <QTimer>
 
 class Table: public QOpenGLWidget
 {
@@ -30,11 +30,11 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void wheelEvent(QWheelEvent *e) override;
     void mouse_navigate(QMouseEvent* e);
-    void timerEvent(QTimerEvent *e) override;
+    void my_update();
 private:
     View* m_view;
     Navigate m_navigate;
-    QBasicTimer m_timer;
+    QTimer* m_timer;
 };
 
 #endif // _TABLE_H_

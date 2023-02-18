@@ -6,7 +6,11 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include "vertex_data.h"
+#include "qa.h"
+
 #include "cad_model.h"
+#include <chrono>
+using namespace std::chrono;
 
 class View: protected QOpenGLFunctions
 {
@@ -27,7 +31,6 @@ public:
     void set_mag(float mag);
     int width() const;
     int height() const;
-    void timer_event();
 
 protected:
     bool init_shaders();
@@ -46,6 +49,8 @@ protected:
     CadModel build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width);
 
 private:
+    Qa m_qa;
+    high_resolution_clock::time_point m_time_at_start;
     int m_max_vertex_count;
     int m_aux_count;
     CadModel* m_table;

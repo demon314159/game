@@ -3,36 +3,35 @@
 #include "stdio.h"
 
 Qa::Qa()
-  : m_primed(false)
-  , m_last_time(0)
+    : m_skip_filter(16)
+    , m_samples(0)
 {
-    for (int i = 0; i < BINS; i++) {
-        m_hist[i] = 0;
-    }
 }
 
 Qa::~Qa()
 {
     printf("\nQa report\n");
-    for (int i = 0; i < BINS; i++) {
-        if (m_hist[i] > 0) {
-            printf("%4d : %d\n", i, m_hist[i]);
-        }
+    double avg_tp = 0.0;
+    for (int i = 0; i < m_samples; i++) {
+        printf("period %d us\n", m_total_period[i]);
+        avg_tp += (double) m_total_period[i];
     }
+    if (m_samples > 0) {
+        avg_tp /= (double) m_samples;
+    }
+    printf("avg period = %8.0lf\n", avg_tp);
 }
 
-void Qa::add_sample(int ms_time)
+void Qa::add_sample(int total_period)
 {
-    if (m_primed) {
-        int ms_dt = ms_time - m_last_time;
-        if (ms_dt < 0)
-            ms_dt = 0;
-        if (ms_dt >= BINS)
-            ms_dt = BINS - 1;
-        ++m_hist[ms_dt];
+    if (m_skip_filter > 0 ) {
+        --m_skip_filter;
+    } else {
+        if (m_samples < BINS) {
+            m_total_period[m_samples] = total_period / 1000.0;
+            ++m_samples;
+        }
     }
-    m_last_time = ms_time;
-    m_primed = true;
 }
 
 

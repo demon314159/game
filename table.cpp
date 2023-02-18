@@ -10,11 +10,12 @@
 
 Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidget *parent)
     : QOpenGLWidget(parent)
-    , m_ms_at_start(QTime::currentTime().msecsSinceStartOfDay())
+    , m_time_at_start(high_resolution_clock::now())
     , m_xrot(0.0)
     , m_yrot(0.0)
     , m_width((512 * 1920) / 1080)
     , m_height(512)
+    , m_timer(new QTimer(this))
     , m_thingy(NULL)
     , m_view_ix(view_ix)
     , m_mvp_matrix(mvp_matrix)
@@ -25,10 +26,14 @@ Table::Table(int& view_ix, QMatrix4x4& mvp_matrix, QMatrix4x4& rot_matrix, QWidg
     setMinimumHeight(337);
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
+    connect(m_timer, &QTimer::timeout, this, QOverload<>::of(&Table::update));
+    m_timer->start(33);
 }
 
 Table::~Table()
 {
+    m_timer->stop();
+    delete m_timer;
     makeCurrent();
     delete m_thingy;
     doneCurrent();
@@ -44,7 +49,6 @@ void Table::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     m_thingy = new Thingus();
-    timer.start(33, this);
 }
 
 void Table::resizeGL(int w, int h)
@@ -57,11 +61,15 @@ void Table::resizeGL(int w, int h)
 
 void Table::paintGL()
 {
-    float turns_per_second = 1.0 / 20.0;
+    float turns_per_second = 3.0 / 20.0;
 
-    int ms_in = QTime::currentTime().msecsSinceStartOfDay() - m_ms_at_start;
-    m_qa.add_sample(ms_in);
-    m_yrot = (360.0 * turns_per_second / 1000.0) * (float) ms_in;
+    high_resolution_clock::time_point time_in = high_resolution_clock::now();
+    high_resolution_clock::duration total_period = time_in - m_time_at_start;
+    m_time_at_start = time_in;
+    int tp = duration_cast<nanoseconds>(total_period).count();
+    m_qa.add_sample(tp);
+
+    m_yrot += ((360.0 * turns_per_second / 1000000000.0) * (double) tp);
 
     QVector3D axis_y = {0.0, 1.0, 0.0};
     QQuaternion eye_rot = QQuaternion::fromAxisAndAngle(axis_y, 1);
@@ -109,7 +117,6 @@ void Table::paintGL()
     m_thingy->drawCubeGeometry(&m_program);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glFlush();
-//    update();
 }
 
 void Table::initShaders()
@@ -124,28 +131,21 @@ void Table::initShaders()
         close();
 }
 
-void Table::timerEvent(QTimerEvent *)
-{
-    if (isVisible()) {
-        update();
-    }
-}
-
 void Table::keyPressEvent(QKeyEvent* e)
 {
     unsigned int a = e->nativeScanCode();
     if (a == 0x6f) { // up
         m_xrot -= 10.0;
-        update();
+        my_update();
     } else if (a == 0x74) { // down
         m_xrot += 10.0;
-        update();
+        my_update();
     } else if (a == 0x71) { // left
         m_yrot -= 10.0;
-        update();
+        my_update();
     } else if (a == 0x72) { // right
         m_yrot += 10.0;
-        update();
+        my_update();
     }
     QWidget::keyPressEvent(e);
 }
@@ -159,7 +159,10 @@ void Table::keyReleaseEvent(QKeyEvent* e)
     QWidget::keyReleaseEvent(e);
 }
 
-
+void Table::my_update()
+{
+//    update();
+}
 
 
 

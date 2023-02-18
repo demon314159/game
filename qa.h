@@ -8,12 +8,12 @@ class Qa
 public:
     Qa();
     ~Qa();
-    void add_sample(int ms_time);
+    void add_sample(int total_period);
 
 private:
-    bool m_primed;
-    int m_last_time;
-    int m_hist[BINS];
+    int m_skip_filter;
+    int m_samples;
+    int m_total_period[BINS];
 };
 
 #endif // _QA_H_

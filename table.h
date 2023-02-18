@@ -13,8 +13,10 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector2D>
-#include <QBasicTimer>
+#include <QTimer>
 #include <QOpenGLShaderProgram>
+#include <chrono>
+using namespace std::chrono;
 
 class Table: public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -25,23 +27,22 @@ public:
     ~Table();
 
 protected:
-    void timerEvent(QTimerEvent *e) override;
-
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
     void initShaders();
     void keyPressEvent(QKeyEvent* e) override;
     void keyReleaseEvent(QKeyEvent* e) override;
+    void my_update();
 private:
     Qa m_qa;
-    int m_ms_at_start;
+    high_resolution_clock::time_point m_time_at_start;
     float m_xrot;
     float m_yrot;
 
     int m_width;
     int m_height;
-    QBasicTimer timer;
+    QTimer* m_timer;
     QOpenGLShaderProgram m_program;
     Thingus* m_thingy;
     QMatrix4x4 m_projection;

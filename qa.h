@@ -8,13 +8,12 @@ class Qa
 public:
     Qa();
     ~Qa();
-    void add_sample(int total_period, int render_time);
+    void add_sample(int total_period);
 
 private:
     int m_skip_filter;
     int m_samples;
     int m_total_period[BINS];
-    int m_render_time[BINS];
 };
 
 #endif // _QA_H_

@@ -36,8 +36,7 @@ View::View()
     , m_yrot(0.0)
     , m_xoff(0.0)
     , m_yoff(0.0)
-    , m_car_angle(0.0)
-    , m_car_position({3.0, 0.0, (TrackStyle::car_width + TrackStyle::car_gap) / (float) 2.0})
+    , m_track(new Track)
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
@@ -220,6 +219,7 @@ View::~View()
 #ifdef VERBOSE
     printf("View::~View()\n");
 #endif
+    delete m_track;
     delete m_aux_model;
     m_vertex_buf.destroy();
 }
@@ -337,8 +337,11 @@ void View::paint()
     high_resolution_clock::duration total_period = time_in - m_time_at_start;
     m_time_at_start = time_in;
     int tp = duration_cast<nanoseconds>(total_period).count();
-    float turns_per_second = 20.0 / 20.0;
-    m_car_angle += ((360.0 * turns_per_second / 1000000000.0) * (double) tp);
+    m_qa.add_sample(tp);
+    m_track->advance(tp);
+
+    int car_id = 0;  // Loop for each car, factor common stuff
+
     // Prepare rotations
     QVector3D axis1 = {1.0, 0.0, 0.0};
     QQuaternion rot1 = QQuaternion::fromAxisAndAngle(axis1, m_xrot);
@@ -355,19 +358,14 @@ void View::paint()
     m_program.setUniformValue("mvp_matrix", m_projection * matrix);
     m_program.setUniformValue("rot_matrix", matrix);
     QVector3D ani_axis1 = {0.0, 1.0, 0.0};
-    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_car_angle);
+    QQuaternion ani_rot1 = QQuaternion::fromAxisAndAngle(ani_axis1, m_track->car_angle(car_id));
     QMatrix4x4 car_matrix;
-    car_matrix.translate(m_car_position.v1, m_car_position.v2, m_car_position.v3);
+    Double3 cp = m_track->car_position(car_id);
+    car_matrix.translate(cp.v1, cp.v2, cp.v3);
     car_matrix.rotate(ani_rot1);
     m_program.setUniformValue("car_matrix", car_matrix);
     render_facets();
     glFlush();
-//    glFinish();
-    //
-    high_resolution_clock::time_point time_now = high_resolution_clock::now();
-    high_resolution_clock::duration render_time = time_now - time_in;
-    int rt = duration_cast<nanoseconds>(render_time).count();
-    m_qa.add_sample(tp, rt);
 
 }
 

@@ -6,6 +6,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include "vertex_data.h"
+#include "track.h"
 #include "qa.h"
 
 #include "cad_model.h"
@@ -69,8 +70,7 @@ private:
     float m_yrot;
     float m_xoff;
     float m_yoff;
-    float m_car_angle;
-    Float3 m_car_position;
+    Track* m_track;
     QOpenGLShaderProgram m_program;
     QMatrix4x4 m_mvp_matrix;
     QMatrix4x4 m_rot_matrix;

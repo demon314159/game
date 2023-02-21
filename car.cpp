@@ -1,8 +1,10 @@
 #include <cmath>
 #include "car.h"
 
+#include "stdio.h"
+
 Car::Car()
-    : m_speed(0.0)
+    : m_speed(5.0)
     , m_section(0)
     , m_lane(0)
     , m_distance(0.0)
@@ -30,11 +32,14 @@ void Car::advance(int nanoseconds, Section** section, int sections)
     }
     m_position = section[m_section]->position(m_lane, m_distance);
     m_angle = section[m_section]->angle(m_lane, m_distance);
+
+    printf("Car::advance(%d ns, %d sections):  distance = %5.1lf\n", nanoseconds, sections, m_distance);
+    printf("  angle = %5.1lf,  pos = (%5.1lf, %5.1lf, %5.1lf}\n", m_angle, m_position.v1, m_position.v2, m_position.v3);
 }
 
 double Car::angle() const
 {
-    return m_angle;
+    return m_angle - 90.0;
 }
 
 Double3 Car::position() const

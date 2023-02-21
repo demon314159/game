@@ -1,14 +1,19 @@
 #include <cmath>
 #include "track.h"
+#include "straight_section.h"
 
 Track::Track()
     : m_cars(2)
     , m_sections(0)
 {
+    add_section(new StraightSection(2, 12.0, 90.0, {0.0, 0.0, 0.0}));
 }
 
 Track::~Track()
 {
+    for (int i = 0; i < m_sections; i++) {
+        delete m_section[i];
+    }
 }
 
 int Track::cars() const
@@ -35,3 +40,9 @@ Double3 Track::car_position(int car_id) const
     return m_car[car_id].position();
 }
 
+void Track::add_section(Section* section)
+{
+    if (m_sections < MAX_SECTIONS) {
+        m_section[m_sections++] = section;
+    }
+}

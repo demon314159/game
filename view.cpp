@@ -154,16 +154,16 @@ void View::build_track()
     float radius = 6.0;
     int lanes = 2;
     CadModel s1 = CadModel(StraightTrackShape(lanes, length));
-    CadModel c1 = CadModel(CurvedTrackShape(lanes, radius, 180));
-    CadModel c2 = CadModel(CurvedTrackShape(lanes, radius, 180));
-    s1.rotate_ay(-90);
-    c1.rotate_ay(90);
-    c2.rotate_ay(-90);
+//    CadModel c1 = CadModel(CurvedTrackShape(lanes, radius, 180));
+//    CadModel c2 = CadModel(CurvedTrackShape(lanes, radius, 180));
+    s1.rotate_ay(90);
+//    c1.rotate_ay(90);
+//    c2.rotate_ay(-90);
 
     m_aux_model->add(s1, 0.0, 0.0, 0.0);
-    m_aux_model->add(s1, 0.0, 0.0, -2.0 * radius);
-    m_aux_model->add(c1, 0.0, 0.0, 0.0);
-    m_aux_model->add(c2, length, 0.0, -2.0 * radius);
+//    m_aux_model->add(s1, 0.0, 0.0, -2.0 * radius);
+//    m_aux_model->add(c1, 0.0, 0.0, 0.0);
+//    m_aux_model->add(c2, length, 0.0, -2.0 * radius);
 }
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)

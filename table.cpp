@@ -17,8 +17,7 @@ Table::Table(QWidget *parent)
     grabKeyboard();
 
     connect(m_timer, &QTimer::timeout, this, QOverload<>::of(&Table::update));
-//    m_timer->start(33);
-    m_timer->start(67);
+    m_timer->start(33);
 }
 
 Table::~Table()

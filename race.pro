@@ -35,6 +35,7 @@ HEADERS      += game.h \
                 cylinder_shape.h \
                 straight_track_shape.h \
                 curved_track_shape.h \
+                section.h \
                 track.h \
                 car.h \
                 qa.h \

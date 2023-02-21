@@ -3,10 +3,12 @@
 
 #include "car.h"
 #include "double3.h"
+#include "section.h"
 
 class Track
 {
 public:
+    static const int MAX_SECTIONS = 32;
     static const int MAX_CARS = 8;
     Track();
     ~Track();
@@ -18,6 +20,8 @@ public:
 protected:
     int m_cars;
     Car m_car[MAX_CARS];
+    int m_sections;
+    Section* m_section[MAX_SECTIONS];
 };
 
 #endif // _TRACK_H_

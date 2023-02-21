@@ -3,6 +3,7 @@
 
 Track::Track()
     : m_cars(2)
+    , m_sections(0)
 {
 }
 
@@ -17,8 +18,10 @@ int Track::cars() const
 
 void Track::advance(int nanoseconds)
 {
-    for (int i = 0; i < m_cars; i++) {
-        m_car[i].advance(nanoseconds);
+    if (m_sections > 0) {
+        for (int i = 0; i < m_cars; i++) {
+            m_car[i].advance(nanoseconds, m_section, m_sections);
+        }
     }
 }
 

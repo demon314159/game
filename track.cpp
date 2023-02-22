@@ -7,6 +7,7 @@ Track::Track()
     , m_sections(0)
 {
     add_section(new StraightSection(2, 12.0, 90.0, {0.0, 0.0, 0.0}));
+    add_section(new StraightSection(2, 12.0, m_section[m_sections - 1]->end_angle(), m_section[m_sections-1]->end_anchor()));
 }
 
 Track::~Track()

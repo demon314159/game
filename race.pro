@@ -36,6 +36,7 @@ HEADERS      += game.h \
                 straight_track_shape.h \
                 curved_track_shape.h \
                 section.h \
+                anchor.h \
                 straight_section.h \
                 curved_section.h \
                 track.h \

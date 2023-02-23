@@ -6,8 +6,9 @@ Track::Track()
     : m_cars(2)
     , m_sections(0)
 {
-    add_section(new StraightSection(m_cars, 12.0, 90.0, {0.0, 0.0, 0.0}));
-    add_section(new StraightSection(m_cars, 12.0, m_section[m_sections - 1]->end_angle(), m_section[m_sections-1]->end_anchor()));
+    double initial_angle = 90.0;
+    add_section(new StraightSection(m_cars, 12.0, {0.0, 0.0, 0.0, initial_angle}));
+    add_section(new StraightSection(m_cars, 12.0, m_section[m_sections-1]->end_anchor()));
 }
 
 Track::~Track()

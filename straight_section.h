@@ -8,24 +8,20 @@
 class StraightSection: public Section
 {
 public:
-    StraightSection(int lanes, double length, double start_angle, Double3 start_anchor);
+    StraightSection(int lanes, double length, Anchor start_anchor);
     virtual ~StraightSection();
     double total_distance(int lane) const;
     double car_angle(int lane, double distance) const;
     Double3 car_position(int lane, double distance) const;
-    double start_angle() const;
-    Double3 start_anchor() const;
-    double end_angle() const;
-    Double3 end_anchor() const;
+    Anchor start_anchor() const;
+    Anchor end_anchor() const;
     CadModel cad_model() const;
 
 private:
     int m_lanes;
     double m_length;
-    double m_start_angle;
-    Double3 m_start_anchor;
-    double m_end_angle;
-    Double3 m_end_anchor;
+    Anchor m_start_anchor;
+    Anchor m_end_anchor;
 };
 
 #endif // _STRAIGHT_SECTION_SHAPE_

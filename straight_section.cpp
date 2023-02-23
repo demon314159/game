@@ -6,16 +6,17 @@
 
 #define PI 3.1415926536
 
-StraightSection::StraightSection(int lanes, double length, double start_angle, Double3 start_anchor)
+StraightSection::StraightSection(int lanes, double length, Anchor start_anchor)
     : m_lanes(lanes)
     , m_length(length)
-    , m_start_angle(start_angle)
     , m_start_anchor(start_anchor)
 {
-    double sina = sin(start_angle * PI / 180.0);
-    double cosa = cos(start_angle * PI / 180.0);
-    m_end_angle = start_angle;
-    m_end_anchor = {m_start_anchor.v1 - length * sina, m_start_anchor.v2, m_start_anchor.v3 - length * cosa};
+    double sina = sin(start_anchor.a * PI / 180.0);
+    double cosa = cos(start_anchor.a * PI / 180.0);
+    m_end_anchor = {m_start_anchor.x - length * sina,
+                    m_start_anchor.y,
+                    m_start_anchor.z - length * cosa,
+                    m_start_anchor.a};
 }
 
 StraightSection::~StraightSection()
@@ -32,13 +33,13 @@ double StraightSection::car_angle(int lane, double distance) const
 {
     (void) lane;
     (void) distance;
-    return m_start_angle;
+    return m_start_anchor.a;
 }
 
 Double3 StraightSection::car_position(int lane, double distance) const
 {
-    double sina = sin(m_start_angle * PI / 180.0);
-    double cosa = cos(m_start_angle * PI / 180.0);
+    double sina = sin(m_start_anchor.a * PI / 180.0);
+    double cosa = cos(m_start_anchor.a * PI / 180.0);
 
     double dimx = 2.0 * TrackStyle::car_shoulder
                + (float) m_lanes * TrackStyle::car_width
@@ -51,25 +52,15 @@ Double3 StraightSection::car_position(int lane, double distance) const
     double rot_xc = cosa * xc + sina * zc;
     double rot_zc = -sina * xc + cosa * zc;
 
-    return {m_start_anchor.v1 + rot_xc, m_start_anchor.v2, m_start_anchor.v3 + rot_zc};
+    return {m_start_anchor.x + rot_xc, m_start_anchor.y, m_start_anchor.z + rot_zc};
 }
 
-double StraightSection::start_angle() const
-{
-    return m_start_angle;
-}
-
-Double3 StraightSection::start_anchor() const
+Anchor StraightSection::start_anchor() const
 {
     return m_start_anchor;
 }
 
-double StraightSection::end_angle() const
-{
-    return m_end_angle;
-}
-
-Double3 StraightSection::end_anchor() const
+Anchor StraightSection::end_anchor() const
 {
     return m_end_anchor;
 }
@@ -78,7 +69,7 @@ CadModel StraightSection::cad_model() const
 {
     CadModel cm;
     CadModel s = CadModel(StraightTrackShape(m_lanes, m_length));
-    s.rotate_ay(m_start_angle);
-    cm.add(s, m_start_anchor.v1, m_start_anchor.v2, m_start_anchor.v3);
+    s.rotate_ay(m_start_anchor.a);
+    cm.add(s, m_start_anchor.x, m_start_anchor.y, m_start_anchor.z);
     return cm;
 }

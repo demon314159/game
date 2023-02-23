@@ -4,10 +4,10 @@
 #include "math.h"
 #include <cstddef>
 
-CurvedTrackShape::CurvedTrackShape(int lanes, float radius, float angle)
+CurvedTrackShape::CurvedTrackShape(int lanes, float radius, float total_angle)
     : m_lanes(lanes)
     , m_radius(radius)
-    , m_angle(angle)
+    , m_total_angle(total_angle)
     , m_count_mode(true)
     , m_facet_count(0)
     , m_facet(NULL)
@@ -51,8 +51,8 @@ void CurvedTrackShape::define_shape()
                + (float) (m_lanes - 1) * TrackStyle::car_gap;
 
     float approx_dangle = 2.0; // degrees
-    int steps = round(m_angle / approx_dangle);
-    float dangle = m_angle / (float) steps;
+    int steps = round(m_total_angle / approx_dangle);
+    float dangle = m_total_angle / (float) steps;
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
 

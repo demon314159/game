@@ -28,14 +28,14 @@ double StraightSection::total_distance(int lane) const
     return m_length;
 }
 
-double StraightSection::angle(int lane, double distance) const
+double StraightSection::car_angle(int lane, double distance) const
 {
     (void) lane;
     (void) distance;
     return m_start_angle;
 }
 
-Double3 StraightSection::position(int lane, double distance) const
+Double3 StraightSection::car_position(int lane, double distance) const
 {
     double sina = sin(m_start_angle * PI / 180.0);
     double cosa = cos(m_start_angle * PI / 180.0);

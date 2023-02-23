@@ -28,8 +28,8 @@ void Car::advance(int nanoseconds, Section** section, int sections)
         m_section = ((m_section + 1) == sections) ? 0 :  m_section + 1;
         m_distance = -slack;
     }
-    m_position = section[m_section]->position(m_lane, m_distance);
-    m_angle = section[m_section]->angle(m_lane, m_distance);
+    m_position = section[m_section]->car_position(m_lane, m_distance);
+    m_angle = section[m_section]->car_angle(m_lane, m_distance);
 
 //    printf("Car::advance(%d ns, %d sections):  distance = %5.1lf\n", nanoseconds, sections, m_distance);
 //    printf("  angle = %5.1lf,  pos = (%5.1lf, %5.1lf, %5.1lf}\n", m_angle, m_position.v1, m_position.v2, m_position.v3);

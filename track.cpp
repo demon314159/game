@@ -6,8 +6,8 @@ Track::Track()
     : m_cars(2)
     , m_sections(0)
 {
-    add_section(new StraightSection(2, 12.0, 90.0, {0.0, 0.0, 0.0}));
-    add_section(new StraightSection(2, 12.0, m_section[m_sections - 1]->end_angle(), m_section[m_sections-1]->end_anchor()));
+    add_section(new StraightSection(m_cars, 12.0, 90.0, {0.0, 0.0, 0.0}));
+    add_section(new StraightSection(m_cars, 12.0, m_section[m_sections - 1]->end_angle(), m_section[m_sections-1]->end_anchor()));
 }
 
 Track::~Track()
@@ -46,4 +46,14 @@ void Track::add_section(Section* section)
     if (m_sections < MAX_SECTIONS) {
         m_section[m_sections++] = section;
     }
+}
+
+int Track::sections() const
+{
+    return m_sections;
+}
+
+Section* Track::section(int ix)
+{
+    return m_section[ix];
 }

@@ -17,6 +17,8 @@ public:
     double car_angle(int car_id) const;
     Double3 car_position(int car_id) const;
     void add_section(Section* section);
+    int sections() const;
+    Section* section(int ix);
 
 protected:
     int m_cars;

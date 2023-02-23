@@ -17,6 +17,7 @@ public:
     Double3 start_anchor() const;
     double end_angle() const;
     Double3 end_anchor() const;
+    CadModel cad_model() const;
 
 private:
     int m_lanes;

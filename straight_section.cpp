@@ -1,5 +1,7 @@
 
 #include "straight_section.h"
+#include "straight_track_shape.h"
+#include "track_style.h"
 #include <cmath>
 
 #define PI 3.1415926536
@@ -22,11 +24,14 @@ StraightSection::~StraightSection()
 
 double StraightSection::total_distance(int lane) const
 {
+    (void) lane;
     return m_length;
 }
 
 double StraightSection::angle(int lane, double distance) const
 {
+    (void) lane;
+    (void) distance;
     return m_start_angle;
 }
 
@@ -34,7 +39,19 @@ Double3 StraightSection::position(int lane, double distance) const
 {
     double sina = sin(m_start_angle * PI / 180.0);
     double cosa = cos(m_start_angle * PI / 180.0);
-    return {m_start_anchor.v1 - distance * sina, m_start_anchor.v2, m_start_anchor.v3 - distance * cosa};
+
+    double dimx = 2.0 * TrackStyle::car_shoulder
+               + (float) m_lanes * TrackStyle::car_width
+               + (float) (m_lanes - 1) * TrackStyle::car_gap;
+
+    double x0 = -dimx / 2.0;
+    double x2 = x0 + TrackStyle::car_shoulder + TrackStyle::car_width / 2.0;
+    double xc = x2 + ((double) lane) * (TrackStyle::car_width + TrackStyle::car_gap);
+    double zc = - distance;
+    double rot_xc = cosa * xc + sina * zc;
+    double rot_zc = -sina * xc + cosa * zc;
+
+    return {m_start_anchor.v1 + rot_xc, m_start_anchor.v2, m_start_anchor.v3 + rot_zc};
 }
 
 double StraightSection::start_angle() const
@@ -57,3 +74,11 @@ Double3 StraightSection::end_anchor() const
     return m_end_anchor;
 }
 
+CadModel StraightSection::cad_model() const
+{
+    CadModel cm;
+    CadModel s = CadModel(StraightTrackShape(m_lanes, m_length));
+    s.rotate_ay(m_start_angle);
+    cm.add(s, m_start_anchor.v1, m_start_anchor.v2, m_start_anchor.v3);
+    return cm;
+}

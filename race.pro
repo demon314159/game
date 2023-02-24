@@ -34,11 +34,13 @@ HEADERS      += game.h \
                 ring_shape.h \
                 cylinder_shape.h \
                 straight_track_shape.h \
-                curved_track_shape.h \
+                curved_right_track_shape.h \
+                curved_left_track_shape.h \
                 section.h \
                 anchor.h \
                 straight_section.h \
                 curved_right_section.h \
+                curved_left_section.h \
                 track.h \
                 car.h \
                 qa.h \
@@ -64,10 +66,12 @@ SOURCES      += main.cpp \
                 ring_shape.cpp \
                 cylinder_shape.cpp \
                 straight_track_shape.cpp \
-                curved_track_shape.cpp \
+                curved_right_track_shape.cpp \
+                curved_left_track_shape.cpp \
                 section.cpp \
                 straight_section.cpp \
                 curved_right_section.cpp \
+                curved_left_section.cpp \
                 track.cpp \
                 car.cpp \
                 qa.cpp \

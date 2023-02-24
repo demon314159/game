@@ -1,16 +1,16 @@
 
-#ifndef _CURVED_TRACK_SHAPE_H_
-#define _CURVED_TRACK_SHAPE_H_
+#ifndef _CURVED_RIGHT_TRACK_SHAPE_H_
+#define _CURVED_RIGHT_TRACK_SHAPE_H_
 
 #include "shape.h"
 #include "float3.h"
 #include "facet.h"
 
-class CurvedTrackShape: public Shape
+class CurvedRightTrackShape: public Shape
 {
 public:
-    CurvedTrackShape(int lanes, float radius, float total_angle);
-    virtual ~CurvedTrackShape();
+    CurvedRightTrackShape(int lanes, float radius, float total_angle);
+    virtual ~CurvedRightTrackShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
@@ -26,4 +26,4 @@ private:
     void add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip = false);
 };
 
-#endif // _CURVED_TRACK_SHAPE_
+#endif // _CURVED_RIGHT_TRACK_SHAPE_

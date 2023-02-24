@@ -9,8 +9,6 @@
 #include "brick_shape.h"
 #include "ring_shape.h"
 #include "cylinder_shape.h"
-#include "straight_track_shape.h"
-#include "curved_track_shape.h"
 #include "bounding_box.h"
 #include "look.h"
 #include "track_style.h"

@@ -1,10 +1,10 @@
 
-#include "curved_track_shape.h"
+#include "curved_left_track_shape.h"
 #include "track_style.h"
 #include "math.h"
 #include <cstddef>
 
-CurvedTrackShape::CurvedTrackShape(int lanes, float radius, float total_angle)
+CurvedLeftTrackShape::CurvedLeftTrackShape(int lanes, float radius, float total_angle)
     : m_lanes(lanes)
     , m_radius(radius)
     , m_total_angle(total_angle)
@@ -21,23 +21,23 @@ CurvedTrackShape::CurvedTrackShape(int lanes, float radius, float total_angle)
     }
 }
 
-CurvedTrackShape::~CurvedTrackShape()
+CurvedLeftTrackShape::~CurvedLeftTrackShape()
 {
     if (m_facet != NULL)
         delete [] m_facet;
 }
 
-int CurvedTrackShape::facets() const
+int CurvedLeftTrackShape::facets() const
 {
     return m_facet_count;
 }
 
-Facet CurvedTrackShape::facet(int facet_ix) const
+Facet CurvedLeftTrackShape::facet(int facet_ix) const
 {
     return m_facet[facet_ix];
 }
 
-void CurvedTrackShape::define_shape()
+void CurvedLeftTrackShape::define_shape()
 {
     float dy = TrackStyle::track_height;
     float db = TrackStyle::track_bevel;
@@ -69,35 +69,35 @@ void CurvedTrackShape::define_shape()
         float sina = sin(angle * 3.1415926535 / 180.0);
         float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
 
-        float xa0 = m_radius - (-x0 + m_radius) * cosa;
-        float xb0 = m_radius - (-x0 + m_radius) * cosb;
-        float za0 = - (-x0 + m_radius) * sina;
-        float zb0 = - (-x0 + m_radius) * sinb;
+        float xa0 = -m_radius + (x0 + m_radius) * cosa;
+        float xb0 = -m_radius + (x0 + m_radius) * cosb;
+        float za0 = - (x0 + m_radius) * sina;
+        float zb0 = - (x0 + m_radius) * sinb;
 
-        float xa1 = m_radius - (-x1 + m_radius) * cosa;
-        float xb1 = m_radius - (-x1 + m_radius) * cosb;
-        float za1 = - (-x1 + m_radius) * sina;
-        float zb1 = - (-x1 + m_radius) * sinb;
+        float xa1 = -m_radius + (x1 + m_radius) * cosa;
+        float xb1 = -m_radius + (x1 + m_radius) * cosb;
+        float za1 = - (x1 + m_radius) * sina;
+        float zb1 = - (x1 + m_radius) * sinb;
 
-        float xa2 = m_radius - (-x2 + m_radius) * cosa;
-        float xb2 = m_radius - (-x2 + m_radius) * cosb;
-        float za2 = - (-x2 + m_radius) * sina;
-        float zb2 = - (-x2 + m_radius) * sinb;
+        float xa2 = -m_radius + (x2 + m_radius) * cosa;
+        float xb2 = -m_radius + (x2 + m_radius) * cosb;
+        float za2 = - (x2 + m_radius) * sina;
+        float zb2 = - (x2 + m_radius) * sinb;
 
-        float xa3 = m_radius - (-x3 + m_radius) * cosa;
-        float xb3 = m_radius - (-x3 + m_radius) * cosb;
-        float za3 = - (-x3 + m_radius) * sina;
-        float zb3 = - (-x3 + m_radius) * sinb;
+        float xa3 = -m_radius + (x3 + m_radius) * cosa;
+        float xb3 = -m_radius + (x3 + m_radius) * cosb;
+        float za3 = - (x3 + m_radius) * sina;
+        float zb3 = - (x3 + m_radius) * sinb;
 
-        float xa4 = m_radius - (-x4 + m_radius) * cosa;
-        float xb4 = m_radius - (-x4 + m_radius) * cosb;
-        float za4 = - (-x4 + m_radius) * sina;
-        float zb4 = - (-x4 + m_radius) * sinb;
+        float xa4 = -m_radius + (x4 + m_radius) * cosa;
+        float xb4 = -m_radius + (x4 + m_radius) * cosb;
+        float za4 = - (x4 + m_radius) * sina;
+        float zb4 = - (x4 + m_radius) * sinb;
 
-        float xa5 = m_radius - (-x5 + m_radius) * cosa;
-        float xb5 = m_radius - (-x5 + m_radius) * cosb;
-        float za5 = - (-x5 + m_radius) * sina;
-        float zb5 = - (-x5 + m_radius) * sinb;
+        float xa5 = -m_radius + (x5 + m_radius) * cosa;
+        float xb5 = -m_radius + (x5 + m_radius) * cosb;
+        float za5 = - (x5 + m_radius) * sina;
+        float zb5 = - (x5 + m_radius) * sinb;
 
         add_face(0.0, tp, {xa0, -dy, za0}, {xb0, -dy, zb0}, {xb0, dy - db, zb0}, {xa0, dy - db, za0}, true);
         add_face(0.0, tp, {xa0, dy - db, za0}, {xb0, dy - db, zb0}, {xb1, dy, zb1}, {xa1, dy, za1}, true);
@@ -115,30 +115,30 @@ void CurvedTrackShape::define_shape()
             x4 = x4 + TrackStyle::car_gap + TrackStyle::car_width;
             x5 = x5 + TrackStyle::car_gap + TrackStyle::car_width;
 
-            xa1 = m_radius - (-x1 + m_radius) * cosa;
-            xb1 = m_radius - (-x1 + m_radius) * cosb;
-            za1 = - (-x1 + m_radius) * sina;
-            zb1 = - (-x1 + m_radius) * sinb;
+            xa1 = -m_radius + (x1 + m_radius) * cosa;
+            xb1 = -m_radius + (x1 + m_radius) * cosb;
+            za1 = - (x1 + m_radius) * sina;
+            zb1 = - (x1 + m_radius) * sinb;
 
-            xa2 = m_radius - (-x2 + m_radius) * cosa;
-            xb2 = m_radius - (-x2 + m_radius) * cosb;
-            za2 = - (-x2 + m_radius) * sina;
-            zb2 = - (-x2 + m_radius) * sinb;
+            xa2 = -m_radius + (x2 + m_radius) * cosa;
+            xb2 = -m_radius + (x2 + m_radius) * cosb;
+            za2 = - (x2 + m_radius) * sina;
+            zb2 = - (x2 + m_radius) * sinb;
 
-            xa3 = m_radius - (-x3 + m_radius) * cosa;
-            xb3 = m_radius - (-x3 + m_radius) * cosb;
-            za3 = - (-x3 + m_radius) * sina;
-            zb3 = - (-x3 + m_radius) * sinb;
+            xa3 = -m_radius + (x3 + m_radius) * cosa;
+            xb3 = -m_radius + (x3 + m_radius) * cosb;
+            za3 = - (x3 + m_radius) * sina;
+            zb3 = - (x3 + m_radius) * sinb;
 
-            xa4 = m_radius - (-x4 + m_radius) * cosa;
-            xb4 = m_radius - (-x4 + m_radius) * cosb;
-            za4 = - (-x4 + m_radius) * sina;
-            zb4 = - (-x4 + m_radius) * sinb;
+            xa4 = -m_radius + (x4 + m_radius) * cosa;
+            xb4 = -m_radius + (x4 + m_radius) * cosb;
+            za4 = - (x4 + m_radius) * sina;
+            zb4 = - (x4 + m_radius) * sinb;
 
-            xa5 = m_radius - (-x5 + m_radius) * cosa;
-            xb5 = m_radius - (-x5 + m_radius) * cosb;
-            za5 = - (-x5 + m_radius) * sina;
-            zb5 = - (-x5 + m_radius) * sinb;
+            xa5 = -m_radius + (x5 + m_radius) * cosa;
+            xb5 = -m_radius + (x5 + m_radius) * cosb;
+            za5 = - (x5 + m_radius) * sina;
+            zb5 = - (x5 + m_radius) * sinb;
 
             add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
             add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
@@ -150,15 +150,15 @@ void CurvedTrackShape::define_shape()
         float x6 = dimx / 2.0 - TrackStyle::track_bevel;
         float x7 = dimx / 2.0;
 
-        float xa6 = m_radius - (-x6 + m_radius) * cosa;
-        float xb6 = m_radius - (-x6 + m_radius) * cosb;
-        float za6 = - (-x6 + m_radius) * sina;
-        float zb6 = - (-x6 + m_radius) * sinb;
+        float xa6 = -m_radius + (x6 + m_radius) * cosa;
+        float xb6 = -m_radius + (x6 + m_radius) * cosb;
+        float za6 = - (x6 + m_radius) * sina;
+        float zb6 = - (x6 + m_radius) * sinb;
 
-        float xa7 = m_radius - (-x7 + m_radius) * cosa;
-        float xb7 = m_radius - (-x7 + m_radius) * cosb;
-        float za7 = - (-x7 + m_radius) * sina;
-        float zb7 = - (-x7 + m_radius) * sinb;
+        float xa7 = -m_radius + (x7 + m_radius) * cosa;
+        float xb7 = -m_radius + (x7 + m_radius) * cosb;
+        float za7 = - (x7 + m_radius) * sina;
+        float zb7 = - (x7 + m_radius) * sinb;
 
         add_face(0.0, tp, {xa5, dy, za5}, {xb5, dy, zb5}, {xb6, dy, zb6}, {xa6, dy, za6}, true);
         add_face(0.0, tp, {xa6, dy, za6}, {xb6, dy, zb6}, {xb7, dy - db, zb7}, {xa7, dy - db, za7}, true);
@@ -166,13 +166,13 @@ void CurvedTrackShape::define_shape()
     }
 }
 
-void CurvedTrackShape::add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
+void CurvedLeftTrackShape::add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, Float3 v4, bool flip)
 {
     add_face(animation_id, color, v1, v2, v3, flip);
     add_face(animation_id, color, v1, v3, v4, flip);
 }
 
-void CurvedTrackShape::add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, bool flip)
+void CurvedLeftTrackShape::add_face(float animation_id, Float3 color, Float3 v1, Float3 v2, Float3 v3, bool flip)
 {
     if (!m_count_mode) {
         m_facet[m_facet_count].animation_id = animation_id;

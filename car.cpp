@@ -4,7 +4,7 @@
 Car::Car()
     : m_speed(5.0)
     , m_section(0)
-    , m_lane(0)
+    , m_lane(1)
     , m_distance(0.0)
     , m_angle(0.0)
     , m_position({0.0, 0.0, 0.0})

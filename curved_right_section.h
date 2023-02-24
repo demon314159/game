@@ -1,21 +1,23 @@
 
-#ifndef _CURVED_SECTION_H_
-#define _CURVED_SECTION_H_
+#ifndef _CURVED_RIGHT_SECTION_H_
+#define _CURVED_RIGHT_SECTION_H_
 
 #include "section.h"
 #include "double3.h"
 
-class CurvedSection: public Section
+class CurvedRightSection: public Section
 {
 public:
-    CurvedSection(int lanes, double radius, double total_angle, Anchor start_anchor);
-    virtual ~CurvedSection();
+    CurvedRightSection(int lanes, double radius, double total_angle, Anchor start_anchor);
+    virtual ~CurvedRightSection();
     double total_distance(int lane) const;
     double car_angle(int lane, double distance) const;
     Double3 car_position(int lane, double distance) const;
     Anchor start_anchor() const;
     Anchor end_anchor() const;
     CadModel cad_model() const;
+protected:
+    double rlane(int lane) const;
 
 private:
     int m_lanes;
@@ -25,4 +27,4 @@ private:
     Anchor m_end_anchor;
 };
 
-#endif // _CURVED_SECTION_SHAPE_
+#endif // _CURVED_RIGHT_SECTION_SHAPE_

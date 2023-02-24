@@ -38,7 +38,7 @@ HEADERS      += game.h \
                 section.h \
                 anchor.h \
                 straight_section.h \
-                curved_section.h \
+                curved_right_section.h \
                 track.h \
                 car.h \
                 qa.h \
@@ -67,7 +67,7 @@ SOURCES      += main.cpp \
                 curved_track_shape.cpp \
                 section.cpp \
                 straight_section.cpp \
-                curved_section.cpp \
+                curved_right_section.cpp \
                 track.cpp \
                 car.cpp \
                 qa.cpp \

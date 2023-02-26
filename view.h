@@ -45,9 +45,6 @@ protected:
     void copy_aux_facets();
     void render_facets();
     void build_track();
-    void build_car();
-    void build_wheels(float car_width);
-    CadModel build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width);
 
 private:
     Qa m_qa;

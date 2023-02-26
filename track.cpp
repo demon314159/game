@@ -62,3 +62,9 @@ Section* Track::section(int ix)
 {
     return m_section[ix];
 }
+
+Car* Track::car(int ix)
+{
+    return &m_car[ix];
+}
+

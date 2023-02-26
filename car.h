@@ -3,6 +3,7 @@
 
 #include "double3.h"
 #include "section.h"
+#include "cad_model.h"
 
 class Car
 {
@@ -12,6 +13,7 @@ public:
     void advance(int nanoseconds, Section** section, int sections);
     double angle() const;
     Double3 position() const;
+    CadModel cad_model() const;
 
 protected:
     double m_speed;
@@ -20,6 +22,9 @@ protected:
     double m_distance;
     double m_angle;
     Double3 m_position;
+    void build_car(CadModel* vehicle) const;
+    void build_wheels(CadModel* vehicle) const;
+    CadModel build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width) const;
 };
 
 #endif // _CAR_H_

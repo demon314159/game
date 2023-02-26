@@ -19,6 +19,7 @@ public:
     void add_section(Section* section);
     int sections() const;
     Section* section(int ix);
+    Car* car(int ix);
 
 protected:
     int m_cars;

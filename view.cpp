@@ -90,6 +90,7 @@ void View::decorate_model()
     bb.vmin.v3 -= 2.0;
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
+    printf("bounding box min (%5.2f, %5.2f) to (%5.2f, %5.2f)\n", bb.vmin.v1, bb.vmin.v3, bb.vmax.v1, bb.vmax.v3);
 
 //    add_grid(m_table, bb);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);

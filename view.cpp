@@ -9,6 +9,8 @@
 #include <stdio.h>
 
 #define notVERBOSE
+#define INITIAL_XROT 40.0
+#define INITIAL_MAG 2.25
 
 View::View()
     : m_time_at_start(high_resolution_clock::now())
@@ -22,10 +24,10 @@ View::View()
     , m_width((512 * 1920) / 1080)
     , m_height(512)
     , m_aspect(1.0)
-    , m_mag(1.0)
+    , m_mag(INITIAL_MAG)
     , m_fov(45.0)
     , m_camz(8.0)
-    , m_xrot(0.0)
+    , m_xrot(INITIAL_XROT)
     , m_yrot(0.0)
     , m_xoff(0.0)
     , m_yoff(0.0)
@@ -195,6 +197,7 @@ void View::resize_calc()
     float zfar = m_camz + 2.0 * m_radius;
     m_projection.setToIdentity();
     m_projection.perspective(m_fov / m_mag, m_aspect, znear, zfar);
+    printf("m_fov = %5.3f, m_mag = %5.3f, m_aspect = %5.2f, znear = %5.2f, zfar = %5.2f\n", m_fov, m_mag, m_aspect, znear, zfar);
 }
 
 void View::check_storage()
@@ -344,7 +347,7 @@ void View::rotate_home()
 #ifdef VERBOSE
     printf("View::rotate_home()\n");
 #endif
-    m_xrot = 0.0;
+    m_xrot = INITIAL_XROT;
     m_yrot = 0.0;
 }
 

@@ -100,6 +100,7 @@ void View::decorate_model()
     m_center.v1 = (bb.vmin.v1 + bb.vmax.v1) / 2.0;
     m_center.v2 = (bb.vmin.v2 + bb.vmax.v2) / 2.0;
     m_center.v3 = (bb.vmin.v3 + bb.vmax.v3) / 2.0;
+    printf("m_radius = %5.2f, center = (%5.2f, %5.2f, %5.2f)\n", m_radius, m_center.v1, m_center.v2, m_center.v3);
 }
 
 View::~View()

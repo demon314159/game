@@ -1,40 +1,35 @@
 
 // table.h
 //
-#if !defined(_TABLE_H_)
+#ifndef _TABLE_H_
 #define _TABLE_H_
 
 #include "view.h"
 #include "navigate.h"
-#include <QOpenGLWidget>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QTimer>
 
-class Table: public QOpenGLWidget
+class Table
 {
-    Q_OBJECT
 
 public:
-    Table(QWidget *parent = nullptr);
+    Table(SDL_Window* window);
     ~Table();
-
-protected:
-    void initializeGL() override;
-    void resizeGL(int w, int h) override;
-    void paintGL() override;
-    void keyPressEvent(QKeyEvent* e) override;
-    void keyReleaseEvent(QKeyEvent* e) override;
-    void mousePressEvent(QMouseEvent* e) override;
-    void mouseMoveEvent(QMouseEvent* e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
-    void wheelEvent(QWheelEvent *e) override;
-    void mouse_navigate(QMouseEvent* e);
-    void my_update();
+    bool is_running() const;
+    void resize(int w, int h);
+    void initialize();
+    void render();
+    void quit_event();
+    void window_event(SDL_Event* e);
+    void key_press_event(SDL_Event* e);
+    void key_release_event(SDL_Event* e);
+    void mouse_press_event(SDL_Event* e);
+    void mouse_release_event(SDL_Event* e);
+    void mouse_move_event(SDL_Event* e);
+    void mouse_wheel_event(SDL_Event *e);
+    void mouse_navigate(int mx, int my);
 private:
-    View* m_view;
+    View m_view;
     Navigate m_navigate;
-    QTimer* m_timer;
+    bool m_is_running;
 };
 
 #endif // _TABLE_H_

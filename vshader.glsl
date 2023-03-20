@@ -1,9 +1,3 @@
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
-
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
 uniform mat4 car_matrix;

@@ -2,25 +2,33 @@
 #ifndef _VIEW_H_
 #define _VIEW_H_
 
-#include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
+#include <chrono>
+#include <SDL.h>
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+#include <stdio.h>
+
 #include "vertex_data.h"
+#include "matrix4x4.h"
 #include "track.h"
 #include "qa.h"
-
 #include "cad_model.h"
-#include <chrono>
+
 using namespace std::chrono;
 
-class View: protected QOpenGLFunctions
+#define INITIAL_HEIGHT 512
+#define INITIAL_WIDTH ((INITIAL_HEIGHT * 1920) / 1080)
+#define INITIAL_XROT 40.0
+#define INITIAL_MAG 2.25
+
+class View
 {
 public:
-    View();
+    View(SDL_Window* window);
     virtual ~View();
-    bool initialize();
+    void initialize();
     void resize(int w, int h);
-    void paint();
+    void render();
     void rotate_ax(float degrees);
     void rotate_ay(float degrees);
     void rotate_home();
@@ -43,17 +51,28 @@ protected:
     void copy_changed_vertices();
     void sub_copy_facets(CadModel* model, VertexData* vertices, int& vix);
     void copy_aux_facets();
-    void render_facets();
     void build_track();
 
 private:
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
+    SDL_GLContext m_context;
+    GLuint m_program;
+    GLint m_pos_attr;
+    GLint m_col_attr;
+    GLint m_norm_attr;
+    GLint m_ani_attr;
+    GLint m_mvp_matrix_uniform;
+    GLint m_rot_matrix_uniform;
+    GLint m_car_matrix_uniform;
+    unsigned int m_vbo;
+
     Qa m_qa;
     high_resolution_clock::time_point m_time_at_start;
     int m_max_vertex_count;
     int m_aux_count;
     CadModel* m_table;
     CadModel* m_aux_model;
-    QOpenGLBuffer m_vertex_buf;
     bool m_change;
     float m_radius;
     Float3 m_center;
@@ -68,10 +87,14 @@ private:
     float m_xoff;
     float m_yoff;
     Track* m_track;
-    QOpenGLShaderProgram m_program;
-    QMatrix4x4 m_mvp_matrix;
-    QMatrix4x4 m_rot_matrix;
-    QMatrix4x4 m_projection;
+    Matrix4x4 m_mvp_matrix;
+    Matrix4x4 m_rot_matrix;
+    Matrix4x4 m_projection;
+
+    bool add_shader_from_source_file(GLuint shader, const char* name);
+    void perspective(float fovy, float aspect, float near, float far);
+    void print_program_log(GLuint program);
+    void print_shader_log(GLuint shader);
 };
 
 #endif // _VIEW_H_

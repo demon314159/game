@@ -2,184 +2,156 @@
 // table.cpp
 //
 #include "table.h"
-#include "look.h"
-#include <QMouseEvent>
-#include <QFileDialog>
 
-Table::Table(QWidget *parent)
-    : QOpenGLWidget(parent)
-    , m_view(new View())
-    , m_timer(new QTimer(this))
+Table::Table(SDL_Window* window)
+    : m_view(window)
+    , m_navigate()
+    , m_is_running(true)
 {
-    setMinimumWidth(600);
-    setMinimumHeight(337);
-//    setFocusPolicy(Qt::StrongFocus);
-    grabKeyboard();
-
-    connect(m_timer, &QTimer::timeout, this, QOverload<>::of(&Table::update));
-    m_timer->start(33);
 }
 
 Table::~Table()
 {
-    m_timer->stop();
-    delete m_timer;
-    makeCurrent();
-    delete m_view;
-    doneCurrent();
 }
 
-void Table::initializeGL()
+bool Table::is_running() const
 {
-    if (!m_view->initialize())
-        close();
-    my_update();
+    return m_is_running;
 }
 
-void Table::resizeGL(int w, int h)
+void Table::resize(int w, int h)
 {
-    m_view->resize(w, h);
+    m_view.resize(w, h);
 }
 
-void Table::paintGL()
+void Table::initialize()
 {
-    m_view->paint();
+    m_view.initialize();
 }
 
-void Table::keyPressEvent(QKeyEvent* e)
+void Table::render()
 {
-    QOpenGLWidget::keyPressEvent(e);
-    unsigned int a = e->nativeScanCode();
-    bool shifted = (e->modifiers() & Qt::ShiftModifier) ? true : false;
+    m_view.render();
+}
 
-    if (a == 0x6f) { // up
+void Table::quit_event()
+{
+    m_is_running = false;
+}
+
+void Table::window_event(SDL_Event* e)
+{
+    if (e->window.event == SDL_WINDOWEVENT_RESIZED) {
+        m_view.resize(e->window.data1, e->window.data2);
+    }
+}
+
+void Table::key_press_event(SDL_Event* e)
+{
+    unsigned int a = e->key.keysym.scancode;
+    bool shifted = (e->key.keysym.mod & KMOD_SHIFT) ? true : false;
+    if (a == SDL_SCANCODE_UP) {
         if (shifted) {
-            m_view->translate_y(-m_view->height() / 10);
+            m_view.translate_y(-m_view.height() / 10);
         } else {
-            m_view->rotate_ax(-10.0);
+            m_view.rotate_ax(-10.0);
         }
-        my_update();
-    } else if (a == 0x74) { // down
+    } else if (a == SDL_SCANCODE_DOWN) {
         if (shifted) {
-            m_view->translate_y(m_view->height() / 10);
+            m_view.translate_y(m_view.height() / 10);
         } else {
-            m_view->rotate_ax(10.0);
+            m_view.rotate_ax(10.0);
         }
-        my_update();
-    } else if (a == 0x71) { // left
+    } else if (a == SDL_SCANCODE_LEFT) {
         if (shifted) {
-            m_view->translate_x(-m_view->width() / 10);
+            m_view.translate_x(-m_view.width() / 10);
         } else {
-            m_view->rotate_ay(-10.0);
+            m_view.rotate_ay(-10.0);
         }
-        my_update();
-    } else if (a == 0x72) { // right
+    } else if (a == SDL_SCANCODE_RIGHT) {
         if (shifted) {
-            m_view->translate_x(m_view->width() / 10);
+            m_view.translate_x(m_view.width() / 10);
         } else {
-            m_view->rotate_ay(10.0);
+            m_view.rotate_ay(10.0);
         }
-        my_update();
-    } else if (a == 0x1f) { // i or I
-        m_view->zoom(3.0 / 2.0);
-        my_update();
-    } else if (a == 0x20) { // o or O
-        m_view->zoom(2.0 / 3.0);
-        my_update();
-    } else if (a == 0x2b) { // h or H
-        m_view->zoom_home();
+    } else if (a == SDL_SCANCODE_I) {
+        m_view.zoom(3.0 / 2.0);
+    } else if (a == SDL_SCANCODE_O) {
+        m_view.zoom(2.0 / 3.0);
+    } else if (a == SDL_SCANCODE_H) {
+        m_view.zoom_home();
         if (shifted) {
-            m_view->rotate_home();
-            m_view->translate_home();
+            m_view.rotate_home();
+            m_view.translate_home();
         }
         m_navigate.stop();
-        my_update();
+    } else if (a == SDL_SCANCODE_Q) {
+        m_is_running = false;
     }
 }
 
-void Table::keyReleaseEvent(QKeyEvent* e)
+void Table::key_release_event(SDL_Event* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x32) {
-    } else if (a == 0x3e) {
-    }
-    QOpenGLWidget::keyReleaseEvent(e);
 }
 
-void Table::mousePressEvent(QMouseEvent* e)
+void Table::mouse_press_event(SDL_Event* e)
 {
-    if (e->button() == Qt::MiddleButton) {
-        m_view->zoom_home();
-        m_view->rotate_home();
-        m_view->translate_home();
+    if (e->button.button == SDL_BUTTON_MIDDLE) {
+        m_view.zoom_home();
+        m_view.rotate_home();
+        m_view.translate_home();
         m_navigate.stop();
-        my_update();
-    } else if (e->button() == Qt::LeftButton) {
-        m_navigate.start_rotate(e->pos().x(), e->pos().y());
-    } else if (e->button() == Qt::RightButton) {
-        m_navigate.start_translate(e->pos().x(), e->pos().y());
+    } else if (e->button.button == SDL_BUTTON_LEFT) {
+        m_navigate.start_rotate(e->button.x, e->button.y);
+    } else if (e->button.button == SDL_BUTTON_RIGHT) {
+        m_navigate.start_translate(e->button.x, e->button.y);
     }
-    QOpenGLWidget::mousePressEvent(e);
 }
 
-void Table::mouse_navigate(QMouseEvent* e)
+void Table::mouse_navigate(int mx, int my)
 {
     if (m_navigate.is_rotate()) {
         float degx, degy;
-        if (m_navigate.rotate_threshold_exceeded(e->pos().x(), e->pos().y(), degx, degy)) {
-            m_view->rotate_ay(degx);
-            m_view->rotate_ax(degy);
-            my_update();
+        if (m_navigate.rotate_threshold_exceeded(mx, my, degx, degy)) {
+            m_view.rotate_ay(degx);
+            m_view.rotate_ax(degy);
         }
     } else if (m_navigate.is_translate()) {
         int dx, dy;
-        if (m_navigate.translate_threshold_exceeded(e->pos().x(), e->pos().y(), dx, dy)) {
-            m_view->translate_x(dx);
-            m_view->translate_y(dy);
-            my_update();
+        if (m_navigate.translate_threshold_exceeded(mx, my, dx, dy)) {
+            m_view.translate_x(dx);
+            m_view.translate_y(dy);
         }
-
     }
 }
 
-void Table::mouseMoveEvent(QMouseEvent* e)
+void Table::mouse_release_event(SDL_Event* e)
 {
-//    printf("  mouse move %d, %d\n", e->pos().x(), e->pos().y());
-    if (m_navigate.active())
-        mouse_navigate(e);
-    QOpenGLWidget::mouseMoveEvent(e);
-}
-
-void Table::mouseReleaseEvent(QMouseEvent* e)
-{
-    if (e->button() == Qt::LeftButton) {
-//        printf("  mouse release %d, %d\n", e->pos().x(), e->pos().y());
+    if (e->button.button == SDL_BUTTON_LEFT) {
         if (m_navigate.active())
-            mouse_navigate(e);
+            mouse_navigate(e->button.x, e->button.y);
         m_navigate.stop();
-    } else if (e->button() == Qt::RightButton) {
+    } else if (e->button.button == SDL_BUTTON_RIGHT) {
         if (m_navigate.active())
-            mouse_navigate(e);
+            mouse_navigate(e->button.x, e->button.y);
          m_navigate.stop();
     }
-    QOpenGLWidget::mouseReleaseEvent(e);
 }
 
-void Table::wheelEvent(QWheelEvent* e)
+void Table::mouse_move_event(SDL_Event* e)
 {
-    int angle = e->angleDelta().y();
+    if (m_navigate.active())
+        mouse_navigate(e->motion.x, e->motion.y);
+}
+
+void Table::mouse_wheel_event(SDL_Event *e)
+{
+    int angle = e->wheel.y;
     if (angle > 0) {
-        m_view->zoom(3.0 / 2.0);
-        my_update();
+        m_view.zoom(3.0 / 2.0);
     }
     if (angle < 0) {
-        m_view->zoom(2.0 / 3.0);
-        my_update();
+        m_view.zoom(2.0 / 3.0);
     }
-    e->accept();
 }
 
-void Table::my_update()
-{
-//    update();
-}

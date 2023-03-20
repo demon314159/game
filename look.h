@@ -3,7 +3,6 @@
 #define _LOOK_H_
 
 #include "paint_can.h"
-#include <QString>
 
 class Look
 {

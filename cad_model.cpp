@@ -3,9 +3,7 @@
 //
 #include "cad_model.h"
 #include <math.h>
-#include <QVector3D>
-#include <QVector4D>
-#include <QQuaternion>
+#include "matrix3x3.h"
 
 #define notVERBOSE
 
@@ -35,50 +33,6 @@ CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
             m_facet[i].v2 = translate(cad_model.facet_v2(i), offset);
             m_facet[i].v3 = translate(cad_model.facet_v3(i), offset);
             m_facet[i].color = cad_model.facet_color(i);
-        }
-    }
-}
-
-CadModel::CadModel(const VrmlInterface& vrml_interface, float animation_id)
-    : m_facet_count(0)
-    , m_facet(NULL)
-{
-#ifdef VERBOSE
-    printf("CadModel::CadModel(vrml) animation id = %7.3f)\n", animation_id);
-#endif
-    m_facet_count = vrml_interface.facets();
-    if (m_facet_count > 0) {
-        m_facet = new Facet[m_facet_count];
-        for (int i = 0; i < m_facet_count; i++) {
-            Int3 v = vrml_interface.facet_points(i);
-            int m = vrml_interface.facet_material(i);
-            m_facet[i].animation_id = animation_id;
-            m_facet[i].v1 = vrml_interface.point(v.v1);
-            m_facet[i].v2 = vrml_interface.point(v.v2);
-            m_facet[i].v3 = vrml_interface.point(v.v3);
-            m_facet[i].color = vrml_interface.ambient_color(m);
-        }
-    }
-}
-
-CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id)
-    : m_facet_count(0)
-    , m_facet(NULL)
-{
-#ifdef VERBOSE
-    printf("CadModel::CadModel(stl), paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
-           paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
-           animation_id);
-#endif
-    m_facet_count = stl_interface.facets();
-    if (m_facet_count > 0) {
-        m_facet = new Facet[m_facet_count];
-        for (int i = 0; i < m_facet_count; i++) {
-            m_facet[i].animation_id = animation_id;
-            m_facet[i].v1 = stl_interface.facet_v1(i);
-            m_facet[i].v2 = stl_interface.facet_v2(i);
-            m_facet[i].v3 = stl_interface.facet_v3(i);
-            m_facet[i].color = paint_can.ambient_color();
         }
     }
 }
@@ -122,58 +76,6 @@ CadModel::CadModel(const Shape& s)
             m_facet[i].v3 = s.facet(i).v3;
             m_facet[i].color = s.facet(i).color;
         }
-    }
-}
-
-void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
-{
-#ifdef VERBOSE
-    printf("CadModel::add(vrml) animation_id = %7.3f\n", animation_id);
-#endif
-    int added_facet_count = vrml_interface.facets();
-    if (added_facet_count > 0) {
-        Facet* tfacet = m_facet;
-        m_facet = new Facet[m_facet_count + added_facet_count];
-        for (int i = 0; i < m_facet_count; i++) {
-            m_facet[i] = tfacet[i];
-        }
-        for (int i = 0; i < added_facet_count; i++) {
-            Int3 v = vrml_interface.facet_points(i);
-            int m = vrml_interface.facet_material(i);
-            m_facet[m_facet_count + i].animation_id = animation_id;
-            m_facet[m_facet_count + i].v1 = vrml_interface.point(v.v1);
-            m_facet[m_facet_count + i].v2 = vrml_interface.point(v.v2);
-            m_facet[m_facet_count + i].v3 = vrml_interface.point(v.v3);
-            m_facet[m_facet_count + i].color = vrml_interface.ambient_color(m);
-        }
-        m_facet_count += added_facet_count;
-        delete [] tfacet;
-    }
-}
-
-void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id)
-{
-#ifdef VERBOSE
-    printf("CadModel::add(stl) paint = (%8.6f, %8.6f, %8.6f) animation_id = %7.3f\n",
-           paint_can.ambient_color().v1, paint_can.ambient_color().v2, paint_can.ambient_color().v3,
-           animation_id);
-#endif
-    int added_facet_count = stl_interface.facets();
-    if (added_facet_count > 0) {
-        Facet* tfacet = m_facet;
-        m_facet = new Facet[m_facet_count + added_facet_count];
-        for (int i = 0; i < m_facet_count; i++) {
-            m_facet[i] = tfacet[i];
-        }
-        for (int i = 0; i < added_facet_count; i++) {
-            m_facet[m_facet_count + i].animation_id = animation_id;
-            m_facet[m_facet_count + i].v1 = stl_interface.facet_v1(i);
-            m_facet[m_facet_count + i].v2 = stl_interface.facet_v2(i);
-            m_facet[m_facet_count + i].v3 = stl_interface.facet_v3(i);
-            m_facet[m_facet_count + i].color = paint_can.ambient_color();
-        }
-        m_facet_count += added_facet_count;
-        delete [] tfacet;
     }
 }
 
@@ -317,37 +219,54 @@ Facet CadModel::translate(const Facet& f, const Float3& offset) const
     return t;
 }
 
-void CadModel::rotate_vertex(Float3& vertex, const QMatrix4x4& matrix)
-{
-    QVector4D r = matrix * QVector4D(vertex.v1, vertex.v2, vertex.v3, 1.0);
-    vertex.v1 = r.x();
-    vertex.v2 = r.y();
-    vertex.v3 = r.z();
-}
-
 void CadModel::rotate_ax(float angle)
 {
-    QVector3D my_axis = {1.0, 0.0, 0.0};
-    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
-    QMatrix4x4 matrix;
-    matrix.rotate(my_rot);
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_ax(angle);
+    Matrix3x3 m;
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet[i].v1, matrix);
-        rotate_vertex(m_facet[i].v2, matrix);
-        rotate_vertex(m_facet[i].v3, matrix);
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
     }
 }
 
 void CadModel::rotate_ay(float angle)
 {
-    QVector3D my_axis = {0.0, 1.0, 0.0};
-    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
-    QMatrix4x4 matrix;
-    matrix.rotate(my_rot);
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_ay(angle);
+    Matrix3x3 m;
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet[i].v1, matrix);
-        rotate_vertex(m_facet[i].v2, matrix);
-        rotate_vertex(m_facet[i].v3, matrix);
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
+    }
+}
+
+void CadModel::rotate_az(float angle)
+{
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_az(angle);
+    Matrix3x3 m;
+    for (int i = 0; i < m_facet_count; i++) {
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
     }
 }
 

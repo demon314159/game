@@ -4,14 +4,10 @@
 #if !defined(_CAD_MODEL_H_)
 #define _CAD_MODEL_H_
 
-#include <QString>
-#include <QMatrix4x4>
 #include "float3.h"
 #include "facet.h"
 #include "bounding_box.h"
 #include "int3.h"
-#include "vrml_interface.h"
-#include "stl_interface.h"
 #include "paint_can.h"
 #include "shape.h"
 #include "face.h"
@@ -24,17 +20,14 @@ public:
     CadModel();
     CadModel(Document* doc);
     CadModel(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
-    CadModel(const VrmlInterface& vrml_interface, float animation_id = 0.0);
-    CadModel(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     CadModel(const Shape& s, const PaintCan& paint_can, float animation_id = 0.0);
     CadModel(const Shape& s);
     ~CadModel();
-    void add(const VrmlInterface& vrml_interface, float animation_id = 0.0);
-    void add(const StlInterface& stl_interface, const PaintCan& paint_can, float animation_id = 0.0);
     void add(const Shape& s, const PaintCan& paint_can, float animation_id = 0.0);
     void add(const CadModel& cad_model, float x = 0.0, float y = 0.0, float z = 0.0);
     void rotate_ax(float angle);
     void rotate_ay(float angle);
+    void rotate_az(float angle);
     void magnify(float factor);
     int facets() const;
     Facet facet(int ix) const;
@@ -45,9 +38,6 @@ public:
     Float3 facet_color(int facet_ix) const;
     Float3 facet_normal(int facet_ix) const;
     BoundingBox bounding_box() const;
-
-protected:
-    void rotate_vertex(Float3& vertex, const QMatrix4x4& matrix);
 
 private:
     int m_facet_count;

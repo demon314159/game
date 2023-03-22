@@ -354,8 +354,8 @@ void View::render()
     m_time_at_start = time_in;
 
 
-    int tp = duration_cast<nanoseconds>(total_period).count();
-//    int tp = 33333333;
+//    int tp = duration_cast<nanoseconds>(total_period).count();
+    int tp = 33333333;
 
 
 

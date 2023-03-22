@@ -4,7 +4,7 @@
 
 class Qa
 {
-    static const int BINS = 1000;
+    static const int BINS = 10000;
 public:
     Qa();
     ~Qa();

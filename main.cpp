@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
 
-    SDL_Window* window = SDL_CreateWindow("Race", 2000, SDL_WINDOWPOS_CENTERED, INITIAL_WIDTH, INITIAL_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Race", 2000, SDL_WINDOWPOS_CENTERED, INITIAL_WIDTH, INITIAL_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     if (window == NULL) {
         printf("Window Creation Error: %s\n", SDL_GetError());
         exit(0);

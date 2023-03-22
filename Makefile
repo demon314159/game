@@ -63,6 +63,7 @@ OBJECTS = main.o \
           car.o \
           qa.o \
 
+DEPS = $(HEADERS)
 INCPATH = -I. `sdl2-config --cflags`
 CXX = g++
 CXXFLAGS = $(INCPATH)

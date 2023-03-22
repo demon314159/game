@@ -196,7 +196,7 @@ void View::initialize()
         printf("Error initializing GLEW: %s\n", glewGetErrorString(glew_error));
         exit(0);
     }
-    if (SDL_GL_SetSwapInterval(1) < 0) {
+    if (SDL_GL_SetSwapInterval(2) < 0) {
         printf("Warning: Unable to set VSync. SDL Error: %s\n", SDL_GetError());
     }
     glClearColor(1.0f, 0.682f, 0.259f, 1.0f); // yellow orange
@@ -352,7 +352,13 @@ void View::render()
     high_resolution_clock::time_point time_in = high_resolution_clock::now();
     high_resolution_clock::duration total_period = time_in - m_time_at_start;
     m_time_at_start = time_in;
+
+
     int tp = duration_cast<nanoseconds>(total_period).count();
+//    int tp = 33333333;
+
+
+
     m_qa.add_sample(tp);
     m_track->advance(tp);
 

@@ -33,7 +33,6 @@ HEADERS = view.h \
           curved_left_section.h \
           track.h \
           car.h \
-          qa.h \
 
 OBJECTS = main.o \
           view.o \
@@ -61,7 +60,6 @@ OBJECTS = main.o \
           curved_left_section.o \
           track.o \
           car.o \
-          qa.o \
 
 DEPS = $(HEADERS)
 INCPATH = -I. `sdl2-config --cflags`

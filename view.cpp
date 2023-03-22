@@ -359,7 +359,6 @@ void View::render()
 
 
 
-    m_qa.add_sample(tp);
     m_track->advance(tp);
 
     int car_id = 0;  // Loop for each car, factor common stuff

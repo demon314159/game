@@ -11,7 +11,6 @@
 #include "vertex_data.h"
 #include "matrix4x4.h"
 #include "track.h"
-#include "qa.h"
 #include "cad_model.h"
 
 using namespace std::chrono;
@@ -67,7 +66,6 @@ private:
     GLint m_car_matrix_uniform;
     unsigned int m_vbo;
 
-    Qa m_qa;
     high_resolution_clock::time_point m_time_at_start;
     int m_max_vertex_count;
     int m_aux_count;

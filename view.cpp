@@ -27,6 +27,8 @@ View::View(SDL_Window* window)
     , m_rot_matrix_uniform(0)
     , m_car_matrix_uniform(0)
     , m_vbo(0)
+    , m_qa(new Qa)
+    , m_frame(0)
     , m_time_at_start(high_resolution_clock::now())
     , m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
@@ -138,6 +140,7 @@ View::~View()
 #ifdef VERBOSE
     printf("View::~View()\n");
 #endif
+    delete m_qa;
     delete m_track;
     delete m_aux_model;
     SDL_DestroyRenderer(m_renderer);
@@ -348,16 +351,14 @@ void View::render()
 //        m_change = false;
 //    }
 
-
+    m_qa->add_sample(QA_START_RENDER, SDL_GetPerformanceCounter(), m_frame);
     high_resolution_clock::time_point time_in = high_resolution_clock::now();
     high_resolution_clock::duration total_period = time_in - m_time_at_start;
     m_time_at_start = time_in;
 
 
 //    int tp = duration_cast<nanoseconds>(total_period).count();
-    int tp = 33333333;
-
-
+    int tp = (33333333 * 3) / 2;
 
     m_track->advance(tp);
 
@@ -371,7 +372,10 @@ void View::render()
     matrix.translate(-m_center.v1, -m_center.v2, -m_center.v3);
     m_mvp_matrix = m_projection * matrix;
     m_rot_matrix = matrix;
+
+    m_qa->add_sample(QA_BEFORE_CLEAR, SDL_GetPerformanceCounter(), m_frame);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_qa->add_sample(QA_AFTER_CLEAR, SDL_GetPerformanceCounter(), m_frame);
 
     glUseProgram(m_program);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -401,12 +405,18 @@ void View::render()
     glUniformMatrix4fv(m_car_matrix_uniform, 1, GL_TRUE, car_matrix.data());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, m_aux_count);
+
     glDisableVertexAttribArray(m_ani_attr);
     glDisableVertexAttribArray(m_norm_attr);
     glDisableVertexAttribArray(m_col_attr);
     glDisableVertexAttribArray(m_pos_attr);
     glUseProgram(0);
+    m_qa->add_sample(QA_BEFORE_SWAP_BUFFERS, SDL_GetPerformanceCounter(), m_frame);
     SDL_GL_SwapWindow(m_window);
+    m_qa->add_sample(QA_AFTER_SWAP_BUFFERS, SDL_GetPerformanceCounter(), m_frame);
+    glFinish();
+    m_qa->add_sample(QA_AFTER_FINISH, SDL_GetPerformanceCounter(), m_frame);
+    ++m_frame;
 }
 
 void View::translate_x(int x)

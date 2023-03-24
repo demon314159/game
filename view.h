@@ -12,6 +12,7 @@
 #include "matrix4x4.h"
 #include "track.h"
 #include "cad_model.h"
+#include "qa.h"
 
 using namespace std::chrono;
 
@@ -65,6 +66,8 @@ private:
     GLint m_rot_matrix_uniform;
     GLint m_car_matrix_uniform;
     unsigned int m_vbo;
+    Qa* m_qa;
+    int m_frame;
 
     high_resolution_clock::time_point m_time_at_start;
     int m_max_vertex_count;

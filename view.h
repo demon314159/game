@@ -2,7 +2,6 @@
 #ifndef _VIEW_H_
 #define _VIEW_H_
 
-#include <chrono>
 #include <SDL.h>
 #include <GL/glew.h>
 #include <SDL_opengl.h>
@@ -13,8 +12,6 @@
 #include "track.h"
 #include "cad_model.h"
 #include "qa.h"
-
-using namespace std::chrono;
 
 #define INITIAL_HEIGHT 512
 #define INITIAL_WIDTH ((INITIAL_HEIGHT * 1920) / 1080)
@@ -69,7 +66,6 @@ private:
     Qa* m_qa;
     int m_frame;
 
-    high_resolution_clock::time_point m_time_at_start;
     int m_max_vertex_count;
     int m_aux_count;
     CadModel* m_table;

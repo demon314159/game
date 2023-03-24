@@ -29,7 +29,6 @@ View::View(SDL_Window* window)
     , m_vbo(0)
     , m_qa(new Qa)
     , m_frame(0)
-    , m_time_at_start(high_resolution_clock::now())
     , m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
     , m_table(new CadModel())
@@ -352,10 +351,6 @@ void View::render()
 //    }
 
     m_qa->add_sample(QA_START_RENDER, SDL_GetPerformanceCounter(), m_frame);
-    high_resolution_clock::time_point time_in = high_resolution_clock::now();
-    high_resolution_clock::duration total_period = time_in - m_time_at_start;
-    m_time_at_start = time_in;
-
 
 //    int tp = duration_cast<nanoseconds>(total_period).count();
     int tp = (33333333 * 3) / 2;

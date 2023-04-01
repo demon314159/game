@@ -406,8 +406,6 @@ void View::render()
     glDisableVertexAttribArray(m_col_attr);
     glDisableVertexAttribArray(m_pos_attr);
     glUseProgram(0);
-    m_qa->add_sample(QA_BEFORE_SWAP_BUFFERS, SDL_GetPerformanceCounter(), m_frame);
-    glFinish();
     m_qa->add_sample(QA_AFTER_SWAP_BUFFERS, SDL_GetPerformanceCounter(), m_frame);
     SDL_GL_SwapWindow(m_window);
     m_qa->add_sample(QA_AFTER_SWAP_BUFFERS, SDL_GetPerformanceCounter(), m_frame);

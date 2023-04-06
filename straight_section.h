@@ -11,7 +11,8 @@ public:
     StraightSection(int lanes, double length, Anchor start_anchor);
     virtual ~StraightSection();
     double total_distance(int lane) const;
-    double car_angle(int lane, double distance) const;
+    double car_yaw(int lane, double distance) const;
+    double car_pitch(int lane, double distance) const;
     Double3 car_position(int lane, double distance) const;
     Anchor start_anchor() const;
     Anchor end_anchor() const;

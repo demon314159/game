@@ -14,7 +14,8 @@ public:
     ~Track();
     int cars() const;
     void advance(int nanoseconds);
-    double car_angle(int car_id) const;
+    double car_yaw(int car_id) const;
+    double car_pitch(int car_id) const;
     Double3 car_position(int car_id) const;
     void add_section(Section* section);
     int sections() const;

@@ -7,6 +7,7 @@
 #include "cube_shape.h"
 #include "bounding_box.h"
 #include "look.h"
+#include "pi.h"
 #include <math.h>
 #include <sys/stat.h>
 #include <algorithm>
@@ -320,7 +321,7 @@ void View::resize(int w, int h)
 
 void View::resize_calc()
 {
-    float q = tan(m_fov * (3.1415927 / 180.0) / 2.0);
+    float q = tan(m_fov * (PI / 180.0) / 2.0);
     m_camz = m_radius / q;
     m_camz -= m_radius;
     float znear = 0.1;
@@ -396,7 +397,8 @@ void View::render()
     Double3 cp = m_track->car_position(car_id);
     car_matrix.unity();
     car_matrix.translate(cp.v1, cp.v2, cp.v3);
-    car_matrix.rotate_ay(m_track->car_angle(car_id));
+    car_matrix.rotate_ay(m_track->car_yaw(car_id));
+    car_matrix.rotate_az(m_track->car_pitch(car_id));
     glUniformMatrix4fv(m_car_matrix_uniform, 1, GL_TRUE, car_matrix.data());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, m_aux_count);
@@ -416,7 +418,7 @@ void View::render()
 
 void View::translate_x(int x)
 {
-    float q = tan(m_fov * (3.1415927 / 180.0) / (2.0 * m_mag));
+    float q = tan(m_fov * (PI / 180.0) / (2.0 * m_mag));
     float wx = m_aspect * (m_camz + m_radius) * q;
     float ratio = (float) x / fmax(1.0, (float) m_width);
     float dx = wx * ratio;
@@ -425,7 +427,7 @@ void View::translate_x(int x)
 
 void View::translate_y(int y)
 {
-    float q = tan(m_fov * (3.1415927 / 180.0) / (2.0 * m_mag));
+    float q = tan(m_fov * (PI / 180.0) / (2.0 * m_mag));
     float wy = (m_camz + m_radius) * q;
     float ratio = (float) y / fmax(1.0, (float) m_height);
     float dy = wy * ratio;

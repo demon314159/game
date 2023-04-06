@@ -11,7 +11,8 @@ public:
     Car();
     ~Car();
     void advance(int nanoseconds, Section** section, int sections);
-    double angle() const;
+    double yaw() const;
+    double pitch() const;
     Double3 position() const;
     CadModel cad_model() const;
 
@@ -20,7 +21,8 @@ protected:
     int m_section;
     int m_lane;
     double m_distance;
-    double m_angle;
+    double m_yaw;
+    double m_pitch;
     Double3 m_position;
     void build_car(CadModel* vehicle) const;
     void build_wheels(CadModel* vehicle) const;

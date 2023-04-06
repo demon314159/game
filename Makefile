@@ -1,5 +1,6 @@
 
 HEADERS = view.h \
+          pi.h \
           table.h \
           matrix4x4.h \
           matrix3x3.h \
@@ -22,6 +23,7 @@ HEADERS = view.h \
           cube_shape.h \
           box_shape.h \
           ring_shape.h \
+          rise_profile.h \
           cylinder_shape.h \
           straight_track_shape.h \
           curved_right_track_shape.h \
@@ -51,6 +53,7 @@ OBJECTS = main.o \
           cube_shape.o \
           box_shape.o \
           ring_shape.o \
+          rise_profile.o \
           cylinder_shape.o \
           straight_track_shape.o \
           curved_right_track_shape.o \

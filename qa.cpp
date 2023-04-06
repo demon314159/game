@@ -3,6 +3,8 @@
 #include "stdio.h"
 #include "math.h"
 
+#define notVERBOSE
+
 Qa::Qa()
     : m_samples(0)
 {
@@ -10,6 +12,7 @@ Qa::Qa()
 
 Qa::~Qa()
 {
+#ifdef VERBOSE
     printf("\nQa report based on %d samples\n", m_samples);
     if (m_samples > 0) {
         int current_frame = m_frame[0];
@@ -30,6 +33,7 @@ Qa::~Qa()
 
         }
     }
+#endif
 }
 
 void Qa::add_sample(int event_id, unsigned long stamp, int frame)

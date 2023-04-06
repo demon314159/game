@@ -1,6 +1,7 @@
 
 #include "curved_right_track_shape.h"
 #include "track_style.h"
+#include "pi.h"
 #include "math.h"
 #include <cstddef>
 
@@ -64,10 +65,10 @@ void CurvedRightTrackShape::define_shape()
         float x4 = x3 + TrackStyle::slot_width;
         float x5 = x4 + TrackStyle::rail_width;
 
-        float cosa = cos(angle * 3.1415926535 / 180.0);
-        float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
-        float sina = sin(angle * 3.1415926535 / 180.0);
-        float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
+        float cosa = cos(angle * PI / 180.0);
+        float cosb = cos((angle + dangle) * PI / 180.0);
+        float sina = sin(angle * PI / 180.0);
+        float sinb = sin((angle + dangle) * PI / 180.0);
 
         float xa0 = m_radius - (-x0 + m_radius) * cosa;
         float xb0 = m_radius - (-x0 + m_radius) * cosb;

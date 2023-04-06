@@ -1,10 +1,9 @@
 
 #include "straight_section.h"
 #include "straight_track_shape.h"
+#include "pi.h"
 #include "track_style.h"
 #include <cmath>
-
-#define PI 3.1415926536
 
 StraightSection::StraightSection(int lanes, double length, Anchor start_anchor)
     : m_lanes(lanes)
@@ -29,11 +28,18 @@ double StraightSection::total_distance(int lane) const
     return m_length;
 }
 
-double StraightSection::car_angle(int lane, double distance) const
+double StraightSection::car_yaw(int lane, double distance) const
 {
     (void) lane;
     (void) distance;
     return m_start_anchor.a;
+}
+
+double StraightSection::car_pitch(int lane, double distance) const
+{
+    (void) lane;
+    (void) distance;
+    return 0.0;
 }
 
 Double3 StraightSection::car_position(int lane, double distance) const

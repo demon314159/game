@@ -2,9 +2,8 @@
 #include "curved_right_section.h"
 #include "curved_right_track_shape.h"
 #include "track_style.h"
+#include "pi.h"
 #include <cmath>
-
-#define PI 3.1415926536
 
 CurvedRightSection::CurvedRightSection(int lanes, double radius, double total_angle, Anchor start_anchor)
     : m_lanes(lanes)
@@ -44,7 +43,7 @@ double CurvedRightSection::total_distance(int lane) const
     return rlane(lane) * m_total_angle * PI / 180.0;
 }
 
-double CurvedRightSection::car_angle(int lane, double distance) const
+double CurvedRightSection::car_yaw(int lane, double distance) const
 {
     return m_start_anchor.a - (distance / rlane(lane)) * 180.0 / PI;
 }

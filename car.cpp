@@ -12,7 +12,8 @@ Car::Car()
     , m_section(0)
     , m_lane(0)
     , m_distance(0.0)
-    , m_angle(0.0)
+    , m_yaw(0.0)
+    , m_pitch(0.0)
     , m_position({0.0, 0.0, 0.0})
 {
 }
@@ -23,8 +24,6 @@ Car::~Car()
 
 void Car::advance(int nanoseconds, Section** section, int sections)
 {
-//    float turns_per_second = 5.0 / 20.0;
-//    m_angle += ((360.0 * turns_per_second / 1000000000.0) * (double) nanoseconds);
 //
 // Just handle positive speed for now
 //
@@ -35,15 +34,18 @@ void Car::advance(int nanoseconds, Section** section, int sections)
         m_distance = -slack;
     }
     m_position = section[m_section]->car_position(m_lane, m_distance);
-    m_angle = section[m_section]->car_angle(m_lane, m_distance);
-
-//    printf("Car::advance(%d ns, %d sections):  distance = %5.1lf\n", nanoseconds, sections, m_distance);
-//    printf("  angle = %5.1lf,  pos = (%5.1lf, %5.1lf, %5.1lf}\n", m_angle, m_position.v1, m_position.v2, m_position.v3);
+    m_yaw = section[m_section]->car_yaw(m_lane, m_distance);
+    m_pitch = section[m_section]->car_pitch(m_lane, m_distance);
 }
 
-double Car::angle() const
+double Car::yaw() const
 {
-    return m_angle - 90.0;
+    return m_yaw - 90.0;
+}
+
+double Car::pitch() const
+{
+    return m_pitch;
 }
 
 Double3 Car::position() const

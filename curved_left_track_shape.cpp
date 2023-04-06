@@ -105,14 +105,14 @@ void CurvedLeftTrackShape::define_shape()
 
         float ya = pro.height((float) j, (float) steps);
         float yb = pro.height((float) j + 1, (float) steps);
-        add_face(0.0, tp, {xa0, -dy + ya, za0}, {xb0, -dy + yb, zb0}, {xb0, dy - db + yb, zb0}, {xa0, dy - db + ya, za0}, true);
-        add_face(0.0, tp, {xa0, dy - db + ya, za0}, {xb0, dy - db + yb, zb0}, {xb1, dy + yb, zb1}, {xa1, dy + ya, za1}, true);
-        add_face(0.0, tp, {xa1, dy + ya, za1}, {xb1, dy + yb, zb1}, {xb2, dy + yb, zb2}, {xa2, dy + ya, za2}, true);
-        add_face(1.0, rp, {xa2, dy + ya, za2}, {xb2, dy + yb, zb2}, {xb3, dy + yb, zb3}, {xa3, dy + ya, za3}, true);
-        add_face(0.0, tp, {xa3, dy + ya, za3}, {xb3, dy + yb, zb3}, {xb3, dy - sh + yb, zb3}, {xa3, dy - sh + ya, za3}, true);
+        add_face(0.0, tp, {xa0, -dy + ya, za0},     {xb0, -dy + yb, zb0},     {xb0, dy - db + yb, zb0}, {xa0, dy - db + ya, za0}, true);
+        add_face(0.0, tp, {xa0, dy - db + ya, za0}, {xb0, dy - db + yb, zb0}, {xb1, dy + yb, zb1},      {xa1, dy + ya, za1}, true);
+        add_face(0.0, tp, {xa1, dy + ya, za1},      {xb1, dy + yb, zb1},      {xb2, dy + yb, zb2},      {xa2, dy + ya, za2}, true);
+        add_face(1.0, rp, {xa2, dy + ya, za2},      {xb2, dy + yb, zb2},      {xb3, dy + yb, zb3},      {xa3, dy + ya, za3}, true);
+        add_face(0.0, tp, {xa3, dy + ya, za3},      {xb3, dy + yb, zb3},      {xb3, dy - sh + yb, zb3}, {xa3, dy - sh + ya, za3}, true);
         add_face(1.0, sp, {xa3, dy - sh + ya, za3}, {xb3, dy - sh + yb, zb3}, {xb4, dy - sh + yb, zb4}, {xa4, dy - sh + ya, za4}, true);
-        add_face(0.0, tp, {xa4, dy - sh + ya, za4}, {xb4, dy - sh + yb, zb4}, {xb4, dy + yb, zb4}, {xa4, dy + ya, za4}, true);
-        add_face(1.0, rp, {xa4, dy + ya, za4}, {xb4, dy + yb, zb4}, {xb5, dy + yb, zb5}, {xa5, dy + ya, za5}, true);
+        add_face(0.0, tp, {xa4, dy - sh + ya, za4}, {xb4, dy - sh + yb, zb4}, {xb4, dy + yb, zb4},      {xa4, dy + ya, za4}, true);
+        add_face(1.0, rp, {xa4, dy + ya, za4},      {xb4, dy + yb, zb4},      {xb5, dy + yb, zb5},      {xa5, dy + ya, za5}, true);
 
         for (int i = 1; i < m_lanes; i++) {
             x1 = x5;
@@ -145,6 +145,7 @@ void CurvedLeftTrackShape::define_shape()
             xb5 = -m_radius + (x5 + m_radius) * cosb;
             za5 = - (x5 + m_radius) * sina;
             zb5 = - (x5 + m_radius) * sinb;
+
             add_face(0.0, tp, {xa1, dy + ya, za1}, {xb1, dy + yb, zb1}, {xb2, dy + yb, zb2}, {xa2, dy + ya, za2}, true);
             add_face(1.0, rp, {xa2, dy + ya, za2}, {xb2, dy + yb, zb2}, {xb3, dy + yb, zb3}, {xa3, dy + ya, za3}, true);
             add_face(0.0, tp, {xa3, dy + ya, za3}, {xb3, dy + yb, zb3}, {xb3, dy - sh + yb, zb3}, {xa3, dy - sh + ya, za3}, true);

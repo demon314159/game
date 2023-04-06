@@ -1,12 +1,14 @@
 
 #include "curved_right_track_shape.h"
 #include "track_style.h"
+#include "rise_profile.h"
 #include "pi.h"
 #include "math.h"
 #include <cstddef>
 
-CurvedRightTrackShape::CurvedRightTrackShape(int lanes, float radius, float total_angle)
+CurvedRightTrackShape::CurvedRightTrackShape(int lanes, float radius, float total_angle, float rise)
     : m_lanes(lanes)
+    , m_rise(rise)
     , m_radius(radius)
     , m_total_angle(total_angle)
     , m_count_mode(true)
@@ -54,6 +56,7 @@ void CurvedRightTrackShape::define_shape()
     float approx_dangle = 2.0; // degrees
     int steps = round(m_total_angle / approx_dangle);
     float dangle = m_total_angle / (float) steps;
+    RiseProfile pro(m_rise);
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
 
@@ -100,14 +103,16 @@ void CurvedRightTrackShape::define_shape()
         float za5 = - (-x5 + m_radius) * sina;
         float zb5 = - (-x5 + m_radius) * sinb;
 
-        add_face(0.0, tp, {xa0, -dy, za0}, {xb0, -dy, zb0}, {xb0, dy - db, zb0}, {xa0, dy - db, za0}, true);
-        add_face(0.0, tp, {xa0, dy - db, za0}, {xb0, dy - db, zb0}, {xb1, dy, zb1}, {xa1, dy, za1}, true);
-        add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
-        add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
-        add_face(0.0, tp, {xa3, dy, za3}, {xb3, dy, zb3}, {xb3, dy - sh, zb3}, {xa3, dy - sh, za3}, true);
-        add_face(1.0, sp, {xa3, dy - sh, za3}, {xb3, dy - sh, zb3}, {xb4, dy - sh, zb4}, {xa4, dy - sh, za4}, true);
-        add_face(0.0, tp, {xa4, dy - sh, za4}, {xb4, dy - sh, zb4}, {xb4, dy, zb4}, {xa4, dy, za4}, true);
-        add_face(1.0, rp, {xa4, dy, za4}, {xb4, dy, zb4}, {xb5, dy, zb5}, {xa5, dy, za5}, true);
+        float ya = pro.height((float) j, (float) steps);
+        float yb = pro.height((float) j + 1, (float) steps);
+        add_face(0.0, tp, {xa0, -dy + ya, za0},     {xb0, -dy + yb, zb0},     {xb0, dy - db + yb, zb0}, {xa0, dy - db + ya, za0}, true);
+        add_face(0.0, tp, {xa0, dy - db + ya, za0}, {xb0, dy - db + yb, zb0}, {xb1, dy + yb, zb1},      {xa1, dy + ya, za1}, true);
+        add_face(0.0, tp, {xa1, dy + ya, za1},      {xb1, dy + yb, zb1},      {xb2, dy + yb, zb2},      {xa2, dy + ya, za2}, true);
+        add_face(1.0, rp, {xa2, dy + ya, za2},      {xb2, dy + yb, zb2},      {xb3, dy + yb, zb3},      {xa3, dy + ya, za3}, true);
+        add_face(0.0, tp, {xa3, dy + ya, za3},      {xb3, dy + yb, zb3},      {xb3, dy - sh + yb, zb3}, {xa3, dy - sh + ya, za3}, true);
+        add_face(1.0, sp, {xa3, dy - sh + ya, za3}, {xb3, dy - sh + yb, zb3}, {xb4, dy - sh + yb, zb4}, {xa4, dy - sh + ya, za4}, true);
+        add_face(0.0, tp, {xa4, dy - sh + ya, za4}, {xb4, dy - sh + yb, zb4}, {xb4, dy + yb, zb4},      {xa4, dy + ya, za4}, true);
+        add_face(1.0, rp, {xa4, dy +ya, za4},       {xb4, dy + yb, zb4},      {xb5, dy + yb, zb5},      {xa5, dy + ya, za5}, true);
 
         for (int i = 1; i < m_lanes; i++) {
             x1 = x5;
@@ -141,12 +146,12 @@ void CurvedRightTrackShape::define_shape()
             za5 = - (-x5 + m_radius) * sina;
             zb5 = - (-x5 + m_radius) * sinb;
 
-            add_face(0.0, tp, {xa1, dy, za1}, {xb1, dy, zb1}, {xb2, dy, zb2}, {xa2, dy, za2}, true);
-            add_face(1.0, rp, {xa2, dy, za2}, {xb2, dy, zb2}, {xb3, dy, zb3}, {xa3, dy, za3}, true);
-            add_face(0.0, tp, {xa3, dy, za3}, {xb3, dy, zb3}, {xb3, dy - sh, zb3}, {xa3, dy - sh, za3}, true);
-            add_face(1.0, sp, {xa3, dy - sh, za3}, {xb3, dy - sh, zb3}, {xb4, dy - sh, zb4}, {xa4, dy - sh, za4}, true);
-            add_face(0.0, tp, {xa4, dy - sh, za4}, {xb4, dy - sh, zb4}, {xb4, dy, zb4}, {xa4, dy, za4}, true);
-            add_face(1.0, rp, {xa4, dy, za4}, {xb4, dy, zb4}, {xb5, dy, zb5}, {xa5, dy, za5}, true);
+            add_face(0.0, tp, {xa1, dy + ya, za1},      {xb1, dy + yb, zb1},      {xb2, dy + yb, zb2},      {xa2, dy + ya, za2}, true);
+            add_face(1.0, rp, {xa2, dy + ya, za2},      {xb2, dy + yb, zb2},      {xb3, dy + yb, zb3},      {xa3, dy + ya, za3}, true);
+            add_face(0.0, tp, {xa3, dy + ya, za3},      {xb3, dy + yb, zb3},      {xb3, dy - sh + yb, zb3}, {xa3, dy - sh + ya, za3}, true);
+            add_face(1.0, sp, {xa3, dy - sh + ya, za3}, {xb3, dy - sh + yb, zb3}, {xb4, dy - sh + yb, zb4}, {xa4, dy - sh + ya, za4}, true);
+            add_face(0.0, tp, {xa4, dy - sh + ya, za4}, {xb4, dy - sh + yb, zb4}, {xb4, dy + yb, zb4},      {xa4, dy + ya, za4}, true);
+            add_face(1.0, rp, {xa4, dy + ya, za4},      {xb4, dy + yb, zb4},      {xb5, dy + yb, zb5},      {xa5, dy + ya, za5}, true);
         }
         float x6 = dimx / 2.0 - TrackStyle::track_bevel;
         float x7 = dimx / 2.0;
@@ -161,9 +166,9 @@ void CurvedRightTrackShape::define_shape()
         float za7 = - (-x7 + m_radius) * sina;
         float zb7 = - (-x7 + m_radius) * sinb;
 
-        add_face(0.0, tp, {xa5, dy, za5}, {xb5, dy, zb5}, {xb6, dy, zb6}, {xa6, dy, za6}, true);
-        add_face(0.0, tp, {xa6, dy, za6}, {xb6, dy, zb6}, {xb7, dy - db, zb7}, {xa7, dy - db, za7}, true);
-        add_face(0.0, tp, {xa7, dy - db, za7}, {xb7, dy - db, zb7}, {xb7, -dy, zb7}, {xa7, -dy, za7}, true);
+        add_face(0.0, tp, {xa5, dy + ya, za5},      {xb5, dy + yb, zb5},      {xb6, dy + yb, zb6},      {xa6, dy + ya, za6}, true);
+        add_face(0.0, tp, {xa6, dy + ya, za6},      {xb6, dy + yb, zb6},      {xb7, dy - db + yb, zb7}, {xa7, dy - db + ya, za7}, true);
+        add_face(0.0, tp, {xa7, dy - db + ya, za7}, {xb7, dy - db + yb, zb7}, {xb7, -dy + yb, zb7},     {xa7, -dy + ya, za7}, true);
     }
 }
 

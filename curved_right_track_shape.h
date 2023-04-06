@@ -9,13 +9,14 @@
 class CurvedRightTrackShape: public Shape
 {
 public:
-    CurvedRightTrackShape(int lanes, float radius, float total_angle);
+    CurvedRightTrackShape(int lanes, float radius, float total_angle, float rise = 0.0);
     virtual ~CurvedRightTrackShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
 private:
     int m_lanes;
+    float m_rise;
     float m_radius;
     float m_total_angle;
     bool m_count_mode;

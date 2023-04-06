@@ -5,11 +5,13 @@
 #include "pi.h"
 #include <cmath>
 
-CurvedRightSection::CurvedRightSection(int lanes, double radius, double total_angle, Anchor start_anchor)
+CurvedRightSection::CurvedRightSection(int lanes, double radius, double total_angle, Anchor start_anchor, double rise)
     : m_lanes(lanes)
+    , m_rise(rise)
     , m_radius(radius)
     , m_total_angle(total_angle)
     , m_start_anchor(start_anchor)
+    , m_pro(rise)
 {
     double sina = sin(total_angle * PI / 180.0);
     double cosa = cos(total_angle * PI / 180.0);
@@ -18,7 +20,7 @@ CurvedRightSection::CurvedRightSection(int lanes, double radius, double total_an
     sina = sin(start_anchor.a * PI / 180.0);
     cosa = cos(start_anchor.a * PI / 180.0);
     m_end_anchor.x = m_start_anchor.x + end_x * cosa + end_z * sina;
-    m_end_anchor.y = m_start_anchor.y;
+    m_end_anchor.y = m_start_anchor.y + rise;
     m_end_anchor.z = m_start_anchor.z - end_x * sina + end_z * cosa;
     m_end_anchor.a = m_start_anchor.a - total_angle;
 }
@@ -48,6 +50,11 @@ double CurvedRightSection::car_yaw(int lane, double distance) const
     return m_start_anchor.a - (distance / rlane(lane)) * 180.0 / PI;
 }
 
+double CurvedRightSection::car_pitch(int lane, double distance) const
+{
+    return m_pro.pitch(distance, total_distance(lane));
+}
+
 Double3 CurvedRightSection::car_position(int lane, double distance) const
 {
     double r = rlane(lane);
@@ -58,7 +65,8 @@ Double3 CurvedRightSection::car_position(int lane, double distance) const
     double car_z = -r * sina;
     sina = sin(m_start_anchor.a * PI / 180.0);
     cosa = cos(m_start_anchor.a * PI / 180.0);
-    return {m_start_anchor.x + car_x * cosa + car_z * sina, m_start_anchor.y, m_start_anchor.z - car_x * sina + car_z * cosa};
+    double ty = m_start_anchor.y + m_pro.height(distance, total_distance(lane));
+    return {m_start_anchor.x + car_x * cosa + car_z * sina, ty, m_start_anchor.z - car_x * sina + car_z * cosa};
 }
 
 Anchor CurvedRightSection::start_anchor() const
@@ -74,7 +82,7 @@ Anchor CurvedRightSection::end_anchor() const
 CadModel CurvedRightSection::cad_model() const
 {
     CadModel cm;
-    CadModel s = CadModel(CurvedRightTrackShape(m_lanes, m_radius, m_total_angle));
+    CadModel s = CadModel(CurvedRightTrackShape(m_lanes, m_radius, m_total_angle, m_rise));
     s.rotate_ay(m_start_anchor.a);
     cm.add(s, m_start_anchor.x, m_start_anchor.y, m_start_anchor.z);
     return cm;

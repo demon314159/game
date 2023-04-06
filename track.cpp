@@ -10,9 +10,9 @@ Track::Track()
 {
     double initial_angle = 90.0;
     add_section(new StraightSection(m_cars, 12.0, {0.0, 0.0, 0.0, initial_angle}));
-    add_section(new CurvedLeftSection(m_cars, 6.0, 180.0, m_section[m_sections-1]->end_anchor(), 2.0));
+    add_section(new CurvedRightSection(m_cars, 6.0, 180.0, m_section[m_sections-1]->end_anchor(), 2.0));
     add_section(new StraightSection(m_cars, 12.0, m_section[m_sections-1]->end_anchor()));
-    add_section(new CurvedLeftSection(m_cars, 6.0, 180.0, m_section[m_sections-1]->end_anchor(), -2.0));
+    add_section(new CurvedRightSection(m_cars, 6.0, 180.0, m_section[m_sections-1]->end_anchor(), -2.0));
 }
 
 Track::~Track()

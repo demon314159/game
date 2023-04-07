@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #define notVERBOSE
-#define TRACK_LANES 2
+#define TRACK_LANES 4
 
 View::View(SDL_Window* window)
     : m_window(window)
@@ -431,7 +431,26 @@ void View::render()
         car_matrix.rotate_az(m_track->car_pitch(car_id));
         glUniformMatrix4fv(m_car1_matrix_uniform, 1, GL_TRUE, car_matrix.data());
     }
-
+    if (m_track->cars() > 2) {
+        int car_id = 2;
+        Matrix4x4 car_matrix;
+        Double3 cp = m_track->car_position(car_id);
+        car_matrix.unity();
+        car_matrix.translate(cp.v1, cp.v2, cp.v3);
+        car_matrix.rotate_ay(m_track->car_yaw(car_id));
+        car_matrix.rotate_az(m_track->car_pitch(car_id));
+        glUniformMatrix4fv(m_car2_matrix_uniform, 1, GL_TRUE, car_matrix.data());
+    }
+    if (m_track->cars() > 3) {
+        int car_id = 3;
+        Matrix4x4 car_matrix;
+        Double3 cp = m_track->car_position(car_id);
+        car_matrix.unity();
+        car_matrix.translate(cp.v1, cp.v2, cp.v3);
+        car_matrix.rotate_ay(m_track->car_yaw(car_id));
+        car_matrix.rotate_az(m_track->car_pitch(car_id));
+        glUniformMatrix4fv(m_car3_matrix_uniform, 1, GL_TRUE, car_matrix.data());
+    }
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, m_aux_count);
 

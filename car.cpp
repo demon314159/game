@@ -7,6 +7,8 @@
 
 #define ANI_ID_CAR_0 2.0
 #define ANI_ID_CAR_1 3.0
+#define ANI_ID_CAR_2 4.0
+#define ANI_ID_CAR_3 5.0
 
 Car::Car()
     : m_speed(7.5)
@@ -69,6 +71,12 @@ CadModel Car::cad_model(int car_id) const
     } else if (car_id == 1) {
         body_p = PaintCan(0.5, 1.0, 0.25);
         ani_id_car = ANI_ID_CAR_1;
+    } else if (car_id == 2) {
+        body_p = PaintCan(1.0, 0.5, 0.25);
+        ani_id_car = ANI_ID_CAR_2;
+    } else if (car_id == 3) {
+        body_p = PaintCan(0.5, 0.5, 1.0);
+        ani_id_car = ANI_ID_CAR_3;
     }
     CadModel vehicle;
     build_wheels(&vehicle, ani_id_car);

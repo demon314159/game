@@ -8,6 +8,9 @@ Track::Track(int cars)
     : m_cars(cars)
     , m_sections(0)
 {
+    if (cars > MAX_CARS) {
+        m_cars = MAX_CARS;
+    }
     double initial_angle = 90.0;
     double straight_rise = 1.0;
     double r = 6.0;

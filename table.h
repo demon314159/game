@@ -9,7 +9,6 @@
 
 class Table
 {
-
 public:
     Table(SDL_Window* window);
     ~Table();

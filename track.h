@@ -9,8 +9,8 @@ class Track
 {
 public:
     static const int MAX_SECTIONS = 32;
-    static const int MAX_CARS = 8;
-    Track();
+    static const int MAX_CARS = 4;
+    Track(int cars);
     ~Track();
     int cars() const;
     void advance(int nanoseconds);

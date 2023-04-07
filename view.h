@@ -61,7 +61,10 @@ private:
     GLint m_ani_attr;
     GLint m_mvp_matrix_uniform;
     GLint m_rot_matrix_uniform;
-    GLint m_car_matrix_uniform;
+    GLint m_car0_matrix_uniform;
+    GLint m_car1_matrix_uniform;
+    GLint m_car2_matrix_uniform;
+    GLint m_car3_matrix_uniform;
     unsigned int m_vbo;
     Qa* m_qa;
     int m_frame;

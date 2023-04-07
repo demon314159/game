@@ -4,8 +4,8 @@
 #include "curved_right_section.h"
 #include "curved_left_section.h"
 
-Track::Track()
-    : m_cars(2)
+Track::Track(int cars)
+    : m_cars(cars)
     , m_sections(0)
 {
     double initial_angle = 90.0;

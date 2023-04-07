@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #define notVERBOSE
+#define TRACK_LANES 2
 
 View::View(SDL_Window* window)
     : m_window(window)
@@ -26,7 +27,10 @@ View::View(SDL_Window* window)
     , m_ani_attr(0)
     , m_mvp_matrix_uniform(0)
     , m_rot_matrix_uniform(0)
-    , m_car_matrix_uniform(0)
+    , m_car0_matrix_uniform(0)
+    , m_car1_matrix_uniform(0)
+    , m_car2_matrix_uniform(0)
+    , m_car3_matrix_uniform(0)
     , m_vbo(0)
     , m_qa(new Qa)
     , m_frame(0)
@@ -47,7 +51,7 @@ View::View(SDL_Window* window)
     , m_yrot(0.0)
     , m_xoff(0.0)
     , m_yoff(0.0)
-    , m_track(new Track)
+    , m_track(new Track(TRACK_LANES))
 {
 #ifdef VERBOSE
     printf("View::View(doc)\n");
@@ -82,8 +86,11 @@ void View::build_track()
         CadModel cm = m_track->section(i)->cad_model();
         m_aux_model->add(cm, 0.0, 0.0, 0.0);
     }
-    CadModel car = m_track->car(0)->cad_model();
-    m_aux_model->add(car, 0.0, 0.0, 0.0);
+    for (int i = 0; i < m_track->cars(); i++) {
+        m_track->car(i)->set_lane(i);
+        CadModel car = m_track->car(i)->cad_model(i);
+        m_aux_model->add(car, 0.0, 0.0, 0.0);
+    }
 }
 
 void View::add_grid(CadModel* cm, const BoundingBox& bb)
@@ -98,12 +105,12 @@ void View::add_grid(CadModel* cm, const BoundingBox& bb)
     for (int i = 0; i <= nx; i++) {
         CubeShape ls(db, dy, dz);
         CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, bb.vmin.v1 + (float) i, bb.vmin.v2 - tabley - 1.0, (bb.vmin.v3 + bb.vmax.v3) / 2);
+        cm->add(line_model, bb.vmin.v1 + (float) i, bb.vmin.v2 - tabley, (bb.vmin.v3 + bb.vmax.v3) / 2);
     }
     for (int i = 0; i <= nz; i++) {
         CubeShape ls(dx, dy, db);
         CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, bb.vmin.v2 - tabley - 1.0, bb.vmin.v3 + (float) i);
+        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, bb.vmin.v2 - tabley, bb.vmin.v3 + (float) i);
     }
 }
 
@@ -117,7 +124,7 @@ void View::decorate_model()
     CadModel tt(table, Look::table_paint(), 1.0);
 
     m_table = new CadModel();
-    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, bb.vmin.v2 - tabley - 1.0, bb.vmin.v3 + tablez / 2.0 - 2.0);
+    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2.0 - 2.0);
 
     bb.vmin.v1 -= 2.0;
     bb.vmin.v3 -= 2.0;
@@ -257,12 +264,26 @@ void View::initialize()
         printf("rot_matrix is not a valid glsl variable\n");
         exit(0);
     }
-    m_car_matrix_uniform = glGetUniformLocation(m_program, "car_matrix");
-    if (m_car_matrix_uniform == -1) {
-        printf("car_matrix is not a valid glsl variable\n");
+    m_car0_matrix_uniform = glGetUniformLocation(m_program, "car0_matrix");
+    if (m_car0_matrix_uniform == -1) {
+        printf("car0_matrix is not a valid glsl variable\n");
         exit(0);
     }
-
+    m_car1_matrix_uniform = glGetUniformLocation(m_program, "car1_matrix");
+    if (m_car1_matrix_uniform == -1) {
+        printf("car1_matrix is not a valid glsl variable\n");
+        exit(0);
+    }
+    m_car2_matrix_uniform = glGetUniformLocation(m_program, "car2_matrix");
+    if (m_car2_matrix_uniform == -1) {
+        printf("car2_matrix is not a valid glsl variable\n");
+        exit(0);
+    }
+    m_car3_matrix_uniform = glGetUniformLocation(m_program, "car3_matrix");
+    if (m_car3_matrix_uniform == -1) {
+        printf("car3_matrix is not a valid glsl variable\n");
+        exit(0);
+    }
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     copy_aux_facets();
@@ -358,8 +379,6 @@ void View::render()
 
     m_track->advance(tp);
 
-    int car_id = 0;  // Loop for each car, factor common stuff
-
     Matrix4x4 matrix;
     matrix.unity();
     matrix.translate(m_xoff, m_yoff, -m_camz - m_radius);
@@ -392,14 +411,27 @@ void View::render()
 
     glUniformMatrix4fv(m_mvp_matrix_uniform, 1, GL_TRUE, m_mvp_matrix.data());
     glUniformMatrix4fv(m_rot_matrix_uniform, 1, GL_TRUE, m_rot_matrix.data());
+    if (m_track->cars() > 0) {
+        int car_id = 0;
+        Matrix4x4 car_matrix;
+        Double3 cp = m_track->car_position(car_id);
+        car_matrix.unity();
+        car_matrix.translate(cp.v1, cp.v2, cp.v3);
+        car_matrix.rotate_ay(m_track->car_yaw(car_id));
+        car_matrix.rotate_az(m_track->car_pitch(car_id));
+        glUniformMatrix4fv(m_car0_matrix_uniform, 1, GL_TRUE, car_matrix.data());
+    }
+    if (m_track->cars() > 1) {
+        int car_id = 1;
+        Matrix4x4 car_matrix;
+        Double3 cp = m_track->car_position(car_id);
+        car_matrix.unity();
+        car_matrix.translate(cp.v1, cp.v2, cp.v3);
+        car_matrix.rotate_ay(m_track->car_yaw(car_id));
+        car_matrix.rotate_az(m_track->car_pitch(car_id));
+        glUniformMatrix4fv(m_car1_matrix_uniform, 1, GL_TRUE, car_matrix.data());
+    }
 
-    Matrix4x4 car_matrix;
-    Double3 cp = m_track->car_position(car_id);
-    car_matrix.unity();
-    car_matrix.translate(cp.v1, cp.v2, cp.v3);
-    car_matrix.rotate_ay(m_track->car_yaw(car_id));
-    car_matrix.rotate_az(m_track->car_pitch(car_id));
-    glUniformMatrix4fv(m_car_matrix_uniform, 1, GL_TRUE, car_matrix.data());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, m_aux_count);
 

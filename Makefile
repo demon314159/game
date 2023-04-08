@@ -70,7 +70,7 @@ DEPS = $(HEADERS)
 INCPATH = -I. `sdl2-config --cflags`
 CXX = g++
 CXXFLAGS = $(INCPATH)
-LIBS = -lGLEW -lGLU -lGL `sdl2-config --libs`
+LIBS = -lGLEW -lGL `sdl2-config --libs`
 
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -Wall -o $@ $< $(CXXFLAGS)

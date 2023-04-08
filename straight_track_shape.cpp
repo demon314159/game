@@ -93,6 +93,8 @@ void StraightTrackShape::define_shape()
         add_face(0.0, tp, {x5, dy + ya, z0},      {x5, dy + yb, z1},      {x6, dy + yb, z1},      {x6, dy + ya, z0}, true);
         add_face(0.0, tp, {x6, dy + ya, z0},      {x6, dy + yb, z1},      {x7, dy - db + yb, z1}, {x7, dy - db + ya, z0}, true);
         add_face(0.0, tp, {x7, dy - db + ya, z0}, {x7, dy - db + yb, z1}, {x7, -dy + yb, z1},     {x7, -dy + ya, z0}, true);
+        add_face(0.0, tp, {x0, -dy + ya, z0}, {x0, -dy + yb, z1}, {x7, -dy + yb, z1},     {x7, -dy + ya, z0});
+
     }
 }
 

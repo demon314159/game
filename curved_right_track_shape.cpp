@@ -169,6 +169,7 @@ void CurvedRightTrackShape::define_shape()
         add_face(0.0, tp, {xa5, dy + ya, za5},      {xb5, dy + yb, zb5},      {xb6, dy + yb, zb6},      {xa6, dy + ya, za6}, true);
         add_face(0.0, tp, {xa6, dy + ya, za6},      {xb6, dy + yb, zb6},      {xb7, dy - db + yb, zb7}, {xa7, dy - db + ya, za7}, true);
         add_face(0.0, tp, {xa7, dy - db + ya, za7}, {xb7, dy - db + yb, zb7}, {xb7, -dy + yb, zb7},     {xa7, -dy + ya, za7}, true);
+        add_face(0.0, tp, {xa0, -dy + ya, za0}, {xb0, -dy + yb, zb0}, {xb7, -dy + yb, zb7}, {xa7, -dy + ya, za7});
     }
 }
 

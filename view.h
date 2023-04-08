@@ -42,7 +42,6 @@ protected:
     bool init_shaders();
     void resize_calc();
     void decorate_model();
-    void add_grid(CadModel* cm, const BoundingBox& bb);
     void check_storage();
     void copy_vertices();
     void copy_changed_vertices();
@@ -71,7 +70,6 @@ private:
 
     int m_max_vertex_count;
     int m_aux_count;
-    CadModel* m_table;
     CadModel* m_aux_model;
     bool m_change;
     float m_radius;

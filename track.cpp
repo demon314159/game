@@ -19,13 +19,13 @@ Track::Track(int cars)
     add_section(new StraightSection(m_cars, 2.0 * r, m_section[m_sections-1]->end_anchor(), -straight_rise));
     add_section(new CurvedLeftSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
     add_section(new StraightSection(m_cars, r, m_section[m_sections-1]->end_anchor()));
-    add_section(new CurvedLeftSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
+    add_section(new CurvedLeftSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor(), -1.0));
     add_section(new StraightSection(m_cars, 2.0 * r, m_section[m_sections-1]->end_anchor()));
     add_section(new CurvedLeftSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
     add_section(new StraightSection(m_cars, 4.0 * r, m_section[m_sections-1]->end_anchor()));
     add_section(new CurvedRightSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
     add_section(new StraightSection(m_cars, 2.0 * r, m_section[m_sections-1]->end_anchor()));
-    add_section(new CurvedRightSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
+    add_section(new CurvedRightSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor(), 1.0));
     add_section(new StraightSection(m_cars, r, m_section[m_sections-1]->end_anchor()));
     add_section(new CurvedRightSection(m_cars, r, 90.0, m_section[m_sections-1]->end_anchor()));
 }

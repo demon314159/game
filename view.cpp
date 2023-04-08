@@ -36,7 +36,6 @@ View::View(SDL_Window* window)
     , m_frame(0)
     , m_max_vertex_count(1024 * 1024)
     , m_aux_count(0)
-    , m_table(new CadModel())
     , m_aux_model(new CadModel())
     , m_change(true)
     , m_radius(2.0)
@@ -76,7 +75,6 @@ View::View(SDL_Window* window)
     }
     build_track();
     decorate_model();
-    m_aux_model->add(*m_table);
     m_change = false;
 }
 
@@ -93,27 +91,6 @@ void View::build_track()
     }
 }
 
-void View::add_grid(CadModel* cm, const BoundingBox& bb)
-{
-    float db = 2 * Look::dimb;
-    float dx = bb.vmax.v1 - bb.vmin.v1;
-    float dy = 2 * Look::dimh / 20.0;
-    float dz = bb.vmax.v3 - bb.vmin.v3;
-    float tabley = Look::dimh / 20.0;
-    int nx = round(dx);
-    int nz = round(dz);
-    for (int i = 0; i <= nx; i++) {
-        CubeShape ls(db, dy, dz);
-        CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, bb.vmin.v1 + (float) i, bb.vmin.v2 - tabley, (bb.vmin.v3 + bb.vmax.v3) / 2);
-    }
-    for (int i = 0; i <= nz; i++) {
-        CubeShape ls(dx, dy, db);
-        CadModel line_model(ls, Look::grid_paint(), 1.0);
-        cm->add(line_model, (bb.vmin.v1 + bb.vmax.v1) / 2, bb.vmin.v2 - tabley, bb.vmin.v3 + (float) i);
-    }
-}
-
 void View::decorate_model()
 {
     BoundingBox bb = m_aux_model->bounding_box();
@@ -123,15 +100,11 @@ void View::decorate_model()
     CubeShape table(tablex, tabley, tablez);
     CadModel tt(table, Look::table_paint(), 1.0);
 
-    m_table = new CadModel();
-    m_table->add(tt, bb.vmin.v1 + tablex / 2.0 - 2.0, bb.vmin.v2 - tabley, bb.vmin.v3 + tablez / 2.0 - 2.0);
-
     bb.vmin.v1 -= 2.0;
     bb.vmin.v3 -= 2.0;
     bb.vmax.v1 += 2.0;
     bb.vmax.v3 += 2.0;
 
-//    add_grid(m_table, bb);
     m_radius = fmax(fabs(bb.vmax.v1 - bb.vmin.v1) / 2.0, fabs(bb.vmax.v3 - bb.vmin.v3) / 2.0);
     m_radius = fmax(m_radius, (bb.vmax.v2 - bb.vmin.v2) / (2.0));
     m_radius = fmax(m_radius, 2.0);

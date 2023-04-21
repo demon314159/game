@@ -6,7 +6,7 @@
 #include "look.h"
 
 Choose::Choose()
-    : m_marker_model(CadModel(StlInterface(QString("marker.stl")),Look::marker_paint(), 2.0))
+    : m_marker_model(CadModel(StlInterface(QString(":marker.stl")),Look::marker_paint(), 2.0))
     , m_first_selected(false)
     , m_second_selected(false)
     , m_first_choice({{0.0, 0.0, 0.0}, 0, 0})

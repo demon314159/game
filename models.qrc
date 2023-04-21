@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>marker.stl</file>
+    </qresource>
+</RCC>

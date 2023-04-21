@@ -88,4 +88,5 @@ SOURCES      += main.cpp \
                 stopwatch.cpp
 
 RESOURCES    += shaders.qrc
+RESOURCES    += models.qrc
 

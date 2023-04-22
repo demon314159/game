@@ -9,12 +9,12 @@
 AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, ImageSet& image_set, QStackedWidget* stacked_widget, QWidget *parent)
     : QWidget(parent)
     , m_ball(WIDTH, BACK_POS - BALL_RADIUS, FRONT_POS + BALL_RADIUS)
-    , m_guy({
+    , m_guy{
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1),
             Guy(-2.728265, 2.72865, -5.7412 + 0.1, 1.0 - 0.1)
-            })
+            }
     , m_guy_ix(0)
     , m_bat_on(false)
     , m_pitch_on(false)
@@ -32,12 +32,9 @@ AltTable::AltTable(const QMatrix4x4& mvp_matrix, const QMatrix4x4& rot_matrix, I
     , m_mvp_matrix(mvp_matrix)
     , m_rot_matrix(rot_matrix)
 {
-    setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
-//    setMinimumHeight(980);
-//    setMinimumWidth(580);
     timer.start(TIMER_PERIOD, this);
 }
 
@@ -201,12 +198,13 @@ void AltTable::pitch_button_off()
 
 void AltTable::keyPressEvent(QKeyEvent* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x32) {
+    int a = e->key();
+    int c = e->nativeScanCode();
+    if (c == 0x32 || c == 0x2a) {
         pitch_button_on();
-    } else if (a == 0x3e) {
+    } else if (c == 0x3e || c == 0x36) {
         bat_button_on();
-    } else if (a == 0x39) {
+    } else if (a == Qt::Key_N) {
         new_game();
     }
     QWidget::keyPressEvent(e);
@@ -214,12 +212,11 @@ void AltTable::keyPressEvent(QKeyEvent* e)
 
 void AltTable::keyReleaseEvent(QKeyEvent* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x32) {
+    int c = e->nativeScanCode();
+    if (c == 0x32 || c == 0x2a) {
         pitch_button_off();
-    } else if (a == 0x3e) {
+    } else if (c == 0x3e || c == 0x36) {
         bat_button_off();
-    } else if (a == 0x4e) {
     }
     QWidget::keyReleaseEvent(e);
 }

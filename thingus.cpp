@@ -238,7 +238,5 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     program->enableAttributeArray(animationIdLocation);
     program->setAttributeBuffer(animationIdLocation, GL_FLOAT, offset, 1, sizeof(VertexData));
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
     glDrawArrays(GL_TRIANGLES, 0, m_vertices);
 }

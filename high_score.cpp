@@ -37,7 +37,7 @@ void HighScore::set_high_score(int score, const QString& name)
 {
     if (score > m_score) {
         m_score = score;
-        int len = std::min(MAX_CHARS - 1, name.length());
+        int len = std::min(MAX_CHARS - 1, (int) name.length());
         for (int i = 0; i < len; i++) {
             m_name[i] = name.toLatin1().data()[i];
         }

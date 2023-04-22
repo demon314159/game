@@ -76,7 +76,7 @@ void Table::mouseMoveEvent(QMouseEvent* e)
 void Table::wheelEvent(QWheelEvent* e)
 {
     int angle = e->angleDelta().y();
-    m_scene.mouse_wheel(e->pos().x(), e->pos().y(), angle > 0);
+    m_scene.mouse_wheel(e->position().x(), e->position().y(), angle > 0);
     full_update();
     e->accept();
 }

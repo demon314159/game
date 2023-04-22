@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = hexominos
 
-QT += multimedia widgets
+QT += widgets
 
 ## CONFIG += qt debug
 

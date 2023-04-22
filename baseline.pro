@@ -2,6 +2,8 @@ TEMPLATE = app
 TARGET = baseline
 
 QT += widgets
+QT += opengl
+QT += openglwidgets
 
 ## CONFIG += qt debug
 

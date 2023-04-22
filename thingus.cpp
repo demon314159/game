@@ -31,13 +31,10 @@ Thingus::Thingus()
     PaintCan green_paint(0.329412, 1.0, 0.517647);
     PaintCan gray_paint(0.7, 0.7, 0.7);
 
-//    m_cad = new CadModel(StlInterface("cube.stl"), red_paint, 0.0);
-//    m_cad = new CadModel(2.0, 0.25, gray_paint, 0.0);
-    m_cad = new CadModel(StlInterface("axes.stl"), gray_paint, 0.0);
-    CadModel t1 = CadModel(StlInterface("plane.stl"), gray_paint, 0.0);
+    m_cad = new CadModel(StlInterface(":axes.stl"), gray_paint, 0.0);
+    CadModel t1 = CadModel(StlInterface(":plane.stl"), gray_paint, 0.0);
     t1.rotate_ax(-90.0);
     t1.magnify(1.0/50.0);
-//    CadModel t3 = CadModel(2.0, 0.25, gray_paint, 0.0);
 
     m_cad->add(t1, 0.0, 0.0, -3.0);
     t1.rotate_ay(90.0);
@@ -46,12 +43,6 @@ Thingus::Thingus()
     m_cad->add(t1, 0.0, 0.0, 3.0);
     t1.rotate_ay(90.0);
     m_cad->add(t1, 3.0, 0.0, 0.0);
-//    m_cad->add(t3,0,0,2);
-//    m_cad->add(t3,0,0,1);
-//    m_cad->add(t3,0,0,-1);
-//    m_cad->add(t3,0,0,-2);
-//    m_cad->add(t3,0,0,-3);
-//    m_cad->add(t3,0,0,-4);
 
     initCubeGeometry();
 }
@@ -135,8 +126,6 @@ void Thingus::drawCubeGeometry(QOpenGLShaderProgram *program)
     int animationIdLocation = program->attributeLocation("a_animation_id");
     program->enableAttributeArray(animationIdLocation);
     program->setAttributeBuffer(animationIdLocation, GL_FLOAT, offset, 1, sizeof(VertexData));
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices);
 }

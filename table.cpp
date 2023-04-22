@@ -133,17 +133,17 @@ void Table::initShaders()
 
 void Table::keyPressEvent(QKeyEvent* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x6f) { // up
+    unsigned int a = e->key();
+    if (a == Qt::Key_Up) { // up
         m_xrot -= 10.0;
         my_update();
-    } else if (a == 0x74) { // down
+    } else if (a == Qt::Key_Down) { // down
         m_xrot += 10.0;
         my_update();
-    } else if (a == 0x71) { // left
+    } else if (a == Qt::Key_Left) { // left
         m_yrot -= 10.0;
         my_update();
-    } else if (a == 0x72) { // right
+    } else if (a ==Qt::Key_Right) { // right
         m_yrot += 10.0;
         my_update();
     }
@@ -152,10 +152,6 @@ void Table::keyPressEvent(QKeyEvent* e)
 
 void Table::keyReleaseEvent(QKeyEvent* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x32) {
-    } else if (a == 0x3e) {
-    }
     QWidget::keyReleaseEvent(e);
 }
 

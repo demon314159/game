@@ -10,10 +10,10 @@ Qa::Qa()
 
 Qa::~Qa()
 {
-    printf("\nQa report\n");
+//    printf("\nQa report\n");
     double avg_tp = 0.0;
     for (int i = 0; i < m_samples; i++) {
-        printf("period %d us\n", m_total_period[i]);
+//        printf("period %d us\n", m_total_period[i]);
         avg_tp += (double) m_total_period[i];
     }
     if (m_samples > 0) {

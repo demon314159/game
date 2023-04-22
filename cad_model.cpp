@@ -7,7 +7,7 @@
 #include <QVector4D>
 #include <QQuaternion>
 
-#define VERBOSE
+#define notVERBOSE
 
 CadModel::CadModel(float length, float radius, const PaintCan& paint_can, float animation_id)
     : m_facet_count(0)

@@ -2,6 +2,8 @@ TEMPLATE = app
 TARGET = airplane3d
 
 QT += widgets
+QT += opengl
+QT += openglwidgets
 
 ## CONFIG += qt debug
 
@@ -33,4 +35,5 @@ SOURCES      += main.cpp \
                 thingus.cpp
 
 RESOURCES    += shaders.qrc
+RESOURCES    += models.qrc
 

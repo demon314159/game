@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>axes.stl</file>
+        <file>plane.stl</file>
+    </qresource>
+</RCC>

@@ -9,13 +9,14 @@
 class StraightTrackShape: public Shape
 {
 public:
-    StraightTrackShape(int lanes, float length);
+    StraightTrackShape(int lanes, float length, float rise = 0.0);
     virtual ~StraightTrackShape();
     int facets() const override;
     Facet facet(int facet_ix) const override;
 
 private:
     int m_lanes;
+    float m_rise;
     float m_length;
     bool m_count_mode;
     int m_facet_count;

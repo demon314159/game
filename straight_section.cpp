@@ -1,20 +1,21 @@
 
 #include "straight_section.h"
 #include "straight_track_shape.h"
+#include "pi.h"
 #include "track_style.h"
 #include <cmath>
 
-#define PI 3.1415926536
-
-StraightSection::StraightSection(int lanes, double length, Anchor start_anchor)
+StraightSection::StraightSection(int lanes, double length, Anchor start_anchor, double rise)
     : m_lanes(lanes)
+    , m_rise(rise)
     , m_length(length)
     , m_start_anchor(start_anchor)
+    , m_pro(rise)
 {
     double sina = sin(start_anchor.a * PI / 180.0);
     double cosa = cos(start_anchor.a * PI / 180.0);
     m_end_anchor = {m_start_anchor.x - length * sina,
-                    m_start_anchor.y,
+                    m_start_anchor.y + rise,
                     m_start_anchor.z - length * cosa,
                     m_start_anchor.a};
 }
@@ -29,11 +30,16 @@ double StraightSection::total_distance(int lane) const
     return m_length;
 }
 
-double StraightSection::car_angle(int lane, double distance) const
+double StraightSection::car_yaw(int lane, double distance) const
 {
     (void) lane;
     (void) distance;
     return m_start_anchor.a;
+}
+
+double StraightSection::car_pitch(int lane, double distance) const
+{
+    return m_pro.pitch(distance, total_distance(lane));
 }
 
 Double3 StraightSection::car_position(int lane, double distance) const
@@ -51,8 +57,9 @@ Double3 StraightSection::car_position(int lane, double distance) const
     double zc = - distance;
     double rot_xc = cosa * xc + sina * zc;
     double rot_zc = -sina * xc + cosa * zc;
+    double ty = m_start_anchor.y + m_pro.height(distance, total_distance(lane));
 
-    return {m_start_anchor.x + rot_xc, m_start_anchor.y, m_start_anchor.z + rot_zc};
+    return {m_start_anchor.x + rot_xc, ty, m_start_anchor.z + rot_zc};
 }
 
 Anchor StraightSection::start_anchor() const
@@ -68,7 +75,7 @@ Anchor StraightSection::end_anchor() const
 CadModel StraightSection::cad_model() const
 {
     CadModel cm;
-    CadModel s = CadModel(StraightTrackShape(m_lanes, m_length));
+    CadModel s = CadModel(StraightTrackShape(m_lanes, m_length, m_rise));
     s.rotate_ay(m_start_anchor.a);
     cm.add(s, m_start_anchor.x, m_start_anchor.y, m_start_anchor.z);
     return cm;

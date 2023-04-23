@@ -9,6 +9,10 @@ QT += openglwidgets
 ## CONFIG += qt debug
 
 HEADERS      += game.h \
+                pi.h \
+                matrix3x3.h \
+                matrix4x4.h \
+                rise_profile.h \
                 int3.h \
                 float3.h \
                 double3.h \
@@ -49,6 +53,9 @@ HEADERS      += game.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
+                matrix3x3.cpp \
+                matrix4x4.cpp \
+                rise_profile.cpp \
                 matrix.cpp \
                 paint_can.cpp \
                 look.cpp \

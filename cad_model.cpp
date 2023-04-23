@@ -3,9 +3,7 @@
 //
 #include "cad_model.h"
 #include <math.h>
-#include <QVector3D>
-#include <QVector4D>
-#include <QQuaternion>
+#include "matrix3x3.h"
 
 #define notVERBOSE
 
@@ -38,6 +36,9 @@ CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
         }
     }
 }
+
+
+
 
 CadModel::CadModel(const VrmlInterface& vrml_interface, float animation_id)
     : m_facet_count(0)
@@ -83,6 +84,49 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id)
     : m_facet_count(0)
     , m_facet(NULL)
@@ -124,6 +168,16 @@ CadModel::CadModel(const Shape& s)
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 {
@@ -176,6 +230,30 @@ void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can,
         delete [] tfacet;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void CadModel::add(const Shape& s, const PaintCan& paint_can, float animation_id)
 {
@@ -317,37 +395,54 @@ Facet CadModel::translate(const Facet& f, const Float3& offset) const
     return t;
 }
 
-void CadModel::rotate_vertex(Float3& vertex, const QMatrix4x4& matrix)
-{
-    QVector4D r = matrix * QVector4D(vertex.v1, vertex.v2, vertex.v3, 1.0);
-    vertex.v1 = r.x();
-    vertex.v2 = r.y();
-    vertex.v3 = r.z();
-}
-
 void CadModel::rotate_ax(float angle)
 {
-    QVector3D my_axis = {1.0, 0.0, 0.0};
-    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
-    QMatrix4x4 matrix;
-    matrix.rotate(my_rot);
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_ax(angle);
+    Matrix3x3 m;
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet[i].v1, matrix);
-        rotate_vertex(m_facet[i].v2, matrix);
-        rotate_vertex(m_facet[i].v3, matrix);
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
     }
 }
 
 void CadModel::rotate_ay(float angle)
 {
-    QVector3D my_axis = {0.0, 1.0, 0.0};
-    QQuaternion my_rot = QQuaternion::fromAxisAndAngle(my_axis, angle);
-    QMatrix4x4 matrix;
-    matrix.rotate(my_rot);
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_ay(angle);
+    Matrix3x3 m;
     for (int i = 0; i < m_facet_count; i++) {
-        rotate_vertex(m_facet[i].v1, matrix);
-        rotate_vertex(m_facet[i].v2, matrix);
-        rotate_vertex(m_facet[i].v3, matrix);
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
+    }
+}
+
+void CadModel::rotate_az(float angle)
+{
+    Matrix3x3 rm;
+    rm.unity();
+    rm.rotate_az(angle);
+    Matrix3x3 m;
+    for (int i = 0; i < m_facet_count; i++) {
+        m.set_col(0, m_facet[i].v1);
+        m.set_col(1, m_facet[i].v2);
+        m.set_col(2, m_facet[i].v3);
+        m = rm * m;
+        m_facet[i].v1 = m.get_col(0);
+        m_facet[i].v2 = m.get_col(1);
+        m_facet[i].v3 = m.get_col(2);
     }
 }
 

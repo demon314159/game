@@ -11,7 +11,7 @@
 #define ANI_ID_CAR_3 5.0
 
 Car::Car()
-    : m_speed(7.5)
+    : m_speed(10.0)
     , m_section(0)
     , m_lane(0)
     , m_distance(0.0)

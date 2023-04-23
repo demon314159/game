@@ -68,7 +68,6 @@ SOURCES      += main.cpp \
                 vrml_interface.cpp \
                 stl_interface.cpp \
                 cad_model.cpp \
-                view.cpp \
                 brick_shape.cpp \
                 cube_shape.cpp \
                 box_shape.cpp \
@@ -84,6 +83,7 @@ SOURCES      += main.cpp \
                 track.cpp \
                 car.cpp \
                 qa.cpp \
+                view.cpp \
 
 RESOURCES    += shaders.qrc
 

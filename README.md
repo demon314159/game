@@ -1,4 +1,4 @@
-# race
+# qt-race
 
 Slot car race progra.
 

@@ -13,11 +13,9 @@ Table::Table(QWidget *parent)
 {
     setMinimumWidth(600);
     setMinimumHeight(337);
-//    setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
-
     connect(m_timer, &QTimer::timeout, this, QOverload<>::of(&Table::update));
-    m_timer->start(33);
+    m_timer->start(10);
 }
 
 Table::~Table()
@@ -49,44 +47,44 @@ void Table::paintGL()
 void Table::keyPressEvent(QKeyEvent* e)
 {
     QOpenGLWidget::keyPressEvent(e);
-    unsigned int a = e->nativeScanCode();
+    int a = e->key();
     bool shifted = (e->modifiers() & Qt::ShiftModifier) ? true : false;
 
-    if (a == 0x6f) { // up
+    if (a == Qt::Key_Up) { // up
         if (shifted) {
             m_view->translate_y(-m_view->height() / 10);
         } else {
             m_view->rotate_ax(-10.0);
         }
         my_update();
-    } else if (a == 0x74) { // down
+    } else if (a == Qt::Key_Down) { // down
         if (shifted) {
             m_view->translate_y(m_view->height() / 10);
         } else {
             m_view->rotate_ax(10.0);
         }
         my_update();
-    } else if (a == 0x71) { // left
+    } else if (a == Qt::Key_Left) { // left
         if (shifted) {
             m_view->translate_x(-m_view->width() / 10);
         } else {
             m_view->rotate_ay(-10.0);
         }
         my_update();
-    } else if (a == 0x72) { // right
+    } else if (a == Qt::Key_Right) { // right
         if (shifted) {
             m_view->translate_x(m_view->width() / 10);
         } else {
             m_view->rotate_ay(10.0);
         }
         my_update();
-    } else if (a == 0x1f) { // i or I
+    } else if (a == Qt::Key_I) { // i or I
         m_view->zoom(3.0 / 2.0);
         my_update();
-    } else if (a == 0x20) { // o or O
+    } else if (a == Qt::Key_O) { // o or O
         m_view->zoom(2.0 / 3.0);
         my_update();
-    } else if (a == 0x2b) { // h or H
+    } else if (a == Qt::Key_H) { // h or H
         m_view->zoom_home();
         if (shifted) {
             m_view->rotate_home();
@@ -99,10 +97,6 @@ void Table::keyPressEvent(QKeyEvent* e)
 
 void Table::keyReleaseEvent(QKeyEvent* e)
 {
-    unsigned int a = e->nativeScanCode();
-    if (a == 0x32) {
-    } else if (a == 0x3e) {
-    }
     QOpenGLWidget::keyReleaseEvent(e);
 }
 

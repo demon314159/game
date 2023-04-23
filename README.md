@@ -1,26 +1,21 @@
-# arcade baseball
+# game archive
 
-Arcade Baseball
+This repository contains several games for Qt6, each compatible with Windows and Linux:
 
+  baseline-start  : Starting point for 2D games
 
-  There are two ways to experience this game:
+  opengl-baseline : Starting point for 3D games
 
-  'arcade-baseball' launches a Perspective View in Landscape format
+  airplane-3d     : Animated airplanes with stereoscopic rendering
 
-  'arcade-baseball 1' launches a Top View in Portrait format
+  arcade-baseball : Pitch and bat arcade game simulation
 
+  bricks          : Build nice houses with bricks, windows, doors and roof
 
-  Left mouse button or left shift key pitches the Ball
+  hexominos       : Shape fitting puzzle with 48 successively harder challenges
 
-  Right mouse button or right shift key activates the Bat
+  qt-race         : Slot car animation feasibility project for Qt6
 
-  Game Over after three Outs
+  sdl-race        : Slot car animation feasibility project for SDL and GLEW
 
-  (Hitting all targets will cancel an Out)
-
-  The N key will start a new game
-
-To build this program:
-
-This is a Qt application so run `qmake arcade-baseball.pro` to generate the Makefile, then run `make`
 

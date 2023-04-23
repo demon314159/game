@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>ball_set.png</file>
-        <file>guy_set.png</file>
-    </qresource>
-</RCC>

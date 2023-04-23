@@ -1,8 +1,7 @@
-# race
+# sdl-race
 
-Slot car race progra.
+Slot car race program for SDL and GLEW framework.
 
-To build this program:
+To build this program run 'make'
 
-This is a Qt application so runi `qmake race.pro` to generate the Makefile, then run `make`
 

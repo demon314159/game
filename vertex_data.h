@@ -2,13 +2,13 @@
 #ifndef _VERTEX_DATA_H_
 #define _VERTEX_DATA_H_
 
-#include <QVector3D>
+#include "float3.h"
 
 struct VertexData
 {
-    QVector3D position;
-    QVector3D normal;
-    QVector3D color;
+    Float3 position;
+    Float3 normal;
+    Float3 color;
     float animation_id;
 };
 

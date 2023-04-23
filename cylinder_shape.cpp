@@ -1,5 +1,6 @@
 
 #include "cylinder_shape.h"
+#include "pi.h"
 #include "math.h"
 
 CylinderShape::CylinderShape(float radius, float height, float upper_bevel, float lower_bevel)
@@ -46,12 +47,10 @@ void CylinderShape::define_shape()
     float lb = m_lower_bevel;
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
-        float cosa = cos(angle * 3.1415926535 / 180.0);
-        float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
-        float sina = sin(angle * 3.1415926535 / 180.0);
-        float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
-
-
+        float cosa = cos(angle * PI / 180.0);
+        float cosb = cos((angle + dangle) * PI / 180.0);
+        float sina = sin(angle * PI / 180.0);
+        float sinb = sin((angle + dangle) * PI / 180.0);
         float xa1 = m_radius * cosa;
         float xb1 = m_radius * cosb;
         float za1 = m_radius * sina;

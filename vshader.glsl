@@ -1,12 +1,9 @@
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
-
 uniform mat4 mvp_matrix;
 uniform mat4 rot_matrix;
-uniform mat4 car_matrix;
+uniform mat4 car0_matrix;
+uniform mat4 car1_matrix;
+uniform mat4 car2_matrix;
+uniform mat4 car3_matrix;
 
 attribute vec3 a_position;
 attribute vec3 a_normal;
@@ -27,8 +24,17 @@ void main()
         v_normal = rot_matrix * vec4(billy, 0.0);
     } else {
         if (a_animation_id == 2.0) {
-            gl_Position = mvp_matrix * car_matrix * vec4(a_position, 1.0);
-            v_normal = rot_matrix * car_matrix * vec4(billy, 0.0);
+            gl_Position = mvp_matrix * car0_matrix * vec4(a_position, 1.0);
+            v_normal = rot_matrix * car0_matrix * vec4(billy, 0.0);
+        } else if (a_animation_id == 3.0) {
+            gl_Position = mvp_matrix * car1_matrix * vec4(a_position, 1.0);
+            v_normal = rot_matrix * car1_matrix * vec4(billy, 0.0);
+        } else if (a_animation_id == 4.0) {
+            gl_Position = mvp_matrix * car2_matrix * vec4(a_position, 1.0);
+            v_normal = rot_matrix * car2_matrix * vec4(billy, 0.0);
+        } else if (a_animation_id == 5.0) {
+            gl_Position = mvp_matrix * car3_matrix * vec4(a_position, 1.0);
+            v_normal = rot_matrix * car3_matrix * vec4(billy, 0.0);
         } else if (a_animation_id == 1.0) {
             gl_Position = mvp_matrix * vec4(a_position, 1.0);
             v_normal = vec4(0.0, 0.0, 1.0, 0.0);

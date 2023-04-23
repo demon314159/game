@@ -5,14 +5,18 @@
 #include "ring_shape.h"
 #include "cylinder_shape.h"
 
-#define ANI_ID_CAR 2.0
+#define ANI_ID_CAR_0 2.0
+#define ANI_ID_CAR_1 3.0
+#define ANI_ID_CAR_2 4.0
+#define ANI_ID_CAR_3 5.0
 
 Car::Car()
-    : m_speed(10.0)
+    : m_speed(7.5)
     , m_section(0)
     , m_lane(0)
     , m_distance(0.0)
-    , m_angle(0.0)
+    , m_yaw(0.0)
+    , m_pitch(0.0)
     , m_position({0.0, 0.0, 0.0})
 {
 }
@@ -21,10 +25,13 @@ Car::~Car()
 {
 }
 
+void Car::set_lane(int lane)
+{
+    m_lane = lane;
+}
+
 void Car::advance(int nanoseconds, Section** section, int sections)
 {
-//    float turns_per_second = 5.0 / 20.0;
-//    m_angle += ((360.0 * turns_per_second / 1000000000.0) * (double) nanoseconds);
 //
 // Just handle positive speed for now
 //
@@ -35,15 +42,18 @@ void Car::advance(int nanoseconds, Section** section, int sections)
         m_distance = -slack;
     }
     m_position = section[m_section]->car_position(m_lane, m_distance);
-    m_angle = section[m_section]->car_angle(m_lane, m_distance);
-
-//    printf("Car::advance(%d ns, %d sections):  distance = %5.1lf\n", nanoseconds, sections, m_distance);
-//    printf("  angle = %5.1lf,  pos = (%5.1lf, %5.1lf, %5.1lf}\n", m_angle, m_position.v1, m_position.v2, m_position.v3);
+    m_yaw = section[m_section]->car_yaw(m_lane, m_distance);
+    m_pitch = section[m_section]->car_pitch(m_lane, m_distance);
 }
 
-double Car::angle() const
+double Car::yaw() const
 {
-    return m_angle - 90.0;
+    return m_yaw - 90.0;
+}
+
+double Car::pitch() const
+{
+    return m_pitch;
 }
 
 Double3 Car::position() const
@@ -51,15 +61,30 @@ Double3 Car::position() const
     return m_position;
 }
 
-CadModel Car::cad_model() const
+CadModel Car::cad_model(int car_id) const
 {
+    PaintCan body_p(1.0, 1.0, 1.0);
+    float ani_id_car = 0.0;
+    if (car_id == 0) {
+        body_p = PaintCan(1.0, 0.25, 0.5);
+        ani_id_car = ANI_ID_CAR_0;
+    } else if (car_id == 1) {
+        body_p = PaintCan(0.5, 1.0, 0.25);
+        ani_id_car = ANI_ID_CAR_1;
+    } else if (car_id == 2) {
+        body_p = PaintCan(1.0, 0.5, 0.25);
+        ani_id_car = ANI_ID_CAR_2;
+    } else if (car_id == 3) {
+        body_p = PaintCan(0.5, 0.5, 1.0);
+        ani_id_car = ANI_ID_CAR_3;
+    }
     CadModel vehicle;
-    build_wheels(&vehicle);
-    build_car(&vehicle);
+    build_wheels(&vehicle, ani_id_car);
+    build_car(&vehicle, ani_id_car, body_p);
     return vehicle;
 }
 
-void Car::build_car(CadModel* vehicle) const
+void Car::build_car(CadModel* vehicle, float ani_id_car, const PaintCan& body_p) const
 {
     float th = TrackStyle::track_height;
     float F = 2.16;
@@ -84,19 +109,18 @@ void Car::build_car(CadModel* vehicle) const
 
     float xc = (px0 + px6) / 2.0;
 
-    PaintCan body_p(1.0, 0.25, 0.5);
     CadModel body1 = CadModel(BoxShape({px0 - xc, hb, -dz1}, {px0 - xc, hb, dz1}, {px1 - xc, hb, dz}, {px1 - xc, hb, -dz},
-                                       {px0 - xc, py0, -dz1}, {px0 - xc, py0, dz1}, {px1 - xc, py1, dz}, {px1 - xc, py1, -dz}), body_p, ANI_ID_CAR);
+                                       {px0 - xc, py0, -dz1}, {px0 - xc, py0, dz1}, {px1 - xc, py1, dz}, {px1 - xc, py1, -dz}), body_p, ani_id_car);
     CadModel body2 = CadModel(BoxShape({px1 - xc, hb, -dz}, {px1 - xc, hb, dz}, {px2 - xc, hb, dz}, {px2 - xc, hb, -dz},
-                                       {px1 - xc, py1, -dz}, {px1 - xc, py1, dz}, {px2 - xc, py2, dz}, {px2 - xc, py2, -dz}), body_p, ANI_ID_CAR);
+                                       {px1 - xc, py1, -dz}, {px1 - xc, py1, dz}, {px2 - xc, py2, dz}, {px2 - xc, py2, -dz}), body_p, ani_id_car);
     CadModel body3 = CadModel(BoxShape({px2 - xc, hb, -dz}, {px2 - xc, hb, dz}, {px3 - xc, hb, dz}, {px3 - xc, hb, -dz},
-                                       {px2 - xc, py2, -dz}, {px2 - xc, py2, dz}, {px3 - xc, py3, dz}, {px3 - xc, py3, -dz}), body_p, ANI_ID_CAR);
+                                       {px2 - xc, py2, -dz}, {px2 - xc, py2, dz}, {px3 - xc, py3, dz}, {px3 - xc, py3, -dz}), body_p, ani_id_car);
     CadModel body4 = CadModel(BoxShape({px3 - xc, hb, -dz}, {px3 - xc, hb, dz}, {px4 - xc, hb, dz}, {px4 - xc, hb, -dz},
-                                       {px3 - xc, py3, -dz}, {px3 - xc, py3, dz}, {px4 - xc, py4, dz}, {px4 - xc, py4, -dz}), body_p, ANI_ID_CAR);
+                                       {px3 - xc, py3, -dz}, {px3 - xc, py3, dz}, {px4 - xc, py4, dz}, {px4 - xc, py4, -dz}), body_p, ani_id_car);
     CadModel body5 = CadModel(BoxShape({px4 - xc, hb, -dz}, {px4 - xc, hb, dz}, {px5 - xc, hb, dz}, {px5 - xc, hb, -dz},
-                                       {px4 - xc, py4, -dz}, {px4 - xc, py4, dz}, {px5 - xc, py5, dz}, {px5 - xc, py5, -dz}), body_p, ANI_ID_CAR);
+                                       {px4 - xc, py4, -dz}, {px4 - xc, py4, dz}, {px5 - xc, py5, dz}, {px5 - xc, py5, -dz}), body_p, ani_id_car);
     CadModel body6 = CadModel(BoxShape({px5 - xc, hb, -dz}, {px5 - xc, hb, dz}, {px6 - xc, hb, dz}, {px6 - xc, hb, -dz},
-                                       {px5 - xc, py5, -dz}, {px5 - xc, py5, dz}, {px6 - xc, py6, dz}, {px6 - xc, py6, -dz}), body_p, ANI_ID_CAR);
+                                       {px5 - xc, py5, -dz}, {px5 - xc, py5, dz}, {px6 - xc, py6, dz}, {px6 - xc, py6, -dz}), body_p, ani_id_car);
 
     vehicle->add(body1, 0.0, 0.0, 0.0);
     vehicle->add(body2, 0.0, 0.0, 0.0);
@@ -106,19 +130,19 @@ void Car::build_car(CadModel* vehicle) const
     vehicle->add(body6, 0.0, 0.0, 0.0);
 }
 
-CadModel Car::build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width) const
+CadModel Car::build_wheel(float r_tire, float r_rim, float r_inner, float r_spacer, float width, float ani_id_car) const
 {
     float bevel = width / 10.0;
     PaintCan tire_p(1.0, 0.0, 0.0);
     PaintCan rim_p(0.75, 0.75, 0.75);
     PaintCan hub_p(1.0, 0.922, 0.0);
     PaintCan knob_p(0.25, 0.25, 0.25);
-    CadModel tire = CadModel(RingShape(r_tire, r_rim, width, bevel, 0.0, bevel, 0.0), tire_p, ANI_ID_CAR);
+    CadModel tire = CadModel(RingShape(r_tire, r_rim, width, bevel, 0.0, bevel, 0.0), tire_p, ani_id_car);
     bevel = (r_rim - r_inner) / 5.0;
-    CadModel rim = CadModel(RingShape(r_rim, r_inner, width, 0.0, bevel, 0.0, bevel), rim_p, ANI_ID_CAR);
-    CadModel spacer = CadModel(RingShape(r_inner, r_spacer, width * 0.9), rim_p, ANI_ID_CAR);
-    CadModel hub = CadModel(CylinderShape(r_spacer, width * 0.2), hub_p, ANI_ID_CAR);
-    CadModel knob = CadModel(CylinderShape(r_rim * 0.25, width * 0.3, r_rim * 0.25 * 0.2, r_rim * 0.25 * 0.2), knob_p, ANI_ID_CAR);
+    CadModel rim = CadModel(RingShape(r_rim, r_inner, width, 0.0, bevel, 0.0, bevel), rim_p, ani_id_car);
+    CadModel spacer = CadModel(RingShape(r_inner, r_spacer, width * 0.9), rim_p, ani_id_car);
+    CadModel hub = CadModel(CylinderShape(r_spacer, width * 0.2), hub_p, ani_id_car);
+    CadModel knob = CadModel(CylinderShape(r_rim * 0.25, width * 0.3, r_rim * 0.25 * 0.2, r_rim * 0.25 * 0.2), knob_p, ani_id_car);
     tire.add(rim, 0.0, 0.0, 0.0);
     tire.add(spacer, 0.0, 0.0, 0.0);
     tire.add(hub, 0.0, 0.0, 0.0);
@@ -126,7 +150,7 @@ CadModel Car::build_wheel(float r_tire, float r_rim, float r_inner, float r_spac
     return tire;
 }
 
-void Car::build_wheels(CadModel* vehicle) const
+void Car::build_wheels(CadModel* vehicle, float ani_id_car) const
 {
     float car_width = TrackStyle::car_width;
     float th = TrackStyle::track_height;
@@ -144,11 +168,11 @@ void Car::build_wheels(CadModel* vehicle) const
     float inner_radius = car_width * 0.1;
     float spacer_radius = car_width * 0.09;
 
-    CadModel back_wheel = build_wheel(back_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.2);
-    CadModel front_wheel = build_wheel(front_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.1375);
+    CadModel back_wheel = build_wheel(back_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.2, ani_id_car);
+    CadModel front_wheel = build_wheel(front_radius, rim_radius, inner_radius, spacer_radius, car_width * 0.1375, ani_id_car);
     PaintCan axle_p(0.75, 0.75, 0.75);
-    CadModel front_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_f), axle_p, ANI_ID_CAR);
-    CadModel back_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_b), axle_p, ANI_ID_CAR);
+    CadModel front_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_f), axle_p, ani_id_car);
+    CadModel back_axle = CadModel(CylinderShape(rim_radius * 0.25 * 0.5, spacing_b), axle_p, ani_id_car);
 
     vehicle->add(back_wheel, axle_spacing / 2.0 + xofs, -spacing_b / 2.0 + ofs, back_radius + th);
     vehicle->add(back_wheel, axle_spacing / 2.0 + xofs, spacing_b / 2.0 + ofs, back_radius + th);

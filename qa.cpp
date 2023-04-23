@@ -3,44 +3,46 @@
 #include "stdio.h"
 #include "math.h"
 
+#define notVERBOSE
+
 Qa::Qa()
-    : m_skip_filter(16)
-    , m_samples(0)
+    : m_samples(0)
 {
 }
 
 Qa::~Qa()
 {
-    printf("\nQa report\n");
-    double avg_tp = 0.0;
-    double min_tp = (double) m_total_period[0];
-    double max_tp = (double) m_total_period[0];
-
-    for (int i = 0; i < m_samples; i++) {
-//        printf("period %d us\n", m_total_period[i]);
-        double samp = (double) m_total_period[i];
-        avg_tp += samp;
-        min_tp = std::fmin(min_tp, samp);
-        max_tp = std::fmax(max_tp, samp);
-    }
+#ifdef VERBOSE
+    printf("\nQa report based on %d samples\n", m_samples);
     if (m_samples > 0) {
-        avg_tp /= (double) m_samples;
+        int current_frame = m_frame[0];
+        unsigned long base = m_stamp[0];
+        double period = 1.0e9 * 2.0 / 60.0;
+        for (int i = 0; i < m_samples; i++) {
+            if (current_frame != m_frame[i]) {
+                current_frame = m_frame[i];
+//                printf("\n%lf\n", this_stamp - last_stamp);
+                printf("\n");
+            }
+            double a = (double) (m_stamp[i] - base);
+            double dstamp =  0.01 + a / period;
+            if (m_event_id[i] == QA_START_RENDER) {
+                printf("(%6.3lf), ", round(dstamp));
+            }
+            printf("%6.3lf, ", dstamp);
+
+        }
     }
-    printf("samples = %d\n", m_samples);
-    printf("avg period = %8.0lf us\n", avg_tp);
-    printf("min period = %8.0lf us\n", min_tp);
-    printf("max period = %8.0lf us\n", max_tp);
+#endif
 }
 
-void Qa::add_sample(int total_period)
+void Qa::add_sample(int event_id, unsigned long stamp, int frame)
 {
-    if (m_skip_filter > 0 ) {
-        --m_skip_filter;
-    } else {
-        if (m_samples < BINS) {
-            m_total_period[m_samples] = total_period / 1000.0;
-            ++m_samples;
-        }
+    if (m_samples < BINS) {
+        m_event_id[m_samples] = event_id;
+        m_stamp[m_samples] = stamp;
+        m_frame[m_samples] = frame;
+        ++m_samples;
     }
 }
 

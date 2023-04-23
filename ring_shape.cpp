@@ -1,5 +1,6 @@
 
 #include "ring_shape.h"
+#include "pi.h"
 #include "math.h"
 
 RingShape::RingShape(float radius_o, float radius_i, float height, float upper_bevel_o, float upper_bevel_i, float lower_bevel_o, float lower_bevel_i)
@@ -51,10 +52,10 @@ void RingShape::define_shape()
     float lb_i = m_lower_bevel_i;
     for (int j = 0; j < steps; j++) {
         float angle = dangle * (float) j;
-        float cosa = cos(angle * 3.1415926535 / 180.0);
-        float cosb = cos((angle + dangle) * 3.1415926535 / 180.0);
-        float sina = sin(angle * 3.1415926535 / 180.0);
-        float sinb = sin((angle + dangle) * 3.1415926535 / 180.0);
+        float cosa = cos(angle * PI / 180.0);
+        float cosb = cos((angle + dangle) * PI / 180.0);
+        float sina = sin(angle * PI / 180.0);
+        float sinb = sin((angle + dangle) * PI / 180.0);
         float xa0 = m_radius_i * cosa;
         float xb0 = m_radius_i * cosb;
         float za0 = m_radius_i * sina;

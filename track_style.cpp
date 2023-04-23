@@ -12,7 +12,8 @@ float TrackStyle::rail_width = 0.0625;
 
 PaintCan TrackStyle::track_paint()
 {
-    return PaintCan(0.25, 0.25, 0.25);
+//    return PaintCan(0.25, 0.25, 0.25);
+    return PaintCan(0.5, 0.5, 0.5);
 }
 
 PaintCan TrackStyle::slot_paint()

@@ -1,6 +1,6 @@
 # qt-race
 
-Slot car race progra.
+Slot car race program.
 
 To build this program:
 

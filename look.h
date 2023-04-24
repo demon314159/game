@@ -12,7 +12,6 @@ public:
     static float dimb;
     static float dimt;
     static PaintCan table_paint();
-    static PaintCan grid_paint();
 };
 
 #endif // _LOOK_H_

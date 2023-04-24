@@ -20,6 +20,7 @@ Table::Table(QWidget *parent)
 
 Table::~Table()
 {
+    releaseKeyboard();
     m_timer->stop();
     delete m_timer;
     makeCurrent();

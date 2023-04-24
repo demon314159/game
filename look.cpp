@@ -11,9 +11,5 @@ PaintCan Look::table_paint()
     return PaintCan(0.4, 0.8, 1.0);
 }
 
-PaintCan Look::grid_paint()
-{
-    return PaintCan(0.5, 0.5, 0.5);
-}
 
 

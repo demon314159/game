@@ -13,6 +13,7 @@ HEADERS      += game.h \
                 facet.h \
                 face.h \
                 vertex_data.h \
+                matrix3x3.h \
                 paint_can.h \
                 bounding_box.h \
                 look.h \
@@ -31,6 +32,7 @@ HEADERS      += game.h \
 
 SOURCES      += main.cpp \
                 game.cpp \
+                matrix3x3.cpp \
                 paint_can.cpp \
                 look.cpp \
                 table.cpp \

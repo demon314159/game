@@ -15,6 +15,9 @@ public:
     static PaintCan table_paint();
     static PaintCan grid_paint();
     static PaintCan brick_paint();
+    static void set_3d(bool v);
+    static bool get_3d();
+
 
 private:
     static bool m_3d;

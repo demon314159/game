@@ -1,5 +1,6 @@
 
 #include "look.h"
+#include <string.h>
 
 float Look::dimx = 1.0;
 float Look::dimh = 1.0;

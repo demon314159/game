@@ -129,19 +129,19 @@ void View::sub_copy_facets(CadModel* model, VertexData* vertices, int& vix)
         vn = model->facet_normal(i);
         vp = model->facet_v1(i);
         vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+        vertices[vix].position = vp;
+        vertices[vix].normal = vn;
+        vertices[vix++].color = vc;
         vp = model->facet_v2(i);
         vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+        vertices[vix].position = vp;
+        vertices[vix].normal = vn;
+        vertices[vix++].color = vc;
         vp = model->facet_v3(i);
         vertices[vix].animation_id = an_id;
-        vertices[vix].position = QVector3D(vp.v1, vp.v2, vp.v3);
-        vertices[vix].normal = QVector3D(vn.v1, vn.v2, vn.v3);
-        vertices[vix++].color = QVector3D(vc.v1, vc.v2, vc.v3);
+        vertices[vix].position = vp;
+        vertices[vix].normal = vn;
+        vertices[vix++].color = vc;
     }
 }
 

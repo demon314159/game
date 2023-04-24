@@ -51,7 +51,6 @@ private:
     Facet* m_facet;
     Float3 translate(const Float3& v, const Float3& offset) const;
     Facet translate(const Facet& f, const Float3& offset) const;
-    void filter_roof(float& v) const;
 };
 
 #endif // _CAD_MODEL_H_

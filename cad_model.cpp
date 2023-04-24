@@ -37,9 +37,6 @@ CadModel::CadModel(const CadModel& cad_model, float x, float y, float z)
     }
 }
 
-
-
-
 CadModel::CadModel(const VrmlInterface& vrml_interface, float animation_id)
     : m_facet_count(0)
     , m_facet(NULL)
@@ -84,49 +81,6 @@ CadModel::CadModel(const StlInterface& stl_interface, const PaintCan& paint_can,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 CadModel::CadModel(const Shape& s, const PaintCan& paint_can, float animation_id)
     : m_facet_count(0)
     , m_facet(NULL)
@@ -168,16 +122,6 @@ CadModel::CadModel(const Shape& s)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 void CadModel::add(const VrmlInterface& vrml_interface, float animation_id)
 {
@@ -230,30 +174,6 @@ void CadModel::add(const StlInterface& stl_interface, const PaintCan& paint_can,
         delete [] tfacet;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void CadModel::add(const Shape& s, const PaintCan& paint_can, float animation_id)
 {

@@ -1,8 +1,8 @@
 //
-// hexominos.h
+// step1.h
 //
-#ifndef _HEXOMINOS_H_
-#define _HEXOMINOS_H_
+#ifndef _STEP1_H_
+#define _STEP1_H_
 
 #include <QMainWindow>
 #include <QObject>
@@ -10,16 +10,14 @@
 #include <QPushButton>
 #include <QWidget>
 #include "table.h"
-#include "puzzle_book.h"
-#include "shape_set.h"
 
-class Hexominos: public QMainWindow
+class Step1: public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set);
-    ~Hexominos();
+    Step1();
+    ~Step1();
 
 private:
     void initializeWindow();
@@ -33,8 +31,6 @@ private slots:
     void pb5();
 
 private:
-    PuzzleBook* m_puzzle_book;
-    ShapeSet* m_shape_set;
     // Owned by layout
     Table *m_table = nullptr;
     QPushButton *m_pb1 = nullptr;
@@ -44,4 +40,4 @@ private:
     QPushButton *m_pb5 = nullptr;
 };
 
-#endif // _HEXOMINOS_H
+#endif // _STEP1_H

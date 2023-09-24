@@ -1,5 +1,5 @@
 
-#include "hexominos.h"
+#include "step1.h"
 #include <stdlib.h>
 #include <math.h>
 
@@ -9,17 +9,15 @@
 #include <QVBoxLayout>
 #include "table.h"
 
-Hexominos::Hexominos(PuzzleBook* puzzle_book, ShapeSet* shape_set)
-    : m_puzzle_book(puzzle_book)
-    , m_shape_set(shape_set)
+Step1::Step1()
 {
     initializeWindow();
 }
 
-Hexominos::~Hexominos() {
+Step1::~Step1() {
 }
 
-void Hexominos::initializeWindow()
+void Step1::initializeWindow()
 {
     QWidget *window = new QWidget;
     QGridLayout *layout = new QGridLayout;
@@ -46,7 +44,7 @@ void Hexominos::initializeWindow()
     m_pb4->setText(tr("Clear Board"));
     m_pb5->setText(tr("Help"));
 
-    m_table = new Table(m_puzzle_book, m_shape_set, m_pb1, m_pb2, m_pb4, this);
+    m_table = new Table(m_pb1, m_pb2, m_pb4, this);
     layout->addWidget(m_table, 1, 0, 1, 5);
     layout->setRowStretch(1, 1);
 
@@ -55,26 +53,23 @@ void Hexominos::initializeWindow()
     window->show();
 }
 
-void Hexominos::pb1()
-{
-    m_table->pb_previous_challenge();
-}
-
-void Hexominos::pb2()
-{
-    m_table->pb_next_challenge();
-}
-
-void Hexominos::pb3()
+void Step1::pb1()
 {
 }
 
-void Hexominos::pb4()
+void Step1::pb2()
 {
+}
+
+void Step1::pb3()
+{
+}
+
+void Step1::pb4()
     m_table->clear_board();
 }
 
-void Hexominos::pb5()
+void Step1::pb5()
 {
     m_table->show_help();
 }

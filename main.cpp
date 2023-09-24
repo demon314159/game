@@ -1,23 +1,16 @@
 
 #include <QtWidgets>
 
-#include "hexominos.h"
-#include "puzzle_book.h"
-#include "shape_set.h"
+#include "step1.h"
 
 int main(int argv, char **args)
 {
     QApplication app(argv, args);
-    app.setApplicationName("Hexominos");
+    app.setApplicationName("Step1");
 
-    ShapeSet* shape_set = new ShapeSet;
-    PuzzleBook*puzzle_book = new PuzzleBook(PUZZLE_BOOK_FILE_NAME);
-    Hexominos game(puzzle_book, shape_set);
+    Step1 game();
     game.show();
 
     int res = app.exec();
-    puzzle_book->save(PUZZLE_BOOK_FILE_NAME);
-    delete puzzle_book;
-    delete shape_set ;
     return res;
 }

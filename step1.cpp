@@ -27,11 +27,11 @@ void Step1::initializeWindow()
     m_pb3 = new QPushButton(this);
     m_pb4 = new QPushButton(this);
     m_pb5 = new QPushButton(this);
-    connect(m_pb1, &QPushButton::clicked, this, &Hexominos::pb1);
-    connect(m_pb2, &QPushButton::clicked, this, &Hexominos::pb2);
-    connect(m_pb3, &QPushButton::clicked, this, &Hexominos::pb3);
-    connect(m_pb4, &QPushButton::clicked, this, &Hexominos::pb4);
-    connect(m_pb5, &QPushButton::clicked, this, &Hexominos::pb5);
+//    connect(m_pb1, &QPushButton::clicked, this, &Hexominos::pb1);
+//    connect(m_pb2, &QPushButton::clicked, this, &Hexominos::pb2);
+//    connect(m_pb3, &QPushButton::clicked, this, &Hexominos::pb3);
+//    connect(m_pb4, &QPushButton::clicked, this, &Hexominos::pb4);
+//    connect(m_pb5, &QPushButton::clicked, this, &Hexominos::pb5);
     layout->addWidget(m_pb1, 0, 0, 1, 1);
     layout->addWidget(m_pb2, 0, 1, 1, 1);
     layout->addWidget(m_pb3, 0, 2, 1, 1);
@@ -66,11 +66,12 @@ void Step1::pb3()
 }
 
 void Step1::pb4()
-    m_table->clear_board();
+{
+//    m_table->clear_board();
 }
 
 void Step1::pb5()
 {
-    m_table->show_help();
+//    m_table->show_help();
 }
 

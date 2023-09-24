@@ -40,7 +40,7 @@ void Table::paintEvent(QPaintEvent* /* event */)
 //    int th = text_height(painter, QString("0"));
 //    painter.fillRect(painter.viewport(), QColor(102, 204, 255));
     painter.fillRect(painter.viewport(), QColor(76, 153, 191));
-    m_scene.draw(painter);
+//    m_scene.draw(painter);
 }
 
 void Table::mousePressEvent(QMouseEvent* e)
@@ -74,25 +74,10 @@ void Table::wheelEvent(QWheelEvent* e)
     e->accept();
 }
 
-void Table::pb_next_challenge()
-{
-    full_update();
-}
-
-void Table::pb_previous_challenge()
-{
-    full_update();
-}
-
 void Table::full_update()
 {
     update();
-    m_parent->setWindowTitle(QString("Step1");
-}
-
-void Table::clear_board()
-{
-    full_update();
+    m_parent->setWindowTitle(QString("Step1"));
 }
 
 void Table::show_help()

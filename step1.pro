@@ -9,6 +9,6 @@ HEADERS       = step1.h \
                 table.h \
 
 SOURCES       = main.cpp \
-                step1.h.cpp \
+                step1.cpp \
                 table.cpp \
 

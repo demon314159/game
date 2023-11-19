@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #define notVERBOSE
-#define TRACK_LANES 2
+#define TRACK_LANES 4
 
 View::View(SDL_Window* window)
     : m_window(window)

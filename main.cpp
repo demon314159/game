@@ -1,9 +1,8 @@
-
 #include "table.h"
 
 int main(int argc, char *argv[]) {
 
-    SDL_Window* window = SDL_CreateWindow("Race", 2000, SDL_WINDOWPOS_CENTERED, INITIAL_WIDTH, INITIAL_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    SDL_Window* window = SDL_CreateWindow("Race", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, INITIAL_WIDTH, INITIAL_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     if (window == NULL) {
         printf("Window Creation Error: %s\n", SDL_GetError());
         exit(0);
@@ -15,6 +14,7 @@ int main(int argc, char *argv[]) {
     table.initialize();
     table.render();
     SDL_Event ev;
+    int i = 0;
     while (table.is_running()) {
         while (SDL_PollEvent(&ev) != 0) {
             if (ev.type == SDL_QUIT) {
@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
             }
         }
         table.render();
+        SDL_Delay(1);
+	++i;
     }
     SDL_GetWindowSize(window, &w, &h);
     SDL_DestroyWindow(window);

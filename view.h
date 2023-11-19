@@ -64,6 +64,7 @@ private:
     GLint m_car1_matrix_uniform;
     GLint m_car2_matrix_uniform;
     GLint m_car3_matrix_uniform;
+    unsigned int m_vao;
     unsigned int m_vbo;
     Qa* m_qa;
     int m_frame;

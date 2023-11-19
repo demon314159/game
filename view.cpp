@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #define notVERBOSE
-#define TRACK_LANES 4
+#define TRACK_LANES 2
 
 View::View(SDL_Window* window)
     : m_window(window)
@@ -31,6 +31,7 @@ View::View(SDL_Window* window)
     , m_car1_matrix_uniform(0)
     , m_car2_matrix_uniform(0)
     , m_car3_matrix_uniform(0)
+    , m_vao(0)
     , m_vbo(0)
     , m_qa(new Qa)
     , m_frame(0)
@@ -257,6 +258,8 @@ void View::initialize()
         printf("car3_matrix is not a valid glsl variable\n");
         exit(0);
     }
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     copy_aux_facets();
@@ -348,7 +351,7 @@ void View::render()
     m_qa->add_sample(QA_START_RENDER, SDL_GetPerformanceCounter(), m_frame);
 
 //    int tp = duration_cast<nanoseconds>(total_period).count();
-    int tp = (33333333 * 3) / 2;
+    int tp = (33333333 * 3) / 25;
 
     m_track->advance(tp);
 
@@ -384,6 +387,7 @@ void View::render()
 
     glUniformMatrix4fv(m_mvp_matrix_uniform, 1, GL_TRUE, m_mvp_matrix.data());
     glUniformMatrix4fv(m_rot_matrix_uniform, 1, GL_TRUE, m_rot_matrix.data());
+
     if (m_track->cars() > 0) {
         int car_id = 0;
         Matrix4x4 car_matrix;

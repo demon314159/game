@@ -48,7 +48,6 @@ OBJECTS = main.o \
           track_style.o \
           navigate.o \
           cad_model.o \
-          view.o \
           brick_shape.o \
           cube_shape.o \
           box_shape.o \

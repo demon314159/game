@@ -84,7 +84,8 @@ $(TARGET): $(OBJECTS)
 i.PHONY: clean
 
 clean:
-	rm *.o
+	del *.obj; del race.exe
+
 
 
 
